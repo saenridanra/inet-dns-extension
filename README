@@ -1,0 +1,13 @@
+# Omnet++ DNS Extension
+
+This extension makes use of the INET Framework and provides a way to 
+simulate DNS and MDNS traffic. By specifying traffic generators one can implement
+different sources of DNS traffic.
+
+## Requirements
+
+Requires following libraries, additional to the INET-Framework:
+
+* c-ares, available at `http://c-ares.haxx.se/`, is used for DNS packet generation
+
+Further requirements may be added any time.
