@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for opp_dns_extension
 #
 # This file was generated with the command:
-#  opp_makemake -f -e cpp --deep
+#  opp_makemake -f --deep -L/home/saen/master-project/workspaces/omnetpp/inet/out/$$\(CONFIGNAME\)/src -linet -DINET_IMPORT -KINET_PROJ=/home/saen/master-project/workspaces/omnetpp/inet
 #
 
 # Name of target to be created (-o option)
@@ -14,34 +14,29 @@ USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(CMDENV_LIBS)
 #USERIF_LIBS = $(TKENV_LIBS)
 
 # C++ include paths (with -I)
-INCLUDE_PATH = \
-    -I. \
-    -Isimulations \
-    -Isrc \
-    -Isrc/common \
-    -Isrc/messages \
-    -Isrc/tests \
-    -Isrc/tests/unit \
-    -Isrc/tests/unit/utils \
-    -Isrc/utils
+INCLUDE_PATH = -I. -Icommon -Imessages -Iutils
 
 # Additional object and library files to link with
 EXTRA_OBJS =
 
 # Additional libraries (-L, -l options)
-LIBS =
+LIBS = -L$(INET_PROJ)/out/$(CONFIGNAME)/src  -linet
+LIBS += -Wl,-rpath,`abspath $(INET_PROJ)/out/$(CONFIGNAME)/src`
 
 # Output directory
-PROJECT_OUTPUT_DIR = out
-PROJECTRELATIVE_PATH =
+PROJECT_OUTPUT_DIR = ../out
+PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cpp and .msg files
-OBJS = $O/src/utils/DNSTools.o $O/src/messages/DNSPacket_m.o
+OBJS = $O/utils/DNSTools.o $O/messages/DNSPacket_m.o
 
 # Message files
 MSGFILES = \
-    src/messages/DNSPacket.msg
+    messages/DNSPacket.msg
+
+# Other makefile variables (-K)
+INET_PROJ=/home/saen/master-project/workspaces/omnetpp/inet
 
 #------------------------------------------------------------------------------
 
@@ -67,7 +62,7 @@ include $(CONFIGFILE)
 OMNETPP_LIB_SUBDIR = $(OMNETPP_LIB_DIR)/$(TOOLCHAIN_NAME)
 OMNETPP_LIBS = -L"$(OMNETPP_LIB_SUBDIR)" -L"$(OMNETPP_LIB_DIR)" -loppmain$D $(USERIF_LIBS) $(KERNEL_LIBS) $(SYS_LIBS)
 
-COPTS = $(CFLAGS)  $(INCLUDE_PATH) -I$(OMNETPP_INCL_DIR)
+COPTS = $(CFLAGS) -DINET_IMPORT $(INCLUDE_PATH) -I$(OMNETPP_INCL_DIR)
 MSGCOPTS = $(INCLUDE_PATH)
 
 # we want to recompile everything if COPTS changes,
@@ -115,28 +110,20 @@ clean:
 	$(Q)-rm -rf $O
 	$(Q)-rm -f opp_dns_extension opp_dns_extension.exe libopp_dns_extension.so libopp_dns_extension.a libopp_dns_extension.dll libopp_dns_extension.dylib
 	$(Q)-rm -f ./*_m.cpp ./*_m.h
-	$(Q)-rm -f simulations/*_m.cpp simulations/*_m.h
-	$(Q)-rm -f src/*_m.cpp src/*_m.h
-	$(Q)-rm -f src/common/*_m.cpp src/common/*_m.h
-	$(Q)-rm -f src/messages/*_m.cpp src/messages/*_m.h
-	$(Q)-rm -f src/tests/*_m.cpp src/tests/*_m.h
-	$(Q)-rm -f src/tests/unit/*_m.cpp src/tests/unit/*_m.h
-	$(Q)-rm -f src/tests/unit/utils/*_m.cpp src/tests/unit/utils/*_m.h
-	$(Q)-rm -f src/utils/*_m.cpp src/utils/*_m.h
+	$(Q)-rm -f common/*_m.cpp common/*_m.h
+	$(Q)-rm -f messages/*_m.cpp messages/*_m.h
+	$(Q)-rm -f utils/*_m.cpp utils/*_m.h
 
 cleanall: clean
 	$(Q)-rm -rf $(PROJECT_OUTPUT_DIR)
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cpp simulations/*.cpp src/*.cpp src/common/*.cpp src/messages/*.cpp src/tests/*.cpp src/tests/unit/*.cpp src/tests/unit/utils/*.cpp src/utils/*.cpp
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cpp common/*.cpp messages/*.cpp utils/*.cpp
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-$O/src/messages/DNSPacket_m.o: src/messages/DNSPacket_m.cpp \
-  src/messages/../common/DNS.h \
-  src/messages/DNSPacket_m.h
-$O/src/utils/DNSTools.o: src/utils/DNSTools.cpp \
-  src/utils/../messages/DNSPacket_m.h \
-  src/utils/../common/DNS.h \
-  src/utils/../messages/../common/DNS.h \
-  src/utils/DNSTools.h
+$O/utils/DNSTools.o: utils/DNSTools.cpp \
+	common/DNS.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
+
