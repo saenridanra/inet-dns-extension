@@ -1,0 +1,1 @@
+-g -Wall -fPIC  -fno-stack-protector -DHAVE_SWAPCONTEXT  -DHAVE_PCAP -DXMLPARSER=libxml -DWITH_PARSIM -DWITH_NETBUILDER  -I../../../../src/ -I../../../../src/common -I../../../../src/messages -I../../../../src/utils -I./lib -I/home/saen/Programme/omnetpp-4.5/include
