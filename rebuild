@@ -1,1 +1,6 @@
-opp_makemake -f -e cpp --deep
+opp_makemake -f -e cpp --deep -a
+
+make
+
+mv out/gcc-debug/*.a lib 
+rm *.a

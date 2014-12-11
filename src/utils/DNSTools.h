@@ -79,7 +79,7 @@ class DNSTools
          * @brief resolveQuery
          *      Extracts information in order to resolve a DNS query.
          */
-        struct Query* resolveQuery(cPacket *query);
+        struct Query* resolveQuery(cPacket* query);
 
         /**
          * @brief createResponse
