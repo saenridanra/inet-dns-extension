@@ -23,20 +23,12 @@
 
 namespace ODnsExtension {
 
-DNSTools::DNSTools()
-{
-}
-
-DNSTools::~DNSTools()
-{
-}
-
 /**
  * @brief createQuery
  *      Creates simple DNS Queries for exactly one question
  *      (usually used by dns clients).
  */
-DNSPacket* DNSTools::createQuery(char *msg_name, char *name, unsigned short dnsclass, unsigned short type, unsigned short id,
+DNSPacket* createQuery(char *msg_name, char *name, unsigned short dnsclass, unsigned short type, unsigned short id,
         unsigned short rd)
 {
     DNSPacket *q = new DNSPacket(msg_name);
@@ -71,7 +63,7 @@ DNSPacket* DNSTools::createQuery(char *msg_name, char *name, unsigned short dnsc
  *      Creates a query with multiple questions
  */
 
-DNSPacket* DNSTools::createNQuery(char *msg_name, unsigned short qdcount, char **name, unsigned short dnsclass,
+DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, char **name, unsigned short dnsclass,
         unsigned short type, unsigned short id, unsigned short rd)
 {
     DNSPacket *q = new DNSPacket(msg_name);
@@ -109,7 +101,7 @@ DNSPacket* DNSTools::createNQuery(char *msg_name, unsigned short qdcount, char *
  * @brief resolveQuery
  *      Extracts information in order to resolve a DNS query.
  */
-struct Query* DNSTools::resolveQuery(cPacket* query)
+struct Query* resolveQuery(cPacket* query)
 {
     DNSPacket* v = dynamic_cast<DNSPacket*>(query);
 
@@ -146,7 +138,7 @@ struct Query* DNSTools::resolveQuery(cPacket* query)
  * @brief createResponse
  *      Creates a dns response header.
  */
-DNSPacket* DNSTools::createResponse(char *msg_name, unsigned short ancount, unsigned short nscount, unsigned short arcount,
+DNSPacket* createResponse(char *msg_name, unsigned short ancount, unsigned short nscount, unsigned short arcount,
         unsigned short id, unsigned short opcode, unsigned short AA, unsigned short rd, unsigned short ra,
         unsigned short rcode)
 {
@@ -181,7 +173,7 @@ DNSPacket* DNSTools::createResponse(char *msg_name, unsigned short ancount, unsi
  * @brief appendAnswer
  *      Appends an answer to a previously generated DNS packet.
  */
-int DNSTools::appendAnswer(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass,
+int appendAnswer(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass,
         unsigned int ttl, unsigned short rdlength, char *rdata)
 {
     if (record_num < 0 || record_num > p->getAncount())
@@ -206,7 +198,7 @@ int DNSTools::appendAnswer(DNSPacket *p, int record_num, char *rname, unsigned s
  * @brief appendAuthority
  *      Appends an answer to a previously generated DNS packet.
  */
-int DNSTools::appendAuthority(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass,
+int appendAuthority(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass,
         unsigned int ttl, unsigned short rdlength, char *rdata)
 {
     if (record_num < 0 || record_num > p->getNscount())
@@ -231,7 +223,7 @@ int DNSTools::appendAuthority(DNSPacket *p, int record_num, char *rname, unsigne
  * @brief appendAdditional
  *      Appends an answer to a previously generated DNS packet.
  */
-int DNSTools::appendAdditional(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass,
+int appendAdditional(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass,
         unsigned int ttl, unsigned short rdlength, char *rdata)
 {
     if (record_num < 0 || record_num > p->getArcount())
@@ -256,7 +248,7 @@ int DNSTools::appendAdditional(DNSPacket *p, int record_num, char *rname, unsign
  * @brief resolveResponse
  *      Extracts information in order to resolve a DNS response.
  */
-struct Response* DNSTools::resolveResponse(cPacket *response)
+struct Response* resolveResponse(cPacket *response)
 {
     DNSPacket* v = dynamic_cast<DNSPacket*>(response);
 
@@ -311,7 +303,7 @@ struct Response* DNSTools::resolveResponse(cPacket *response)
  * @return
  *      0 false, 1 true
  */
-int DNSTools::isDNSpacket(cPacket *p)
+int isDNSpacket(cPacket *p)
 {
     // If p can be casted in to the original definition
     // then all is well.
@@ -330,7 +322,7 @@ int DNSTools::isDNSpacket(cPacket *p)
  * @return
  *     -1 if not a DNS packet, 0 if Query, 1 if Response
  */
-int DNSTools::isQueryOrResponse(cPacket *p)
+int isQueryOrResponse(cPacket *p)
 {
     DNSPacket* v = dynamic_cast<DNSPacket*>(p);
     if (v != 0)

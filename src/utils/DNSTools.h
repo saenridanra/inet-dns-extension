@@ -34,6 +34,14 @@
 #include "../common/DNS.h"
 #include "../messages/DNSPacket_m.h"
 
+
+/**
+ * @brief DNSTools provides methods for creating
+ * DNS queries and responses, as well resolving (parsing)
+ * queries and responses.
+ *
+ * @author Andreas Rain, Distributed Systems Group, University of Konstanz
+ */
 namespace ODnsExtension {
 
 /**
@@ -46,97 +54,79 @@ namespace ODnsExtension {
 #define E_WRONG_QR 3;
 
 /**
- * @brief DNSTools provides methods for creating
- * DNS queries and responses, as well resolving (parsing)
- * queries and responses.
- *
- * @author Andreas Rain, Distributed Systems Group, University of Konstanz
+ * @brief createQuery
+ *      Creates simple DNS Queries for exactly one question
+ *      (usually used by dns clients).
+ */
+DNSPacket* createQuery(char *msg_name, char *name, unsigned short dnsclass, unsigned short type,
+        unsigned short id, unsigned short rd);
+
+/**
+ * @brief createNQuery
+ *      Creates a query with multiple questions
  */
 
-class DNSTools
-{
-    public:
-        DNSTools();
-        virtual ~DNSTools();
+DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, char **name, unsigned short dnsclass,
+        unsigned short type, unsigned short id, unsigned short rd);
 
-        /**
-         * @brief createQuery
-         *      Creates simple DNS Queries for exactly one question
-         *      (usually used by dns clients).
-         */
-        DNSPacket* createQuery(char *msg_name, char *name, unsigned short dnsclass, unsigned short type,
-                unsigned short id, unsigned short rd);
+/**
+ * @brief resolveQuery
+ *      Extracts information in order to resolve a DNS query.
+ */
+struct Query* resolveQuery(cPacket* query);
 
-        /**
-         * @brief createNQuery
-         *      Creates a query with multiple questions
-         */
+/**
+ * @brief createResponse
+ *      Creates a dns response header.
+ */
+DNSPacket* createResponse(char *msg_name, unsigned short ancount, unsigned short nscount,
+        unsigned short arcount, unsigned short id, unsigned short opcode, unsigned short AA, unsigned short rd,
+        unsigned short ra, unsigned short rcode);
 
-        DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, char **name, unsigned short dnsclass,
-                unsigned short type, unsigned short id, unsigned short rd);
+/**
+ * @brief appendAnswer
+ *      Appends an answer to a previously generated DNS packet.
+ */
+int appendAnswer(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass, unsigned int ttl,
+        unsigned short rdlength, char *rdata);
 
-        /**
-         * @brief resolveQuery
-         *      Extracts information in order to resolve a DNS query.
-         */
-        struct Query* resolveQuery(cPacket* query);
+/**
+ * @brief appendAuthority
+ *      Appends an answer to a previously generated DNS packet.
+ */
+int appendAuthority(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass, unsigned int ttl,
+        unsigned short rdlength, char *rdata);
 
-        /**
-         * @brief createResponse
-         *      Creates a dns response header.
-         */
-        DNSPacket* createResponse(char *msg_name, unsigned short ancount, unsigned short nscount,
-                unsigned short arcount, unsigned short id, unsigned short opcode, unsigned short AA, unsigned short rd,
-                unsigned short ra, unsigned short rcode);
+/**
+ * @brief appendAdditional
+ *      Appends an answer to a previously generated DNS packet.
+ */
+int appendAdditional(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass, unsigned int ttl,
+        unsigned short rdlength, char *rdata);
 
-        /**
-         * @brief appendAnswer
-         *      Appends an answer to a previously generated DNS packet.
-         */
-        int appendAnswer(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass, unsigned int ttl,
-                unsigned short rdlength, char *rdata);
+/**
+ * @brief resolveResponse
+ *      Extracts information in order to resolve a DNS response.
+ */
+struct Response* resolveResponse(cPacket *response);
 
-        /**
-         * @brief appendAuthority
-         *      Appends an answer to a previously generated DNS packet.
-         */
-        int appendAuthority(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass, unsigned int ttl,
-                unsigned short rdlength, char *rdata);
+/**
+ * @brief isDNSPacket
+ *      Determine whether p is a DNS packet
+ *
+ * @return
+ *      0 false, 1 true
+ */
+int isDNSpacket(cPacket *p);
 
-        /**
-         * @brief appendAdditional
-         *      Appends an answer to a previously generated DNS packet.
-         */
-        int appendAdditional(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass, unsigned int ttl,
-                unsigned short rdlength, char *rdata);
-
-        /**
-         * @brief resolveResponse
-         *      Extracts information in order to resolve a DNS response.
-         */
-        struct Response* resolveResponse(cPacket *response);
-
-        /**
-         * @brief isDNSPacket
-         *      Determine whether p is a DNS packet
-         *
-         * @return
-         *      0 false, 1 true
-         */
-        int isDNSpacket(cPacket *p);
-
-        /**
-         * @brief isQueryOrResponse
-         *      Determine whether p is a query or response.
-         *
-         * @return
-         *      0 if Query, 1 if Response
-         */
-        int isQueryOrResponse(cPacket *p);
-
-    protected:
-
-};
+/**
+ * @brief isQueryOrResponse
+ *      Determine whether p is a query or response.
+ *
+ * @return
+ *      0 if Query, 1 if Response
+ */
+int isQueryOrResponse(cPacket *p);
 
 }
 

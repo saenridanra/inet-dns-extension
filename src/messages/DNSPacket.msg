@@ -29,6 +29,7 @@ struct DNSQuestion;
 struct DNSRecord;
 
 // DNSPacket definition
+// author: Andreas Rain, Distributed Systems Group, University of Konstanz
 packet DNSPacket {
     unsigned short id;
     unsigned short options; 

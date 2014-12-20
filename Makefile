@@ -14,6 +14,7 @@ INCLUDE_PATH = \
     -Ilib \
     -Isimulations \
     -Isrc \
+    -Isrc/applications \
     -Isrc/common \
     -Isrc/messages \
     -Isrc/utils \
@@ -112,6 +113,7 @@ clean:
 	$(Q)-rm -f lib/*_m.cpp lib/*_m.h
 	$(Q)-rm -f simulations/*_m.cpp simulations/*_m.h
 	$(Q)-rm -f src/*_m.cpp src/*_m.h
+	$(Q)-rm -f src/applications/*_m.cpp src/applications/*_m.h
 	$(Q)-rm -f src/common/*_m.cpp src/common/*_m.h
 	$(Q)-rm -f src/messages/*_m.cpp src/messages/*_m.h
 	$(Q)-rm -f src/utils/*_m.cpp src/utils/*_m.h
@@ -129,14 +131,11 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cpp lib/*.cpp simulations/*.cpp src/*.cpp src/common/*.cpp src/messages/*.cpp src/utils/*.cpp tests/*.cpp tests/unit/*.cpp tests/unit/utils/*.cpp tests/unit/utils/work/*.cpp tests/unit/utils/work/DNSToolsTEST/*.cpp tests/unit/utils/work/out/*.cpp tests/unit/utils/work/out/gcc-debug/*.cpp tests/unit/utils/work/out/gcc-debug/DNSToolsTEST/*.cpp
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cpp lib/*.cpp simulations/*.cpp src/*.cpp src/applications/*.cpp src/common/*.cpp src/messages/*.cpp src/utils/*.cpp tests/*.cpp tests/unit/*.cpp tests/unit/utils/*.cpp tests/unit/utils/work/*.cpp tests/unit/utils/work/DNSToolsTEST/*.cpp tests/unit/utils/work/out/*.cpp tests/unit/utils/work/out/gcc-debug/*.cpp tests/unit/utils/work/out/gcc-debug/DNSToolsTEST/*.cpp
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-$O/src/messages/DNSPacket_m.o: src/messages/DNSPacket_m.cpp \
-  src/messages/../common/DNS.h \
-  src/messages/DNSPacket_m.h
 $O/src/utils/DNSTools.o: src/utils/DNSTools.cpp \
-  src/utils/../messages/DNSPacket_m.h \
+  src/utils/../messages/../common/DNS.h \
   src/utils/../common/DNS.h \
   src/utils/DNSTools.h \
-  src/utils/../messages/../common/DNS.h
+  src/utils/../messages/DNSPacket_m.h

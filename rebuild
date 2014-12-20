@@ -1,3 +1,4 @@
+make clean
 opp_makemake -f -e cpp --deep -a
 
 make

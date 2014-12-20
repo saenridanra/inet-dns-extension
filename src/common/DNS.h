@@ -22,6 +22,9 @@
 #ifndef DNS_H_
 #define DNS_H_
 
+/**
+ * @author Andreas Rain, Distributed Systems Group, University of Konstanz
+ */
 namespace ODnsExtension {
 
 /**
@@ -58,6 +61,10 @@ namespace ODnsExtension {
 #define DNS_CLASS_CH    3;
 #define DNS_CLASS_HS    4;
 #define DNS_CLASS_ANY   255;
+
+
+// Some other useful definitions
+#define DNS_PORT 53;
 
 struct Query
 {
