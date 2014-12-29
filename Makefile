@@ -135,7 +135,7 @@ depend:
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/src/utils/DNSTools.o: src/utils/DNSTools.cpp \
-  src/utils/../messages/../common/DNS.h \
   src/utils/../common/DNS.h \
   src/utils/DNSTools.h \
-  src/utils/../messages/DNSPacket_m.h
+  src/utils/../messages/DNSPacket_m.h \
+  src/utils/../messages/../common/DNS.h
