@@ -1,5 +1,5 @@
 //
-// Generated file, do not edit! Created by nedtool 4.6 from src/utils/../messages/DNSPacket.msg.
+// Generated file, do not edit! Created by nedtool 4.6 from src/applications/../utils/../messages/DNSPacket.msg.
 //
 
 #ifndef _DNSPACKET_M_H_
@@ -23,7 +23,7 @@ typedef struct ODnsExtension::DNSRecord DNSRecord;
 // }}
 
 /**
- * Class generated from <tt>src/utils/../messages/DNSPacket.msg:33</tt> by nedtool.
+ * Class generated from <tt>src/applications/../utils/../messages/DNSPacket.msg:33</tt> by nedtool.
  * <pre>
  * // DNSPacket definition
  * // author: Andreas Rain, Distributed Systems Group, University of Konstanz

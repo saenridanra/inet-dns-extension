@@ -24,7 +24,6 @@
 
 #include <omnetpp.h>
 
-#include "INETDefs.h"
 #include "UDPSocket.h"
 #include "IPvXAddressResolver.h"
 #include <vector>
@@ -45,7 +44,7 @@ class DNSClient : public cSimpleModule
   public:
         // Address vectors for known DNS servers
         std::vector<IPvXAddress> dns_servers;
-        GHashTable<char*, ODnsExtension::Response> *response_cache;
+        GHashTable *response_cache;
 
 
         // Socket over which DNS queries are sent/received
@@ -55,6 +54,7 @@ class DNSClient : public cSimpleModule
   protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
+    virtual IPvXAddress* resolve(char* dns_name);
 
   public:
 

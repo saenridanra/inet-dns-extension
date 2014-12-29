@@ -1,20 +1,58 @@
 #
-# OMNeT++/OMNEST Makefile for opp_dns_extension
+# OMNeT++/OMNEST Makefile for libopp_dns_extension
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep -L/home/saen/master-project/workspaces/omnetpp/inet/out/$$\(CONFIGNAME\)/src -linet -DINET_IMPORT -KINET_PROJ=/home/saen/master-project/workspaces/omnetpp/inet
+#  opp_makemake -f --deep --make-so -O out -I/usr/include/glib-2.0 -I/usr/lib/glib2.0 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/tcp_common -I/LinuxFiles/Workspaces/opp_workspace/inet/src/base -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/ieee80211/mac -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/udp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/ieee80211/radio/errormodel -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/ieee80211/radio -I/LinuxFiles/Workspaces/opp_workspace/inet/src/status -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/sctp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/icmpv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/radio/propagation -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/ipv6tunneling -I/LinuxFiles/Workspaces/opp_workspace/inet/src/world/radio -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/udp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/tcp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/radio -I/LinuxFiles/Workspaces/opp_workspace/inet/src/world/obstacles -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/common -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/ipv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/arp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/routing/aodv -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/xmipv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/sctp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/ipv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/battery/models -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/autorouting/ipv4 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/ipv4 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/mobility/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/applications/pingapp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/common -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/ipv4 -L/LinuxFiles/Workspaces/opp_workspace/inet/out/$$\(CONFIGNAME\)/src -linet -DINET_IMPORT -KINET_PROJ=/LinuxFiles/Workspaces/opp_workspace/inet
 #
 
 # Name of target to be created (-o option)
-TARGET = opp_dns_extension$(EXE_SUFFIX)
-
-# User interface (uncomment one) (-u option)
-USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(CMDENV_LIBS)
-#USERIF_LIBS = $(CMDENV_LIBS)
-#USERIF_LIBS = $(TKENV_LIBS)
+TARGET = libopp_dns_extension$(SHARED_LIB_SUFFIX)
 
 # C++ include paths (with -I)
-INCLUDE_PATH = -I. -Icommon -Imessages -Iutils
+INCLUDE_PATH = \
+    -I/usr/include/glib-2.0 \
+    -I/usr/lib/glib2.0 \
+    -I$(INET_PROJ)/src/transport/tcp_common \
+    -I$(INET_PROJ)/src/base \
+    -I$(INET_PROJ)/src/util \
+    -I$(INET_PROJ)/src/linklayer/ieee80211/mac \
+    -I$(INET_PROJ)/src/transport/udp \
+    -I$(INET_PROJ)/src/linklayer/ieee80211/radio/errormodel \
+    -I$(INET_PROJ)/src/util/headerserializers \
+    -I$(INET_PROJ)/src/linklayer/ieee80211/radio \
+    -I$(INET_PROJ)/src/status \
+    -I$(INET_PROJ)/src/transport/sctp \
+    -I$(INET_PROJ)/src/networklayer/icmpv6 \
+    -I$(INET_PROJ)/src/linklayer/radio/propagation \
+    -I$(INET_PROJ)/src/transport/contract \
+    -I$(INET_PROJ)/src/networklayer/ipv6tunneling \
+    -I$(INET_PROJ)/src/world/radio \
+    -I$(INET_PROJ)/src/linklayer/contract \
+    -I$(INET_PROJ)/src/util/headerserializers/udp \
+    -I$(INET_PROJ)/src/util/headerserializers/tcp \
+    -I$(INET_PROJ)/src/linklayer/radio \
+    -I$(INET_PROJ)/src/world/obstacles \
+    -I$(INET_PROJ)/src/networklayer/common \
+    -I$(INET_PROJ)/src/networklayer/ipv6 \
+    -I$(INET_PROJ)/src/networklayer/arp \
+    -I$(INET_PROJ)/src/networklayer/routing/aodv \
+    -I$(INET_PROJ)/src/networklayer/contract \
+    -I$(INET_PROJ)/src \
+    -I$(INET_PROJ)/src/networklayer/xmipv6 \
+    -I$(INET_PROJ)/src/util/headerserializers/sctp \
+    -I$(INET_PROJ)/src/util/headerserializers/ipv6 \
+    -I$(INET_PROJ)/src/battery/models \
+    -I$(INET_PROJ)/src/networklayer/autorouting/ipv4 \
+    -I$(INET_PROJ)/src/networklayer/ipv4 \
+    -I$(INET_PROJ)/src/mobility/contract \
+    -I$(INET_PROJ)/src/applications/pingapp \
+    -I$(INET_PROJ)/src/linklayer/common \
+    -I$(INET_PROJ)/src/util/headerserializers/ipv4 \
+    -I. \
+    -Iapplications \
+    -Icommon \
+    -Imessages \
+    -Iutils
 
 # Additional object and library files to link with
 EXTRA_OBJS =
@@ -28,15 +66,15 @@ PROJECT_OUTPUT_DIR = ../out
 PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
-# Object files for local .cpp and .msg files
-OBJS = $O/utils/DNSTools.o $O/messages/DNSPacket_m.o
+# Object files for local .cc and .msg files
+OBJS = $O/applications/DNSClient.o $O/utils/DNSTools.o $O/messages/DNSPacket_m.o
 
 # Message files
 MSGFILES = \
     messages/DNSPacket.msg
 
 # Other makefile variables (-K)
-INET_PROJ=/home/saen/master-project/workspaces/omnetpp/inet
+INET_PROJ=/LinuxFiles/Workspaces/opp_workspace/inet
 
 #------------------------------------------------------------------------------
 
@@ -60,7 +98,7 @@ include $(CONFIGFILE)
 
 # Simulation kernel and user interface libraries
 OMNETPP_LIB_SUBDIR = $(OMNETPP_LIB_DIR)/$(TOOLCHAIN_NAME)
-OMNETPP_LIBS = -L"$(OMNETPP_LIB_SUBDIR)" -L"$(OMNETPP_LIB_DIR)" -loppmain$D $(USERIF_LIBS) $(KERNEL_LIBS) $(SYS_LIBS)
+OMNETPP_LIBS = -L"$(OMNETPP_LIB_SUBDIR)" -L"$(OMNETPP_LIB_DIR)" -loppenvir$D $(KERNEL_LIBS) $(SYS_LIBS)
 
 COPTS = $(CFLAGS) -DINET_IMPORT $(INCLUDE_PATH) -I$(OMNETPP_INCL_DIR)
 MSGCOPTS = $(INCLUDE_PATH)
@@ -78,6 +116,11 @@ endif
 #------------------------------------------------------------------------------
 # User-supplied makefile fragment(s)
 # >>>
+# inserted from file 'makefrag':
+LIBS+=$(shell pkg-config --libs glib-2.0)
+CFLAGS+=$(shell pkg-config --cflags glib-2.0)
+CXXFLAGS+=$(shell pkg-config --cflags glib-2.0)
+
 # <<<
 #------------------------------------------------------------------------------
 
@@ -87,21 +130,22 @@ all: $O/$(TARGET)
 
 $O/$(TARGET): $(OBJS)  $(wildcard $(EXTRA_OBJS)) Makefile
 	@$(MKPATH) $O
-	@echo Creating executable: $@
-	$(Q)$(CXX) $(LDFLAGS) -o $O/$(TARGET)  $(OBJS) $(EXTRA_OBJS) $(AS_NEEDED_OFF) $(WHOLE_ARCHIVE_ON) $(LIBS) $(WHOLE_ARCHIVE_OFF) $(OMNETPP_LIBS)
+	@echo Creating shared library: $@
+	$(Q)$(SHLIB_LD) -o $O/$(TARGET)  $(OBJS) $(EXTRA_OBJS) $(AS_NEEDED_OFF) $(WHOLE_ARCHIVE_ON) $(LIBS) $(WHOLE_ARCHIVE_OFF) $(OMNETPP_LIBS) $(LDFLAGS)
+	$(Q)$(SHLIB_POSTPROCESS) $O/$(TARGET)
 
 .PHONY: all clean cleanall depend msgheaders
 
-.SUFFIXES: .cpp
+.SUFFIXES: .cc
 
-$O/%.o: %.cpp $(COPTS_FILE)
+$O/%.o: %.cc $(COPTS_FILE)
 	@$(MKPATH) $(dir $@)
 	$(qecho) "$<"
 	$(Q)$(CXX) -c $(CXXFLAGS) $(COPTS) -o $@ $<
 
-%_m.cpp %_m.h: %.msg
+%_m.cc %_m.h: %.msg
 	$(qecho) MSGC: $<
-	$(Q)$(MSGC) -s _m.cpp $(MSGCOPTS) $?
+	$(Q)$(MSGC) -s _m.cc $(MSGCOPTS) $?
 
 msgheaders: $(MSGFILES:.msg=_m.h)
 
@@ -109,20 +153,36 @@ clean:
 	$(qecho) Cleaning...
 	$(Q)-rm -rf $O
 	$(Q)-rm -f opp_dns_extension opp_dns_extension.exe libopp_dns_extension.so libopp_dns_extension.a libopp_dns_extension.dll libopp_dns_extension.dylib
-	$(Q)-rm -f ./*_m.cpp ./*_m.h
-	$(Q)-rm -f common/*_m.cpp common/*_m.h
-	$(Q)-rm -f messages/*_m.cpp messages/*_m.h
-	$(Q)-rm -f utils/*_m.cpp utils/*_m.h
+	$(Q)-rm -f ./*_m.cc ./*_m.h
+	$(Q)-rm -f applications/*_m.cc applications/*_m.h
+	$(Q)-rm -f common/*_m.cc common/*_m.h
+	$(Q)-rm -f messages/*_m.cc messages/*_m.h
+	$(Q)-rm -f utils/*_m.cc utils/*_m.h
 
 cleanall: clean
 	$(Q)-rm -rf $(PROJECT_OUTPUT_DIR)
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cpp common/*.cpp messages/*.cpp utils/*.cpp
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc common/*.cc messages/*.cc utils/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-$O/utils/DNSTools.o: utils/DNSTools.cpp \
+$O/applications/DNSClient.o: applications/DNSClient.cc \
+	$(INET_PROJ)/src/base/Compat.h \
+	$(INET_PROJ)/src/base/INETDefs.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
+	applications/DNSClient.h \
+	common/DNS.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
+$O/messages/DNSPacket_m.o: messages/DNSPacket_m.cc \
+	common/DNS.h \
+	messages/DNSPacket_m.h
+$O/utils/DNSTools.o: utils/DNSTools.cc \
 	common/DNS.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h

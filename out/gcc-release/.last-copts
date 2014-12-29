@@ -1,1 +1,0 @@
--O2 -DNDEBUG=1 -fPIC  -fno-stack-protector -DHAVE_SWAPCONTEXT  -DHAVE_PCAP -DXMLPARSER=libxml -DWITH_PARSIM -DWITH_NETBUILDER  -I. -I/home/saen/Programme/omnetpp-4.5/include
