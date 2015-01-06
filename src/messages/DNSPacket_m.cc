@@ -1,5 +1,5 @@
 //
-// Generated file, do not edit! Created by nedtool 4.6 from src/applications/../utils/../messages/DNSPacket.msg.
+// Generated file, do not edit! Created by nedtool 4.6 from messages/DNSPacket.msg.
 //
 
 // Disable warnings about unused variables, empty switch stmts, etc:

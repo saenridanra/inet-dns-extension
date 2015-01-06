@@ -1,4 +1,4 @@
-/* Copyright (c) 2014 Andreas Rain
+/* Copyright (c) 2014-2015 Andreas Rain
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,10 @@
 Define_Module(DNSClient);
 
 void DNSClient::initialize() {
+    // Initialize gates
     out.setOutputGate(gate("udpOut"));
+    in.setOutputGate(gate("udpIn"));
+    in.bind(DNS_PORT);
     query_count = 0;
 
     const char *dns_servers_ = par("dns_servers");

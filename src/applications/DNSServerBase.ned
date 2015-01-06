@@ -20,11 +20,10 @@
 
 package opp_dns_extension.applications;
 
-import opp_dns_extension.applications.DNSClient;
 
-simple DNSClientTraffGen
+simple DNSServerBase
 {
-    parameters:
-        double time_to_send @unit(s) = default(1s);
-        string hostname_file;
+	gates:
+        input udpIn @labels(UDPControlInfo/down);
+        output udpOut @labels(UDPControlInfo/down);
 }

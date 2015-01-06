@@ -20,11 +20,9 @@
 
 package opp_dns_extension.applications;
 
-import opp_dns_extension.applications.DNSClient;
-
-simple DNSClientTraffGen
+//
+// TODO auto-generated module
+//
+simple DNSAuthServer
 {
-    parameters:
-        double time_to_send @unit(s) = default(1s);
-        string hostname_file;
 }

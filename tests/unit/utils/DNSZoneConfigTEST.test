@@ -1,0 +1,13 @@
+%description:
+Test DNSZoneConfig
+
+%includes:
+#include <DNSZoneConfig.h>
+
+%global:
+
+%activity:
+
+// create a number of fragmented datagrams
+DNSZoneConfig* config = new DNSZoneConfig();
+config->initialize("/home/saen/Disy/sources/opp_dns_extension/src/networks/pan.rz.uni-konstanz.de.zone");

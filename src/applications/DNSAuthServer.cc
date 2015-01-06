@@ -19,37 +19,32 @@
  THE SOFTWARE.
  */
 
-#ifndef DNSCLIENTTRAFFGEN_H_
-#define DNSCLIENTTRAFFGEN_H_
+#include "DNSAuthServer.h"
 
-#include <omnetpp.h>
-#include <DNSClient.h>
-#include <fstream>
-#include <vector>
-#include <string.h>
+Define_Module(DNSAuthServer);
 
-class DNSClientTraffGen : public DNSClient {
+void DNSAuthServer::initialize()
+{
+    DNSServerBase::initialize();
 
-public:
-    int qcount;
-    simtime_t time_to_send;
-    cMessage* timeoutMsg;
+    master_file = par("master_file").stdstringValue();
 
-    std::vector<std::string> host_names;
+    // read the master file into the hash
+    master_table = g_hash_table_new(g_str_hash, g_str_equal);
 
-protected:
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
-    virtual void finish();
-    virtual void handleTimer(cMessage *msg);
+    // Use DNSZoneConfig
 
-    virtual void handleResponse(int id);
-    static void callback(int id, void * this_pointer);
-    virtual void init_hostnames();
+}
 
-public:
-    DNSClientTraffGen();
-    virtual ~DNSClientTraffGen();
-};
+void DNSAuthServer::handleMessage(cMessage *msg)
+{
+    DNSServerBase::handleMessage(msg);
+}
 
-#endif /* DNSCLIENTTRAFFGEN_H_ */
+void DNSAuthServer::handleQuery(ODnsExtension::Query *query){
+
+}
+
+void DNSAuthServer::sendResponse(DNSPacket *response, IPvXAddress returnAddress){
+
+}

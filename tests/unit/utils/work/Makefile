@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for work
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep -L../../../../lib -linet -lopp_dns_extension -P . --no-deep-includes -I../../../../src/ -I../../../../src/messages -I../../../../src/utils -I../../../../src/common -I../../../../src/applications -I./lib
+#  opp_makemake -f --deep -L../../../../lib -L../../../../out/gcc-debug/src -linet -lopp_dns_extension -P . --no-deep-includes -I../../../../src/ -I../../../../src/messages -I../../../../src/networks -I../../../../src/utils -I../../../../src/common -I../../../../src/applications
 #
 
 # Name of target to be created (-o option)
@@ -17,17 +17,17 @@ USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(CMDENV_LIBS)
 INCLUDE_PATH = \
     -I../../../../src/ \
     -I../../../../src/messages \
+    -I../../../../src/networks \
     -I../../../../src/utils \
     -I../../../../src/common \
-    -I../../../../src/applications \
-    -I./lib
+    -I../../../../src/applications
 
 # Additional object and library files to link with
 EXTRA_OBJS =
 
 # Additional libraries (-L, -l options)
-LIBS = -L../../../../lib  -linet -lopp_dns_extension
-LIBS += -Wl,-rpath,`abspath ../../../../lib`
+LIBS = -L../../../../lib -L../../../../out/gcc-debug/src  -linet -lopp_dns_extension
+LIBS += -Wl,-rpath,`abspath ../../../../lib` -Wl,-rpath,`abspath ../../../../out/gcc-debug/src`
 
 # Output directory
 PROJECT_OUTPUT_DIR = out
@@ -35,7 +35,7 @@ PROJECTRELATIVE_PATH =
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
-OBJS = $O/DNSToolsTEST/test.o
+OBJS = $O/DNSToolsTEST/test.o $O/DNSZoneConfigTEST/test.o
 
 # Message files
 MSGFILES =
@@ -80,6 +80,11 @@ endif
 #------------------------------------------------------------------------------
 # User-supplied makefile fragment(s)
 # >>>
+# inserted from file 'makefrag':
+LIBS+=$(shell pkg-config --libs glib-2.0)
+CFLAGS+=$(shell pkg-config --cflags glib-2.0)
+CXXFLAGS+=$(shell pkg-config --cflags glib-2.0)
+
 # <<<
 #------------------------------------------------------------------------------
 
@@ -113,18 +118,21 @@ clean:
 	$(Q)-rm -f work work.exe libwork.so libwork.a libwork.dll libwork.dylib
 	$(Q)-rm -f ./*_m.cc ./*_m.h
 	$(Q)-rm -f DNSToolsTEST/*_m.cc DNSToolsTEST/*_m.h
+	$(Q)-rm -f DNSZoneConfigTEST/*_m.cc DNSZoneConfigTEST/*_m.h
 
 cleanall: clean
 	$(Q)-rm -rf $(PROJECT_OUTPUT_DIR)
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc DNSToolsTEST/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc DNSToolsTEST/*.cc DNSZoneConfigTEST/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/DNSToolsTEST/test.o: DNSToolsTEST/test.cc \
-  ../../../../src/utils/../common/DNS.h \
-  ../../../../src/common/DNS.h \
-  ../../../../src/utils/../messages/DNSPacket_m.h \
+  ../../../../src/utils/../messages/../common/DNS.h \
   ../../../../src/utils/DNSTools.h \
-  ../../../../src/utils/../messages/../common/DNS.h
+  ../../../../src/common/DNS.h \
+  ../../../../src/utils/../common/DNS.h \
+  ../../../../src/utils/../messages/DNSPacket_m.h
+$O/DNSZoneConfigTEST/test.o: DNSZoneConfigTEST/test.cc \
+  ../../../../src/utils/DNSZoneConfig.h

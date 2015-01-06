@@ -2,8 +2,8 @@
 Test methods in DNSTools
 
 %includes:
-#include "DNS.h"
-#include "DNSTools.h"
+#include <DNS.h>
+#include <DNSTools.h>
 
 %global:
 

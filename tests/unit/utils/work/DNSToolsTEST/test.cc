@@ -1,8 +1,8 @@
 
 #include <omnetpp.h>
 
-#include "DNS.h"
-#include "DNSTools.h"
+#include <DNS.h>
+#include <DNSTools.h>
 
 
 

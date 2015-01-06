@@ -68,7 +68,14 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
-OBJS = $O/applications/DNSClientTraffGen.o $O/applications/DNSClient.o $O/utils/DNSTools.o $O/messages/DNSPacket_m.o
+OBJS = \
+    $O/applications/DNSClientTraffGen.o \
+    $O/applications/DNSServerBase.o \
+    $O/applications/DNSClient.o \
+    $O/applications/DNSAuthServer.o \
+    $O/utils/DNSZoneConfig.o \
+    $O/utils/DNSTools.o \
+    $O/messages/DNSPacket_m.o
 
 # Message files
 MSGFILES = \
@@ -169,6 +176,19 @@ depend:
 	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc common/*.cc messages/*.cc networks/*.cc utils/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
+$O/applications/DNSAuthServer.o: applications/DNSAuthServer.cc \
+	$(INET_PROJ)/src/base/Compat.h \
+	$(INET_PROJ)/src/base/INETDefs.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
+	applications/DNSAuthServer.h \
+	applications/DNSServerBase.h \
+	common/DNS.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
 $O/applications/DNSClient.o: applications/DNSClient.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
@@ -194,6 +214,18 @@ $O/applications/DNSClientTraffGen.o: applications/DNSClientTraffGen.cc \
 	common/DNS.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
+$O/applications/DNSServerBase.o: applications/DNSServerBase.cc \
+	$(INET_PROJ)/src/base/Compat.h \
+	$(INET_PROJ)/src/base/INETDefs.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
+	applications/DNSServerBase.h \
+	common/DNS.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
 $O/messages/DNSPacket_m.o: messages/DNSPacket_m.cc \
 	common/DNS.h \
 	messages/DNSPacket_m.h
@@ -201,4 +233,6 @@ $O/utils/DNSTools.o: utils/DNSTools.cc \
 	common/DNS.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
+$O/utils/DNSZoneConfig.o: utils/DNSZoneConfig.cc \
+	utils/DNSZoneConfig.h
 

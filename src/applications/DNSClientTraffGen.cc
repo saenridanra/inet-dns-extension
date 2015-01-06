@@ -1,4 +1,4 @@
-/* Copyright (c) 2014 Andreas Rain
+/* Copyright (c) 2014-2015 Andreas Rain
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +22,14 @@
 #include <DNSClientTraffGen.h>
 
 Define_Module(DNSClientTraffGen);
+
+DNSClientTraffGen::DNSClientTraffGen(){
+
+}
+
+DNSClientTraffGen::~DNSClientTraffGen(){
+
+}
 
 void DNSClientTraffGen::initialize() {
     DNSClient::initialize();
@@ -54,6 +62,7 @@ void DNSClientTraffGen::handleTimer(cMessage *msg){
 
     if(id == -1){
         // already in the cache
+        IPvXAddress* address = DNSClient::getAddressFromCache(host_name);
     }
 
     qcount++;

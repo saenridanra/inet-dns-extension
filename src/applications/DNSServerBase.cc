@@ -19,37 +19,36 @@
  THE SOFTWARE.
  */
 
-#ifndef DNSCLIENTTRAFFGEN_H_
-#define DNSCLIENTTRAFFGEN_H_
+#include "DNSServerBase.h"
 
-#include <omnetpp.h>
-#include <DNSClient.h>
-#include <fstream>
-#include <vector>
-#include <string.h>
+//Define_Module(DNSServerBase); // why does this not work? check if it makes a difference
 
-class DNSClientTraffGen : public DNSClient {
+void DNSServerBase::initialize()
+{
+    // Initialize gates
+    out.setOutputGate(gate("udpOut"));
+    in.setOutputGate(gate("udpIn"));
+    in.bind(DNS_PORT);
 
-public:
-    int qcount;
-    simtime_t time_to_send;
-    cMessage* timeoutMsg;
+    receivedQueries = 0;
+}
 
-    std::vector<std::string> host_names;
+void DNSServerBase::handleMessage(cMessage *msg)
+{
+    int isDNS = 0;
+    int isQR = 0;
+    ODnsExtension::Query* query;
 
-protected:
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
-    virtual void finish();
-    virtual void handleTimer(cMessage *msg);
+    // Check if we received a query
+    if(msg->arrivedOn("udpIn")){
+        if ((isDNS = ODnsExtension::isDNSpacket((cPacket*) msg)) && (isQR =
+                    ODnsExtension::isQueryOrResponse((cPacket*) msg)) == 0) {
+            query = ODnsExtension::resolveQuery((cPacket*) msg);
+            receivedQueries++;
 
-    virtual void handleResponse(int id);
-    static void callback(int id, void * this_pointer);
-    virtual void init_hostnames();
+            handleQuery(query);
+        }
 
-public:
-    DNSClientTraffGen();
-    virtual ~DNSClientTraffGen();
-};
+    }
 
-#endif /* DNSCLIENTTRAFFGEN_H_ */
+}

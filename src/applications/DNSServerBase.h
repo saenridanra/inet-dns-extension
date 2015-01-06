@@ -19,8 +19,8 @@
  THE SOFTWARE.
  */
 
-#ifndef __OPP_DNS_EXTENSION_DNSCLIENT_H_
-#define __OPP_DNS_EXTENSION_DNSCLIENT_H_
+#ifndef __OPP_DNS_EXTENSION_DNSSERVERBASE_H_
+#define __OPP_DNS_EXTENSION_DNSSERVERBASE_H_
 
 #include <omnetpp.h>
 
@@ -32,37 +32,40 @@
 #include "glib.h"
 
 /**
- * @brief DNSClient provides dns functionality from a
- * client point-of-view. The app provides the possibility
- * to send DNS Queries to a DNS Name Server / Proxy or
- * DNS Cache.
+ * @brief DNSServerBase provides basic functionality
+ * for DNSServers used within this framework.
  *
  * @author Andreas Rain, Distributed Systems Group, University of Konstanz
  */
-class DNSClient : public cSimpleModule
+class DNSServerBase : public cSimpleModule
 {
   public:
-        GHashTable *response_cache;
 
   protected:
-    // Address vectors for known DNS servers
-    std::vector<IPvXAddress> dns_servers;
-    GHashTable *queries;
-    GHashTable *callbacks;
-    GHashTable *callback_handles;
-
-    int query_count;
+    int receivedQueries;
 
     // Socket over which DNS queries are sent/received
     UDPSocket out;
     UDPSocket in;
 
+
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
-    virtual IPvXAddress* getAddressFromCache(char* dns_name);
-    virtual int resolve(char* dns_name, int primary, void (* callback) (int, void*), int id, void * handle);
 
   public:
+    /**
+     * Pure virtual method handleQuery
+     *
+     * Should be implemented by the extending class
+     */
+    virtual void handleQuery(ODnsExtension::Query *query) = 0;
+
+    /**
+     * Pure virtual method sendResponse
+     *
+     * Should be implemented by the extending class
+     */
+    virtual void sendResponse(DNSPacket *response, IPvXAddress returnAddress) = 0;
 
 };
 
