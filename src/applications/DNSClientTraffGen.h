@@ -19,51 +19,37 @@
  THE SOFTWARE.
  */
 
-#ifndef __OPP_DNS_EXTENSION_DNSCLIENT_H_
-#define __OPP_DNS_EXTENSION_DNSCLIENT_H_
+#ifndef DNSCLIENTTRAFFGEN_H_
+#define DNSCLIENTTRAFFGEN_H_
 
 #include <omnetpp.h>
-
-#include "UDPSocket.h"
-#include "IPvXAddressResolver.h"
+#include <DNSClient.h>
+#include <fstream>
 #include <vector>
+#include <string.h>
 
-#include "../utils/DNSTools.h"
-#include "glib.h"
+class DNSClientTraffGen : public DNSClient {
 
-/**
- * @brief DNSClient provides dns functionality from a
- * client point-of-view. The app provides the possibility
- * to send DNS Queries to a DNS Name Server / Proxy or
- * DNS Cache.
- *
- * @author Andreas Rain, Distributed Systems Group, University of Konstanz
- */
-class DNSClient : public cSimpleModule
-{
-  public:
-        GHashTable *response_cache;
+public:
+    int qcount;
+    simtime_t time_to_send;
+    cMessage* timeoutMsg;
 
-  protected:
-    // Address vectors for known DNS servers
-    std::vector<IPvXAddress> dns_servers;
-    GHashTable *queries;
-    GHashTable *callbacks;
-    GHashTable *callback_handles;
+    std::vector<std::string> host_names;
 
-    int query_count;
-
-    // Socket over which DNS queries are sent/received
-    UDPSocket out;
-    UDPSocket in;
-
+protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
-    virtual IPvXAddress* getAddressFromCache(char* dns_name);
-    virtual int resolve(char* dns_name, int primary, void (* callback) (int, void*), int id, void * handle);
+    virtual void finish();
+    virtual void handleTimer(cMessage *msg);
 
-  public:
+    virtual void handleResponse(int id);
+    static void callback(int id, void * this_pointer);
+    virtual void init_hostnames();
 
+public:
+    DNSClientTraffGen();
+    virtual ~DNSClientTraffGen();
 };
 
-#endif
+#endif /* DNSCLIENTTRAFFGEN_H_ */

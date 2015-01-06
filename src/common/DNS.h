@@ -30,41 +30,41 @@ namespace ODnsExtension {
 /**
  * Defining type values according to the RFC
  */
-#define DNS_TYPE_VALUE_A        1;
-#define DNS_TYPE_VALUE_NS       2;
-#define DNS_TYPE_VALUE_CNAME    5;
-#define DNS_TYPE_VALUE_SOA      6;
-#define DNS_TYPE_VALUE_MB       7;
-#define DNS_TYPE_VALUE_MG       8;
-#define DNS_TYPE_VALUE_MR       9;
-#define DNS_TYPE_VALUE_NULL     10;
-#define DNS_TYPE_VALUE_WKS      11;
-#define DNS_TYPE_VALUE_PTR      12,
-#define DNS_TYPE_VALUE_HINFO    13;
-#define DNS_TYPE_VALUE_MINFO    14;
-#define DNS_TYPE_VALUE_MX       15;
-#define DNS_TYPE_VALUE_TXT      16;
+#define DNS_TYPE_VALUE_A        1
+#define DNS_TYPE_VALUE_NS       2
+#define DNS_TYPE_VALUE_CNAME    5
+#define DNS_TYPE_VALUE_SOA      6
+#define DNS_TYPE_VALUE_MB       7
+#define DNS_TYPE_VALUE_MG       8
+#define DNS_TYPE_VALUE_MR       9
+#define DNS_TYPE_VALUE_NULL     10
+#define DNS_TYPE_VALUE_WKS      11
+#define DNS_TYPE_VALUE_PTR      12
+#define DNS_TYPE_VALUE_HINFO    13
+#define DNS_TYPE_VALUE_MINFO    14
+#define DNS_TYPE_VALUE_MX       15
+#define DNS_TYPE_VALUE_TXT      16
 
 /**
  * Only valid for QTYPE
  */
-#define DNS_TYPE_VALUE_AXFR     252;
-#define DNS_TYPE_VALUE_MAILB    253;
-#define DNS_TYPE_VALUE_MAILA    254;
-#define DNS_TYPE_VALUE_ANY      255;
+#define DNS_TYPE_VALUE_AXFR     252
+#define DNS_TYPE_VALUE_MAILB    253
+#define DNS_TYPE_VALUE_MAILA    254
+#define DNS_TYPE_VALUE_ANY      255
 
 /**
  * DNS Classes
  */
-#define DNS_CLASS_IN    1;
-#define DNS_CLASS_CS    2;
-#define DNS_CLASS_CH    3;
-#define DNS_CLASS_HS    4;
-#define DNS_CLASS_ANY   255;
+#define DNS_CLASS_IN    1
+#define DNS_CLASS_CS    2
+#define DNS_CLASS_CH    3
+#define DNS_CLASS_HS    4
+#define DNS_CLASS_ANY   255
 
 
 // Some other useful definitions
-#define DNS_PORT 53;
+#define DNS_PORT 53
 
 struct Query
 {

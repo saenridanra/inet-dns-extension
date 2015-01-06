@@ -25,6 +25,7 @@ Define_Module(DNSClient);
 
 void DNSClient::initialize() {
     out.setOutputGate(gate("udpOut"));
+    query_count = 0;
 
     const char *dns_servers_ = par("dns_servers");
     cStringTokenizer tokenizer(dns_servers_);
@@ -35,12 +36,18 @@ void DNSClient::initialize() {
         dns_servers.push_back(IPvXAddressResolver().resolve(token));
     }
 
+    queries = g_hash_table_new(g_int_hash, g_int_equal);
+    callbacks = g_hash_table_new(g_int_hash, g_int_equal);
+    callback_handles = g_hash_table_new(g_int_hash, g_int_equal);
     response_cache = g_hash_table_new(g_str_hash, g_str_equal);
 }
 
 void DNSClient::handleMessage(cMessage *msg) {
     int isDNS = 0;
     int isQR = 0;
+    char* fallback_dnsname;
+    void (*callback) (int, void*);
+    void *callback_handle;
     gpointer addr;
     gpointer old;
     IPvXAddress tmp;
@@ -52,6 +59,27 @@ void DNSClient::handleMessage(cMessage *msg) {
         // Handle response, see if it belongs to a query that we've send previously...
 
         response = ODnsExtension::resolveResponse((cPacket*) msg);
+        // So if the RCODE is not 0, according to RFC1035
+        // something went wrong
+        int rcode = DNS_HEADER_RCODE(response->options);
+        switch(rcode){
+            case 0: break; // everythings fine
+            case 1: break; // Format error
+            case 2:  // Server failure
+                // make a query to the secondary DNS using the same
+                // ID, the same callback and same dns query name
+                fallback_dnsname = (char*) g_hash_table_lookup(queries, &response->id);
+                callback = (void (*) (int, void*)) g_hash_table_lookup(callbacks, &response->id);
+                callback_handle = (void *) g_hash_table_lookup(callback_handles, &response->id);
+                g_hash_table_remove(queries, &response->id);
+                resolve(fallback_dnsname, 0, callback, response->id, callback_handle);
+                break;
+
+            case 3: break; // Name error
+            case 5: break; // Policy reasons forbid the server to perform the operations
+            default: break; // Malformed packet somehow
+        }
+
 
         // Use our hashmap, and put the DNSServer in the response inside.
         for (int i = 0; i < response->nscount; i++) {
@@ -103,8 +131,7 @@ void DNSClient::handleMessage(cMessage *msg) {
             try {
 
                 gpointer p = malloc(sizeof(IPvXAddress));
-                tmp = IPvXAddressResolver().resolve(
-                        response->answers->rdata);
+                tmp = IPvXAddressResolver().resolve(response->answers->rdata);
                 memcpy(p, &tmp, sizeof(IPvXAddress));
                 addr = p;
                 free(p);
@@ -153,13 +180,24 @@ void DNSClient::handleMessage(cMessage *msg) {
                     // exception, not valid, reinsert old entry
                     if (isInTable) {
                         g_hash_table_insert(response_cache,
-                                &(response->additional->rname[i]),
-                                &old);
+                                &(response->additional->rname[i]), &old);
                     }
                 }
             }
 
         }
+
+        // Everythings fine if we get here, so use ID to identify the query in the
+        // hash table and remove it, since we have our response
+
+        g_hash_table_remove(queries, &response->id);
+
+        // call the callback and tell it that the query finished
+        // the response is now in the cache and can be used..
+        callback = (void (*) (int, void*)) g_hash_table_lookup(callbacks, &response->id);
+        callback_handle = (void *) g_hash_table_lookup(callback_handles, &response->id);
+        callback(response->id, callback_handle);
+
     }
     // also check if internal message for resolving a dns name
 
@@ -169,8 +207,48 @@ void DNSClient::handleMessage(cMessage *msg) {
 
 }
 
-IPvXAddress*
-DNSClient::resolve(char* dns_name) {
+IPvXAddress * DNSClient::getAddressFromCache(char* dns_name){
+
+    gboolean inTable = g_hash_table_contains(response_cache, dns_name);
+    if(inTable){
+        gpointer p = g_hash_table_lookup(response_cache, dns_name);
+        IPvXAddress* address = (IPvXAddress*) p;
+        return address;
+    }
+
     return NULL;
+
+}
+
+int DNSClient::resolve(char* dns_name, int primary, void (*callback) (int, void*), int id, void * handle) {
+    //First check if we already resolved this.
+    DNSPacket* query;
+
+    // create query
+    char msg_name[20];
+
+    if(id == -1){
+        sprintf(msg_name, "dns_query#%d", query_count);
+    }
+    else{
+        sprintf(msg_name, "dns_query#%d", id);
+    }
+    query = ODnsExtension::createQuery(msg_name, dns_name, DNS_CLASS_IN, DNS_TYPE_VALUE_A, query_count, 1);
+
+    // put it into the hash table for the given query_count number, so we can identify the query
+    g_hash_table_insert(queries, &query_count, &dns_name);
+    g_hash_table_insert(callbacks, &query_count, &callback);
+    g_hash_table_insert(callback_handles, &query_count, &handle);
+
+    // Send this packet to the primary DNS server, if that fails, the secondary DNS server
+
+    if(primary){
+        out.sendTo(query, dns_servers[0], DNS_PORT);
+    }
+    else{
+        out.sendTo(query, dns_servers[1], DNS_PORT);
+    }
+
+    return query_count;
 }
 

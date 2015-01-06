@@ -23,12 +23,10 @@ Define_Module(Test);
 void Test::activity()
 {
 
-ODnsExtension::DNSTools *tool = new ODnsExtension::DNSTools();
-
 // create a number of fragmented datagrams
 DNSPacket *q = new DNSPacket("test_packet_1");
 
-if(!tool->isDNSpacket(q)){
+if(!ODnsExtension::isDNSpacket(q)){
     return;
 }
 
@@ -56,7 +54,7 @@ q->setQuestions(0, question);
 
 // Now check if resolveQuery works:
 
-ODnsExtension::Query* resolveQuery = tool->resolveQuery(q);
+ODnsExtension::Query* resolveQuery = ODnsExtension::resolveQuery(q);
 
 // output some data
 ev << "query id: " << resolveQuery->id << "\n";

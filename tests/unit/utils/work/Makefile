@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for work
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep -L../../../../lib -linet -lopp_dns_extension -P . --no-deep-includes -I../../../../src/ -I../../../../src/common -I../../../../src/messages -I../../../../src/utils -I./lib
+#  opp_makemake -f --deep -L../../../../lib -linet -lopp_dns_extension -P . --no-deep-includes -I../../../../src/ -I../../../../src/messages -I../../../../src/utils -I../../../../src/common -I../../../../src/applications -I./lib
 #
 
 # Name of target to be created (-o option)
@@ -14,7 +14,13 @@ USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(CMDENV_LIBS)
 #USERIF_LIBS = $(TKENV_LIBS)
 
 # C++ include paths (with -I)
-INCLUDE_PATH = -I../../../../src/ -I../../../../src/common -I../../../../src/messages -I../../../../src/utils -I./lib
+INCLUDE_PATH = \
+    -I../../../../src/ \
+    -I../../../../src/messages \
+    -I../../../../src/utils \
+    -I../../../../src/common \
+    -I../../../../src/applications \
+    -I./lib
 
 # Additional object and library files to link with
 EXTRA_OBJS =
@@ -117,8 +123,8 @@ depend:
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/DNSToolsTEST/test.o: DNSToolsTEST/test.cc \
-  ../../../../src/utils/DNSTools.h \
   ../../../../src/utils/../common/DNS.h \
+  ../../../../src/common/DNS.h \
   ../../../../src/utils/../messages/DNSPacket_m.h \
-  ../../../../src/utils/../messages/../common/DNS.h \
-  ../../../../src/common/DNS.h
+  ../../../../src/utils/DNSTools.h \
+  ../../../../src/utils/../messages/../common/DNS.h

@@ -52,6 +52,7 @@ INCLUDE_PATH = \
     -Iapplications \
     -Icommon \
     -Imessages \
+    -Inetworks \
     -Iutils
 
 # Additional object and library files to link with
@@ -67,7 +68,7 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
-OBJS = $O/applications/DNSClient.o $O/utils/DNSTools.o $O/messages/DNSPacket_m.o
+OBJS = $O/applications/DNSClientTraffGen.o $O/applications/DNSClient.o $O/utils/DNSTools.o $O/messages/DNSPacket_m.o
 
 # Message files
 MSGFILES = \
@@ -157,6 +158,7 @@ clean:
 	$(Q)-rm -f applications/*_m.cc applications/*_m.h
 	$(Q)-rm -f common/*_m.cc common/*_m.h
 	$(Q)-rm -f messages/*_m.cc messages/*_m.h
+	$(Q)-rm -f networks/*_m.cc networks/*_m.h
 	$(Q)-rm -f utils/*_m.cc utils/*_m.h
 
 cleanall: clean
@@ -164,7 +166,7 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc common/*.cc messages/*.cc utils/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc common/*.cc messages/*.cc networks/*.cc utils/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/applications/DNSClient.o: applications/DNSClient.cc \
@@ -176,6 +178,19 @@ $O/applications/DNSClient.o: applications/DNSClient.cc \
 	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
 	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
 	applications/DNSClient.h \
+	common/DNS.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
+$O/applications/DNSClientTraffGen.o: applications/DNSClientTraffGen.cc \
+	$(INET_PROJ)/src/base/Compat.h \
+	$(INET_PROJ)/src/base/INETDefs.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
+	applications/DNSClient.h \
+	applications/DNSClientTraffGen.h \
 	common/DNS.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
