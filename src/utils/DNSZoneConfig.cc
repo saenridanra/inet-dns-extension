@@ -44,14 +44,26 @@ void DNSZoneConfig::initialize(std::string config_file){
     std::fstream conf(config_file, std::ios::in);
     while(getline(conf, line, '\n'))
     {
-        if (line.empty() || line[0] == ';')
+
+#ifdef DEBUG_ENABLED
+        printf("Processing:");
+        printf("%s", line.c_str());
+        printf("\n");
+#endif
+
+        if (line.empty() || line[0] == ';'){
+
+#ifdef DEBUG_ENABLED
+        printf("Skipping");
+#endif
+
             continue;
+        }
 
         // use a tokenizer to interpret the line
         std::vector<std::string> tokens = cStringTokenizer(line.c_str()).asVector();
 
 #ifdef DEBUG_ENABLED
-        printf(("Processing: "+line+ "\n").c_str());
         printf("Number of tokens: %d \n", (int) tokens.size());
 
         for(uint32_t i = 0; i < tokens.size(); i++){
@@ -151,22 +163,32 @@ void DNSZoneConfig::initialize(std::string config_file){
 
                 g_hash_table_insert(zone_catalog, namehash, e);
 
+#ifdef DEBUG_ENABLED
+        printf("Inserted %s into hashtable\n", namehash);
+#endif
+
                 // we have special vectors for the following..
-                if(e->type == "NS"){
+                if(strcmp(e->type, "NS") == 0){
                     ns_entries.push_back(namehash);
                 }
-                else if(e->type == "MX"){
+                else if(strcmp(e->type, "MX") == 0){
                     mx_entries.push_back(namehash);
                 }
-                else if(e->type == "A"){
+                else if(strcmp(e->type, "A") == 0){
                     a_entries.push_back(namehash);
                 }
-                else if(e->type == "AAAA"){
+                else if(strcmp(e->type, "AAAA") == 0){
                     aaaa_entries.push_back(namehash);
                 }
-                else if(e->type == "CNAME"){
+                else if(strcmp(e->type, "CNAME") == 0){
                     cname_entries.push_back(namehash);
                 }
+
+
+#ifdef DEBUG_ENABLED
+        printf("Pushed %s into vector for %s\n",e->domain, e->type);
+#endif
+
                 break;
 
             default: break;

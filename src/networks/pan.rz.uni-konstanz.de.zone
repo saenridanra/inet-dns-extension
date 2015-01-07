@@ -11,7 +11,7 @@ $ORIGIN uni-konstanz.de.
        IN  NS     pan.rz.uni-konstanz.de. 	 ; in the domain
        IN  NS     uranos.rz.uni-konstanz.de. ; slave
        IN  NS     dns3.uni-konstanz.de.		 ; external
-       IN  MX  10 imap.uni-konstanz.de. 	 ; external mail provider
+       IN  MX  	  imap.uni-konstanz.de. 	 ; external mail provider
 ; server host definitions
 pan.rz 		IN  A      134.34.3.3	 ; this server
 uranos.rz	IN  A      134.34.3.2	 ; the slave server
