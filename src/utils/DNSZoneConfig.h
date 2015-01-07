@@ -19,8 +19,8 @@
  THE SOFTWARE.
  */
 
-#ifndef __OPP_DNS_EXTENSION_DNSSERVERBASE_H_
-#define __OPP_DNS_EXTENSION_DNSSERVERBASE_H_
+#ifndef __OPP_DNS_EXTENSION_DNSZONECONFIG_H_
+#define __OPP_DNS_EXTENSION_DNSZONECONFIG_H_
 
 #include <omnetpp.h>
 #include <iostream>
@@ -70,16 +70,8 @@ protected:
     /**
      * Catalog definitions
      */
-    std::string origin;
+    char *origin;
     GHashTable* zone_catalog;
-
-    // some reference vectors for the most common
-    // dns types.
-    std::vector<char*> ns_entries;
-    std::vector<char*> mx_entries;
-    std::vector<char*> a_entries;
-    std::vector<char*> aaaa_entries;
-    std::vector<char*> cname_entries;
 
     soa* zone_soa;
 
@@ -93,7 +85,9 @@ public:
 
     virtual int getTTL();
     struct soa* getSOA();
-    struct zone_entry* getEntry(std::string domain);
+    virtual char* getOrigin();
+    int hasEntry(char* hash);
+    GList* getEntry(char* hash);
     virtual GHashTable* getEntries();
 
 };

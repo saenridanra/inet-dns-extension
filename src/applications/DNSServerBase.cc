@@ -38,6 +38,7 @@ void DNSServerBase::handleMessage(cMessage *msg)
     int isDNS = 0;
     int isQR = 0;
     ODnsExtension::Query* query;
+    sddsadc
 
     // Check if we received a query
     if(msg->arrivedOn("udpIn")){
@@ -46,9 +47,21 @@ void DNSServerBase::handleMessage(cMessage *msg)
             query = ODnsExtension::resolveQuery((cPacket*) msg);
             receivedQueries++;
 
-            handleQuery(query);
+            response = handleQuery(query);
+
+            // TODO: Find out how to get the source address
+            // and send the response to the source address
         }
 
     }
 
+}
+
+void sendResponse(DNSPacket *response, IPvXAddress returnAddress){
+    // TODO: send response
+}
+
+DNSPacket* DNSServerBase::unsupportedOperation(ODnsExtension::Query *q){
+    // TODO: return unsupported packet.
+    return NULL;
 }

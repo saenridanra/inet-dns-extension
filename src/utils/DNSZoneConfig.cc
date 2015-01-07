@@ -81,7 +81,7 @@ void DNSZoneConfig::initialize(std::string config_file){
                     if(tokens[0] == "$TTL")
                         TTL = std::stoi(tokens[1].substr(1));
                     else if(tokens[0] == "$ORIGIN")
-                        origin = tokens[1];
+                        origin = strdup(tokens[1].c_str());
 
                 }
                 else if(tokens[2] == "SOA"){
@@ -156,37 +156,37 @@ void DNSZoneConfig::initialize(std::string config_file){
                     e->data = (char*) tokens[3].c_str();
                 }
 
-                namehash = (char*) malloc(strlen(e->domain) + strlen(e->type) + 1);
-                strcpy(namehash, e->domain);
-                strcat(namehash, ":");
-                strcat(namehash, e->type);
+                if(strcmp(e->domain, origin) != 0){
+                    namehash = (char*) malloc(strlen(origin) + strlen(e->domain) + strlen(e->type) + strlen(e->__class) + 4);
+                    strcpy(namehash, e->domain);
+                    strcat(namehash, ".");
+                    strcat(namehash, origin);
+                    strcat(namehash, ":");
+                    strcat(namehash, e->type);
+                    strcat(namehash, ":");
+                    strcat(namehash, e->__class);
+                }
+                else{
+                    namehash = (char*) malloc(strlen(e->domain) + strlen(e->type) + strlen(e->__class) + 3);
+                    strcpy(namehash, e->domain);
+                    strcat(namehash, ":");
+                    strcat(namehash, e->type);
+                    strcat(namehash, ":");
+                    strcat(namehash, e->__class);
+                }
 
-                g_hash_table_insert(zone_catalog, namehash, e);
+                if(!g_hash_table_contains(zone_catalog, namehash)){
+                    GList* first_element = NULL;
+                    first_element = g_list_append(first_element, e);
+                    g_hash_table_insert(zone_catalog, namehash, first_element);
+                }
+                else{
+                    GList* list = (GList*) g_hash_table_lookup(zone_catalog, namehash);
+                    list = g_list_append(list, e);
+                }
 
 #ifdef DEBUG_ENABLED
         printf("Inserted %s into hashtable\n", namehash);
-#endif
-
-                // we have special vectors for the following..
-                if(strcmp(e->type, "NS") == 0){
-                    ns_entries.push_back(namehash);
-                }
-                else if(strcmp(e->type, "MX") == 0){
-                    mx_entries.push_back(namehash);
-                }
-                else if(strcmp(e->type, "A") == 0){
-                    a_entries.push_back(namehash);
-                }
-                else if(strcmp(e->type, "AAAA") == 0){
-                    aaaa_entries.push_back(namehash);
-                }
-                else if(strcmp(e->type, "CNAME") == 0){
-                    cname_entries.push_back(namehash);
-                }
-
-
-#ifdef DEBUG_ENABLED
-        printf("Pushed %s into vector for %s\n",e->domain, e->type);
 #endif
 
                 break;
@@ -208,9 +208,13 @@ struct soa* DNSZoneConfig::getSOA(){
     return zone_soa;
 }
 
-struct zone_entry* DNSZoneConfig::getEntry(std::string domain){
-    struct zone_entry* e = (zone_entry*)g_hash_table_lookup(zone_catalog, &domain);
+GList* DNSZoneConfig::getEntry(char* hash){
+    GList* e = (GList*)g_hash_table_lookup(zone_catalog, hash);
     return e;
+}
+
+int DNSZoneConfig::hasEntry(char* hash){
+    return g_hash_table_contains(zone_catalog, hash);
 }
 
 GHashTable* DNSZoneConfig::getEntries(){
@@ -219,6 +223,10 @@ GHashTable* DNSZoneConfig::getEntries(){
 
 void DNSZoneConfig::finish(){
     this->~DNSZoneConfig();
+}
+
+char* DNSZoneConfig::getOrigin(){
+    return origin;
 }
 
 guint zone_entry_destroy(gpointer _entry){

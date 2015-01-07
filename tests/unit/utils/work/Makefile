@@ -129,10 +129,10 @@ depend:
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/DNSToolsTEST/test.o: DNSToolsTEST/test.cc \
-  ../../../../src/utils/DNSTools.h \
   ../../../../src/utils/../messages/DNSPacket_m.h \
   ../../../../src/utils/../common/DNS.h \
-  ../../../../src/common/DNS.h \
-  ../../../../src/utils/../messages/../common/DNS.h
+  ../../../../src/utils/DNSTools.h \
+  ../../../../src/utils/../messages/../common/DNS.h \
+  ../../../../src/common/DNS.h
 $O/DNSZoneConfigTEST/test.o: DNSZoneConfigTEST/test.cc \
   ../../../../src/utils/DNSZoneConfig.h

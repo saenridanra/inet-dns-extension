@@ -13,10 +13,12 @@ $ORIGIN uni-konstanz.de.
        IN  NS     dns3.uni-konstanz.de.		 ; external
        IN  MX  	  imap.uni-konstanz.de. 	 ; external mail provider
 ; server host definitions
-pan.rz 		IN  A      134.34.3.3	 ; this server
-uranos.rz	IN  A      134.34.3.2	 ; the slave server
-dns3 		IN  A      141.37.1.65	 ; this server
-imap 		IN  A	   134.34.240.42 ; mail server imap
+pan.rz 		    IN  A      134.34.3.3	 ; this server
+uranos.rz	    IN  A      134.34.3.2	 ; the slave server
+dns3 		    IN  A      141.37.1.65	 ; this server
+imap 		    IN  A	   134.34.240.42 ; mail server imap
+www             IN  CNAME  proxy-neu.rz  ; test on
+proxy-neu.rz    IN  A      134.34.240.80
 
 ; more definitions
 cms			IN  A	   134.34.240.75; webserver

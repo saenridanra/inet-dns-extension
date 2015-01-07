@@ -187,7 +187,8 @@ $O/applications/DNSAuthServer.o: applications/DNSAuthServer.cc \
 	applications/DNSServerBase.h \
 	common/DNS.h \
 	messages/DNSPacket_m.h \
-	utils/DNSTools.h
+	utils/DNSTools.h \
+	utils/DNSZoneConfig.h
 $O/applications/DNSClient.o: applications/DNSClient.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \

@@ -173,9 +173,9 @@ DNSPacket* createResponse(char *msg_name, unsigned short ancount, unsigned short
  * @brief appendAnswer
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAnswer(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass,
-        unsigned int ttl, unsigned short rdlength, char *rdata)
+int appendAnswer(DNSPacket *p, ODnsExtension::DNSRecord *r)
 {
+    // FIXME: Change according to the DNSRecord an throw away the old logic
     if (record_num < 0 || record_num > p->getAncount())
     {
         throw E_BAD_INDEX;
@@ -198,8 +198,7 @@ int appendAnswer(DNSPacket *p, int record_num, char *rname, unsigned short rtype
  * @brief appendAuthority
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAuthority(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass,
-        unsigned int ttl, unsigned short rdlength, char *rdata)
+int appendAuthority(DNSPacket *p, ODnsExtension::DNSRecord *r)
 {
     if (record_num < 0 || record_num > p->getNscount())
     {
@@ -223,8 +222,7 @@ int appendAuthority(DNSPacket *p, int record_num, char *rname, unsigned short rt
  * @brief appendAdditional
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAdditional(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass,
-        unsigned int ttl, unsigned short rdlength, char *rdata)
+int appendAdditional(DNSPacket *p, ODnsExtension::DNSRecord *r)
 {
     if (record_num < 0 || record_num > p->getArcount())
     {

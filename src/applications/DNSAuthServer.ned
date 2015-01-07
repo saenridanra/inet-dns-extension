@@ -25,4 +25,6 @@ package opp_dns_extension.applications;
 //
 simple DNSAuthServer
 {
+    parameters:
+        int recursion_available = default(1);
 }

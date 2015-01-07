@@ -51,6 +51,8 @@ class DNSServerBase : public cSimpleModule
 
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
+    virtual DNSPacket* unsupportedOperation(ODnsExtension::Query *q);
+    virtual void sendResponse(DNSPacket *response, IPvXAddress returnAddress);
 
   public:
     /**
@@ -58,14 +60,7 @@ class DNSServerBase : public cSimpleModule
      *
      * Should be implemented by the extending class
      */
-    virtual void handleQuery(ODnsExtension::Query *query) = 0;
-
-    /**
-     * Pure virtual method sendResponse
-     *
-     * Should be implemented by the extending class
-     */
-    virtual void sendResponse(DNSPacket *response, IPvXAddress returnAddress) = 0;
+    virtual DNSPacket* handleQuery(ODnsExtension::Query *query) = 0;
 
 };
 

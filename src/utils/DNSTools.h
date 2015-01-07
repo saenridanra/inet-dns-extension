@@ -87,22 +87,19 @@ DNSPacket* createResponse(char *msg_name, unsigned short ancount, unsigned short
  * @brief appendAnswer
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAnswer(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass, unsigned int ttl,
-        unsigned short rdlength, char *rdata);
+int appendAnswer(DNSPacket *p, ODnsExtension::DNSRecord *r);
 
 /**
  * @brief appendAuthority
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAuthority(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass, unsigned int ttl,
-        unsigned short rdlength, char *rdata);
+int appendAuthority(DNSPacket *p, ODnsExtension::DNSRecord *r);
 
 /**
  * @brief appendAdditional
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAdditional(DNSPacket *p, int record_num, char *rname, unsigned short rtype, unsigned short rclass, unsigned int ttl,
-        unsigned short rdlength, char *rdata);
+int appendAdditional(DNSPacket *p, ODnsExtension::DNSRecord *r);
 
 /**
  * @brief resolveResponse

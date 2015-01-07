@@ -34,24 +34,37 @@ namespace ODnsExtension {
 #define DNS_TYPE_VALUE_NS       2
 #define DNS_TYPE_VALUE_CNAME    5
 #define DNS_TYPE_VALUE_SOA      6
-#define DNS_TYPE_VALUE_MB       7
-#define DNS_TYPE_VALUE_MG       8
-#define DNS_TYPE_VALUE_MR       9
 #define DNS_TYPE_VALUE_NULL     10
-#define DNS_TYPE_VALUE_WKS      11
 #define DNS_TYPE_VALUE_PTR      12
 #define DNS_TYPE_VALUE_HINFO    13
 #define DNS_TYPE_VALUE_MINFO    14
 #define DNS_TYPE_VALUE_MX       15
 #define DNS_TYPE_VALUE_TXT      16
+#define DNS_TYPE_VALUE_AAAA     28
+#define DNS_TYPE_VALUE_SRV      33
+
+#define DNS_TYPE_STR_A          "A"
+#define DNS_TYPE_STR_NS         "NS"
+#define DNS_TYPE_STR_CNAME      "CNAME"
+#define DNS_TYPE_STR_SOA        "SOA"
+#define DNS_TYPE_STR_NULL       "NULL"
+#define DNS_TYPE_STR_PTR        "PTR"
+#define DNS_TYPE_STR_HINFO      "HINFO"
+#define DNS_TYPE_STR_MINFO      "MINFO"
+#define DNS_TYPE_STR_MX         "MX"
+#define DNS_TYPE_STR_TXT        "TXT"
+#define DNS_TYPE_STR_AAAA       "AAAA"
+#define DNS_TYPE_STR_SRV        "SRV"
 
 /**
  * Only valid for QTYPE
  */
 #define DNS_TYPE_VALUE_AXFR     252
-#define DNS_TYPE_VALUE_MAILB    253
-#define DNS_TYPE_VALUE_MAILA    254
 #define DNS_TYPE_VALUE_ANY      255
+#define DNS_TYPE_STR_AXFR       "AXFR"
+#define DNS_TYPE_STR_ANY        "ANY"
+
+#define DNS_TYPE_ARRAY_ANY      {"A", "NS", "CNAME", "SOA", "NULL", "PTR", "HINFO", "MINFO", "MX", "TXT", "AAAA", "SRV", "AXFR"}
 
 /**
  * DNS Classes
@@ -62,6 +75,11 @@ namespace ODnsExtension {
 #define DNS_CLASS_HS    4
 #define DNS_CLASS_ANY   255
 
+#define DNS_CLASS_STR_IN    "IN"
+#define DNS_CLASS_STR_CS    "CS"
+#define DNS_CLASS_STR_CH    "CH"
+#define DNS_CLASS_STR_HS    "HS"
+#define DNS_CLASS_STR_ANY   "ANY"
 
 // Some other useful definitions
 #define DNS_PORT 53

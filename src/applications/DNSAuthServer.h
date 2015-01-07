@@ -24,8 +24,10 @@
 
 #include <omnetpp.h>
 #include "DNSServerBase.h"
+#include "../utils/DNSZoneConfig.h"
 #include <string.h>
 #include <glib.h>
+#include <math.h>
 
 /**
  * @brief DNSAuthServer is a simple omnetpp module
@@ -38,19 +40,24 @@ class DNSAuthServer : public DNSServerBase
   public:
 
     std::string master_file;
-    GHashTable* master_table;
+    DNSZoneConfig* config;
 
+    int recursion_available;
+    int response_count;
 
   protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
+    virtual DNSPacket* unsupportedOperation(ODnsExtension::Query *q);
+    virtual int appendEntries(char *hash, GList *dstlist, int type);
+    virtual int appendTransitiveEntries(GList *srclist, GList *dstlist);
   public:
       /**
        * Pure virtual method handleQuery
        *
        * Should be implemented by the extending class
        */
-      void handleQuery(ODnsExtension::Query *query);
+       DNSPacket* handleQuery(ODnsExtension::Query *query);
 
       /**
        * Pure virtual method sendResponse
