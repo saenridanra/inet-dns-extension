@@ -29,7 +29,7 @@
 #include <fstream>
 #include <glib.h>
 
-struct soa{
+typedef struct soa{
     char* mname;
     char* rname;
     int serial;
@@ -37,14 +37,16 @@ struct soa{
     int retry;
     int expire;
     int minimum;
-};
+} soa;
 
-struct zone_entry{
+typedef struct zone_entry{
     char* domain;
     char* __class;
     char* type;
     char* data;
-};
+} zone_entry;
+
+guint zone_entry_destroy(gpointer _entry);
 
 enum states{
     VARS,
@@ -79,12 +81,13 @@ protected:
     std::vector<char*> aaaa_entries;
     std::vector<char*> cname_entries;
 
-    struct soa* zone_soa;
+    soa* zone_soa;
 
 
 public:
     DNSZoneConfig();
     virtual ~DNSZoneConfig();
+    virtual void finish();
 
     virtual void initialize(std::string config_file);
 

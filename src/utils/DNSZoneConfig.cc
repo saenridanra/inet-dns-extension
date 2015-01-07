@@ -25,7 +25,7 @@ DNSZoneConfig::DNSZoneConfig()
 {
     zone_catalog = g_hash_table_new(g_str_hash, g_str_equal);
     TTL = 0;
-    zone_soa = (struct soa*) malloc(sizeof(struct soa));
+    zone_soa = (soa*) malloc(sizeof(*zone_soa));
     state = states::VARS;
 }
 
@@ -38,7 +38,7 @@ DNSZoneConfig::~DNSZoneConfig()
 void DNSZoneConfig::initialize(std::string config_file){
     std::string line;
     std::string lastsuffix;
-    struct zone_entry* e;
+    zone_entry* e;
     char* namehash;
 
     std::fstream conf(config_file, std::ios::in);
@@ -54,7 +54,7 @@ void DNSZoneConfig::initialize(std::string config_file){
         if (line.empty() || line[0] == ';'){
 
 #ifdef DEBUG_ENABLED
-        printf("Skipping");
+        printf("Skipping\n");
 #endif
 
             continue;
@@ -131,7 +131,7 @@ void DNSZoneConfig::initialize(std::string config_file){
                 // REMARK: Ignoring TTL in entries, or more precise,
                 // not allowing it right now, so leave it out of the zone file
                 // we use the last known suffix
-                e = (zone_entry*) malloc(sizeof(zone_entry*));
+                e = (zone_entry*) malloc(sizeof(*e));
 
                 if(tokens[0] == "IN" || tokens[0] == "CS" || tokens[0] == "HS" || tokens[0] == "CH" || tokens[0] == "*"){
                     e->domain = (char*) malloc(strlen(lastsuffix.c_str()));
@@ -194,6 +194,10 @@ void DNSZoneConfig::initialize(std::string config_file){
             default: break;
         }
     }
+
+#ifdef DEBUG_ENABLED
+        printf("Fully initialized zone configuration.");
+#endif
 }
 
 int DNSZoneConfig::getTTL(){
@@ -211,4 +215,20 @@ struct zone_entry* DNSZoneConfig::getEntry(std::string domain){
 
 GHashTable* DNSZoneConfig::getEntries(){
     return zone_catalog;
+}
+
+void DNSZoneConfig::finish(){
+    this->~DNSZoneConfig();
+}
+
+guint zone_entry_destroy(gpointer _entry){
+    zone_entry *entry = (zone_entry*) _entry;
+
+    free(entry->domain);
+    free(entry->type);
+    free(entry->__class);
+    free(entry->data);
+    free(entry);
+
+    return 0;
 }

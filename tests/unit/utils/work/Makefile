@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for work
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep -L../../../../lib -L../../../../out/gcc-debug/src -linet -lopp_dns_extension -P . --no-deep-includes -I../../../../src/ -I../../../../src/messages -I../../../../src/networks -I../../../../src/utils -I../../../../src/common -I../../../../src/applications
+#  opp_makemake -f --deep -L../../../../lib -L../../../../out/gcc-debug/src -linet -lopp_dns_extension -P . --no-deep-includes -I../../../../src/ -I../../../../src/applications -I../../../../src/networks -I../../../../src/common -I../../../../src/messages -I../../../../src/utils
 #
 
 # Name of target to be created (-o option)
@@ -16,11 +16,11 @@ USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(CMDENV_LIBS)
 # C++ include paths (with -I)
 INCLUDE_PATH = \
     -I../../../../src/ \
-    -I../../../../src/messages \
+    -I../../../../src/applications \
     -I../../../../src/networks \
-    -I../../../../src/utils \
     -I../../../../src/common \
-    -I../../../../src/applications
+    -I../../../../src/messages \
+    -I../../../../src/utils
 
 # Additional object and library files to link with
 EXTRA_OBJS =
@@ -82,8 +82,8 @@ endif
 # >>>
 # inserted from file 'makefrag':
 LIBS+=$(shell pkg-config --libs glib-2.0)
-CFLAGS+=$(shell pkg-config --cflags glib-2.0)
-CXXFLAGS+=$(shell pkg-config --cflags glib-2.0)
+CFLAGS+=$(shell pkg-config --cflags glib-2.0) -DDEBUG_ENABLED
+CXXFLAGS+=$(shell pkg-config --cflags glib-2.0) -DDEBUG_ENABLED
 
 # <<<
 #------------------------------------------------------------------------------
@@ -129,10 +129,10 @@ depend:
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/DNSToolsTEST/test.o: DNSToolsTEST/test.cc \
-  ../../../../src/common/DNS.h \
   ../../../../src/utils/DNSTools.h \
-  ../../../../src/utils/../messages/../common/DNS.h \
   ../../../../src/utils/../messages/DNSPacket_m.h \
-  ../../../../src/utils/../common/DNS.h
+  ../../../../src/utils/../common/DNS.h \
+  ../../../../src/common/DNS.h \
+  ../../../../src/utils/../messages/../common/DNS.h
 $O/DNSZoneConfigTEST/test.o: DNSZoneConfigTEST/test.cc \
   ../../../../src/utils/DNSZoneConfig.h
