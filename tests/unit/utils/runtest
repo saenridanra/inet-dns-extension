@@ -14,6 +14,6 @@ opp_test gen $OPT -v $TESTFILES || exit 1
 echo
 (cd work; opp_makemake -f --deep -L../../../../lib -L../../../../out/gcc-debug/src -linet -lopp_dns_extension -P . --no-deep-includes $EXTRA_INCLUDES; $MAKE) || exit 1
 echo
-opp_test run $OPT -v $TESTFILES || exit 1
+opp_test run $OPT -d -v $TESTFILES || exit 1
 echo
 echo Results can be found in ./work

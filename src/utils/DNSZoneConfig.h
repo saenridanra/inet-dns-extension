@@ -30,8 +30,8 @@
 #include <glib.h>
 
 struct soa{
-    std::string mname;
-    std::string rname;
+    char* mname;
+    char* rname;
     int serial;
     int refresh;
     int retry;
@@ -40,10 +40,10 @@ struct soa{
 };
 
 struct zone_entry{
-    std::string domain;
-    std::string __class;
-    std::string type;
-    std::string data;
+    char* domain;
+    char* __class;
+    char* type;
+    char* data;
 };
 
 enum states{
@@ -73,11 +73,11 @@ protected:
 
     // some reference vectors for the most common
     // dns types.
-    std::vector<std::string> ns_entries;
-    std::vector<std::string> mx_entries;
-    std::vector<std::string> a_entries;
-    std::vector<std::string> aaaa_entries;
-    std::vector<std::string> cname_entries;
+    std::vector<char*> ns_entries;
+    std::vector<char*> mx_entries;
+    std::vector<char*> a_entries;
+    std::vector<char*> aaaa_entries;
+    std::vector<char*> cname_entries;
 
     struct soa* zone_soa;
 

@@ -25,7 +25,7 @@ DNSZoneConfig::DNSZoneConfig()
 {
     zone_catalog = g_hash_table_new(g_str_hash, g_str_equal);
     TTL = 0;
-    zone_soa = (soa*) malloc(sizeof(soa));
+    zone_soa = (struct soa*) malloc(sizeof(struct soa));
     state = states::VARS;
 }
 
@@ -39,16 +39,27 @@ void DNSZoneConfig::initialize(std::string config_file){
     std::string line;
     std::string lastsuffix;
     struct zone_entry* e;
-    std::string namehash;
+    char* namehash;
 
     std::fstream conf(config_file, std::ios::in);
     while(getline(conf, line, '\n'))
     {
-        if (line.empty() || line[0] == '#')
+        if (line.empty() || line[0] == ';')
             continue;
 
         // use a tokenizer to interpret the line
         std::vector<std::string> tokens = cStringTokenizer(line.c_str()).asVector();
+
+#ifdef DEBUG_ENABLED
+        printf(("Processing: "+line+ "\n").c_str());
+        printf("Number of tokens: %d \n", (int) tokens.size());
+
+        for(uint32_t i = 0; i < tokens.size(); i++){
+            printf("tokens[%d] = %s; ", i, tokens[i].c_str());
+        }
+
+        printf("\n");
+#endif
 
         switch(state){
             case states::VARS:
@@ -61,15 +72,18 @@ void DNSZoneConfig::initialize(std::string config_file){
                         origin = tokens[1];
 
                 }
-                else if(line[0] == ';'){
-                    // do nothing at the moment ..
-                }
                 else if(tokens[2] == "SOA"){
                     state = states::SOA;
+#ifdef DEBUG_ENABLED
+        printf("State set to \"SOA\"\n");
+#endif
                     // init SOA first line
                     lastsuffix = tokens[0];
-                    zone_soa->mname = tokens[3];
-                    zone_soa->rname = tokens[4];
+                    zone_soa->mname = (char*) malloc(strlen(tokens[3].c_str()));
+                    zone_soa->mname = (char*) tokens[3].c_str();
+                    zone_soa->rname = (char*) malloc(strlen(tokens[4].c_str()));
+                    zone_soa->rname = (char*) tokens[4].c_str();
+
                 }
                 else{
                     // malformed?
@@ -108,38 +122,50 @@ void DNSZoneConfig::initialize(std::string config_file){
                 e = (zone_entry*) malloc(sizeof(zone_entry*));
 
                 if(tokens[0] == "IN" || tokens[0] == "CS" || tokens[0] == "HS" || tokens[0] == "CH" || tokens[0] == "*"){
-                    e->domain = lastsuffix;
-                    e->__class = tokens[0];
-                    e->type = tokens[1];
-                    e->data = tokens[2];
+                    e->domain = (char*) malloc(strlen(lastsuffix.c_str()));
+                    e->domain = (char*) lastsuffix.c_str();
+                    e->__class = (char*) malloc(strlen(tokens[0].c_str()));
+                    e->__class = (char*) tokens[0].c_str();
+                    e->type = (char*) malloc(strlen(tokens[1].c_str()));
+                    e->type = (char*) tokens[1].c_str();
+                    e->data = (char*) malloc(strlen(tokens[2].c_str()));
+                    e->data = (char*) tokens[2].c_str();
                 }
                 else{
                     // should start with the suffix
-                    e->domain = tokens[0];
+                    e->domain = (char*) malloc(strlen(tokens[0].c_str()));
+                    e->domain = (char*) tokens[0].c_str();
                     lastsuffix = e->domain;
-                    e->__class = tokens[1];
-                    e->type = tokens[2];
-                    e->data = tokens[3];
+                    e->__class = (char*) malloc(strlen(tokens[1].c_str()));
+                    e->__class = (char*) tokens[1].c_str();
+                    e->type = (char*) malloc(strlen(tokens[2].c_str()));
+                    e->type = (char*) tokens[2].c_str();
+                    e->data = (char*) malloc(strlen(tokens[3].c_str()));
+                    e->data = (char*) tokens[3].c_str();
                 }
 
-                namehash = e->domain+":"+e->type;
-                g_hash_table_insert(zone_catalog, (char*) namehash.c_str(), e);
+                namehash = (char*) malloc(strlen(e->domain) + strlen(e->type) + 1);
+                strcpy(namehash, e->domain);
+                strcat(namehash, ":");
+                strcat(namehash, e->type);
+
+                g_hash_table_insert(zone_catalog, namehash, e);
 
                 // we have special vectors for the following..
                 if(e->type == "NS"){
-                    ns_entries.push_back((e->domain+":"+e->type));
+                    ns_entries.push_back(namehash);
                 }
                 else if(e->type == "MX"){
-                    mx_entries.push_back((e->domain+":"+e->type));
+                    mx_entries.push_back(namehash);
                 }
                 else if(e->type == "A"){
-                    a_entries.push_back((e->domain+":"+e->type));
+                    a_entries.push_back(namehash);
                 }
                 else if(e->type == "AAAA"){
-                    aaaa_entries.push_back((e->domain+":"+e->type));
+                    aaaa_entries.push_back(namehash);
                 }
                 else if(e->type == "CNAME"){
-                    cname_entries.push_back((e->domain+":"+e->type));
+                    cname_entries.push_back(namehash);
                 }
                 break;
 

@@ -1,5 +1,5 @@
 %description:
-Test DNSZoneConfig
+DNSZoneConfigTest DNSZoneConfig
 
 %includes:
 #include <DNSZoneConfig.h>
@@ -9,5 +9,11 @@ Test DNSZoneConfig
 %activity:
 
 // create a number of fragmented datagrams
+EV << "Creating config" << "\n";
 DNSZoneConfig* config = new DNSZoneConfig();
+EV << "Initializing..." << "\n";
 config->initialize("/home/saen/Disy/sources/opp_dns_extension/src/networks/pan.rz.uni-konstanz.de.zone");
+
+%contains: stdout
+Creating config
+Initializing...
