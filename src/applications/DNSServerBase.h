@@ -48,13 +48,12 @@ class DNSServerBase : public cSimpleModule
     UDPSocket out;
     UDPSocket in;
 
-
+  public:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
     virtual DNSPacket* unsupportedOperation(ODnsExtension::Query *q);
     virtual void sendResponse(DNSPacket *response, IPvXAddress returnAddress);
 
-  public:
     /**
      * Pure virtual method handleQuery
      *

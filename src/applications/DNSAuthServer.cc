@@ -50,7 +50,7 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
     DNSPacket* response;
     if (query->qdcount > 1)
     {
-        response = unsupportedOperation(query);
+        response = DNSServerBase::unsupportedOperation(query);
         return response;
     }
 
@@ -111,7 +111,7 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
         case DNS_CLASS_HS:
         case DNS_CLASS_ANY:
         default:
-            response = unsupportedOperation(query);
+            response = DNSServerBase::unsupportedOperation(query);
             return response;
     }
 
@@ -128,7 +128,7 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
             type = DNS_TYPE_STR_CNAME;
             break;
         case DNS_TYPE_VALUE_HINFO:
-            response = unsupportedOperation(query);
+            response = DNSServerBase::unsupportedOperation(query);
             return response;
         case DNS_TYPE_VALUE_MINFO:
             type = DNS_TYPE_STR_MINFO;
@@ -140,7 +140,7 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
             type = DNS_TYPE_STR_NS;
             break;
         case DNS_TYPE_VALUE_NULL:
-            response = unsupportedOperation(query);
+            response = DNSServerBase::unsupportedOperation(query);
             return response;
         case DNS_TYPE_VALUE_PTR:
             type = DNS_TYPE_STR_PTR;
@@ -218,7 +218,7 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
             }
             else
             {
-                response = unsupportedOperation(query);
+                response = DNSServerBase::unsupportedOperation(query);
                 return response;
             }
         }
@@ -239,7 +239,6 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
     }
 
     return response;
-
 
 }
 
@@ -349,14 +348,4 @@ int DNSAuthServer::appendTransitiveEntries(GList *srclist, GList *dstlist)
     }
 
     return ar_records;
-}
-
-void DNSAuthServer::sendResponse(DNSPacket *response, IPvXAddress returnAddress)
-{
-    DNSServerBase::sendResponse(response, returnAddress);
-}
-
-DNSPacket* DNSAuthServer::unsupportedOperation(ODnsExtension::Query *q)
-{
-    DNSServerBase::unsupportedOperation(q);
 }

@@ -38,7 +38,7 @@ void DNSServerBase::handleMessage(cMessage *msg)
     int isDNS = 0;
     int isQR = 0;
     ODnsExtension::Query* query;
-    sddsadc
+    DNSPacket* response;
 
     // Check if we received a query
     if(msg->arrivedOn("udpIn")){
@@ -57,7 +57,7 @@ void DNSServerBase::handleMessage(cMessage *msg)
 
 }
 
-void sendResponse(DNSPacket *response, IPvXAddress returnAddress){
+void DNSServerBase::sendResponse(DNSPacket *response, IPvXAddress returnAddress){
     // TODO: send response
 }
 

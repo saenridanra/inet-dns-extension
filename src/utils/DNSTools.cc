@@ -175,21 +175,8 @@ DNSPacket* createResponse(char *msg_name, unsigned short ancount, unsigned short
  */
 int appendAnswer(DNSPacket *p, ODnsExtension::DNSRecord *r)
 {
-    // FIXME: Change according to the DNSRecord an throw away the old logic
-    if (record_num < 0 || record_num > p->getAncount())
-    {
-        throw E_BAD_INDEX;
-    }
-
-    DNSRecord record;
-    record.rname = rname;
-    record.rtype = rtype;
-    record.rclass = rclass;
-    record.ttl = ttl;
-    record.rdlength = rdlength;
-    record.rdata = rdata;
-
-    p->setAnswers(record_num, record);
+    int record_num = p->getNumAnswers();
+    p->setAnswers(record_num+1, *r);
 
     return 1;
 }
@@ -200,20 +187,8 @@ int appendAnswer(DNSPacket *p, ODnsExtension::DNSRecord *r)
  */
 int appendAuthority(DNSPacket *p, ODnsExtension::DNSRecord *r)
 {
-    if (record_num < 0 || record_num > p->getNscount())
-    {
-        throw E_BAD_INDEX;
-    }
-
-    DNSRecord record;
-    record.rname = rname;
-    record.rtype = rtype;
-    record.rclass = rclass;
-    record.ttl = ttl;
-    record.rdlength = rdlength;
-    record.rdata = rdata;
-
-    p->setAuthorities(record_num, record);
+    int record_num = p->getNumAuthorities();
+    p->setAnswers(record_num+1, *r);
 
     return 1;
 }
@@ -224,20 +199,8 @@ int appendAuthority(DNSPacket *p, ODnsExtension::DNSRecord *r)
  */
 int appendAdditional(DNSPacket *p, ODnsExtension::DNSRecord *r)
 {
-    if (record_num < 0 || record_num > p->getArcount())
-    {
-        throw E_BAD_INDEX;
-    }
-
-    DNSRecord record;
-    record.rname = rname;
-    record.rtype = rtype;
-    record.rclass = rclass;
-    record.ttl = ttl;
-    record.rdlength = rdlength;
-    record.rdata = rdata;
-
-    p->setAdditional(record_num, record);
+    int record_num = p->getNumAdditional();
+    p->setAnswers(record_num+1, *r);
 
     return 1;
 }

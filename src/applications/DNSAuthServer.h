@@ -48,7 +48,6 @@ class DNSAuthServer : public DNSServerBase
   protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
-    virtual DNSPacket* unsupportedOperation(ODnsExtension::Query *q);
     virtual int appendEntries(char *hash, GList *dstlist, int type);
     virtual int appendTransitiveEntries(GList *srclist, GList *dstlist);
   public:
@@ -58,13 +57,6 @@ class DNSAuthServer : public DNSServerBase
        * Should be implemented by the extending class
        */
        DNSPacket* handleQuery(ODnsExtension::Query *query);
-
-      /**
-       * Pure virtual method sendResponse
-       *
-       * Should be implemented by the extending class
-       */
-      void sendResponse(DNSPacket *response, IPvXAddress returnAddress);
 };
 
 #endif
