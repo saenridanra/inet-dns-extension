@@ -1,0 +1,553 @@
+version 2
+run General-0-20150108-18:39:32-22169
+attr configname General
+attr datetime 20150108-18:39:32
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvars2 $repetition=0
+attr measurement ""
+attr network SimpleDNSNetwork
+attr processid 22169
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+
+scalar SimpleDNSNetwork.dns1.networkLayer.arp 	failedARPResolution:count 	0
+attr title  "ARP failed resolutions, count"
+scalar SimpleDNSNetwork.dns1.networkLayer.arp 	completedARPResolution:count 	1
+attr title  "ARP completed resolutions, count"
+scalar SimpleDNSNetwork.dns1.networkLayer.arp 	initiatedARPResolution:count 	0
+attr title  "ARP initiated resolutions, count"
+scalar SimpleDNSNetwork.dns1.networkLayer.arp 	sentReply:count 	1
+attr title  "ARP replies sent, count"
+scalar SimpleDNSNetwork.dns1.networkLayer.arp 	sentReq:count 	0
+attr title  "ARP request sent, count"
+scalar SimpleDNSNetwork.dns1.lo0.lo 	droppedPkBitError:count 	0
+attr interpolationmode  none
+attr source  dropPkBitError
+attr title  "packets dropped/bit error, count"
+scalar SimpleDNSNetwork.dns1.lo0.lo 	droppedPkBitError:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkBitError
+attr title  "packets dropped/bit error, sum(packetBytes)"
+scalar SimpleDNSNetwork.dns1.lo0.lo 	rcvdPkFromHL:count 	0
+attr interpolationmode  none
+attr source  packetReceivedFromUpper
+attr title  "packets received from higher layer, count"
+scalar SimpleDNSNetwork.dns1.lo0.lo 	rcvdPkFromHL:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  packetReceivedFromUpper
+attr title  "packets received from higher layer, sum(packetBytes)"
+scalar SimpleDNSNetwork.dns1.lo0.lo 	passedUpPk:count 	0
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, count"
+scalar SimpleDNSNetwork.dns1.lo0.lo 	passedUpPk:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, sum(packetBytes)"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	"simulated time" 	7.000000672
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	full-duplex 	1
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	"frames/sec sent" 	0.14285712914286
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	"frames/sec rcvd" 	0.99999990400001
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	"bits/sec sent" 	73.142850121144
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	"bits/sec rcvd" 	511.999950848
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	"rx channel idle (%)" 	99.999942400006
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	"rx channel utilization (%)" 	5.7599994470401e-05
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	droppedPkNotForUs:count 	0
+attr interpolationmode  none
+attr source  dropPkNotForUs
+attr title  "packets dropped/not for us, count"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	droppedPkNotForUs:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkNotForUs
+attr title  "packets dropped/not for us, sum(packetBytes)"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	droppedPkIfaceDown:count 	0
+attr interpolationmode  none
+attr source  dropPkIfaceDown
+attr title  "packets dropped/interface down, count"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	droppedPkIfaceDown:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkIfaceDown
+attr title  "packets dropped/interface down, sum(packetBytes)"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	droppedPkBitError:count 	0
+attr interpolationmode  none
+attr source  dropPkBitError
+attr title  "packets dropped/bit error, count"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	droppedPkBitError:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkBitError
+attr title  "packets dropped/bit error, sum(packetBytes)"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	rxPkFromHL:count 	1
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, count"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	rxPkFromHL:sum(packetBytes) 	64
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, sum(packetBytes)"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	rxPausePkUnits:count 	0
+attr interpolationmode  none
+attr title  "pause units received, count"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	rxPausePkUnits:sum 	0
+attr interpolationmode  none
+attr title  "pause units received, sum"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	txPausePkUnits:count 	0
+attr interpolationmode  none
+attr title  "pause units sent, count"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	txPausePkUnits:sum 	0
+attr interpolationmode  none
+attr title  "pause units sent, sum"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	rxPkOk:count 	7
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, count"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	rxPkOk:sum(packetBytes) 	448
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, sum(packetBytes)"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	txPk:count 	1
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, count"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	txPk:sum(packetBytes) 	64
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, sum(packetBytes)"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	passedUpPk:count 	7
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, count"
+scalar SimpleDNSNetwork.dns1.eth[0].mac 	passedUpPk:sum(packetBytes) 	448
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, sum(packetBytes)"
+scalar SimpleDNSNetwork.dns1.eth[0].encap 	pauseSent:count 	0
+attr title  "pause sent, count"
+scalar SimpleDNSNetwork.dns1.eth[0].encap 	pauseSent:sum 	0
+attr title  "pause sent, sum"
+scalar SimpleDNSNetwork.dns1.eth[0].encap 	decapPk:count 	7
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, count"
+scalar SimpleDNSNetwork.dns1.eth[0].encap 	decapPk:sum(packetBytes) 	196
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, sum(packetBytes)"
+scalar SimpleDNSNetwork.dns1.eth[0].encap 	encapPk:count 	1
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, count"
+scalar SimpleDNSNetwork.dns1.eth[0].encap 	encapPk:sum(packetBytes) 	28
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, sum(packetBytes)"
+scalar SimpleDNSNetwork.dns1.udp 	droppedPkBadChecksum:count 	0
+attr interpolationmode  none
+attr title  "packets dropped (checksum error), count"
+scalar SimpleDNSNetwork.dns1.udp 	droppedPkWrongPort:count 	0
+attr interpolationmode  none
+attr title  "packets dropped (wrong port), count"
+scalar SimpleDNSNetwork.dns1.udp 	passedUpPk:count 	6
+attr interpolationmode  none
+attr title  "packets passed up, count"
+scalar SimpleDNSNetwork.dns1.udp 	rcvdPk:count 	6
+attr interpolationmode  none
+attr source  rcvdPk
+attr title  "packets received, count"
+scalar SimpleDNSNetwork.dns1.udp 	rcvdPk:sum(packetBytes) 	48
+attr interpolationmode  none
+attr source  rcvdPk
+attr title  "packets received, sum(packetBytes)"
+scalar SimpleDNSNetwork.dns1.udp 	sentPk:count 	0
+attr interpolationmode  none
+attr source  sentPk
+attr title  "packets sent, count"
+scalar SimpleDNSNetwork.dns1.udp 	sentPk:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  sentPk
+attr title  "packets sent, sum(packetBytes)"
+scalar SimpleDNSNetwork.cli1.networkLayer.arp 	failedARPResolution:count 	0
+attr title  "ARP failed resolutions, count"
+scalar SimpleDNSNetwork.cli1.networkLayer.arp 	completedARPResolution:count 	1
+attr title  "ARP completed resolutions, count"
+scalar SimpleDNSNetwork.cli1.networkLayer.arp 	initiatedARPResolution:count 	1
+attr title  "ARP initiated resolutions, count"
+scalar SimpleDNSNetwork.cli1.networkLayer.arp 	sentReply:count 	0
+attr title  "ARP replies sent, count"
+scalar SimpleDNSNetwork.cli1.networkLayer.arp 	sentReq:count 	1
+attr title  "ARP request sent, count"
+scalar SimpleDNSNetwork.cli1.lo0.lo 	droppedPkBitError:count 	0
+attr interpolationmode  none
+attr source  dropPkBitError
+attr title  "packets dropped/bit error, count"
+scalar SimpleDNSNetwork.cli1.lo0.lo 	droppedPkBitError:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkBitError
+attr title  "packets dropped/bit error, sum(packetBytes)"
+scalar SimpleDNSNetwork.cli1.lo0.lo 	rcvdPkFromHL:count 	0
+attr interpolationmode  none
+attr source  packetReceivedFromUpper
+attr title  "packets received from higher layer, count"
+scalar SimpleDNSNetwork.cli1.lo0.lo 	rcvdPkFromHL:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  packetReceivedFromUpper
+attr title  "packets received from higher layer, sum(packetBytes)"
+scalar SimpleDNSNetwork.cli1.lo0.lo 	passedUpPk:count 	0
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, count"
+scalar SimpleDNSNetwork.cli1.lo0.lo 	passedUpPk:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, sum(packetBytes)"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	"simulated time" 	7.000000672
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	full-duplex 	1
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	"frames/sec sent" 	1.1428570331429
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	"frames/sec rcvd" 	0.14285712914286
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	"bits/sec sent" 	585.14280096915
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	"bits/sec rcvd" 	73.142850121144
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	"rx channel idle (%)" 	99.999991771429
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	"rx channel utilization (%)" 	8.2285706386286e-06
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	droppedPkNotForUs:count 	0
+attr interpolationmode  none
+attr source  dropPkNotForUs
+attr title  "packets dropped/not for us, count"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	droppedPkNotForUs:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkNotForUs
+attr title  "packets dropped/not for us, sum(packetBytes)"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	droppedPkIfaceDown:count 	0
+attr interpolationmode  none
+attr source  dropPkIfaceDown
+attr title  "packets dropped/interface down, count"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	droppedPkIfaceDown:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkIfaceDown
+attr title  "packets dropped/interface down, sum(packetBytes)"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	droppedPkBitError:count 	0
+attr interpolationmode  none
+attr source  dropPkBitError
+attr title  "packets dropped/bit error, count"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	droppedPkBitError:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkBitError
+attr title  "packets dropped/bit error, sum(packetBytes)"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	rxPkFromHL:count 	8
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, count"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	rxPkFromHL:sum(packetBytes) 	512
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, sum(packetBytes)"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	rxPausePkUnits:count 	0
+attr interpolationmode  none
+attr title  "pause units received, count"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	rxPausePkUnits:sum 	0
+attr interpolationmode  none
+attr title  "pause units received, sum"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	txPausePkUnits:count 	0
+attr interpolationmode  none
+attr title  "pause units sent, count"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	txPausePkUnits:sum 	0
+attr interpolationmode  none
+attr title  "pause units sent, sum"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	rxPkOk:count 	1
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, count"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	rxPkOk:sum(packetBytes) 	64
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, sum(packetBytes)"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	txPk:count 	8
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, count"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	txPk:sum(packetBytes) 	512
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, sum(packetBytes)"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	passedUpPk:count 	1
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, count"
+scalar SimpleDNSNetwork.cli1.eth[0].mac 	passedUpPk:sum(packetBytes) 	64
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, sum(packetBytes)"
+scalar SimpleDNSNetwork.cli1.eth[0].encap 	pauseSent:count 	0
+attr title  "pause sent, count"
+scalar SimpleDNSNetwork.cli1.eth[0].encap 	pauseSent:sum 	0
+attr title  "pause sent, sum"
+scalar SimpleDNSNetwork.cli1.eth[0].encap 	decapPk:count 	1
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, count"
+scalar SimpleDNSNetwork.cli1.eth[0].encap 	decapPk:sum(packetBytes) 	28
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, sum(packetBytes)"
+scalar SimpleDNSNetwork.cli1.eth[0].encap 	encapPk:count 	8
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, count"
+scalar SimpleDNSNetwork.cli1.eth[0].encap 	encapPk:sum(packetBytes) 	224
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, sum(packetBytes)"
+scalar SimpleDNSNetwork.cli1.udp 	droppedPkBadChecksum:count 	0
+attr interpolationmode  none
+attr title  "packets dropped (checksum error), count"
+scalar SimpleDNSNetwork.cli1.udp 	droppedPkWrongPort:count 	0
+attr interpolationmode  none
+attr title  "packets dropped (wrong port), count"
+scalar SimpleDNSNetwork.cli1.udp 	passedUpPk:count 	0
+attr interpolationmode  none
+attr title  "packets passed up, count"
+scalar SimpleDNSNetwork.cli1.udp 	rcvdPk:count 	0
+attr interpolationmode  none
+attr source  rcvdPk
+attr title  "packets received, count"
+scalar SimpleDNSNetwork.cli1.udp 	rcvdPk:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  rcvdPk
+attr title  "packets received, sum(packetBytes)"
+scalar SimpleDNSNetwork.cli1.udp 	sentPk:count 	7
+attr interpolationmode  none
+attr source  sentPk
+attr title  "packets sent, count"
+scalar SimpleDNSNetwork.cli1.udp 	sentPk:sum(packetBytes) 	56
+attr interpolationmode  none
+attr source  sentPk
+attr title  "packets sent, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.networkLayer.arp 	failedARPResolution:count 	0
+attr title  "ARP failed resolutions, count"
+scalar SimpleDNSNetwork.router.networkLayer.arp 	completedARPResolution:count 	2
+attr title  "ARP completed resolutions, count"
+scalar SimpleDNSNetwork.router.networkLayer.arp 	initiatedARPResolution:count 	1
+attr title  "ARP initiated resolutions, count"
+scalar SimpleDNSNetwork.router.networkLayer.arp 	sentReply:count 	1
+attr title  "ARP replies sent, count"
+scalar SimpleDNSNetwork.router.networkLayer.arp 	sentReq:count 	1
+attr title  "ARP request sent, count"
+scalar SimpleDNSNetwork.router.lo0.lo 	droppedPkBitError:count 	0
+attr interpolationmode  none
+attr source  dropPkBitError
+attr title  "packets dropped/bit error, count"
+scalar SimpleDNSNetwork.router.lo0.lo 	droppedPkBitError:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkBitError
+attr title  "packets dropped/bit error, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.lo0.lo 	rcvdPkFromHL:count 	0
+attr interpolationmode  none
+attr source  packetReceivedFromUpper
+attr title  "packets received from higher layer, count"
+scalar SimpleDNSNetwork.router.lo0.lo 	rcvdPkFromHL:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  packetReceivedFromUpper
+attr title  "packets received from higher layer, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.lo0.lo 	passedUpPk:count 	0
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, count"
+scalar SimpleDNSNetwork.router.lo0.lo 	passedUpPk:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[0].mac 	"simulated time" 	7.000000672
+scalar SimpleDNSNetwork.router.eth[0].mac 	full-duplex 	1
+scalar SimpleDNSNetwork.router.eth[0].mac 	"frames/sec sent" 	0.14285712914286
+scalar SimpleDNSNetwork.router.eth[0].mac 	"frames/sec rcvd" 	1.1428570331429
+scalar SimpleDNSNetwork.router.eth[0].mac 	"bits/sec sent" 	73.142850121144
+scalar SimpleDNSNetwork.router.eth[0].mac 	"bits/sec rcvd" 	585.14280096915
+scalar SimpleDNSNetwork.router.eth[0].mac 	"rx channel idle (%)" 	99.999934171435
+scalar SimpleDNSNetwork.router.eth[0].mac 	"rx channel utilization (%)" 	6.5828565109029e-05
+scalar SimpleDNSNetwork.router.eth[0].mac 	droppedPkNotForUs:count 	0
+attr interpolationmode  none
+attr source  dropPkNotForUs
+attr title  "packets dropped/not for us, count"
+scalar SimpleDNSNetwork.router.eth[0].mac 	droppedPkNotForUs:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkNotForUs
+attr title  "packets dropped/not for us, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[0].mac 	droppedPkIfaceDown:count 	0
+attr interpolationmode  none
+attr source  dropPkIfaceDown
+attr title  "packets dropped/interface down, count"
+scalar SimpleDNSNetwork.router.eth[0].mac 	droppedPkIfaceDown:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkIfaceDown
+attr title  "packets dropped/interface down, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[0].mac 	droppedPkBitError:count 	0
+attr interpolationmode  none
+attr source  dropPkBitError
+attr title  "packets dropped/bit error, count"
+scalar SimpleDNSNetwork.router.eth[0].mac 	droppedPkBitError:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkBitError
+attr title  "packets dropped/bit error, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[0].mac 	rxPkFromHL:count 	1
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, count"
+scalar SimpleDNSNetwork.router.eth[0].mac 	rxPkFromHL:sum(packetBytes) 	64
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[0].mac 	rxPausePkUnits:count 	0
+attr interpolationmode  none
+attr title  "pause units received, count"
+scalar SimpleDNSNetwork.router.eth[0].mac 	rxPausePkUnits:sum 	0
+attr interpolationmode  none
+attr title  "pause units received, sum"
+scalar SimpleDNSNetwork.router.eth[0].mac 	txPausePkUnits:count 	0
+attr interpolationmode  none
+attr title  "pause units sent, count"
+scalar SimpleDNSNetwork.router.eth[0].mac 	txPausePkUnits:sum 	0
+attr interpolationmode  none
+attr title  "pause units sent, sum"
+scalar SimpleDNSNetwork.router.eth[0].mac 	rxPkOk:count 	8
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, count"
+scalar SimpleDNSNetwork.router.eth[0].mac 	rxPkOk:sum(packetBytes) 	512
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[0].mac 	txPk:count 	1
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, count"
+scalar SimpleDNSNetwork.router.eth[0].mac 	txPk:sum(packetBytes) 	64
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[0].mac 	passedUpPk:count 	8
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, count"
+scalar SimpleDNSNetwork.router.eth[0].mac 	passedUpPk:sum(packetBytes) 	512
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[0].encap 	pauseSent:count 	0
+attr title  "pause sent, count"
+scalar SimpleDNSNetwork.router.eth[0].encap 	pauseSent:sum 	0
+attr title  "pause sent, sum"
+scalar SimpleDNSNetwork.router.eth[0].encap 	decapPk:count 	8
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, count"
+scalar SimpleDNSNetwork.router.eth[0].encap 	decapPk:sum(packetBytes) 	224
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[0].encap 	encapPk:count 	1
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, count"
+scalar SimpleDNSNetwork.router.eth[0].encap 	encapPk:sum(packetBytes) 	28
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[1].mac 	"simulated time" 	7.000000672
+scalar SimpleDNSNetwork.router.eth[1].mac 	full-duplex 	1
+scalar SimpleDNSNetwork.router.eth[1].mac 	"frames/sec sent" 	0.99999990400001
+scalar SimpleDNSNetwork.router.eth[1].mac 	"frames/sec rcvd" 	0.14285712914286
+scalar SimpleDNSNetwork.router.eth[1].mac 	"bits/sec sent" 	511.999950848
+scalar SimpleDNSNetwork.router.eth[1].mac 	"bits/sec rcvd" 	73.142850121144
+scalar SimpleDNSNetwork.router.eth[1].mac 	"rx channel idle (%)" 	99.999991771429
+scalar SimpleDNSNetwork.router.eth[1].mac 	"rx channel utilization (%)" 	8.2285706386286e-06
+scalar SimpleDNSNetwork.router.eth[1].mac 	droppedPkNotForUs:count 	0
+attr interpolationmode  none
+attr source  dropPkNotForUs
+attr title  "packets dropped/not for us, count"
+scalar SimpleDNSNetwork.router.eth[1].mac 	droppedPkNotForUs:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkNotForUs
+attr title  "packets dropped/not for us, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[1].mac 	droppedPkIfaceDown:count 	0
+attr interpolationmode  none
+attr source  dropPkIfaceDown
+attr title  "packets dropped/interface down, count"
+scalar SimpleDNSNetwork.router.eth[1].mac 	droppedPkIfaceDown:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkIfaceDown
+attr title  "packets dropped/interface down, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[1].mac 	droppedPkBitError:count 	0
+attr interpolationmode  none
+attr source  dropPkBitError
+attr title  "packets dropped/bit error, count"
+scalar SimpleDNSNetwork.router.eth[1].mac 	droppedPkBitError:sum(packetBytes) 	0
+attr interpolationmode  none
+attr source  dropPkBitError
+attr title  "packets dropped/bit error, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[1].mac 	rxPkFromHL:count 	8
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, count"
+scalar SimpleDNSNetwork.router.eth[1].mac 	rxPkFromHL:sum(packetBytes) 	512
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[1].mac 	rxPausePkUnits:count 	0
+attr interpolationmode  none
+attr title  "pause units received, count"
+scalar SimpleDNSNetwork.router.eth[1].mac 	rxPausePkUnits:sum 	0
+attr interpolationmode  none
+attr title  "pause units received, sum"
+scalar SimpleDNSNetwork.router.eth[1].mac 	txPausePkUnits:count 	0
+attr interpolationmode  none
+attr title  "pause units sent, count"
+scalar SimpleDNSNetwork.router.eth[1].mac 	txPausePkUnits:sum 	0
+attr interpolationmode  none
+attr title  "pause units sent, sum"
+scalar SimpleDNSNetwork.router.eth[1].mac 	rxPkOk:count 	1
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, count"
+scalar SimpleDNSNetwork.router.eth[1].mac 	rxPkOk:sum(packetBytes) 	64
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[1].mac 	txPk:count 	7
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, count"
+scalar SimpleDNSNetwork.router.eth[1].mac 	txPk:sum(packetBytes) 	448
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[1].mac 	passedUpPk:count 	1
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, count"
+scalar SimpleDNSNetwork.router.eth[1].mac 	passedUpPk:sum(packetBytes) 	64
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[1].encap 	pauseSent:count 	0
+attr title  "pause sent, count"
+scalar SimpleDNSNetwork.router.eth[1].encap 	pauseSent:sum 	0
+attr title  "pause sent, sum"
+scalar SimpleDNSNetwork.router.eth[1].encap 	decapPk:count 	1
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, count"
+scalar SimpleDNSNetwork.router.eth[1].encap 	decapPk:sum(packetBytes) 	28
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, sum(packetBytes)"
+scalar SimpleDNSNetwork.router.eth[1].encap 	encapPk:count 	8
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, count"
+scalar SimpleDNSNetwork.router.eth[1].encap 	encapPk:sum(packetBytes) 	224
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, sum(packetBytes)"

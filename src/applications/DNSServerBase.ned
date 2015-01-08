@@ -21,7 +21,7 @@
 package opp_dns_extension.applications;
 
 
-simple DNSServerBase
+moduleinterface DNSServerBase
 {
 	gates:
         input udpIn @labels(UDPControlInfo/down);

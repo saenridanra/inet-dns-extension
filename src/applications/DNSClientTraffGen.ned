@@ -22,9 +22,13 @@ package opp_dns_extension.applications;
 
 import opp_dns_extension.applications.DNSClient;
 
-simple DNSClientTraffGen
+simple DNSClientTraffGen like DNSClient
 {
     parameters:
+        string dns_servers = default("");
         double time_to_send @unit(s) = default(1s);
         string hostname_file;
+    gates:
+        input udpIn @labels(UDPControlInfo/up);
+        output udpOut @labels(UDPControlInfo/down);
 }

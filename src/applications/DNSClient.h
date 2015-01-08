@@ -55,9 +55,9 @@ class DNSClient : public cSimpleModule
 
     // Socket over which DNS queries are sent/received
     UDPSocket out;
-    UDPSocket in;
 
-    virtual void initialize();
+    virtual void initialize(int stage);
+    virtual int numInitStages() const { return 4; }
     virtual void handleMessage(cMessage *msg);
     virtual IPvXAddress* getAddressFromCache(char* dns_name);
     virtual int resolve(char* dns_name, int primary, void (* callback) (int, void*), int id, void * handle);

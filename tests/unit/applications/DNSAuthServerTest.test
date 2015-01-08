@@ -1,0 +1,23 @@
+%description:
+DNSAuthServerTest DNSAuthServer
+
+%file: test.ned
+
+import opp_dns_extension.applications.DNSAuthServer;
+
+network Test
+{
+    submodules:
+        auth: DNSAuthServer{
+            parameters:
+                master_file = "networks/pan.rz.uni-konstanz.de.zone";
+        }
+}
+
+%inifile: omnetpp.ini
+
+[General]
+network = Test
+sim-time-limit = 1s
+record-eventlog = true
+ned-path = .;../../../../../src

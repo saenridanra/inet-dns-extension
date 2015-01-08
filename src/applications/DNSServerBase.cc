@@ -21,14 +21,15 @@
 
 #include "DNSServerBase.h"
 
-//Define_Module(DNSServerBase); // why does this not work? check if it makes a difference
+Define_Module(DNSServerBase);
 
 void DNSServerBase::initialize()
 {
+    cSimpleModule::initialize();
     // Initialize gates
+    //in.setOutputGate(gate("udpIn"));
     out.setOutputGate(gate("udpOut"));
-    in.setOutputGate(gate("udpIn"));
-    in.bind(DNS_PORT);
+    out.bind(DNS_PORT);
 
     receivedQueries = 0;
 }
@@ -51,14 +52,28 @@ void DNSServerBase::handleMessage(cMessage *msg)
 
             // TODO: Find out how to get the source address
             // and send the response to the source address
+
+            cPacket *pk = check_and_cast<cPacket *>(msg);
+            //UDPControlInfo *ctrl = check_and_cast<UDPControlInfo *>(pk->getControlInfo());
+            //IPvXAddress srcAddress = ctrl->
+            //sendResponse(response, srcAddress);
+            //delete ctrl;
+            delete msg;
         }
 
+    }
+    else{
+        delete msg;
     }
 
 }
 
+DNSPacket* DNSServerBase::handleQuery(ODnsExtension::Query* query){
+    return NULL;
+}
+
 void DNSServerBase::sendResponse(DNSPacket *response, IPvXAddress returnAddress){
-    // TODO: send response
+    out.sendTo(response, returnAddress, DNS_PORT);
 }
 
 DNSPacket* DNSServerBase::unsupportedOperation(ODnsExtension::Query *q){

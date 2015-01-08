@@ -1,0 +1,164 @@
+file 8334 1420738794                                            
+version 2
+run General-0-20150108-18:39:32-22169
+attr configname General
+attr datetime 20150108-18:39:32
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvars2 $repetition=0
+attr measurement ""
+attr network SimpleDNSNetwork
+attr processid 22169
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+
+vector 22  SimpleDNSNetwork.cli1.udp  sentPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  sentPk
+attr title  "packets sent, vector(packetBytes)"
+vector 27  SimpleDNSNetwork.cli1.networkLayer.arp  sentReq:vector  ETV
+attr title  "ARP request sent, vector"
+vector 41  SimpleDNSNetwork.cli1.eth[0].encap  encapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, vector(packetBytes)"
+vector 37  SimpleDNSNetwork.cli1.eth[0].mac  rxPkFromHL:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, vector(packetBytes)"
+vector 32  SimpleDNSNetwork.cli1.eth[0].mac  txPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, vector(packetBytes)"
+vector 50  SimpleDNSNetwork.router.eth[0].mac  rxPkOk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, vector(packetBytes)"
+vector 51  SimpleDNSNetwork.router.eth[0].mac  passedUpPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, vector(packetBytes)"
+vector 59  SimpleDNSNetwork.router.eth[0].encap  decapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, vector(packetBytes)"
+vector 45  SimpleDNSNetwork.router.networkLayer.arp  sentReply:vector  ETV
+attr title  "ARP replies sent, vector"
+vector 58  SimpleDNSNetwork.router.eth[0].encap  encapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, vector(packetBytes)"
+vector 54  SimpleDNSNetwork.router.eth[0].mac  rxPkFromHL:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, vector(packetBytes)"
+vector 49  SimpleDNSNetwork.router.eth[0].mac  txPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, vector(packetBytes)"
+vector 33  SimpleDNSNetwork.cli1.eth[0].mac  rxPkOk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, vector(packetBytes)"
+vector 34  SimpleDNSNetwork.cli1.eth[0].mac  passedUpPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, vector(packetBytes)"
+vector 42  SimpleDNSNetwork.cli1.eth[0].encap  decapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, vector(packetBytes)"
+vector 44  SimpleDNSNetwork.router.networkLayer.arp  sentReq:vector  ETV
+attr title  "ARP request sent, vector"
+vector 70  SimpleDNSNetwork.router.eth[1].encap  encapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, vector(packetBytes)"
+vector 66  SimpleDNSNetwork.router.eth[1].mac  rxPkFromHL:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, vector(packetBytes)"
+vector 61  SimpleDNSNetwork.router.eth[1].mac  txPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, vector(packetBytes)"
+vector 11  SimpleDNSNetwork.dns1.eth[0].mac  rxPkOk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, vector(packetBytes)"
+vector 12  SimpleDNSNetwork.dns1.eth[0].mac  passedUpPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, vector(packetBytes)"
+vector 20  SimpleDNSNetwork.dns1.eth[0].encap  decapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, vector(packetBytes)"
+vector 6  SimpleDNSNetwork.dns1.networkLayer.arp  sentReply:vector  ETV
+attr title  "ARP replies sent, vector"
+vector 19  SimpleDNSNetwork.dns1.eth[0].encap  encapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, vector(packetBytes)"
+vector 15  SimpleDNSNetwork.dns1.eth[0].mac  rxPkFromHL:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, vector(packetBytes)"
+vector 10  SimpleDNSNetwork.dns1.eth[0].mac  txPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, vector(packetBytes)"
+vector 62  SimpleDNSNetwork.router.eth[1].mac  rxPkOk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, vector(packetBytes)"
+vector 63  SimpleDNSNetwork.router.eth[1].mac  passedUpPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, vector(packetBytes)"
+vector 71  SimpleDNSNetwork.router.eth[1].encap  decapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, vector(packetBytes)"
+vector 1  SimpleDNSNetwork.dns1.udp  rcvdPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rcvdPk
+attr title  "packets received, vector(packetBytes)"
+vector 2  SimpleDNSNetwork.dns1.udp  passedUpPk:vector(count)  ETV
+attr interpolationmode  none
+attr title  "packets passed up, vector(count)"
+1	5873 118 63 158 1.000003756 6.000001252 6 8 8 48 384
+2	5991 118 63 158 1.000003756 6.000001252 6 1 6 21 91
+6	6109 19 46 46 1.000002504 1.000002504 1 1 1 1 1
+10	6128 20 51 51 1.00000308 1.00000308 1 64 64 64 4096
+11	6148 150 43 155 1.000002504 6.000001252 7 64 64 448 28672
+12	6298 150 43 155 1.000002504 6.000001252 7 64 64 448 28672
+15	6448 21 49 49 1.000002504 1.000002504 1 64 64 64 4096
+19	6469 21 48 48 1.000002504 1.000002504 1 28 28 28 784
+20	6490 150 44 156 1.000002504 6.000001252 7 28 28 196 5488
+22	6640 74 12 162 1 7 7 8 8 56 448
+27	6714 10 13 13 1 1 1 1 1 1 1
+32	6724 172 17 166 1.000000576 7.000000576 8 64 64 512 32768
+33	6896 21 27 27 1.000001252 1.000001252 1 64 64 64 4096
+34	6917 21 27 27 1.000001252 1.000001252 1 64 64 64 4096
+37	6938 102 16 165 1 7 8 64 64 512 32768
+41	7040 102 15 164 1 7 8 28 28 224 6272
+42	7142 21 28 28 1.000001252 1.000001252 1 28 28 28 784
+44	7163 20 37 37 1.000001878 1.000001878 1 1 1 1 1
+45	7183 20 21 21 1.000000626 1.000000626 1 1 1 1 1
+49	7203 21 26 26 1.000001202 1.000001202 1 64 64 64 4096
+50	7224 172 18 167 1.000000626 7.000000626 8 64 64 512 32768
+51	7396 172 18 167 1.000000626 7.000000626 8 64 64 512 32768
+54	7568 21 24 24 1.000000626 1.000000626 1 64 64 64 4096
+58	7589 21 23 23 1.000000626 1.000000626 1 28 28 28 784
+59	7610 172 19 168 1.000000626 7.000000626 8 28 28 224 6272
+61	7782 150 42 154 1.000002454 6.000001202 7 64 64 448 28672
+62	7932 20 52 52 1.00000313 1.00000313 1 64 64 64 4096
+63	7952 20 52 52 1.00000313 1.00000313 1 64 64 64 4096
+66	7972 171 40 171 1.000001878 7.000000626 8 64 64 512 32768
+70	8143 171 39 170 1.000001878 7.000000626 8 28 28 224 6272
+71	8314 20 53 53 1.00000313 1.00000313 1 28 28 28 784

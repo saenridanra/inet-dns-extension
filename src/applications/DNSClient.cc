@@ -23,26 +23,30 @@
 
 Define_Module(DNSClient);
 
-void DNSClient::initialize() {
+void DNSClient::initialize(int stage) {
+    cSimpleModule::initialize(stage);
     // Initialize gates
-    out.setOutputGate(gate("udpOut"));
-    in.setOutputGate(gate("udpIn"));
-    in.bind(DNS_PORT);
-    query_count = 0;
+    if(stage == 0){
 
-    const char *dns_servers_ = par("dns_servers");
-    cStringTokenizer tokenizer(dns_servers_);
-    const char *token;
+        out.setOutputGate(gate("udpOut"));
+        out.bind(DNS_PORT);
+        query_count = 0;
 
-    while (tokenizer.hasMoreTokens()) {
-        token = tokenizer.nextToken();
-        dns_servers.push_back(IPvXAddressResolver().resolve(token));
+        queries = g_hash_table_new(g_int_hash, g_int_equal);
+        callbacks = g_hash_table_new(g_int_hash, g_int_equal);
+        callback_handles = g_hash_table_new(g_int_hash, g_int_equal);
+        response_cache = g_hash_table_new(g_str_hash, g_str_equal);
     }
+    else if(stage == 3){
+        const char *dns_servers_ = par("dns_servers");
+        cStringTokenizer tokenizer(dns_servers_);
+        const char *token;
 
-    queries = g_hash_table_new(g_int_hash, g_int_equal);
-    callbacks = g_hash_table_new(g_int_hash, g_int_equal);
-    callback_handles = g_hash_table_new(g_int_hash, g_int_equal);
-    response_cache = g_hash_table_new(g_str_hash, g_str_equal);
+        while (tokenizer.hasMoreTokens()) {
+            token = tokenizer.nextToken();
+            dns_servers.push_back(IPvXAddressResolver().resolve(token));
+        }
+    }
 }
 
 void DNSClient::handleMessage(cMessage *msg) {

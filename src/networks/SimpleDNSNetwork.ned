@@ -20,7 +20,63 @@
 
 package opp_dns_extension.networks;
 
+import inet.nodes.ethernet.Eth1G;
+import inet.nodes.inet.Router;
+import inet.nodes.inet.StandardHost;
+import opp_dns_extension.applications.DNSAuthServer;
+import inet.transport.IUDP;
+import inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator;
+import opp_dns_extension.applications.DNSClientTraffGen;
+
 network SimpleDNSNetwork
 {
     @display("bgb=1071,606");
+    submodules:
+        dns1: DNSServerNode {
+            parameters:
+                m_file = "pan.rz.uni-konstanz.de.zone";
+                @display("p=532,303");
+        }
+        cli1: DNSClientNode {
+
+            @display("p=403,303");
+        }
+        configurator: IPv4NetworkConfigurator {
+            @display("p=121,37");
+        }
+
+        router: Router {
+            @display("p=477,206");
+        }
+    connections:
+        cli1.ethg++ <--> Eth1G <--> router.ethg++;
+        dns1.ethg++ <--> Eth1G <--> router.ethg++;
+}
+
+module DNSClientNode extends StandardHost
+{
+    parameters:
+        hasUdp = true;
+
+    submodules:
+        cli: DNSClientTraffGen;
+    connections:
+        cli.udpOut --> udp.appIn++;
+        cli.udpIn <-- udp.appOut++;
+}
+
+module DNSServerNode extends StandardHost
+{
+    parameters:
+        hasUdp = true;
+        string m_file;
+
+    submodules:
+        auth: DNSAuthServer {
+            parameters:
+                master_file = m_file;
+        }
+    connections:
+        auth.udpOut --> udp.appIn++;
+        auth.udpIn <-- udp.appOut++;
 }

@@ -25,11 +25,10 @@ package opp_dns_extension.applications;
 // DNS servers.
 
 // Priority of Servers is in index order.
-simple DNSClient
+moduleinterface DNSClient
 {
     parameters:
-        string dns_servers = default("");
-        
+        string dns_servers;
     gates:
         input udpIn @labels(UDPControlInfo/down);
         output udpOut @labels(UDPControlInfo/down);

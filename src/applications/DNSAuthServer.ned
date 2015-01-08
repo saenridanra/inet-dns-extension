@@ -20,11 +20,17 @@
 
 package opp_dns_extension.applications;
 
+import opp_dns_extension.applications.DNSServerBase;
+
 //
 // TODO auto-generated module
 //
-simple DNSAuthServer
+simple DNSAuthServer like DNSServerBase
 {
     parameters:
         int recursion_available = default(1);
+        string master_file = default("");
+    gates:
+        input udpIn @labels(UDPControlInfo/down);
+        output udpOut @labels(UDPControlInfo/down);
 }

@@ -46,17 +46,17 @@ class DNSAuthServer : public DNSServerBase
     int response_count;
 
   protected:
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
-    virtual int appendEntries(char *hash, GList *dstlist, int type);
-    virtual int appendTransitiveEntries(GList *srclist, GList *dstlist);
   public:
-      /**
-       * Pure virtual method handleQuery
-       *
-       * Should be implemented by the extending class
-       */
-       DNSPacket* handleQuery(ODnsExtension::Query *query);
+        virtual void initialize();
+        virtual void handleMessage(cMessage *msg);
+        virtual int appendEntries(char *hash, GList *dstlist, int type);
+        virtual int appendTransitiveEntries(GList *srclist, GList *dstlist, const char* DNS_TYPE_STR, int DNS_TYPE_VALUE);
+        /**
+        * Pure virtual method handleQuery
+        *
+        * Should be implemented by the extending class
+        */
+        DNSPacket* handleQuery(ODnsExtension::Query *query);
 };
 
 #endif

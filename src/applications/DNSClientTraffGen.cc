@@ -24,20 +24,24 @@
 Define_Module(DNSClientTraffGen);
 
 DNSClientTraffGen::DNSClientTraffGen(){
-
+    timeoutMsg = NULL;
 }
 
 DNSClientTraffGen::~DNSClientTraffGen(){
-
+    cancelAndDelete(timeoutMsg);
 }
 
-void DNSClientTraffGen::initialize() {
-    DNSClient::initialize();
+void DNSClientTraffGen::initialize(int stage) {
+    DNSClient::initialize(stage);
+    printf("DNSClientTraffGen: Stage --> %d \n", stage);
+    if(stage == 0){
+        time_to_send = par("time_to_send").doubleValue();
+        qcount = 0;
+        timeoutMsg = new cMessage("timer");
 
-    time_to_send = par("time_to_send");
-    qcount = 0;
-    timeoutMsg = new cMessage("timer");
-    scheduleAt(time_to_send, timeoutMsg);
+        init_hostnames();
+        scheduleAt(simTime() + time_to_send, timeoutMsg);
+    }
 }
 
 void DNSClientTraffGen::handleMessage(cMessage *msg) {
@@ -52,10 +56,12 @@ void DNSClientTraffGen::handleMessage(cMessage *msg) {
 
 void DNSClientTraffGen::handleTimer(cMessage *msg){
     // Generate message for arbitrary hostname (randomly chosen), resolve it using the DNSClient
+    scheduleAt(simTime() + time_to_send, timeoutMsg);
     int p = intrand(host_names.size());
 
     // choose the dns name, resolve using DNSClient
     char *host_name = (char*) host_names[p].c_str();
+
     int id = DNSClient::resolve(host_name, 1, &DNSClientTraffGen::callback, -1, this);
     // TODO: remember id, for now just ignore
     // we can only do something ones the server is implemented
@@ -94,4 +100,5 @@ void DNSClientTraffGen::callback(int id, void * this_pointer){
 
 void DNSClientTraffGen::finish(){
     // TODO: write some statistics
+    out.close();
 }

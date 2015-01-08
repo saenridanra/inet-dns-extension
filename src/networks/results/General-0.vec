@@ -1,0 +1,259 @@
+version 2
+run General-0-20150108-18:39:32-22169
+attr configname General
+attr datetime 20150108-18:39:32
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvars2 $repetition=0
+attr measurement ""
+attr network SimpleDNSNetwork
+attr processid 22169
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+
+vector 22  SimpleDNSNetwork.cli1.udp  sentPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  sentPk
+attr title  "packets sent, vector(packetBytes)"
+vector 27  SimpleDNSNetwork.cli1.networkLayer.arp  sentReq:vector  ETV
+attr title  "ARP request sent, vector"
+vector 41  SimpleDNSNetwork.cli1.eth[0].encap  encapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, vector(packetBytes)"
+vector 37  SimpleDNSNetwork.cli1.eth[0].mac  rxPkFromHL:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, vector(packetBytes)"
+vector 32  SimpleDNSNetwork.cli1.eth[0].mac  txPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, vector(packetBytes)"
+vector 50  SimpleDNSNetwork.router.eth[0].mac  rxPkOk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, vector(packetBytes)"
+vector 51  SimpleDNSNetwork.router.eth[0].mac  passedUpPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, vector(packetBytes)"
+vector 59  SimpleDNSNetwork.router.eth[0].encap  decapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, vector(packetBytes)"
+vector 45  SimpleDNSNetwork.router.networkLayer.arp  sentReply:vector  ETV
+attr title  "ARP replies sent, vector"
+vector 58  SimpleDNSNetwork.router.eth[0].encap  encapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, vector(packetBytes)"
+vector 54  SimpleDNSNetwork.router.eth[0].mac  rxPkFromHL:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, vector(packetBytes)"
+vector 49  SimpleDNSNetwork.router.eth[0].mac  txPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, vector(packetBytes)"
+vector 33  SimpleDNSNetwork.cli1.eth[0].mac  rxPkOk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, vector(packetBytes)"
+vector 34  SimpleDNSNetwork.cli1.eth[0].mac  passedUpPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, vector(packetBytes)"
+vector 42  SimpleDNSNetwork.cli1.eth[0].encap  decapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, vector(packetBytes)"
+vector 44  SimpleDNSNetwork.router.networkLayer.arp  sentReq:vector  ETV
+attr title  "ARP request sent, vector"
+vector 70  SimpleDNSNetwork.router.eth[1].encap  encapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, vector(packetBytes)"
+vector 66  SimpleDNSNetwork.router.eth[1].mac  rxPkFromHL:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, vector(packetBytes)"
+vector 61  SimpleDNSNetwork.router.eth[1].mac  txPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, vector(packetBytes)"
+vector 11  SimpleDNSNetwork.dns1.eth[0].mac  rxPkOk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, vector(packetBytes)"
+vector 12  SimpleDNSNetwork.dns1.eth[0].mac  passedUpPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, vector(packetBytes)"
+vector 20  SimpleDNSNetwork.dns1.eth[0].encap  decapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, vector(packetBytes)"
+vector 6  SimpleDNSNetwork.dns1.networkLayer.arp  sentReply:vector  ETV
+attr title  "ARP replies sent, vector"
+vector 19  SimpleDNSNetwork.dns1.eth[0].encap  encapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  encapPk
+attr title  "packets encapsulated, vector(packetBytes)"
+vector 15  SimpleDNSNetwork.dns1.eth[0].mac  rxPkFromHL:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkFromHL
+attr title  "packet bytes from higher layer, vector(packetBytes)"
+vector 10  SimpleDNSNetwork.dns1.eth[0].mac  txPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  txPk
+attr title  "packets transmitted, vector(packetBytes)"
+vector 62  SimpleDNSNetwork.router.eth[1].mac  rxPkOk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rxPkOk
+attr title  "packets received OK, vector(packetBytes)"
+vector 63  SimpleDNSNetwork.router.eth[1].mac  passedUpPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  packetSentToUpper
+attr title  "packets passed to higher layer, vector(packetBytes)"
+vector 71  SimpleDNSNetwork.router.eth[1].encap  decapPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  decapPk
+attr title  "packets decapsulated, vector(packetBytes)"
+vector 1  SimpleDNSNetwork.dns1.udp  rcvdPk:vector(packetBytes)  ETV
+attr interpolationmode  none
+attr source  rcvdPk
+attr title  "packets received, vector(packetBytes)"
+vector 2  SimpleDNSNetwork.dns1.udp  passedUpPk:vector(count)  ETV
+attr interpolationmode  none
+attr title  "packets passed up, vector(count)"
+1	63	1.000003756	8
+1	82	2.000001252	8
+1	101	3.000001252	8
+1	120	4.000001252	8
+1	139	5.000001252	8
+1	158	6.000001252	8
+2	63	1.000003756	1
+2	82	2.000001252	2
+2	101	3.000001252	3
+2	120	4.000001252	4
+2	139	5.000001252	5
+2	158	6.000001252	6
+6	46	1.000002504	1
+10	51	1.00000308	64
+11	43	1.000002504	64
+11	60	1.000003756	64
+11	79	2.000001252	64
+11	98	3.000001252	64
+11	117	4.000001252	64
+11	136	5.000001252	64
+11	155	6.000001252	64
+12	43	1.000002504	64
+12	60	1.000003756	64
+12	79	2.000001252	64
+12	98	3.000001252	64
+12	117	4.000001252	64
+12	136	5.000001252	64
+12	155	6.000001252	64
+15	49	1.000002504	64
+19	48	1.000002504	28
+20	44	1.000002504	28
+20	61	1.000003756	28
+20	80	2.000001252	28
+20	99	3.000001252	28
+20	118	4.000001252	28
+20	137	5.000001252	28
+20	156	6.000001252	28
+22	12	1	8
+22	67	2	8
+22	86	3	8
+22	105	4	8
+22	124	5	8
+22	143	6	8
+22	162	7	8
+27	13	1	1
+32	17	1.000000576	64
+32	34	1.000001828	64
+32	71	2.000000576	64
+32	90	3.000000576	64
+32	109	4.000000576	64
+32	128	5.000000576	64
+32	147	6.000000576	64
+32	166	7.000000576	64
+33	27	1.000001252	64
+34	27	1.000001252	64
+37	16	1	64
+37	32	1.000001252	64
+37	70	2	64
+37	89	3	64
+37	108	4	64
+37	127	5	64
+37	146	6	64
+37	165	7	64
+41	15	1	28
+41	31	1.000001252	28
+41	69	2	28
+41	88	3	28
+41	107	4	28
+41	126	5	28
+41	145	6	28
+41	164	7	28
+42	28	1.000001252	28
+44	37	1.000001878	1
+45	21	1.000000626	1
+49	26	1.000001202	64
+50	18	1.000000626	64
+50	35	1.000001878	64
+50	72	2.000000626	64
+50	91	3.000000626	64
+50	110	4.000000626	64
+50	129	5.000000626	64
+50	148	6.000000626	64
+50	167	7.000000626	64
+51	18	1.000000626	64
+51	35	1.000001878	64
+51	72	2.000000626	64
+51	91	3.000000626	64
+51	110	4.000000626	64
+51	129	5.000000626	64
+51	148	6.000000626	64
+51	167	7.000000626	64
+54	24	1.000000626	64
+58	23	1.000000626	28
+59	19	1.000000626	28
+59	36	1.000001878	28
+59	73	2.000000626	28
+59	92	3.000000626	28
+59	111	4.000000626	28
+59	130	5.000000626	28
+59	149	6.000000626	28
+59	168	7.000000626	28
+61	42	1.000002454	64
+61	59	1.000003706	64
+61	78	2.000001202	64
+61	97	3.000001202	64
+61	116	4.000001202	64
+61	135	5.000001202	64
+61	154	6.000001202	64
+62	52	1.00000313	64
+63	52	1.00000313	64
+66	40	1.000001878	64
+66	57	1.00000313	64
+66	76	2.000000626	64
+66	95	3.000000626	64
+66	114	4.000000626	64
+66	133	5.000000626	64
+66	152	6.000000626	64
+66	171	7.000000626	64
+70	39	1.000001878	28
+70	56	1.00000313	28
+70	75	2.000000626	28
+70	94	3.000000626	28
+70	113	4.000000626	28
+70	132	5.000000626	28
+70	151	6.000000626	28
+70	170	7.000000626	28
+71	53	1.00000313	28

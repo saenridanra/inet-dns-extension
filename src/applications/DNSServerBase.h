@@ -24,6 +24,7 @@
 
 #include <omnetpp.h>
 
+#include "INETDefs.h"
 #include "UDPSocket.h"
 #include "IPvXAddressResolver.h"
 #include <vector>
@@ -46,20 +47,13 @@ class DNSServerBase : public cSimpleModule
 
     // Socket over which DNS queries are sent/received
     UDPSocket out;
-    UDPSocket in;
 
   public:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
     virtual DNSPacket* unsupportedOperation(ODnsExtension::Query *q);
     virtual void sendResponse(DNSPacket *response, IPvXAddress returnAddress);
-
-    /**
-     * Pure virtual method handleQuery
-     *
-     * Should be implemented by the extending class
-     */
-    virtual DNSPacket* handleQuery(ODnsExtension::Query *query) = 0;
+    virtual DNSPacket* handleQuery(ODnsExtension::Query *query);
 
 };
 

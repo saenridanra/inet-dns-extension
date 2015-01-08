@@ -38,7 +38,8 @@ public:
     std::vector<std::string> host_names;
 
 protected:
-    virtual void initialize();
+    virtual void initialize(int stage);
+    virtual int numInitStages() const { return 4; }
     virtual void handleMessage(cMessage *msg);
     virtual void finish();
     virtual void handleTimer(cMessage *msg);
