@@ -1,6 +1,5 @@
 uni-konstanz.de
-disy.uni-konstanz.de
-heise.de
-google.de
-google.com
-test-test.google.de
+pan.rz.uni-konstanz.de
+uranos.uni-konstanz.de
+dns3.uni-konstanz.de
+www.uni-konstanz.de

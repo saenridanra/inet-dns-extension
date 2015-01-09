@@ -91,6 +91,7 @@ void DNSClientTraffGen::init_hostnames()
 
 void DNSClientTraffGen::handleResponse(int id){
     // Handle the response here, we got what we asked for
+
 }
 
 void DNSClientTraffGen::callback(int id, void * this_pointer){

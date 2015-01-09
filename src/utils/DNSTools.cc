@@ -55,6 +55,8 @@ DNSPacket* createQuery(char *msg_name, char *name, unsigned short dnsclass, unsi
     q->setQuestions(0, question); // in this case we vary from standard implementations
                                   // questions are appended as array in DNSPacket
 
+    q->setOptions(options);
+
     return q;
 }
 
@@ -94,6 +96,8 @@ DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, char **name, uns
         // questions are appended as array in DNSPacket
         q->setQuestions(i, question);
     }
+
+    q->setOptions(options);
     return q;
 }
 
@@ -138,13 +142,15 @@ struct Query* resolveQuery(cPacket* query)
  * @brief createResponse
  *      Creates a dns response header.
  */
-DNSPacket* createResponse(char *msg_name, unsigned short ancount, unsigned short nscount, unsigned short arcount,
+DNSPacket* createResponse(char *msg_name, unsigned short qdcount, unsigned short ancount, unsigned short nscount, unsigned short arcount,
         unsigned short id, unsigned short opcode, unsigned short AA, unsigned short rd, unsigned short ra,
         unsigned short rcode)
 {
     DNSPacket *r = new DNSPacket(msg_name);
     // Set id and options in header ..
     r->setId(id);
+    r->setQdcount(qdcount);
+    r->setNumQuestions(qdcount);
     r->setAncount(ancount);
     r->setNumAnswers(ancount);
     r->setNscount(nscount);
@@ -166,6 +172,8 @@ DNSPacket* createResponse(char *msg_name, unsigned short ancount, unsigned short
 
     // Append answers separately in another method
 
+    r->setOptions(options);
+
     return r;
 }
 
@@ -173,10 +181,9 @@ DNSPacket* createResponse(char *msg_name, unsigned short ancount, unsigned short
  * @brief appendAnswer
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAnswer(DNSPacket *p, ODnsExtension::DNSRecord *r)
+int appendAnswer(DNSPacket *p, ODnsExtension::DNSRecord *r, int index)
 {
-    int record_num = p->getNumAnswers();
-    p->setAnswers(record_num+1, *r);
+    p->setAnswers(index, *r);
 
     return 1;
 }
@@ -185,10 +192,9 @@ int appendAnswer(DNSPacket *p, ODnsExtension::DNSRecord *r)
  * @brief appendAuthority
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAuthority(DNSPacket *p, ODnsExtension::DNSRecord *r)
+int appendAuthority(DNSPacket *p, ODnsExtension::DNSRecord *r, int index)
 {
-    int record_num = p->getNumAuthorities();
-    p->setAnswers(record_num+1, *r);
+    p->setAuthorities(index, *r);
 
     return 1;
 }
@@ -197,10 +203,9 @@ int appendAuthority(DNSPacket *p, ODnsExtension::DNSRecord *r)
  * @brief appendAdditional
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAdditional(DNSPacket *p, ODnsExtension::DNSRecord *r)
+int appendAdditional(DNSPacket *p, ODnsExtension::DNSRecord *r, int index)
 {
-    int record_num = p->getNumAdditional();
-    p->setAnswers(record_num+1, *r);
+    p->setAdditional(index, *r);
 
     return 1;
 }

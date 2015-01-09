@@ -80,8 +80,14 @@ void DNSZoneConfig::initialize(std::string config_file){
                     //  $VAR  VALUE
                     if(tokens[0] == "$TTL")
                         TTL = std::stoi(tokens[1].substr(1));
-                    else if(tokens[0] == "$ORIGIN")
-                        origin = strdup(tokens[1].c_str());
+                    else if(tokens[0] == "$ORIGIN"){
+                        if(tokens[1].at(tokens[1].length() - 1) == '.'){
+                            origin = g_strndup(tokens[1].c_str(), tokens[1].length()-1);
+                        }
+                        else{
+                            origin = g_strdup(tokens[1].c_str());
+                        }
+                    }
 
                 }
                 else if(tokens[2] == "SOA"){
@@ -91,10 +97,8 @@ void DNSZoneConfig::initialize(std::string config_file){
 #endif
                     // init SOA first line
                     lastsuffix = tokens[0];
-                    zone_soa->mname = (char*) malloc(strlen(tokens[3].c_str()));
-                    zone_soa->mname = (char*) tokens[3].c_str();
-                    zone_soa->rname = (char*) malloc(strlen(tokens[4].c_str()));
-                    zone_soa->rname = (char*) tokens[4].c_str();
+                    zone_soa->mname = g_strdup(tokens[3].c_str());
+                    zone_soa->rname = g_strdup(tokens[4].c_str());
 
                 }
                 else{
@@ -134,45 +138,49 @@ void DNSZoneConfig::initialize(std::string config_file){
                 e = (zone_entry*) malloc(sizeof(*e));
 
                 if(tokens[0] == "IN" || tokens[0] == "CS" || tokens[0] == "HS" || tokens[0] == "CH" || tokens[0] == "*"){
-                    e->domain = (char*) malloc(strlen(lastsuffix.c_str()));
-                    e->domain = (char*) lastsuffix.c_str();
-                    e->__class = (char*) malloc(strlen(tokens[0].c_str()));
-                    e->__class = (char*) tokens[0].c_str();
-                    e->type = (char*) malloc(strlen(tokens[1].c_str()));
-                    e->type = (char*) tokens[1].c_str();
-                    e->data = (char*) malloc(strlen(tokens[2].c_str()));
-                    e->data = (char*) tokens[2].c_str();
+                    if(strcmp(lastsuffix.c_str(), "@") == 0){
+                        e->domain = g_strdup(origin);
+                    }
+                    else{
+                        e->domain = g_strdup(lastsuffix.c_str());
+                    }
+                    e->__class = g_strdup(tokens[0].c_str());
+                    e->type =  g_strdup(tokens[1].c_str());
+
+                    // remove trailing dot from entry..
+                    if(tokens[2].at(tokens[2].length() - 1) == '.'){
+                        e->data = g_strndup(tokens[2].c_str(), tokens[2].length()-1);
+                    }
+                    else{
+                        e->data = g_strdup(tokens[2].c_str());
+                    }
                 }
                 else{
                     // should start with the suffix
-                    e->domain = (char*) malloc(strlen(tokens[0].c_str()));
-                    e->domain = (char*) tokens[0].c_str();
+                    if(strcmp(tokens[0].c_str(), "@") == 0){
+                        e->domain = g_strdup(origin);
+                    }
+                    else{
+                        e->domain = g_strdup(tokens[0].c_str());
+                    }
                     lastsuffix = e->domain;
-                    e->__class = (char*) malloc(strlen(tokens[1].c_str()));
-                    e->__class = (char*) tokens[1].c_str();
-                    e->type = (char*) malloc(strlen(tokens[2].c_str()));
-                    e->type = (char*) tokens[2].c_str();
-                    e->data = (char*) malloc(strlen(tokens[3].c_str()));
-                    e->data = (char*) tokens[3].c_str();
+                    e->__class =  g_strdup(tokens[1].c_str());
+                    e->type =  g_strdup(tokens[2].c_str());
+
+                    // remove trailing dot from entry..
+                    if(tokens[3].at(tokens[3].length() - 1) == '.'){
+                        e->data = g_strndup(tokens[3].c_str(), tokens[3].length()-1);
+                    }
+                    else{
+                        e->data = g_strdup(tokens[3].c_str());
+                    }
                 }
 
                 if(strcmp(e->domain, origin) != 0){
-                    namehash = (char*) malloc(strlen(origin) + strlen(e->domain) + strlen(e->type) + strlen(e->__class) + 4);
-                    strcpy(namehash, e->domain);
-                    strcat(namehash, ".");
-                    strcat(namehash, origin);
-                    strcat(namehash, ":");
-                    strcat(namehash, e->type);
-                    strcat(namehash, ":");
-                    strcat(namehash, e->__class);
+                    namehash = g_strdup_printf("%s.%s:%s:%s", e->domain, origin, e->type, e->__class);
                 }
                 else{
-                    namehash = (char*) malloc(strlen(e->domain) + strlen(e->type) + strlen(e->__class) + 3);
-                    strcpy(namehash, e->domain);
-                    strcat(namehash, ":");
-                    strcat(namehash, e->type);
-                    strcat(namehash, ":");
-                    strcat(namehash, e->__class);
+                    namehash = g_strdup_printf("%s:%s:%s", e->domain, e->type, e->__class);
                 }
 
                 if(!g_hash_table_contains(zone_catalog, namehash)){
@@ -184,6 +192,8 @@ void DNSZoneConfig::initialize(std::string config_file){
                     GList* list = (GList*) g_hash_table_lookup(zone_catalog, namehash);
                     list = g_list_append(list, e);
                 }
+
+                //g_free(namehash); // don't free the hash, it is needed for the hash table..
 
 #ifdef DEBUG_ENABLED
         printf("Inserted %s into hashtable\n", namehash);
@@ -232,10 +242,10 @@ char* DNSZoneConfig::getOrigin(){
 guint zone_entry_destroy(gpointer _entry){
     zone_entry *entry = (zone_entry*) _entry;
 
-    free(entry->domain);
-    free(entry->type);
-    free(entry->__class);
-    free(entry->data);
+    g_free(entry->domain);
+    g_free(entry->type);
+    g_free(entry->__class);
+    g_free(entry->data);
     free(entry);
 
     return 0;

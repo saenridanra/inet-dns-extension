@@ -54,10 +54,9 @@ void DNSServerBase::handleMessage(cMessage *msg)
             // and send the response to the source address
 
             cPacket *pk = check_and_cast<cPacket *>(msg);
-            //UDPControlInfo *ctrl = check_and_cast<UDPControlInfo *>(pk->getControlInfo());
-            //IPvXAddress srcAddress = ctrl->
-            //sendResponse(response, srcAddress);
-            //delete ctrl;
+            UDPDataIndication *ctrl = check_and_cast<UDPDataIndication *>(pk->getControlInfo());
+            IPvXAddress srcAddress = ctrl->getSrcAddr();
+            sendResponse(response, srcAddress);
             delete msg;
         }
 

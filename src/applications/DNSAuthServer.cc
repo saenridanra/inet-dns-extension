@@ -90,6 +90,11 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
     int is_authoritative = 0;
     std::string query_name = q.qname;
     int pos = query_name.find(config->getOrigin());
+
+    // geerate msg name
+    char *msg_name = (char*) malloc(20);
+    sprintf(msg_name, "dns_response#%d", response_count++);
+
     if (pos != std::string::npos)
     {
         is_authoritative = 1;
@@ -160,17 +165,12 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
     else
     {
         // we have a specific record, so lets look it up in the hash table
-        namehash = (char*) malloc(strlen(q.qname) + strlen(type) + strlen(__class) + 3);
-        strcpy(namehash, q.qname);
-        strcat(namehash, ":");
-        strcat(namehash, type);
-        strcat(namehash, ":");
-        strcat(namehash, __class);
+        namehash = g_strdup_printf("%s:%s:%s", q.qname, type, __class);
 
-        if (is_authoritative && config->hasEntry(namehash))
+        if (is_authoritative)
         {
-            an_records = appendEntries(namehash, answer_list, q.qtype);
-            free(namehash);
+            answer_list = appendEntries(namehash, answer_list, q.qtype, &an_records);
+            g_free(namehash);
 
             // fill out authority section with NS records
             // if the request was on the ZONE ORIGIN
@@ -178,59 +178,54 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
             if (q.qtype != DNS_TYPE_VALUE_NS)
             {
                 // get NS records
-                nshash = (char*) malloc(strlen(config->getOrigin()) + strlen(DNS_TYPE_STR_NS) + strlen(__class) + 3);
-                strcpy(nshash, config->getOrigin());
-                strcat(nshash, ":");
-                strcat(nshash, DNS_TYPE_STR_NS);
-                strcat(nshash, ":");
-                strcat(nshash, __class);
-                ns_records += appendEntries(nshash, ns_list, DNS_TYPE_VALUE_NS);
-                free(nshash);
+                nshash = g_strdup_printf("%s:%s:%s", config->getOrigin(), DNS_TYPE_STR_NS, __class);
+                ns_list = appendEntries(nshash, ns_list, DNS_TYPE_VALUE_NS, &ns_records);
+                g_free(nshash);
             }
 
-            if(q.qtype != DNS_TYPE_VALUE_A || q.qtype != DNS_TYPE_VALUE_AAAA){
-                ar_records += appendTransitiveEntries(answer_list, ar_list, DNS_TYPE_STR_A , DNS_TYPE_VALUE_A);
-                ar_records += appendTransitiveEntries(answer_list, ar_list, DNS_TYPE_STR_AAAA , DNS_TYPE_VALUE_AAAA);
+            if(q.qtype != DNS_TYPE_VALUE_A && q.qtype != DNS_TYPE_VALUE_AAAA){
+                ar_list = appendTransitiveEntries(answer_list, ar_list, DNS_TYPE_STR_A , DNS_TYPE_VALUE_A, &ar_records);
+                ar_list = appendTransitiveEntries(answer_list, ar_list, DNS_TYPE_STR_AAAA , DNS_TYPE_VALUE_AAAA, &ar_records);
+            }
+
+            if(ns_records > 0){
+                ar_list = appendTransitiveEntries(ns_list, ar_list, DNS_TYPE_STR_A , DNS_TYPE_VALUE_A, &ar_records);
+                ar_list = appendTransitiveEntries(ns_list, ar_list, DNS_TYPE_STR_AAAA , DNS_TYPE_VALUE_AAAA, &ar_records);
             }
 
             // add CNAME if there are links for this label
             if(q.qtype != DNS_TYPE_VALUE_CNAME){
                 // get NS records
                 int old_an_records = an_records;
-                cnhash = (char*) malloc(strlen(q.qname) + strlen(DNS_TYPE_STR_NS) + strlen(__class) + 3);
-                strcpy(cnhash, q.qname);
-                strcat(cnhash, ":");
-                strcat(cnhash, DNS_TYPE_STR_CNAME);
-                strcat(cnhash, ":");
-                strcat(cnhash, __class);
-                an_records += appendEntries(cnhash, answer_list, DNS_TYPE_VALUE_CNAME);
-                free(cnhash);
+                cnhash = g_strdup_printf("%s:%s:%s", q.qname, DNS_TYPE_STR_CNAME, __class);
+                answer_list = appendEntries(cnhash, answer_list, DNS_TYPE_VALUE_CNAME, &an_records);
+                g_free(cnhash);
 
                 // now we don't add the QTYPE record to additional, but to the answer section
                 // iterate through the CNAME records, add the QTYPE records accordingly....
-                for(int i = old_an_records; i < an_records; i++){
+                int an_records_cpy = an_records; // since an_records is modified on the fly
+                for(int i = old_an_records; i < an_records_cpy; i++){
                     DNSRecord* t_r = (DNSRecord*) g_list_nth(answer_list, i)->data;
                     // use the data string to create a hash and find the qtype record
-                    char* namecpy = strdup(t_r->rname);
-                    cnhash = (char*) malloc(strlen(namecpy) + strlen(type) + strlen(__class) + 3);
-                    strcpy(cnhash, namecpy);
-                    strcat(cnhash, ":");
-                    strcat(cnhash, type);
-                    strcat(cnhash, ":");
-                    strcat(cnhash, __class);
+                    char* namecpy = strdup(t_r->rdata);
+                    cnhash = g_strdup_printf("%s.%s:%s:%s", namecpy, config->getOrigin(), type, __class);
 
                     // get entries for type using this hash
-                    an_records += appendEntries(cnhash, answer_list, q.qtype);
+                    answer_list = appendEntries(cnhash, answer_list, q.qtype, &an_records);
 
-                    free(cnhash);
+                    g_free(cnhash);
                 }
             }
 
-            size_t msg_size = 13 + floor(log10(abs(response_count))) + 1;
-            char *msg_name = (char*) malloc(msg_size + 1);
-            sprintf(msg_name, "dns_response#%d", response_count);
-            response = ODnsExtension::createResponse(msg_name, an_records, ns_records, ar_records, id, opcode,
-                    1, rd, ra, 0);
+            if(an_records == 0){ // no entry found, although authoritative
+                response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id, opcode,
+                        1, rd, ra, 3);
+            }
+            else{
+                response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id, opcode,
+                        1, rd, ra, 0);
+            }
+            response->setQuestions(0, q);
 
         }
         else
@@ -239,12 +234,25 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
             {
                 if (rd)
                 {
-                    // TODO: recursion desired: answer question recursively
+                    // TODO: Do recursion here!
+                    if(an_records == 0){ // recursion desired, but no entry found
+                        response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id, opcode,
+                                1, rd, ra, 3);
+                    }
+                    else{
+                        response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id, opcode,
+                                1, rd, ra, 0);
+                    }
                 }
                 else
                 {
-                    // TODO: no recursion desired, send a not found
+                    // response with not found err
+                    response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id, opcode,
+                            1, rd, ra, 3);
                 }
+
+                // set question
+                response->setQuestions(0, q);
             }
             else
             {
@@ -255,95 +263,105 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
     }
 
     // append an, ns, ar to response
-    GList *next = g_list_first(answer_list);
-    while(g_list_next(next)){
-        ODnsExtension::appendAnswer(response, (ODnsExtension::DNSRecord*) next->data);
+    int index = 0;
+
+    if(an_records > 0){
+        GList *next = g_list_first(answer_list);
+        while(next){
+            ODnsExtension::appendAnswer(response, (ODnsExtension::DNSRecord*) next->data, index++);
+
+            next = g_list_next(next);
+        }
+        next = g_list_first(ns_list);
+        index = 0;
+        while(next){
+            ODnsExtension::appendAuthority(response, (ODnsExtension::DNSRecord*) next->data, index++);
+
+            next = g_list_next(next);
+        }
+        next = g_list_first(ar_list);
+        index = 0;
+        while(next){
+            ODnsExtension::appendAdditional(response, (ODnsExtension::DNSRecord*) next->data, index++);
+
+            next = g_list_next(next);
+        }
     }
-    next = g_list_first(ns_list);
-    while(g_list_next(next)){
-        ODnsExtension::appendAuthority(response, (ODnsExtension::DNSRecord*) next->data);
-    }
-    next = g_list_first(ns_list);
-    while(g_list_next(next)){
-        ODnsExtension::appendAdditional(response, (ODnsExtension::DNSRecord*) next->data);
+    else{
+        // just append the SOA entry.
     }
 
     return response;
 
 }
 
-int DNSAuthServer::appendEntries(char *hash, GList *dstlist, int type)
+GList* DNSAuthServer::appendEntries(char *hash, GList *dstlist, int type, int *num_records)
 {
-    int num_records = 0;
     GList* entries = config->getEntry(hash);
     GList* next = g_list_first(entries);
     ODnsExtension::DNSRecord *rr;
 
-    while (g_list_next(next))
+    while (next)
     {
         zone_entry *entry = (zone_entry*) next->data;
         rr = (ODnsExtension::DNSRecord*) malloc(sizeof(*rr));
-        rr->rdata = (char*) malloc(strlen(entry->data));
-        memcpy(rr->rdata, entry->data, strlen(entry->data));
-        rr->rname = (char*) malloc(strlen(entry->domain));
-        memcpy(rr->rname, entry->domain, strlen(entry->domain));
+        rr->rdata = g_strdup(entry->data);
+        rr->rname = g_strdup(entry->domain);
         rr->rclass = (short) DNS_CLASS_IN;
         rr->rtype = (short) type;
         rr->rdlength = strlen(rr->rdata);
         rr->ttl = config->getTTL();
 
         dstlist = g_list_append(dstlist, rr);
-        num_records++;
+        (*num_records)++;
 
         // Check if transitive resolution is necessary:
+
+        next = g_list_next(next);
     }
-    return num_records;
+    return dstlist;
 }
 
-int DNSAuthServer::appendTransitiveEntries(GList *srclist, GList *dstlist, const char* DNS_TYPE_STR, int DNS_TYPE_VALUE)
+GList* DNSAuthServer::appendTransitiveEntries(GList *srclist, GList *dstlist, const char* DNS_TYPE_STR, int DNS_TYPE_VALUE, int *ar_records)
 {
     GList *next = g_list_first(srclist);
     char* hash;
-    int ar_records = 0;
 
     // iterate through the source list
-    while (g_list_next(next))
+    while (next)
     {
         // get the zone entry
         zone_entry* record = (zone_entry*) next->data;
 
         // calculate hash from domain + type + class
         // first ar hash is for A records..
-        hash = (char*) malloc(strlen(record->domain) + strlen(DNS_TYPE_STR) + strlen(record->__class) + 2);
-        strcpy(hash, record->domain);
-        strcat(hash, ":");
-        strcat(hash, DNS_TYPE_STR);
-        strcat(hash, ":");
-        strcat(hash, record->__class);
+        hash = g_strdup_printf("%s:%s:%s", record->data, DNS_TYPE_STR, DNS_CLASS_STR_IN);
 
         GList* transitive_entries = config->getEntry(hash);
-        free (hash);
+        g_free (hash);
         GList* t_next = g_list_first(transitive_entries);
         ODnsExtension::DNSRecord *dns_record;
 
         // go through
-        while (g_list_next(t_next))
+        while (t_next)
         {
             zone_entry *entry = (zone_entry*) t_next->data;
             dns_record = (ODnsExtension::DNSRecord*) malloc(sizeof(*dns_record));
-            dns_record->rdata = (char*) malloc(strlen(entry->data));
-            memcpy(dns_record->rdata, entry->data, strlen(entry->data));
-            dns_record->rname = (char*) malloc(strlen(entry->domain));
-            memcpy(dns_record->rname, entry->domain, strlen(entry->domain));
+            dns_record->rdata = g_strdup(entry->data);
+            dns_record->rname = g_strdup(entry->domain);
             dns_record->rclass = (short) DNS_CLASS_IN;
             dns_record->rtype = (short) DNS_TYPE_VALUE;
             dns_record->rdlength = strlen(dns_record->rdata);
             dns_record->ttl = config->getTTL();
 
             dstlist = g_list_append(dstlist, dns_record);
-            ar_records++;
+            (*ar_records)++;
+
+            t_next = g_list_next(t_next);
         }
+
+        next = g_list_next(next);
     }
 
-    return ar_records;
+    return dstlist;
 }

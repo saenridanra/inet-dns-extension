@@ -79,7 +79,7 @@ struct Query* resolveQuery(cPacket* query);
  * @brief createResponse
  *      Creates a dns response header.
  */
-DNSPacket* createResponse(char *msg_name, unsigned short ancount, unsigned short nscount,
+DNSPacket* createResponse(char *msg_name, unsigned short qdcount, unsigned short ancount, unsigned short nscount,
         unsigned short arcount, unsigned short id, unsigned short opcode, unsigned short AA, unsigned short rd,
         unsigned short ra, unsigned short rcode);
 
@@ -87,19 +87,19 @@ DNSPacket* createResponse(char *msg_name, unsigned short ancount, unsigned short
  * @brief appendAnswer
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAnswer(DNSPacket *p, ODnsExtension::DNSRecord *r);
+int appendAnswer(DNSPacket *p, ODnsExtension::DNSRecord *r, int index);
 
 /**
  * @brief appendAuthority
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAuthority(DNSPacket *p, ODnsExtension::DNSRecord *r);
+int appendAuthority(DNSPacket *p, ODnsExtension::DNSRecord *r, int index);
 
 /**
  * @brief appendAdditional
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAdditional(DNSPacket *p, ODnsExtension::DNSRecord *r);
+int appendAdditional(DNSPacket *p, ODnsExtension::DNSRecord *r, int index);
 
 /**
  * @brief resolveResponse
