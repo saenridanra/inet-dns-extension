@@ -30,6 +30,7 @@
 
 #include "../utils/DNSTools.h"
 #include "glib.h"
+#include "glib/gprintf.h"
 
 #include "../common/DNSCache.h"
 #include "../common/DNSSimpleCache.h"
@@ -64,7 +65,7 @@ class DNSClient : public cSimpleModule
     virtual int numInitStages() const { return 4; }
     virtual void handleMessage(cMessage *msg);
     virtual IPvXAddress* getAddressFromCache(char* dns_name);
-    virtual int resolve(char* dns_name, int primary, void (* callback) (int, void*), int id, void * handle);
+    virtual int resolve(char* dns_name, int qtype, int primary, void (* callback) (int, void*), int id, void * handle);
 
   public:
 

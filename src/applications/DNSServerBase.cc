@@ -57,7 +57,6 @@ void DNSServerBase::handleMessage(cMessage *msg)
             UDPDataIndication *ctrl = check_and_cast<UDPDataIndication *>(pk->getControlInfo());
             IPvXAddress srcAddress = ctrl->getSrcAddr();
             sendResponse(response, srcAddress);
-            delete msg;
         }
 
     }

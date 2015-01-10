@@ -23,6 +23,8 @@
 
 namespace ODnsExtension {
 
+const char* DNS_TYPE_ARRAY_ANY[13] = {"A", "NS", "CNAME", "SOA", "NULL", "PTR", "HINFO", "MINFO", "MX", "TXT", "AAAA", "SRV", "AXFR"};
+
 /**
  * @brief createQuery
  *      Creates simple DNS Queries for exactly one question
@@ -347,9 +349,41 @@ const char* getTypeStringForValue(int type){
         case DNS_TYPE_VALUE_SRV:
             rtype = DNS_TYPE_STR_SRV;
             break;
+        case DNS_TYPE_VALUE_ANY:
+            rtype = DNS_TYPE_STR_ANY;
+            break;
+        case DNS_TYPE_VALUE_AXFR:
+            rtype = DNS_TYPE_STR_AXFR;
+            break;
     }
 
     return rtype;
+}
+
+/**
+ * @brief getTypeStringForValue
+ *      Get the given DNS_TYPE_VALUE value for a DNS_TYPE_STR
+ *
+ * @return
+ *      the according type value. -1 if the type is not available.
+ */
+int getTypeValueForString(char* type){
+    if(g_strcmp0(type, DNS_TYPE_STR_A) == 0) return DNS_TYPE_VALUE_A;
+    if(g_strcmp0(type, DNS_TYPE_STR_AAAA) == 0) return DNS_TYPE_VALUE_AAAA;
+    if(g_strcmp0(type, DNS_TYPE_STR_CNAME) == 0) return DNS_TYPE_VALUE_CNAME;
+    if(g_strcmp0(type, DNS_TYPE_STR_HINFO) == 0) return DNS_TYPE_VALUE_HINFO;
+    if(g_strcmp0(type, DNS_TYPE_STR_MINFO) == 0) return DNS_TYPE_VALUE_MINFO;
+    if(g_strcmp0(type, DNS_TYPE_STR_MX) == 0) return DNS_TYPE_VALUE_MX;
+    if(g_strcmp0(type, DNS_TYPE_STR_NS) == 0) return DNS_TYPE_VALUE_NS;
+    if(g_strcmp0(type, DNS_TYPE_STR_NULL) == 0) return DNS_TYPE_VALUE_NULL;
+    if(g_strcmp0(type, DNS_TYPE_STR_PTR) == 0) return DNS_TYPE_VALUE_PTR;
+    if(g_strcmp0(type, DNS_TYPE_STR_SOA) == 0) return DNS_TYPE_VALUE_SOA;
+    if(g_strcmp0(type, DNS_TYPE_STR_TXT) == 0) return DNS_TYPE_VALUE_TXT;
+    if(g_strcmp0(type, DNS_TYPE_STR_SRV) == 0) return DNS_TYPE_VALUE_SRV;
+    if(g_strcmp0(type, DNS_TYPE_STR_ANY) == 0) return DNS_TYPE_VALUE_ANY;
+    if(g_strcmp0(type, DNS_TYPE_STR_AXFR) == 0) return DNS_TYPE_VALUE_AXFR;
+
+    return -1;
 }
 
 /**
@@ -385,6 +419,14 @@ const char* getClassStringForValue(int _class){
     return __class;
 }
 
+void printDNSRecord(DNSRecord* r){
+    g_printf("%s\t\t%s\t%s\t%s\n", r->rname, getTypeStringForValue(r->rtype), getClassStringForValue(r->rclass), r->rdata);
+}
+
+void printDNSQuestion(DNSQuestion* q){
+    g_printf("%s\t\t%s\t%s\n", q->qname, getTypeStringForValue(q->qtype), getClassStringForValue(q->qclass));
+}
+
 /**
  * @brief freeDnsRecord
  *      frees the given dns record
@@ -402,6 +444,14 @@ int freeDnsRecord(DNSRecord* r){
     free(r);
 
     return 1;
+}
+
+/**
+ * @brief getTypeArray
+ *      returns a type array with all DNS type strings
+ */
+const char** getTypeArray(){
+    return DNS_TYPE_ARRAY_ANY;
 }
 
 } /* namespace ODnsExtension */

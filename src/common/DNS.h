@@ -64,8 +64,6 @@ namespace ODnsExtension {
 #define DNS_TYPE_STR_AXFR       "AXFR"
 #define DNS_TYPE_STR_ANY        "ANY"
 
-#define DNS_TYPE_ARRAY_ANY      {"A", "NS", "CNAME", "SOA", "NULL", "PTR", "HINFO", "MINFO", "MX", "TXT", "AAAA", "SRV", "AXFR"}
-
 /**
  * DNS Classes
  */

@@ -62,9 +62,14 @@ void DNSClientTraffGen::handleTimer(cMessage *msg){
     int p = intrand(host_names.size());
 
     // choose the dns name, resolve using DNSClient
-    char *host_name = (char*) host_names[p].c_str();
+    char* host_name = (char*) host_names[p].c_str();
+    char* type = (char*) types[p].c_str();
+    int _type = ODnsExtension::getTypeValueForString(type);
+    if(_type == -1){
+        cRuntimeError("Malformated hostname_file with unknown type.");
+    }
 
-    int id = DNSClient::resolve(host_name, 1, &DNSClientTraffGen::callback, -1, this);
+    int id = DNSClient::resolve(host_name, _type, 1, &DNSClientTraffGen::callback, -1, this);
     // TODO: remember id, for now just ignore
     // we can only do something ones the server is implemented
 
@@ -87,7 +92,10 @@ void DNSClientTraffGen::init_hostnames()
         if (line.empty() || line[0] == '#')
             continue;
 
-        host_names.push_back(line);
+        // use a tokenizer to interpret the line
+        std::vector<std::string> tokens = cStringTokenizer(line.c_str()).asVector();
+        types.push_back(tokens[0]);
+        host_names.push_back(tokens[1]);
     }
 }
 

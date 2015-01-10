@@ -54,7 +54,6 @@ void DNSClient::initialize(int stage) {
 void DNSClient::handleMessage(cMessage *msg) {
     int isDNS = 0;
     int isQR = 0;
-    char* fallback_dnsname;
     void (*callback) (int, void*);
     void *callback_handle;
     IPvXAddress tmp;
@@ -74,11 +73,12 @@ void DNSClient::handleMessage(cMessage *msg) {
             case 2:  // Server failure
                 // make a query to the secondary DNS using the same
                 // ID, the same callback and same dns query name
-                fallback_dnsname = (char*) g_hash_table_lookup(queries, &response->id);
-                callback = (void (*) (int, void*)) g_hash_table_lookup(callbacks, &response->id);
-                callback_handle = (void *) g_hash_table_lookup(callback_handles, &response->id);
-                g_hash_table_remove(queries, &response->id);
-                resolve(fallback_dnsname, 0, callback, response->id, callback_handle);
+                // TODO: redo this part .. this is not going to work
+//                fallback_dnsname = (char*) g_hash_table_lookup(queries, &response->id);
+//                callback = (void (*) (int, void*)) g_hash_table_lookup(callbacks, &response->id);
+//                callback_handle = (void *) g_hash_table_lookup(callback_handles, &response->id);
+//                g_hash_table_remove(queries, &response->id);
+//                resolve(fallback_dnsname, 0, callback, response->id, callback_handle);
                 return;
 
             case 3: break; // Name error
@@ -88,30 +88,41 @@ void DNSClient::handleMessage(cMessage *msg) {
 
         // put records in the cache
         // this is simply choice, the cache chooses what stays and what doesn't.
-        //g_printf("DEBUG MSG: Checking CACHE --- [ancount=%u,nscount=%u,arcount=%u]\n", response->ancount, response->nscount, response->arcount);
 
+        uint32_t* key;
+        key=(uint32_t *)malloc(sizeof(uint32_t));
+        *key = response->id;
+
+        g_print("**********************\nResolved query:\n\n;;Question Section:\n");
+        DNSPacket* q = (DNSPacket*) g_hash_table_lookup(queries, key);
+        ODnsExtension::printDNSQuestion(&q->getQuestions(0));
+
+        g_print("\n;;Answer Section:\n");
         for(int i = 0; i < response->ancount; i++){
             DNSRecord* r = &response->answers[i];
+            ODnsExtension::printDNSRecord(r);
             cache->put_into_cache(r);
         }
 
+        g_print("\n;;Authority Section:\n");
         for(int i = 0; i < response->nscount; i++){
             DNSRecord* r = &response->authoritative[i];
+            ODnsExtension::printDNSRecord(r);
             cache->put_into_cache(r);
         }
 
+        g_print("\n;;Additional Section:\n");
         for(int i = 0; i < response->arcount; i++){
             DNSRecord* r = &response->additional[i];
+            ODnsExtension::printDNSRecord(r);
             cache->put_into_cache(r);
         }
+        g_print("**********************\n");
 
         g_hash_table_remove(queries, &response->id);
 
         // call the callback and tell it that the query finished
         // the response is now in the cache and can be used..
-        uint32_t* key;
-        key=(uint32_t *)malloc(sizeof(uint32_t));
-        *key = response->id;
         callback = (void (*) (int, void*)) g_hash_table_lookup(callbacks, key);
         callback_handle = (void *) g_hash_table_lookup(callback_handles, key);
         callback(*key, callback_handle);
@@ -140,7 +151,7 @@ IPvXAddress * DNSClient::getAddressFromCache(char* dns_name){
 
 }
 
-int DNSClient::resolve(char* dns_name, int primary, void (*callback) (int, void*), int id, void * handle) {
+int DNSClient::resolve(char* dns_name, int qtype, int primary, void (*callback) (int, void*), int id, void * handle) {
     //First check if we already resolved this.
     DNSPacket* query;
 
@@ -153,18 +164,18 @@ int DNSClient::resolve(char* dns_name, int primary, void (*callback) (int, void*
     else{
         sprintf(msg_name, "dns_query#%d", id);
     }
-    query = ODnsExtension::createQuery(msg_name, dns_name, DNS_CLASS_IN, DNS_TYPE_VALUE_A, query_count, 1);
+    query = ODnsExtension::createQuery(msg_name, dns_name, DNS_CLASS_IN, qtype, query_count, 1);
 
 
     // put it into the hash table for the given query_count number, so we can identify the query
     uint32_t* key;
-    key=(uint32_t *)malloc(sizeof(uint32_t));
+    key= (uint32_t *) malloc(sizeof(uint32_t));
     *key = query_count;
-    g_hash_table_insert(queries, key, &dns_name);
-    key=(uint32_t *)malloc(sizeof(uint32_t));
+    g_hash_table_insert(queries, key, (gpointer) query);
+    key= (uint32_t *) malloc(sizeof(uint32_t));
     *key = query_count;
     g_hash_table_insert(callbacks, key, (gpointer) callback);
-    key=(uint32_t *)malloc(sizeof(uint32_t));
+    key= (uint32_t *) malloc(sizeof(uint32_t));
     *key = query_count;
     g_hash_table_insert(callback_handles, key, (gpointer) handle);
 

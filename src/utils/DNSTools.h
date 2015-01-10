@@ -34,6 +34,7 @@
 #include "../common/DNS.h"
 #include "../messages/DNSPacket_m.h"
 #include "glib.h"
+#include "glib/gprintf.h"
 
 
 /**
@@ -127,6 +128,12 @@ int isDNSpacket(cPacket *p);
 int isQueryOrResponse(cPacket *p);
 
 /**
+ * @brief getTypeArray
+ *      returns a type array with all DNS type strings
+ */
+const char** getTypeArray();
+
+/**
  * @brief getTypeStringForValue
  *      Get the given DNS_TYPE_STR value for a DNS_TYPE_VALUE
  *
@@ -136,6 +143,15 @@ int isQueryOrResponse(cPacket *p);
 const char* getTypeStringForValue(int type);
 
 /**
+ * @brief getTypeStringForValue
+ *      Get the given DNS_TYPE_VALUE value for a DNS_TYPE_STR
+ *
+ * @return
+ *      the according type value.
+ */
+int getTypeValueForString(char* type);
+
+/**
  * @brief getClassStringForValue
  *      Get the given DNS_CLASS_STR value for a DNS_CLASS
  *
@@ -143,6 +159,18 @@ const char* getTypeStringForValue(int type);
  *      the desired string value.
  */
 const char* getClassStringForValue(int _class);
+
+/**
+ * @brief printDNSRecord
+ *      prints a dns record to stdout using g_printf
+ */
+void printDNSRecord(DNSRecord* r);
+
+/**
+ * @brief printDNSQuestion
+ *      prints a dns question to stdout using g_printf
+ */
+void printDNSQuestion(DNSQuestion* q);
 
 /**
  * @brief freeDnsRecord

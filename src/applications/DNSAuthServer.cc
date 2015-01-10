@@ -147,17 +147,36 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query) {
     case DNS_TYPE_VALUE_SRV:
         type = DNS_TYPE_STR_SRV;
         break;
+    case DNS_TYPE_VALUE_ANY:
+        type = DNS_TYPE_STR_ANY;
+        break;
+    case DNS_TYPE_VALUE_AXFR:
+        type = DNS_TYPE_STR_AXFR;
+        break;
     }
 
     // now we can lookup the name in the database
-    if (q.qtype == DNS_TYPE_VALUE_ANY) {
-        // TODO: we need to find all records for either the class any statement
-        // or the type..
-    } else {
-        // we have a specific record, so lets look it up in the hash table
-        namehash = g_strdup_printf("%s:%s:%s", q.qname, type, __class);
 
-        if (is_authoritative) {
+    if (is_authoritative) {
+        if (q.qtype == DNS_TYPE_VALUE_ANY) {
+            // or the type..
+            const char** type_array = ODnsExtension::getTypeArray();
+            for (uint32_t i = 0; i < sizeof(type_array); i++) {
+                char* type_str = g_strdup(type_array[i]);
+                namehash = g_strdup_printf("%s:%s:%s", q.qname, type_str,
+                        __class);
+
+                // we basically just have to append every record that matches
+                // the hash to the answer section
+                answer_list = appendEntries(namehash, answer_list, ODnsExtension::getTypeValueForString(type_str),
+                        &an_records);
+                g_free(type_str);
+                g_free(namehash);
+            }
+
+        } else {
+            // we have a specific record, so lets look it up in the hash table
+            namehash = g_strdup_printf("%s:%s:%s", q.qname, type, __class);
             answer_list = appendEntries(namehash, answer_list, q.qtype,
                     &an_records);
             g_free(namehash);
@@ -170,7 +189,7 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query) {
                 if (q.qtype != DNS_TYPE_VALUE_NS) {
                     // get NS records
                     nshash = g_strdup_printf("%s:%s:%s", config->getOrigin(),
-                            DNS_TYPE_STR_NS, __class);
+                    DNS_TYPE_STR_NS, __class);
                     ns_list = appendEntries(nshash, ns_list, DNS_TYPE_VALUE_NS,
                             &ns_records);
                     g_free(nshash);
@@ -179,18 +198,16 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query) {
                 if (q.qtype != DNS_TYPE_VALUE_A
                         && q.qtype != DNS_TYPE_VALUE_AAAA) {
                     ar_list = appendTransitiveEntries(answer_list, ar_list,
-                            DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, &ar_records);
+                    DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, &ar_records);
                     ar_list = appendTransitiveEntries(answer_list, ar_list,
-                            DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA,
-                            &ar_records);
+                    DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, &ar_records);
                 }
 
                 if (ns_records > 0) {
                     ar_list = appendTransitiveEntries(ns_list, ar_list,
-                            DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, &ar_records);
+                    DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, &ar_records);
                     ar_list = appendTransitiveEntries(ns_list, ar_list,
-                            DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA,
-                            &ar_records);
+                    DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, &ar_records);
                 }
 
                 // add CNAME if there are links for this label
@@ -198,9 +215,9 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query) {
                     // get NS records
                     int old_an_records = an_records;
                     cnhash = g_strdup_printf("%s:%s:%s", q.qname,
-                            DNS_TYPE_STR_CNAME, __class);
+                    DNS_TYPE_STR_CNAME, __class);
                     answer_list = appendEntries(cnhash, answer_list,
-                            DNS_TYPE_VALUE_CNAME, &an_records);
+                    DNS_TYPE_VALUE_CNAME, &an_records);
                     g_free(cnhash);
 
                     // now we don't add the QTYPE record to additional, but to the answer section
@@ -221,46 +238,72 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query) {
                         g_free(cnhash);
                     }
                 }
-            }
-
-            if (an_records == 0) { // no entry found, although authoritative
-                response = ODnsExtension::createResponse(msg_name, 1,
-                        0, 0, 0, id, opcode, 1, rd,
-                        ra, 3);
             } else {
-                response = ODnsExtension::createResponse(msg_name, 1,
-                        an_records, ns_records, ar_records, id, opcode, 1, rd,
-                        ra, 0);
+                // add CNAME if there are links for this label
+                if (q.qtype != DNS_TYPE_VALUE_CNAME) {
+                    // get NS records
+                    int old_an_records = an_records;
+                    cnhash = g_strdup_printf("%s:%s:%s", q.qname,
+                    DNS_TYPE_STR_CNAME, __class);
+                    answer_list = appendEntries(cnhash, answer_list,
+                    DNS_TYPE_VALUE_CNAME, &an_records);
+                    g_free(cnhash);
+
+                    int an_records_cpy = an_records; // since an_records is modified on the fly
+                    for (int i = old_an_records; i < an_records_cpy; i++) {
+                        DNSRecord* t_r =
+                                (DNSRecord*) g_list_nth(answer_list, i)->data;
+                        // use the data string to create a hash and find the qtype record
+                        char* namecpy = strdup(t_r->rdata);
+                        cnhash = g_strdup_printf("%s.%s:%s:%s", namecpy,
+                                config->getOrigin(), type, __class);
+
+                        // get entries for type using this hash
+                        answer_list = appendEntries(cnhash, answer_list,
+                                q.qtype, &an_records);
+
+                        g_free(cnhash);
+                    }
+                }
             }
 
-            response->setQuestions(0, q);
+        }
 
+        if (an_records == 0) { // no entry found, although authoritative
+            response = ODnsExtension::createResponse(msg_name, 1, 0, 0, 0,
+                    id, opcode, 1, rd, ra, 3);
         } else {
-            if (recursion_available) {
-                if (rd) {
-                    // TODO: Do recursion here!
-                    if (an_records == 0) { // recursion desired, but no entry found
-                        response = ODnsExtension::createResponse(msg_name, 1,
-                                an_records, ns_records, ar_records, id, opcode,
-                                1, rd, ra, 3);
-                    } else {
-                        response = ODnsExtension::createResponse(msg_name, 1,
-                                an_records, ns_records, ar_records, id, opcode,
-                                1, rd, ra, 0);
-                    }
-                } else {
-                    // response with not found err
+            response = ODnsExtension::createResponse(msg_name, 1,
+                    an_records, ns_records, ar_records, id, opcode, 1, rd,
+                    ra, 0);
+        }
+
+        response->setQuestions(0, q);
+    } else {
+        if (recursion_available) {
+            if (rd) {
+                // TODO: Do recursion here!
+                if (an_records == 0) { // recursion desired, but no entry found
                     response = ODnsExtension::createResponse(msg_name, 1,
                             an_records, ns_records, ar_records, id, opcode, 1,
                             rd, ra, 3);
+                } else {
+                    response = ODnsExtension::createResponse(msg_name, 1,
+                            an_records, ns_records, ar_records, id, opcode, 1,
+                            rd, ra, 0);
                 }
-
-                // set question
-                response->setQuestions(0, q);
             } else {
-                response = DNSServerBase::unsupportedOperation(query);
-                return response;
+                // response with not found err
+                response = ODnsExtension::createResponse(msg_name, 1,
+                        an_records, ns_records, ar_records, id, opcode, 1, rd,
+                        ra, 3);
             }
+
+            // set question
+            response->setQuestions(0, q);
+        } else {
+            response = DNSServerBase::unsupportedOperation(query);
+            return response;
         }
     }
 
@@ -345,7 +388,7 @@ GList* DNSAuthServer::appendTransitiveEntries(GList *srclist, GList *dstlist,
         // calculate hash from domain + type + class
         // first ar hash is for A records..
         hash = g_strdup_printf("%s:%s:%s", record->data, DNS_TYPE_STR,
-                DNS_CLASS_STR_IN);
+        DNS_CLASS_STR_IN);
 
         GList* transitive_entries = config->getEntry(hash);
         g_free(hash);

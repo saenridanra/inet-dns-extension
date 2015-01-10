@@ -36,6 +36,7 @@ public:
     cMessage* timeoutMsg;
 
     std::vector<std::string> host_names;
+    std::vector<std::string> types;
 
 protected:
     virtual void initialize(int stage);
