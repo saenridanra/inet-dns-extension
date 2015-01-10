@@ -74,6 +74,8 @@ OBJS = \
     $O/applications/DNSServerBase.o \
     $O/applications/DNSClient.o \
     $O/applications/DNSAuthServer.o \
+    $O/common/DNSCache.o \
+    $O/common/DNSSimpleCache.o \
     $O/utils/DNSZoneConfig.o \
     $O/utils/DNSTools.o \
     $O/messages/DNSPacket_m.o
@@ -203,6 +205,8 @@ $O/applications/DNSClient.o: applications/DNSClient.cc \
 	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
 	applications/DNSClient.h \
 	common/DNS.h \
+	common/DNSCache.h \
+	common/DNSSimpleCache.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
 $O/applications/DNSClientTraffGen.o: applications/DNSClientTraffGen.cc \
@@ -216,6 +220,8 @@ $O/applications/DNSClientTraffGen.o: applications/DNSClientTraffGen.cc \
 	applications/DNSClient.h \
 	applications/DNSClientTraffGen.h \
 	common/DNS.h \
+	common/DNSCache.h \
+	common/DNSSimpleCache.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
 $O/applications/DNSServerBase.o: applications/DNSServerBase.cc \
@@ -229,6 +235,17 @@ $O/applications/DNSServerBase.o: applications/DNSServerBase.cc \
 	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
 	applications/DNSServerBase.h \
 	common/DNS.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
+$O/common/DNSCache.o: common/DNSCache.cc \
+	common/DNS.h \
+	common/DNSCache.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
+$O/common/DNSSimpleCache.o: common/DNSSimpleCache.cc \
+	common/DNS.h \
+	common/DNSCache.h \
+	common/DNSSimpleCache.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
 $O/messages/DNSPacket_m.o: messages/DNSPacket_m.cc \

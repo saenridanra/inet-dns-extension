@@ -162,26 +162,26 @@ struct DNSRecord
 /**
  * MAKROS to get DNS flag options
  */
-#define DNS_HEADER_QR(h)                ((h >> 7) & 0x1)
-#define DNS_HEADER_OPCODE(h)            ((h >> 3) & 0xf)
-#define DNS_HEADER_AA(h)                ((h >> 2) & 0x1)
-#define DNS_HEADER_TC(h)                ((h >> 1) & 0x1)
-#define DNS_HEADER_RD(h)                (h & 0x1)
-#define DNS_HEADER_RA(h)                ((h >> 7) & 0x1)
+#define DNS_HEADER_QR(h)                ((h >> 15) & 0x1)
+#define DNS_HEADER_OPCODE(h)            ((h >> 11) & 0xf)
+#define DNS_HEADER_AA(h)                ((h >> 10) & 0x1)
+#define DNS_HEADER_TC(h)                ((h >> 9) & 0x1)
+#define DNS_HEADER_RD(h)                ((h >> 7) & 0x1)
+#define DNS_HEADER_RA(h)                ((h >> 6) & 0x1)
 #define DNS_HEADER_Z(h)                 ((h >> 4) & 0x7)
 #define DNS_HEADER_RCODE(h)             (h & 0xf)
 
 /**
  * MAKROS to set DNS flags in options
  */
-#define DNS_HEADER_SET_QR(h, v)       (h |= (unsigned char)(((v) & 0x1) << 7))
-#define DNS_HEADER_SET_OPCODE(h, v)   (h |= (unsigned char)(((v) & 0xf) << 3))
-#define DNS_HEADER_SET_AA(h, v)       (h |= (unsigned char)(((v) & 0x1) << 2))
-#define DNS_HEADER_SET_TC(h, v)       (h |= (unsigned char)(((v) & 0x1) << 1))
-#define DNS_HEADER_SET_RD(h, v)       (h |= (unsigned char)((v) & 0x1))
-#define DNS_HEADER_SET_RA(h, v)       (h |= (unsigned char)(((v) & 0x1) << 7))
-#define DNS_HEADER_SET_Z(h, v)        (h |= (unsigned char)(((v) & 0x7) << 4))
-#define DNS_HEADER_SET_RCODE(h, v)    (h |= (unsigned char)((v) & 0xf))
+#define DNS_HEADER_SET_QR(h, v)       (h |= (unsigned short)(((v) & 0x1) << 15))
+#define DNS_HEADER_SET_OPCODE(h, v)   (h |= (unsigned short)(((v) & 0xf) << 11))
+#define DNS_HEADER_SET_AA(h, v)       (h |= (unsigned short)(((v) & 0x1) << 10))
+#define DNS_HEADER_SET_TC(h, v)       (h |= (unsigned short)(((v) & 0x1) << 9))
+#define DNS_HEADER_SET_RD(h, v)       (h |= (unsigned short)(((v) & 0x1) << 7))
+#define DNS_HEADER_SET_RA(h, v)       (h |= (unsigned short)(((v) & 0x1) << 6))
+#define DNS_HEADER_SET_Z(h, v)        (h |= (unsigned short)(((v) & 0x7) << 4))
+#define DNS_HEADER_SET_RCODE(h, v)    (h |= (unsigned short)((v) & 0xf))
 
 }
 

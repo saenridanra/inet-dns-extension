@@ -127,6 +127,7 @@ struct Query* resolveQuery(cPacket* query)
     q->ancount = 0;
     q->nscount = 0;
     q->arcount = 0;
+    q->options = v->getOptions();
 
     DNSQuestion *questions = (DNSQuestion*) malloc(sizeof(DNSQuestion) * q->qdcount);
     for(short i = 0; i < q->qdcount; i++){
@@ -229,6 +230,10 @@ struct Response* resolveResponse(cPacket *response)
 
     struct Response* r = (Response*) malloc(sizeof(Response));
 
+    // Append answers separately in another method
+
+
+
     // Parse v into q
 
     r->id = v->getId();
@@ -236,6 +241,7 @@ struct Response* resolveResponse(cPacket *response)
     r->ancount = v->getAncount();
     r->nscount = v->getNscount();
     r->arcount = v->getArcount();
+    r->options = v->getOptions();
 
     // Migrate Answers
     DNSRecord *answers = (DNSRecord*) malloc(sizeof(DNSRecord) * r->ancount);
@@ -297,6 +303,105 @@ int isQueryOrResponse(cPacket *p)
         return DNS_HEADER_QR(o);
     }
     return -1;
+}
+
+const char* getTypeStringForValue(int type){
+    // init type
+
+    const char* rtype;
+    switch (type)
+    {
+        case DNS_TYPE_VALUE_A:
+            rtype = DNS_TYPE_STR_A;
+            break;
+        case DNS_TYPE_VALUE_AAAA:
+            rtype = DNS_TYPE_STR_AAAA;
+            break;
+        case DNS_TYPE_VALUE_CNAME:
+            rtype = DNS_TYPE_STR_CNAME;
+            break;
+        case DNS_TYPE_VALUE_HINFO:
+            rtype = DNS_TYPE_STR_HINFO;
+            break;
+        case DNS_TYPE_VALUE_MINFO:
+            rtype = DNS_TYPE_STR_MINFO;
+            break;
+        case DNS_TYPE_VALUE_MX:
+            rtype = DNS_TYPE_STR_MX;
+            break;
+        case DNS_TYPE_VALUE_NS:
+            rtype = DNS_TYPE_STR_NS;
+            break;
+        case DNS_TYPE_VALUE_NULL:
+            rtype = DNS_TYPE_STR_NULL;
+            break;
+        case DNS_TYPE_VALUE_PTR:
+            rtype = DNS_TYPE_STR_PTR;
+            break;
+        case DNS_TYPE_VALUE_SOA:
+            rtype = DNS_TYPE_STR_SOA;
+            break;
+        case DNS_TYPE_VALUE_TXT:
+            rtype = DNS_TYPE_STR_TXT;
+            break;
+        case DNS_TYPE_VALUE_SRV:
+            rtype = DNS_TYPE_STR_SRV;
+            break;
+    }
+
+    return rtype;
+}
+
+/**
+ * @brief getClassStringForValue
+ *      Get the given DNS_CLASS_STR value for a DNS_CLASS
+ *
+ * @return
+ *      the desired string value.
+ */
+const char* getClassStringForValue(int _class){
+    const char* __class;
+
+    switch (_class)
+    {
+        case DNS_CLASS_IN:
+            __class = DNS_CLASS_STR_IN;
+            break;
+        case DNS_CLASS_CH:
+            __class = DNS_CLASS_STR_CH;
+            break;
+        case DNS_CLASS_CS:
+            __class = DNS_CLASS_STR_CS;
+            break;
+        case DNS_CLASS_HS:
+            __class = DNS_CLASS_STR_HS;
+            break;
+        case DNS_CLASS_ANY:
+            __class = DNS_CLASS_STR_ANY;
+            break;
+        default: break;
+    }
+
+    return __class;
+}
+
+/**
+ * @brief freeDnsRecord
+ *      frees the given dns record
+ * @return
+ *      1 if successful
+ *      0 otherwise
+ */
+int freeDnsRecord(DNSRecord* r){
+    if(!r){
+        return 0;
+    }
+
+    g_free(r->rname);
+    g_free(r->rdata);
+    free(r);
+
+    return 1;
 }
 
 } /* namespace ODnsExtension */

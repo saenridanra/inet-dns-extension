@@ -33,6 +33,7 @@
 
 #include "../common/DNS.h"
 #include "../messages/DNSPacket_m.h"
+#include "glib.h"
 
 
 /**
@@ -124,6 +125,34 @@ int isDNSpacket(cPacket *p);
  *      0 if Query, 1 if Response
  */
 int isQueryOrResponse(cPacket *p);
+
+/**
+ * @brief getTypeStringForValue
+ *      Get the given DNS_TYPE_STR value for a DNS_TYPE_VALUE
+ *
+ * @return
+ *      the desired string value.
+ */
+const char* getTypeStringForValue(int type);
+
+/**
+ * @brief getClassStringForValue
+ *      Get the given DNS_CLASS_STR value for a DNS_CLASS
+ *
+ * @return
+ *      the desired string value.
+ */
+const char* getClassStringForValue(int _class);
+
+/**
+ * @brief freeDnsRecord
+ *      frees the given dns record
+ * @return
+ *      1 if successful
+ *      0 otherwise
+ */
+int freeDnsRecord(DNSRecord* r);
+
 
 }
 

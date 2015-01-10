@@ -19,55 +19,57 @@
  THE SOFTWARE.
  */
 
-#ifndef __OPP_DNS_EXTENSION_DNSCLIENT_H_
-#define __OPP_DNS_EXTENSION_DNSCLIENT_H_
+#ifndef DNSCACHE_H_
+#define DNSCACHE_H_
 
-#include <omnetpp.h>
-
-#include "UDPSocket.h"
-#include "IPvXAddressResolver.h"
-#include <vector>
-
+#include "DNS.h"
 #include "../utils/DNSTools.h"
 #include "glib.h"
+#include "glib/gprintf.h"
 
-#include "../common/DNSCache.h"
-#include "../common/DNSSimpleCache.h"
+namespace ODnsExtension {
+
 
 /**
- * @brief DNSClient provides dns functionality from a
- * client point-of-view. The app provides the possibility
- * to send DNS Queries to a DNS Name Server / Proxy or
- * DNS Cache.
+ * @brief DNSCache is an interface providing methods
+ * to implement DNSCaches for records.
  *
  * @author Andreas Rain, Distributed Systems Group, University of Konstanz
  */
-class DNSClient : public cSimpleModule
-{
-  protected:
-    // Address vectors for known DNS servers
-    std::vector<IPvXAddress> dns_servers;
-    GHashTable *queries;
-    GHashTable *callbacks;
-    GHashTable *callback_handles;
+class DNSCache {
+public:
+    DNSCache();
+    virtual ~DNSCache();
+    virtual int put_into_cache(DNSRecord* record) = 0;
+    virtual GList* get_from_cache(char* hash) = 0;
+    virtual GList* remove_from_cache(char* hash) = 0;
+    virtual int is_in_cache(char* hash) = 0;
+    virtual GList* evict() = 0;
 
-    ODnsExtension::DNSCache* cache;
+    void setMaxRecords(int _max_records)
+    {
+      max_records = _max_records;
+    }
 
-    int query_count;
+    int getMaxRecords(){
+        return max_records;
+    }
 
+    void setCacheSize(int cs)
+    {
+        current_cache_size = cs;
+    }
 
+    int getCacheSize(){
+        return current_cache_size;
+    }
 
-    // Socket over which DNS queries are sent/received
-    UDPSocket out;
-
-    virtual void initialize(int stage);
-    virtual int numInitStages() const { return 4; }
-    virtual void handleMessage(cMessage *msg);
-    virtual IPvXAddress* getAddressFromCache(char* dns_name);
-    virtual int resolve(char* dns_name, int primary, void (* callback) (int, void*), int id, void * handle);
-
-  public:
+protected:
+    int max_records = 100; // default
+    int current_cache_size;
 
 };
 
-#endif
+} /* namespace ODnsExtension */
+
+#endif /* DNSCACHE_H_ */

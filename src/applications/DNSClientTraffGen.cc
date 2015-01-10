@@ -52,6 +52,8 @@ void DNSClientTraffGen::handleMessage(cMessage *msg) {
         return;
     }
     DNSClient::handleMessage(msg);
+
+    delete(msg);
 }
 
 void DNSClientTraffGen::handleTimer(cMessage *msg){
@@ -90,7 +92,8 @@ void DNSClientTraffGen::init_hostnames()
 }
 
 void DNSClientTraffGen::handleResponse(int id){
-    // Handle the response here, we got what we asked for
+    // emit some statistics, the response should be in the cache already..
+
 
 }
 
