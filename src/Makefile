@@ -53,6 +53,8 @@ INCLUDE_PATH = \
     -Icommon \
     -Imessages \
     -Inetworks \
+    -Inetworks/complex_dns_network \
+    -Inetworks/complex_dns_network/subnets \
     -Inetworks/results \
     -Iutils
 
@@ -169,6 +171,8 @@ clean:
 	$(Q)-rm -f common/*_m.cc common/*_m.h
 	$(Q)-rm -f messages/*_m.cc messages/*_m.h
 	$(Q)-rm -f networks/*_m.cc networks/*_m.h
+	$(Q)-rm -f networks/complex_dns_network/*_m.cc networks/complex_dns_network/*_m.h
+	$(Q)-rm -f networks/complex_dns_network/subnets/*_m.cc networks/complex_dns_network/subnets/*_m.h
 	$(Q)-rm -f networks/results/*_m.cc networks/results/*_m.h
 	$(Q)-rm -f utils/*_m.cc utils/*_m.h
 
@@ -177,7 +181,7 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc common/*.cc messages/*.cc networks/*.cc networks/results/*.cc utils/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc common/*.cc messages/*.cc networks/*.cc networks/complex_dns_network/*.cc networks/complex_dns_network/subnets/*.cc networks/results/*.cc utils/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/applications/DNSAuthServer.o: applications/DNSAuthServer.cc \

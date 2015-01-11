@@ -23,6 +23,9 @@ package opp_dns_extension.applications;
 
 moduleinterface DNSServerBase
 {
+    parameters:
+        string root_servers;
+    
 	gates:
         input udpIn @labels(UDPControlInfo/down);
         output udpOut @labels(UDPControlInfo/down);

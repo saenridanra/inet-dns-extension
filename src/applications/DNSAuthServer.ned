@@ -29,6 +29,7 @@ simple DNSAuthServer like DNSServerBase
 {
     parameters:
         int recursion_available = default(1);
+        string root_servers = default("");
         string master_file = default("");
     gates:
         input udpIn @labels(UDPControlInfo/down);

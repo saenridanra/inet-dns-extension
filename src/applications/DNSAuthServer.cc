@@ -282,16 +282,15 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query) {
     } else {
         if (recursion_available) {
             if (rd) {
-                // TODO: Do recursion here!
-                if (an_records == 0) { // recursion desired, but no entry found
-                    response = ODnsExtension::createResponse(msg_name, 1,
-                            an_records, ns_records, ar_records, id, opcode, 1,
-                            rd, ra, 3);
-                } else {
-                    response = ODnsExtension::createResponse(msg_name, 1,
-                            an_records, ns_records, ar_records, id, opcode, 1,
-                            rd, ra, 0);
-                }
+                // do the initial query towards a root server
+                // pick at random
+                int p = intrand(rootServers.size());
+                DNSPacket *root_q = ODnsExtension::createQuery(msg_name, query->questions[0].qname, DNS_CLASS_IN, query->questions[0].qtype, query->id, 1);
+
+                out.sendTo(root_q, rootServers[p], DNS_PORT);
+
+                return NULL; // so it is known that recursive resolving has been initiated
+
             } else {
                 // response with not found err
                 response = ODnsExtension::createResponse(msg_name, 1,
@@ -302,6 +301,7 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query) {
             // set question
             response->setQuestions(0, q);
         } else {
+            //TODO; Iterative answer.
             response = DNSServerBase::unsupportedOperation(query);
             return response;
         }

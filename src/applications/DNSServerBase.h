@@ -46,6 +46,9 @@ class DNSServerBase : public cSimpleModule
   protected:
     int receivedQueries;
 
+    GHashTable* queryCache;
+    std::vector<IPvXAddress> rootServers;
+
     // Socket over which DNS queries are sent/received
     UDPSocket out;
 
@@ -55,6 +58,7 @@ class DNSServerBase : public cSimpleModule
     virtual DNSPacket* unsupportedOperation(ODnsExtension::Query *q);
     virtual void sendResponse(DNSPacket *response, IPvXAddress returnAddress);
     virtual DNSPacket* handleQuery(ODnsExtension::Query *query);
+    virtual DNSPacket* handleRecursion(DNSPacket* packet);
 
 };
 
