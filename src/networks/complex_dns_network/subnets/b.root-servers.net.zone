@@ -1,7 +1,7 @@
 $TTL	86400 ; 24 hours could have been written as 24h or 1d
 			  ; $TTL used for all RRs without explicit TTL value
-$ORIGIN root-servers.net
-@ 	   IN  SOA b.root-servers.net. nstld.verisign-grs.com. (
+$ORIGIN .
+@ 	   IN  SOA i.root-servers.net. nstld.verisign-grs.com. (
 			      2014110500 ; sn = serial number
                   14400     ; ref = refresh = 2d
                   7200        ; ret = update retry = 15m

@@ -96,6 +96,7 @@ void DNSClient::handleMessage(cMessage *msg) {
         g_print("**********************\nResolved query:\n\n;;Question Section:\n");
         DNSPacket* q = (DNSPacket*) g_hash_table_lookup(queries, key);
         ODnsExtension::printDNSQuestion(&q->getQuestions(0));
+        delete q;
 
         g_print("\n;;Answer Section:\n");
         for(int i = 0; i < response->ancount; i++){
@@ -171,7 +172,10 @@ int DNSClient::resolve(char* dns_name, int qtype, int primary, void (*callback) 
     uint32_t* key;
     key= (uint32_t *) malloc(sizeof(uint32_t));
     *key = query_count;
-    g_hash_table_insert(queries, key, (gpointer) query);
+    // Put a copy into the cache, if we need to check it later again
+    // this way the server can without a problem delete the msg.
+    DNSPacket* query_dup = query->dup();
+    g_hash_table_insert(queries, key, (gpointer) query_dup);
     key= (uint32_t *) malloc(sizeof(uint32_t));
     *key = query_count;
     g_hash_table_insert(callbacks, key, (gpointer) callback);

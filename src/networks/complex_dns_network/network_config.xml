@@ -1,0 +1,73 @@
+<config>
+    <interface hosts='**.rootservers.root_server_bgp' address='192.x.x.x' netmask='255.x.x.x'/>
+    
+	<interface hosts='**.rootservers.i_root_router' address='192.36.148.x' netmask='255.255.255.x'/>
+    <interface hosts='**.rootservers.b_root_router' address='192.228.79.x' netmask='255.255.255.x'/>
+    
+    <interface hosts='**.rootservers.i_root' address='192.36.148.17' netmask='255.255.255.x'/>
+    <interface hosts='**.rootservers.b_root' address='192.228.79.201' netmask='255.255.255.x'/>
+    
+    <interface hosts='**.de.de_bgp_out' address='194.0.x.x' netmask='255.255.x.x'/>
+    <interface hosts='**.de.de_out' address='194.0.0.x' netmask='255.255.255.x'/>
+    <interface hosts='**.de.a_nic_de' address='194.0.0.53' netmask='255.255.255.x'/>
+    
+    <interface hosts='**.com.com_bgp_out' address='192.5.x.x' netmask='255.255.x.x'/>
+    <interface hosts='**.com.com_out' address='192.5.6.x' netmask='255.255.255.x'/>
+    <interface hosts='**.com.a_gtld_servers_net' address='192.5.6.30' netmask='255.255.255.x'/>
+    
+    <interface hosts='**.unikonstanz.uni_bgp_out' address='134.34.x.x' netmask='255.255.x.x'/>
+    <interface hosts='**.unikonstanz.uni_out' address='134.34.x.x' netmask='255.255.x.x'/>
+    <interface hosts='**.unikonstanz.uni_internal' address='134.34.165.x' netmask='255.255.x.x'/>
+    <interface hosts='**.unikonstanz.uni_dns_client' address='134.34.165.25' netmask='255.255.x.x'/>
+    
+    <interface hosts='**.unikonstanz.rz' address='134.34.240.x' netmask='255.255.255.x'/>
+    
+    <interface hosts='**.unikonstanz.imap' address='134.34.240.42' netmask='255.255.255.x'/>
+    <interface hosts='**.unikonstanz.proxy_neu_rz' address='134.34.240.80' netmask='255.255.255.x'/>
+    <interface hosts='**.unikonstanz.cms' address='134.34.240.75' netmask='255.255.255.x'/>
+    
+    <interface hosts='**.unikonstanz.rz_dns' address='134.34.3.x' netmask='255.255.255.x'/>
+    
+    <interface hosts='**.unikonstanz.uranos_rz' address='134.34.3.3' netmask='255.255.255.x'/>
+    <interface hosts='**.unikonstanz.pan_rz' address='134.34.3.11' netmask='255.255.255.x'/>
+    
+    <interface hosts='**.unikonstanz.htwg_dns' address='141.37.1.x' netmask='255.255.255.x'/>
+    
+    <interface hosts='**.unikonstanz.dns3' address='141.37.1.65' netmask='255.255.255.x'/>
+    
+    <interface hosts='**.google.google_out' address='216.239.x.x' netmask='255.255.x.x'/>
+    <interface hosts='**.google.google_internal' address='216.239.x.x' netmask='255.255.x.x'/>
+    
+    <interface hosts='**.google.google_ns1_subnet' address='216.239.32.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.google_ns2_subnet' address='216.239.34.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.google_ns3_subnet' address='216.239.36.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.google_ns4_subnet' address='216.239.38.x' netmask='255.255.255.x'/>
+    
+    <interface hosts='**.google.ns1_google_com' address='216.239.32.10' netmask='255.255.255.x'/>
+    <interface hosts='**.google.ns2_google_com' address='216.239.34.10' netmask='255.255.255.x'/>
+    <interface hosts='**.google.ns3_google_com' address='216.239.36.10' netmask='255.255.255.x'/>
+    <interface hosts='**.google.ns4_google_com' address='216.239.38.10' netmask='255.255.255.x'/>
+    
+    <interface hosts='**.google.server0_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.server1_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.server2_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.server3_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.server4_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.server5_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.server6_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.server7_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.server8_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.server9_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.server10_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.server11_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.server12_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.server13_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    <interface hosts='**.google.server14_google_com' address='173.194.39.x' netmask='255.255.255.x'/>
+    
+    <interface hosts='**.google.google_front' address='173.194.38.x' netmask='255.255.255.x'/>
+    
+    <interface hosts='**.interconnect' address='10.0.0.x' netmask='255.255.255.x'/>
+    
+    
+    
+</config>

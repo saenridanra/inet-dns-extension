@@ -23,18 +23,21 @@
 
 Define_Module(DNSServerBase);
 
-void DNSServerBase::initialize() {
-    cSimpleModule::initialize();
-    // Initialize gates
-    //in.setOutputGate(gate("udpIn"));
-    out.setOutputGate(gate("udpOut"));
-    out.bind(DNS_PORT);
+void DNSServerBase::initialize(int stage) {
+    if(stage == 0){
+        cSimpleModule::initialize(stage);
+        // Initialize gates
+        //in.setOutputGate(gate("udpIn"));
+        out.setOutputGate(gate("udpOut"));
+        out.bind(DNS_PORT);
 
-    queryCache = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
+        queryCache = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
 
-    rootServers = IPvXAddressResolver().resolve(cStringTokenizer(par("root_servers")).asVector());
-
-    receivedQueries = 0;
+        receivedQueries = 0;
+    }
+    else if(stage == 3){
+        rootServers = IPvXAddressResolver().resolve(cStringTokenizer(par("root_servers")).asVector());
+    }
 }
 
 void DNSServerBase::handleMessage(cMessage *msg) {
@@ -65,6 +68,8 @@ void DNSServerBase::handleMessage(cMessage *msg) {
                         pk->getControlInfo());
                 IPvXAddress srcAddress = ctrl->getSrcAddr();
                 sendResponse(response, srcAddress);
+
+                delete msg;
             }
             else{
                 // Just got a response, lets see if its an answer fitting one of

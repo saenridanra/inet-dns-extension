@@ -48,7 +48,7 @@ class DNSAuthServer : public DNSServerBase
 
   protected:
   public:
-        virtual void initialize();
+        virtual void initialize(int stage);
         virtual void handleMessage(cMessage *msg);
         virtual GList* appendEntries(char *hash, GList *dstlist, int type, int *num_records);
         virtual GList* appendTransitiveEntries(GList *srclist, GList *dstlist, const char* DNS_TYPE_STR, int DNS_TYPE_VALUE, int *ar_records);

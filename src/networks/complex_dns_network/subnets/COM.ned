@@ -15,6 +15,30 @@
 
 package opp_dns_extension.networks.complex_dns_network.subnets;
 
+import inet.nodes.ethernet.Eth100G;
+import inet.nodes.ethernet.Eth10G;
+import inet.nodes.inet.Router;
+import opp_dns_extension.applications.DNSServerNode;
+
 module COM
 {
+    gates:
+        inout ethg;
+    submodules:
+        a_gtld_servers_net: DNSServerNode {
+            auth.recursion_available = 0;
+            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork..rootservers.b_root";
+            m_file = "subnets/a.gtld-servers.net.zone";
+            @display("p=365,337");
+        }
+        com_bgp_out: Router {
+            @display("p=365,179");
+        }
+        com_out: Router {
+            @display("p=365,254");
+        }
+    connections:
+        a_gtld_servers_net.ethg++ <--> Eth10G <--> com_out.ethg++;
+        com_out.ethg++ <--> Eth10G <--> com_bgp_out.ethg++;
+        com_bgp_out.ethg++ <--> Eth100G <--> ethg;
 }

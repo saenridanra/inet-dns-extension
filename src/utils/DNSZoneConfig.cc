@@ -63,6 +63,10 @@ void DNSZoneConfig::initialize(std::string config_file){
         // use a tokenizer to interpret the line
         std::vector<std::string> tokens = cStringTokenizer(line.c_str()).asVector();
 
+        if(tokens.size() == 0){
+            continue; // only white spaces in this line ..
+        }
+
 #ifdef DEBUG_ENABLED
         printf("Number of tokens: %d \n", (int) tokens.size());
 

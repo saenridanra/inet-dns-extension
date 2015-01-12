@@ -14,7 +14,7 @@ $ORIGIN uni-konstanz.de.
        IN  MX  	  imap.uni-konstanz.de. 	 ; external mail provider
        IN  A      134.34.240.80				 ; ip of origin
 ; server host definitions
-pan.rz 		    IN  A      134.34.3.3	 ; this server
+pan.rz 		    IN  A      134.34.3.11	 ; this server
 uranos.rz	    IN  A      134.34.3.2	 ; the slave server
 dns3 		    IN  A      141.37.1.65	 ; this server
 imap 		    IN  A	   134.34.240.42 ; mail server imap

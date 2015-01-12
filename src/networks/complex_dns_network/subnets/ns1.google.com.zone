@@ -1,0 +1,22 @@
+$TTL	86400 ; 24 hours could have been written as 24h or 1d
+			  ; $TTL used for all RRs without explicit TTL value
+$ORIGIN google.com.
+@ 	   IN  SOA ns1.google.com. dns-admin.google.com. (
+			      2003080800 ; sn = serial number
+                  172800     ; ref = refresh = 2d
+                  900        ; ret = update retry = 15m
+                  1209600    ; ex = expiry = 2w
+                  3600		 ; nx = nxdomain ttl = 1h
+			     )
+                IN  NS     ns3.google.com.
+                IN  NS     ns2.google.com.
+                IN  NS     ns4.google.com.
+                IN  NS     ns1.google.com.
+; server host definitions
+ns3.google.com. IN  A   216.239.36.10
+ns2.google.com. IN  A   216.239.34.10
+ns4.google.com. IN  A   216.239.38.10
+ns1.google.com. IN  A   216.239.32.10
+
+; more definitions
+google.com.     IN  A   173.194.38.61

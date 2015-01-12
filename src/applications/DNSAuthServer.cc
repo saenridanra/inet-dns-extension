@@ -23,8 +23,8 @@
 
 Define_Module(DNSAuthServer);
 
-void DNSAuthServer::initialize() {
-    DNSServerBase::initialize();
+void DNSAuthServer::initialize(int stage) {
+    DNSServerBase::initialize(stage);
 
     master_file = par("master_file").stdstringValue();
 

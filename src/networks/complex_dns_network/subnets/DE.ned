@@ -15,6 +15,32 @@
 
 package opp_dns_extension.networks.complex_dns_network.subnets;
 
+import inet.nodes.ethernet.Eth100G;
+import inet.nodes.ethernet.Eth10G;
+import inet.nodes.inet.Router;
+import opp_dns_extension.applications.DNSServerNode;
+
+
 module DE
 {
+    @display("bgb=761,521");
+    gates:
+        inout ethg;
+    submodules:
+        a_nic_de: DNSServerNode {
+            auth.recursion_available = 0;
+            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork..rootservers.b_root";
+            m_file = "subnets/a.nic.de.zone";
+            @display("p=365,320");
+        }
+        de_bgp_out: Router {
+            @display("p=365,179");
+        }
+        de_out: Router {
+            @display("p=365,254");
+        }
+    connections:
+        a_nic_de.ethg++ <--> Eth10G <--> de_out.ethg++;
+        de_out.ethg++ <--> Eth10G <--> de_bgp_out.ethg++;
+        de_bgp_out.ethg++ <--> Eth100G <--> ethg;
 }

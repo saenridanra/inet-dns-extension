@@ -16,7 +16,6 @@
 package opp_dns_extension.networks.complex_dns_network.subnets;
 
 import inet.examples.inet.ipv4largenet.cable;
-import inet.nodes.bgp.BGPRouter;
 import inet.nodes.ethernet.Eth100G;
 import inet.nodes.ethernet.EtherLink;
 import inet.nodes.inet.Router;
@@ -24,18 +23,21 @@ import opp_dns_extension.applications.DNSServerNode;
 
 network RootServers
 {
+    gates:
+        inout ethg;
     submodules:
         i_root: DNSServerNode {
             parameters:
-                m_file = "i_root.zone";
+                auth.recursion_available = 0;
+                m_file = "subnets/i.root-servers.net.zone";
                 @display("p=451,249");
         }
         b_root: DNSServerNode {
             parameters:
-                m_file = "b_root.zone";
+                m_file = "subnets/b.root-servers.net.zone";
                 @display("p=570,249");
         }
-        root_server_bgp: BGPRouter {
+        root_server_bgp: Router {
             @display("p=509,464");
         }
         i_root_router: Router {
@@ -49,4 +51,5 @@ network RootServers
         b_root.ethg++ <--> Eth100G <--> b_root_router.ethg++;
         i_root_router.ethg++ <--> Eth100G <--> root_server_bgp.ethg++;
         b_root_router.ethg++ <--> Eth100G <--> root_server_bgp.ethg++;
+        root_server_bgp.ethg++ <--> Eth100G <--> ethg;
 }

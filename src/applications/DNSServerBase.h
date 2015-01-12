@@ -53,7 +53,8 @@ class DNSServerBase : public cSimpleModule
     UDPSocket out;
 
   public:
-    virtual void initialize();
+    virtual void initialize(int stage);
+    virtual int numInitStages() const { return 4; }
     virtual void handleMessage(cMessage *msg);
     virtual DNSPacket* unsupportedOperation(ODnsExtension::Query *q);
     virtual void sendResponse(DNSPacket *response, IPvXAddress returnAddress);
