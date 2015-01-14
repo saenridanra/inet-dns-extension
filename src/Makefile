@@ -50,6 +50,7 @@ INCLUDE_PATH = \
     -I. \
     -Iapplications \
     -Iapplications/dns \
+    -Iapplications/mdns \
     -Icommon \
     -Imessages \
     -Inetworks \
@@ -77,6 +78,7 @@ OBJS = \
     $O/applications/dns/DNSClientTraffGen.o \
     $O/applications/dns/DNSClient.o \
     $O/applications/dns/DNSServerBase.o \
+    $O/applications/mdns/MDNSBaseApp.o \
     $O/common/DNSSimpleCache.o \
     $O/common/DNSCache.o \
     $O/utils/DNSTools.o \
@@ -170,6 +172,7 @@ clean:
 	$(Q)-rm -f ./*_m.cc ./*_m.h
 	$(Q)-rm -f applications/*_m.cc applications/*_m.h
 	$(Q)-rm -f applications/dns/*_m.cc applications/dns/*_m.h
+	$(Q)-rm -f applications/mdns/*_m.cc applications/mdns/*_m.h
 	$(Q)-rm -f common/*_m.cc common/*_m.h
 	$(Q)-rm -f messages/*_m.cc messages/*_m.h
 	$(Q)-rm -f networks/*_m.cc networks/*_m.h
@@ -184,7 +187,7 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc applications/dns/*.cc common/*.cc messages/*.cc networks/*.cc networks/complex_dns_network/*.cc networks/complex_dns_network/results/*.cc networks/complex_dns_network/subnets/*.cc networks/results/*.cc utils/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc applications/dns/*.cc applications/mdns/*.cc common/*.cc messages/*.cc networks/*.cc networks/complex_dns_network/*.cc networks/complex_dns_network/results/*.cc networks/complex_dns_network/subnets/*.cc networks/results/*.cc utils/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/applications/dns/DNSAuthServer.o: applications/dns/DNSAuthServer.cc \
@@ -242,6 +245,12 @@ $O/applications/dns/DNSServerBase.o: applications/dns/DNSServerBase.cc \
 	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
 	applications/dns/DNSServerBase.h \
 	common/DNS.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
+$O/applications/mdns/MDNSBaseApp.o: applications/mdns/MDNSBaseApp.cc \
+	applications/mdns/MDNSBaseApp.h \
+	common/DNS.h \
+	common/MDNS.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
 $O/common/DNSCache.o: common/DNSCache.cc \
