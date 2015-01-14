@@ -13,11 +13,11 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package opp_dns_extension.applications;
+package opp_dns_extension.applications.dns;
 
 import inet.nodes.inet.StandardHost;
 import inet.transport.IUDP;
-import opp_dns_extension.applications.DNSClientTraffGen;
+import opp_dns_extension.applications.dns.DNSClientTraffGen;
 
 module DNSClientNode extends StandardHost
 {

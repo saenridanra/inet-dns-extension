@@ -18,9 +18,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package opp_dns_extension.applications;
+package opp_dns_extension.applications.dns;
 
-import opp_dns_extension.applications.DNSClient;
+import opp_dns_extension.applications.dns.DNSClient;
 
 simple DNSClientTraffGen like DNSClient
 {

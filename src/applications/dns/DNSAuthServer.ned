@@ -18,15 +18,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package opp_dns_extension.applications;
+package opp_dns_extension.applications.dns;
 
+import opp_dns_extension.applications.dns.DNSServerBase;
 
-moduleinterface DNSServerBase
+//
+// TODO auto-generated module
+//
+simple DNSAuthServer like DNSServerBase
 {
     parameters:
-        string root_servers;
-    
-	gates:
+        int recursion_available = default(1);
+        string root_servers = default("");
+        string master_file = default("");
+    gates:
         input udpIn @labels(UDPControlInfo/down);
         output udpOut @labels(UDPControlInfo/down);
 }

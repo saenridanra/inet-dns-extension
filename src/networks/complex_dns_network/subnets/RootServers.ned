@@ -19,7 +19,7 @@ import inet.examples.inet.ipv4largenet.cable;
 import inet.nodes.ethernet.Eth100G;
 import inet.nodes.ethernet.EtherLink;
 import inet.nodes.inet.Router;
-import opp_dns_extension.applications.DNSServerNode;
+import opp_dns_extension.applications.dns.DNSServerNode;
 
 network RootServers
 {

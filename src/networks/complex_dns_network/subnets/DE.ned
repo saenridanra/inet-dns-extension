@@ -18,7 +18,7 @@ package opp_dns_extension.networks.complex_dns_network.subnets;
 import inet.nodes.ethernet.Eth100G;
 import inet.nodes.ethernet.Eth10G;
 import inet.nodes.inet.Router;
-import opp_dns_extension.applications.DNSServerNode;
+import opp_dns_extension.applications.dns.DNSServerNode;
 
 
 module DE
@@ -29,7 +29,7 @@ module DE
     submodules:
         a_nic_de: DNSServerNode {
             auth.recursion_available = 0;
-            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork..rootservers.b_root";
+            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork.rootservers.b_root";
             m_file = "subnets/a.nic.de.zone";
             @display("p=365,320");
         }

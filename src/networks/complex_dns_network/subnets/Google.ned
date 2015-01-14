@@ -19,7 +19,7 @@ import inet.nodes.ethernet.Eth100G;
 import inet.nodes.ethernet.Eth10G;
 import inet.nodes.inet.Router;
 import inet.nodes.inet.StandardHost;
-import opp_dns_extension.applications.DNSServerNode;
+import opp_dns_extension.applications.dns.DNSServerNode;
 
 network Google
 {

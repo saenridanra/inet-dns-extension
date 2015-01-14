@@ -71,7 +71,6 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
     const char* type;
 
     char* namehash;
-    char* nshash;
     char* cnhash;
 
     GList* answer_list = NULL;
@@ -113,6 +112,8 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
 
         has_ns_reference = config->hasEntry(ns_reference_hash);
     }
+
+    g_free(trailing_qname);
 
 
     // generate msg name
@@ -210,22 +211,6 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
                 g_free(namehash);
             }
 
-            // get NS records
-            if(an_records > 0){
-                nshash = g_strdup_printf("%s:%s:%s", config->getOrigin(),
-                DNS_TYPE_STR_NS, __class);
-                ns_list = appendEntries(nshash, ns_list, DNS_TYPE_VALUE_NS, &ns_records);
-                g_free(nshash);
-
-                if (ns_records > 0)
-                {
-                    ar_list = appendTransitiveEntries(ns_list, ar_list,
-                    DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, &ar_records);
-                    ar_list = appendTransitiveEntries(ns_list, ar_list,
-                    DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, &ar_records);
-                }
-            }
-
         }
         else
         {
@@ -244,28 +229,12 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
                 // fill out authority section with NS records
                 // if the request was on the ZONE ORIGIN
                 // and it was not made for NS records.
-                if (q.qtype != DNS_TYPE_VALUE_NS)
-                {
-                    // get NS records
-                    nshash = g_strdup_printf("%s:%s:%s", config->getOrigin(),
-                    DNS_TYPE_STR_NS, __class);
-                    ns_list = appendEntries(nshash, ns_list, DNS_TYPE_VALUE_NS, &ns_records);
-                    g_free(nshash);
-                }
 
                 if (q.qtype != DNS_TYPE_VALUE_A && q.qtype != DNS_TYPE_VALUE_AAAA)
                 {
                     ar_list = appendTransitiveEntries(answer_list, ar_list,
                     DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, &ar_records);
                     ar_list = appendTransitiveEntries(answer_list, ar_list,
-                    DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, &ar_records);
-                }
-
-                if (ns_records > 0)
-                {
-                    ar_list = appendTransitiveEntries(ns_list, ar_list,
-                    DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, &ar_records);
-                    ar_list = appendTransitiveEntries(ns_list, ar_list,
                     DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, &ar_records);
                 }
 
@@ -332,32 +301,24 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
 
                         g_free(cnhash);
                     }
-
-                    if(an_records > 0){
-                        nshash = g_strdup_printf("%s:%s:%s", config->getOrigin(),
-                        DNS_TYPE_STR_NS, __class);
-                        ns_list = appendEntries(nshash, ns_list, DNS_TYPE_VALUE_NS, &ns_records);
-                        g_free(nshash);
-
-                        if (ns_records > 0)
-                        {
-                            ar_list = appendTransitiveEntries(ns_list, ar_list,
-                            DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, &ar_records);
-                            ar_list = appendTransitiveEntries(ns_list, ar_list,
-                            DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, &ar_records);
-                        }
-                    }
                 }
             }
 
         }
 
         if (an_records == 0)
-        { // no entry found, although authoritative
+        {   // no entry found, although authoritative
+            // append SOA
             response = ODnsExtension::createResponse(msg_name, 1, 0, 0, 0, id, opcode, 1, rd, ra, 3);
         }
         else
         {
+            // append authority
+            ns_list = appendAuthority(ns_list, &ns_records);
+            if(ns_records > 0){
+                ar_list = appendAdditionals(ns_list, ar_list, &ar_records);
+            }
+
             response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id, opcode, 1, rd,
                     ra, 0);
         }
@@ -481,6 +442,23 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
 
     return response;
 
+}
+
+GList* DNSAuthServer::appendAuthority(GList *ns_list, int *ns_records){
+    char *nshash = g_strdup_printf("%s:%s:%s", config->getOrigin(), DNS_TYPE_STR_NS, DNS_CLASS_STR_IN);
+    ns_list = appendEntries(nshash, ns_list, DNS_TYPE_VALUE_NS, ns_records);
+    g_free(nshash);
+
+    return ns_list;
+}
+
+GList* DNSAuthServer::appendAdditionals(GList* ns_list, GList *ar_list, int *ar_records){
+    ar_list = appendTransitiveEntries(ns_list, ar_list,
+    DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, ar_records);
+    ar_list = appendTransitiveEntries(ns_list, ar_list,
+    DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, ar_records);
+
+    return ar_list;
 }
 
 GList* DNSAuthServer::appendEntries(char *hash, GList *dstlist, int type, int *num_records)

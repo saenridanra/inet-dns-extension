@@ -20,8 +20,8 @@ import inet.nodes.ethernet.Eth10G;
 import inet.nodes.ethernet.Eth1G;
 import inet.nodes.inet.Router;
 import inet.nodes.inet.StandardHost;
-import opp_dns_extension.applications.DNSClientNode;
-import opp_dns_extension.applications.DNSServerNode;
+import opp_dns_extension.applications.dns.DNSClientNode;
+import opp_dns_extension.applications.dns.DNSServerNode;
 
 
 network UniKonstanz
@@ -49,12 +49,12 @@ network UniKonstanz
             @display("p=581,375");
         }
         pan_rz: DNSServerNode {
-            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork..rootservers.b_root";
+            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork.rootservers.b_root";
             m_file = "subnets/pan.rz.uni-konstanz.de.zone";
             @display("p=616,463");
         }
         uranos_rz: DNSServerNode {
-            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork..rootservers.b_root";
+            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork.rootservers.b_root";
             m_file = "subnets/uranos.rz.uni-konstanz.de.zone";
             @display("p=542,463");
         }
@@ -68,7 +68,7 @@ network UniKonstanz
             @display("p=762,375");
         }
         dns3: DNSServerNode {
-            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork..rootservers.b_root";
+            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork.rootservers.b_root";
             m_file = "subnets/dns3.uni-konstanz.de.zone";
             @display("p=762,463");
         }

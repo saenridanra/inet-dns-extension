@@ -49,6 +49,7 @@ INCLUDE_PATH = \
     -I$(INET_PROJ)/src/util/headerserializers/ipv4 \
     -I. \
     -Iapplications \
+    -Iapplications/dns \
     -Icommon \
     -Imessages \
     -Inetworks \
@@ -72,10 +73,10 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
 OBJS = \
-    $O/applications/DNSAuthServer.o \
-    $O/applications/DNSClientTraffGen.o \
-    $O/applications/DNSClient.o \
-    $O/applications/DNSServerBase.o \
+    $O/applications/dns/DNSAuthServer.o \
+    $O/applications/dns/DNSClientTraffGen.o \
+    $O/applications/dns/DNSClient.o \
+    $O/applications/dns/DNSServerBase.o \
     $O/common/DNSSimpleCache.o \
     $O/common/DNSCache.o \
     $O/utils/DNSTools.o \
@@ -168,6 +169,7 @@ clean:
 	$(Q)-rm -f opp_dns_extension opp_dns_extension.exe libopp_dns_extension.so libopp_dns_extension.a libopp_dns_extension.dll libopp_dns_extension.dylib
 	$(Q)-rm -f ./*_m.cc ./*_m.h
 	$(Q)-rm -f applications/*_m.cc applications/*_m.h
+	$(Q)-rm -f applications/dns/*_m.cc applications/dns/*_m.h
 	$(Q)-rm -f common/*_m.cc common/*_m.h
 	$(Q)-rm -f messages/*_m.cc messages/*_m.h
 	$(Q)-rm -f networks/*_m.cc networks/*_m.h
@@ -182,10 +184,10 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc common/*.cc messages/*.cc networks/*.cc networks/complex_dns_network/*.cc networks/complex_dns_network/results/*.cc networks/complex_dns_network/subnets/*.cc networks/results/*.cc utils/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc applications/dns/*.cc common/*.cc messages/*.cc networks/*.cc networks/complex_dns_network/*.cc networks/complex_dns_network/results/*.cc networks/complex_dns_network/subnets/*.cc networks/results/*.cc utils/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-$O/applications/DNSAuthServer.o: applications/DNSAuthServer.cc \
+$O/applications/dns/DNSAuthServer.o: applications/dns/DNSAuthServer.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
 	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
@@ -194,13 +196,13 @@ $O/applications/DNSAuthServer.o: applications/DNSAuthServer.cc \
 	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
 	$(INET_PROJ)/src/transport/contract/UDPControlInfo_m.h \
 	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
-	applications/DNSAuthServer.h \
-	applications/DNSServerBase.h \
+	applications/dns/DNSAuthServer.h \
+	applications/dns/DNSServerBase.h \
 	common/DNS.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h \
 	utils/DNSZoneConfig.h
-$O/applications/DNSClient.o: applications/DNSClient.cc \
+$O/applications/dns/DNSClient.o: applications/dns/DNSClient.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
 	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
@@ -208,13 +210,13 @@ $O/applications/DNSClient.o: applications/DNSClient.cc \
 	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
 	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
 	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
-	applications/DNSClient.h \
+	applications/dns/DNSClient.h \
 	common/DNS.h \
 	common/DNSCache.h \
 	common/DNSSimpleCache.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
-$O/applications/DNSClientTraffGen.o: applications/DNSClientTraffGen.cc \
+$O/applications/dns/DNSClientTraffGen.o: applications/dns/DNSClientTraffGen.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
 	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
@@ -222,14 +224,14 @@ $O/applications/DNSClientTraffGen.o: applications/DNSClientTraffGen.cc \
 	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
 	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
 	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
-	applications/DNSClient.h \
-	applications/DNSClientTraffGen.h \
+	applications/dns/DNSClient.h \
+	applications/dns/DNSClientTraffGen.h \
 	common/DNS.h \
 	common/DNSCache.h \
 	common/DNSSimpleCache.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
-$O/applications/DNSServerBase.o: applications/DNSServerBase.cc \
+$O/applications/dns/DNSServerBase.o: applications/dns/DNSServerBase.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
 	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
@@ -238,7 +240,7 @@ $O/applications/DNSServerBase.o: applications/DNSServerBase.cc \
 	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
 	$(INET_PROJ)/src/transport/contract/UDPControlInfo_m.h \
 	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
-	applications/DNSServerBase.h \
+	applications/dns/DNSServerBase.h \
 	common/DNS.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h

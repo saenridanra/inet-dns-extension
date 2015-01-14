@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package opp_dns_extension.applications;
+package opp_dns_extension.applications.dns;
 
 // DNSClient module. Adding it to another module
 // will enable to send queries to a predefined set of

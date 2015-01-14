@@ -32,8 +32,8 @@
 #include "glib.h"
 #include "glib/gprintf.h"
 
-#include "../common/DNSCache.h"
-#include "../common/DNSSimpleCache.h"
+#include "DNSCache.h"
+#include "DNSSimpleCache.h"
 
 /**
  * @brief DNSClient provides dns functionality from a

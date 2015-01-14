@@ -23,10 +23,10 @@ package opp_dns_extension.networks;
 import inet.nodes.ethernet.Eth1G;
 import inet.nodes.inet.Router;
 import inet.nodes.inet.StandardHost;
-import opp_dns_extension.applications.DNSAuthServer;
+import opp_dns_extension.applications.dns.DNSAuthServer;
 import inet.transport.IUDP;
 import inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator;
-import opp_dns_extension.applications.DNSClientTraffGen;
+import opp_dns_extension.applications.dns.DNSClientTraffGen;
 
 network SimpleDNSNetwork
 {

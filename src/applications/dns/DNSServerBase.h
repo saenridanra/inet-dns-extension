@@ -30,7 +30,7 @@
 #include "IPvXAddressResolver.h"
 #include <vector>
 
-#include "../utils/DNSTools.h"
+#include "DNSTools.h"
 #include "glib.h"
 
 /**
