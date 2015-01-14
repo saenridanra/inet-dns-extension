@@ -1,6 +1,6 @@
 A uni-konstanz.de
 A pan.rz.uni-konstanz.de
-A uranos.uni-konstanz.de
+A uranos.rz.uni-konstanz.de
 A dns3.uni-konstanz.de
 A www.uni-konstanz.de
 MX uni-konstanz.de

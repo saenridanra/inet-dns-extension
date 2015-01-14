@@ -47,6 +47,7 @@ class DNSServerBase : public cSimpleModule
     int receivedQueries;
 
     GHashTable* queryCache;
+    GHashTable* queryAddressCache;
     std::vector<IPvXAddress> rootServers;
 
     // Socket over which DNS queries are sent/received

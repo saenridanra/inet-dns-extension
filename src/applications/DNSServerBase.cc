@@ -31,8 +31,6 @@ void DNSServerBase::initialize(int stage) {
         out.setOutputGate(gate("udpOut"));
         out.bind(DNS_PORT);
 
-        queryCache = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
-
         receivedQueries = 0;
     }
     else if(stage == 3){
@@ -54,22 +52,27 @@ void DNSServerBase::handleMessage(cMessage *msg) {
                 query = ODnsExtension::resolveQuery((cPacket*) msg);
                 receivedQueries++;
 
-                response = handleQuery(query);
-
-                if(response == NULL){ // only happens if recursive resolving was initiated
-                    return;
-                }
-
-                // TODO: Find out how to get the source address
-                // and send the response to the source address
-
                 cPacket *pk = check_and_cast<cPacket *>(msg);
                 UDPDataIndication *ctrl = check_and_cast<UDPDataIndication *>(
                         pk->getControlInfo());
                 IPvXAddress srcAddress = ctrl->getSrcAddr();
-                sendResponse(response, srcAddress);
+                response = handleQuery(query);
 
-                delete msg;
+                if(response == NULL){ // only happens if recursive resolving was initiated
+                    // store the query in the cache...
+
+                    uint32_t* key = (uint32_t*) malloc(sizeof(uint32_t));
+                    *key = query->id;
+
+                    char* address = g_strdup(srcAddress.str().c_str());
+                    g_hash_table_insert(queryAddressCache, key, address);
+                    g_hash_table_insert(queryCache, key, msg->dup());
+                    delete msg;
+                    return;
+                }
+
+                // and send the response to the source address
+                sendResponse(response, srcAddress);
             }
             else{
                 // Just got a response, lets see if its an answer fitting one of
@@ -82,23 +85,22 @@ void DNSServerBase::handleMessage(cMessage *msg) {
                     // get the original packet and the src addr
 
                     uint32_t *key = (uint32_t*) malloc(sizeof(uint32_t));
-                    *key = response->getId();
-                    DNSPacket* original_query = (DNSPacket*) g_hash_table_lookup(queryCache, key);
-                    free(key);
+                    *key = (uint32_t) response->getId();
+                    char* returnAddress = (char*) g_hash_table_lookup(queryAddressCache, key);
+                    g_hash_table_remove(queryAddressCache, key);
+                    IPvXAddress addr = IPvXAddressResolver().resolve(returnAddress);
 
-                    cPacket *pk = check_and_cast<cPacket *>(original_query);
-                    UDPDataIndication *ctrl = check_and_cast<UDPDataIndication *>(
-                            pk->getControlInfo());
-                    IPvXAddress srcAddress = ctrl->getSrcAddr();
-                    sendResponse(response, srcAddress);
+                    free(key);
+                    // we're not an authority, set it here.
+                    sendResponse(response, addr);
                 }
 
             }
         }
 
-    } else {
-        delete msg;
     }
+
+    delete msg;
 
 }
 
@@ -119,7 +121,30 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet){
     free(key);
 
     // first check, see if there are actually answers
-    if(packet->getAncount() == 0 && (packet->getNscount() == 0)){
+    if(DNS_HEADER_AA(packet->getOptions()) && packet->getAncount() > 0){
+        // we have what we looked for, return
+        char *msg_name = g_strdup_printf("dns_response#%d", original_query->getId());
+        response = ODnsExtension::createResponse(msg_name, 1,
+                                    packet->getAncount(), packet->getNscount(), packet->getArcount(), original_query->getId(), DNS_HEADER_OPCODE(original_query->getOptions()), 0,
+                                    DNS_HEADER_RD(original_query->getOptions()), 1, 0);
+
+        short i;
+        for(i = 0; i < packet->getQdcount(); i++){
+            response->setQuestions(i, packet->getQuestions(i));
+        }
+        for(i = 0; i < packet->getAncount(); i++){
+            ODnsExtension::appendAnswer(response, &packet->getAnswers(i), i);
+        }
+        for(i = 0; i < packet->getNscount(); i++){
+            ODnsExtension::appendAuthority(response, &packet->getAuthorities(i), i);
+        }
+        for(i = 0; i < packet->getArcount(); i++){
+            ODnsExtension::appendAdditional(response, &packet->getAdditional(i), i);
+        }
+
+        return response;
+    }
+    else if(DNS_HEADER_AA(packet->getOptions()) && packet->getAncount() == 0){
         // return the entry not found response
         char *msg_name = g_strdup_printf("dns_response#%d", original_query->getId());
         response = ODnsExtension::createResponse(msg_name, 1,
@@ -128,59 +153,34 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet){
 
         return response; // return the response with no entry found..
     }
-    else if(packet->getAncount() > 0){
+    else if(packet->getNscount() > 0 && packet->getArcount() > 0 && !DNS_HEADER_AA(packet->getOptions())){
         // we have an answer for a query
+        // pick one at random and delegate the question
 
-        // TODO: check if it's for a nameserver
-        //
-        DNSRecord *answer = &packet->getAnswers(0);
+        int p = intrand(packet->getNscount());
+        DNSRecord *r = &packet->getAdditional(p);
 
-        if(g_strcmp0(answer->rname, answer->rname) == 0){
-            // this is the answer we were looking for
+        // query the name server for our original query
+        char *msg_name = g_strdup_printf("dns_query#%d--recursive", original_query->getId());
+        DNSPacket *query = ODnsExtension::createQuery(msg_name, original_query->getQuestions(0).qname, DNS_CLASS_IN, original_query->getQuestions(0).qtype, original_query->getId(), 1);
 
-            // sanity check: check if qtype matches answer type
-            // except if it was an any request..
-
-            if(!original_query->getQuestions(0).qtype == DNS_TYPE_VALUE_ANY && original_query->getQuestions(0).qtype != answer->rtype){
-                // this is not what we were looking for
-            }
-
-            // take this response and send it to the DNSClient
-            return packet; // since this packet is fine we pass it upwards
-
-        }
+        // Resolve the ip address for the record
+        IPvXAddress address = IPvXAddressResolver().resolve(r->rdata);
+        out.sendTo(query, address, DNS_PORT);
+        return NULL; // since this packet is fine we pass it upwards
+    }
+    else if(packet->getNscount() > 0 && !DNS_HEADER_AA(packet->getOptions())){
+        // TODO: no ar record, we need to start at the beginning with this reference..
+        return NULL;
     }
     else{
-        // Authority section has entries. Use those nameservers to resolve
-        // the query
+        // something went wrong, return a server failure query
+        char *msg_name = g_strdup_printf("dns_response#%d", original_query->getId());
+        response = ODnsExtension::createResponse(msg_name, 1,
+                                    0, 0, 0, original_query->getId(), DNS_HEADER_OPCODE(original_query->getOptions()), 0,
+                                    DNS_HEADER_RD(original_query->getOptions()), 1, 2);
 
-        // first see if there are A records for the nameservers..
-        if(packet->getArcount() > 0){
-            // we can directly query the name server ...
-            // pick one at random
-
-            int p = intrand(packet->getNscount());
-            DNSRecord *r = &packet->getAdditional(p);
-
-            // query the name server for our original query
-            char *msg_name = g_strdup_printf("dns_query#%d--recursive", original_query->getId());
-            DNSPacket *query = ODnsExtension::createQuery(msg_name, original_query->getQuestions(0).qname, DNS_CLASS_IN, original_query->getQuestions(0).qtype, original_query->getId(), 1);
-
-            // Resolve the ip address for the record
-            IPvXAddress address = IPvXAddressResolver().resolve(r->rdata);
-            out.sendTo(query, address, DNS_PORT);
-
-        }
-        else{
-            // we have to retrieve an A record for the nameserver first
-            // however, since the responding server set up the authority
-            // section, but didn't send a record, we start at the beginning
-            // i.e. at the root server
-
-            // TODO: implement this, for now make the hierarchy simple, i.e.,
-            // there are no substitutes for domains such as de.vu which is
-            // resolved by a name server outside the own domain.
-        }
+        return response; // return the response with no entry found..
     }
 
     return NULL;

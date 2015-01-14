@@ -85,12 +85,7 @@ void DNSZoneConfig::initialize(std::string config_file){
                     if(tokens[0] == "$TTL")
                         TTL = std::stoi(tokens[1].substr(1));
                     else if(tokens[0] == "$ORIGIN"){
-                        if(tokens[1].at(tokens[1].length() - 1) == '.'){
-                            origin = g_strndup(tokens[1].c_str(), tokens[1].length()-1);
-                        }
-                        else{
-                            origin = g_strdup(tokens[1].c_str());
-                        }
+                        origin = g_strdup(tokens[1].c_str());
                     }
 
                 }
@@ -142,7 +137,7 @@ void DNSZoneConfig::initialize(std::string config_file){
                 e = (zone_entry*) malloc(sizeof(*e));
 
                 if(tokens[0] == "IN" || tokens[0] == "CS" || tokens[0] == "HS" || tokens[0] == "CH" || tokens[0] == "*"){
-                    if(strcmp(lastsuffix.c_str(), "@") == 0){
+                    if(g_strcmp0(lastsuffix.c_str(), "@") == 0){
                         e->domain = g_strdup(origin);
                     }
                     else{
@@ -151,36 +146,29 @@ void DNSZoneConfig::initialize(std::string config_file){
                     e->__class = g_strdup(tokens[0].c_str());
                     e->type =  g_strdup(tokens[1].c_str());
 
-                    // remove trailing dot from entry..
-                    if(tokens[2].at(tokens[2].length() - 1) == '.'){
-                        e->data = g_strndup(tokens[2].c_str(), tokens[2].length()-1);
-                    }
-                    else{
-                        e->data = g_strdup(tokens[2].c_str());
-                    }
+                    e->data = g_strdup(tokens[2].c_str());
                 }
                 else{
                     // should start with the suffix
-                    if(strcmp(tokens[0].c_str(), "@") == 0){
+                    if(g_strcmp0(tokens[0].c_str(), "@") == 0){
                         e->domain = g_strdup(origin);
                     }
-                    else{
+                    else if(g_str_has_suffix(tokens[0].c_str(), ".")){
                         e->domain = g_strdup(tokens[0].c_str());
                     }
-                    lastsuffix = e->domain;
+                    else{
+                        e->domain = g_strdup_printf("%s.%s", tokens[0].c_str(), origin);
+                    }
+
+                    lastsuffix = g_strdup(tokens[0].c_str());
                     e->__class =  g_strdup(tokens[1].c_str());
                     e->type =  g_strdup(tokens[2].c_str());
 
-                    // remove trailing dot from entry..
-                    if(tokens[3].at(tokens[3].length() - 1) == '.'){
-                        e->data = g_strndup(tokens[3].c_str(), tokens[3].length()-1);
-                    }
-                    else{
-                        e->data = g_strdup(tokens[3].c_str());
-                    }
+                    e->data = g_strdup(tokens[3].c_str());
+
                 }
 
-                if(strcmp(e->domain, origin) != 0){
+                if(!g_str_has_suffix(e->domain, ".") && !g_str_has_suffix(e->domain, origin)){
                     namehash = g_strdup_printf("%s.%s:%s:%s", e->domain, origin, e->type, e->__class);
                 }
                 else{

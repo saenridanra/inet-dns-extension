@@ -1,7 +1,7 @@
 $TTL	86400 ; 24 hours could have been written as 24h or 1d
 			  ; $TTL used for all RRs without explicit TTL value
 $ORIGIN google.com.
-@ 	   IN  SOA ns1.google.com. dns-admin.google.com. (
+@ 	   IN  SOA ns4.google.com. dns-admin.google.com. (
 			      2003080800 ; sn = serial number
                   172800     ; ref = refresh = 2d
                   900        ; ret = update retry = 15m

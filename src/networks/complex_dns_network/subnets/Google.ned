@@ -29,25 +29,25 @@ network Google
     submodules:
         ns1_google_com: DNSServerNode {
             auth.recursion_available = 0;
-            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork..rootservers.b_root";
+            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork.rootservers.b_root";
             m_file = "subnets/ns1.google.com.zone";
             @display("p=130,580");
         }
         ns2_google_com: DNSServerNode {
             auth.recursion_available = 0;
-            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork..rootservers.b_root";
+            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork.rootservers.b_root";
             m_file = "subnets/ns2.google.com.zone";
             @display("p=277,580");
         }
         ns3_google_com: DNSServerNode {
             auth.recursion_available = 0;
-            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork..rootservers.b_root";
+            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork.rootservers.b_root";
             m_file = "subnets/ns3.google.com.zone";
             @display("p=425,580");
         }
         ns4_google_com: DNSServerNode {
             auth.recursion_available = 0;
-            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork..rootservers.b_root";
+            auth.root_servers = "ComplexDNSNetwork.rootservers.i_root ComplexDNSNetwork.rootservers.b_root";
             m_file = "subnets/ns4.google.com.zone";
             @display("p=571,580");
         }
