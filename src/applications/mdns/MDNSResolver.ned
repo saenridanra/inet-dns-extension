@@ -18,6 +18,6 @@ package opp_dns_extension.applications.mdns;
 //
 // TODO auto-generated module
 //
-simple MDNSBaseApp
+simple MDNSResolver
 {
 }

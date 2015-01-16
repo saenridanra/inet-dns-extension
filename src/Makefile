@@ -52,6 +52,7 @@ INCLUDE_PATH = \
     -Iapplications/dns \
     -Iapplications/mdns \
     -Icommon \
+    -Icommon/mdns \
     -Imessages \
     -Inetworks \
     -Inetworks/complex_dns_network \
@@ -78,9 +79,13 @@ OBJS = \
     $O/applications/dns/DNSClientTraffGen.o \
     $O/applications/dns/DNSClient.o \
     $O/applications/dns/DNSServerBase.o \
-    $O/applications/mdns/MDNSBaseApp.o \
+    $O/applications/mdns/MDNSResolver.o \
     $O/common/DNSSimpleCache.o \
     $O/common/DNSCache.o \
+    $O/common/mdns/MDNSQueryScheduler.o \
+    $O/common/mdns/MDNSResponseScheduler.o \
+    $O/common/mdns/MDNSProbeScheduler.o \
+    $O/common/mdns/TimeEventSet.o \
     $O/utils/DNSTools.o \
     $O/utils/DNSZoneConfig.o \
     $O/messages/DNSPacket_m.o
@@ -174,6 +179,7 @@ clean:
 	$(Q)-rm -f applications/dns/*_m.cc applications/dns/*_m.h
 	$(Q)-rm -f applications/mdns/*_m.cc applications/mdns/*_m.h
 	$(Q)-rm -f common/*_m.cc common/*_m.h
+	$(Q)-rm -f common/mdns/*_m.cc common/mdns/*_m.h
 	$(Q)-rm -f messages/*_m.cc messages/*_m.h
 	$(Q)-rm -f networks/*_m.cc networks/*_m.h
 	$(Q)-rm -f networks/complex_dns_network/*_m.cc networks/complex_dns_network/*_m.h
@@ -187,7 +193,7 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc applications/dns/*.cc applications/mdns/*.cc common/*.cc messages/*.cc networks/*.cc networks/complex_dns_network/*.cc networks/complex_dns_network/results/*.cc networks/complex_dns_network/subnets/*.cc networks/results/*.cc utils/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc applications/dns/*.cc applications/mdns/*.cc common/*.cc common/mdns/*.cc messages/*.cc networks/*.cc networks/complex_dns_network/*.cc networks/complex_dns_network/results/*.cc networks/complex_dns_network/subnets/*.cc networks/results/*.cc utils/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/applications/dns/DNSAuthServer.o: applications/dns/DNSAuthServer.cc \
@@ -247,12 +253,8 @@ $O/applications/dns/DNSServerBase.o: applications/dns/DNSServerBase.cc \
 	common/DNS.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
-$O/applications/mdns/MDNSBaseApp.o: applications/mdns/MDNSBaseApp.cc \
-	applications/mdns/MDNSBaseApp.h \
-	common/DNS.h \
-	common/MDNS.h \
-	messages/DNSPacket_m.h \
-	utils/DNSTools.h
+$O/applications/mdns/MDNSResolver.o: applications/mdns/MDNSResolver.cc \
+	applications/mdns/MDNSResolver.h
 $O/common/DNSCache.o: common/DNSCache.cc \
 	common/DNS.h \
 	common/DNSCache.h \
@@ -264,6 +266,14 @@ $O/common/DNSSimpleCache.o: common/DNSSimpleCache.cc \
 	common/DNSSimpleCache.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
+$O/common/mdns/MDNSProbeScheduler.o: common/mdns/MDNSProbeScheduler.cc \
+	common/mdns/MDNSProbeScheduler.h
+$O/common/mdns/MDNSQueryScheduler.o: common/mdns/MDNSQueryScheduler.cc \
+	common/mdns/MDNSQueryScheduler.h
+$O/common/mdns/MDNSResponseScheduler.o: common/mdns/MDNSResponseScheduler.cc \
+	common/mdns/MDNSResponseScheduler.h
+$O/common/mdns/TimeEventSet.o: common/mdns/TimeEventSet.cc \
+	common/mdns/TimeEventSet.h
 $O/messages/DNSPacket_m.o: messages/DNSPacket_m.cc \
 	common/DNS.h \
 	messages/DNSPacket_m.h
