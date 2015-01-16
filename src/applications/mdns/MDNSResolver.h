@@ -24,6 +24,10 @@
 #define __OPP_DNS_EXTENSION_MDNSRESOLVER_H_
 
 #include <omnetpp.h>
+#include <TimeEventSet.h>
+#include <DNSTools.h>
+#include <DNS.h>
+
 
 /**
  * TODO - Generated class
@@ -31,8 +35,16 @@
 class MDNSResolver : public cSimpleModule
 {
   protected:
+    ODnsExtension::TimeEventSet timeEventSet;
+  protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
+
+    virtual void elapsedTimeCheck();
+    virtual void handleProbe(DNSPacket* p);
+    virtual void handleQuery(DNSPacket* p);
+    virtual void handleAnnouncement(DNSPacket* p);
+    virtual void handleResponse(DNSPacket* p);
 };
 
 #endif
