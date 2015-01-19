@@ -23,12 +23,16 @@
 #ifndef MDNSPROBESCHEDULER_H_
 #define MDNSPROBESCHEDULER_H_
 
+#include <TimeEventSet.h>
+
 namespace ODnsExtension {
 
 class MDNSProbeScheduler
 {
+    protected:
+        ODnsExtension::TimeEventSet* timeEventSet;
     public:
-        MDNSProbeScheduler();
+        MDNSProbeScheduler(ODnsExtension::TimeEventSet* _timeEventSet);
         virtual ~MDNSProbeScheduler();
 };
 

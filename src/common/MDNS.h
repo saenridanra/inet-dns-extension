@@ -23,11 +23,33 @@
 #ifndef MDNS_H_
 #define MDNS_H_
 
+#include <omnetpp.h>
+#include <DNS.h>
+#include <DNSTools.h>
+#include "DNSPacket_m.h"
+
+namespace ODnsExtension {
+
 // definition of a structure for services
 typedef struct MDNSService{
 
 } mdns_service;
 
+typedef struct MDNSKey{
+   char* name;
+   uint16_t type;
+   uint16_t _class;
+} mdns_key;
 
+// utility functions:
+int isProbe(DNSPacket* p);
+int isAnnouncement(DNSPacket* p);
+int isQuery(DNSPacket* p);
+int isResponse(DNSPacket* p);
+
+int compareMDNSKey(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2);
+
+
+}
 
 #endif /* MDNS_H_ */

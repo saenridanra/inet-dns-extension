@@ -23,12 +23,16 @@
 #ifndef MDNSRESPONSESCHEDULER_H_
 #define MDNSRESPONSESCHEDULER_H_
 
+#include <TimeEventSet.h>
+
 namespace ODnsExtension {
 
 class MDNSResponseScheduler
 {
+    protected:
+        ODnsExtension::TimeEventSet* timeEventSet;
     public:
-        MDNSResponseScheduler();
+        MDNSResponseScheduler(ODnsExtension::TimeEventSet* _timeEventSet);
         virtual ~MDNSResponseScheduler();
 };
 

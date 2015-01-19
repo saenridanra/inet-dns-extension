@@ -23,13 +23,44 @@
 #ifndef MDNSQUERYSCHEDULER_H_
 #define MDNSQUERYSCHEDULER_H_
 
+#include <omnetpp.h>
+#include <TimeEventSet.h>
+#include <DNS.h>
+#include <MDNS.h>
+#include <glib.h>
+
 namespace ODnsExtension {
+
+typedef struct MDNSQueryJob{
+    ODnsExtension::TimeEvent* e;
+    ODnsExtension::MDNSKey* key;
+    int done;
+
+    // when the job has to be performed.
+    simtime_t delivery;
+
+} query_job;
 
 class MDNSQueryScheduler
 {
+    protected:
+        ODnsExtension::TimeEventSet* timeEventSet;
+        GList* jobs;
+        GList* history;
+
+        virtual ODnsExtension::MDNSQueryJob* new_job(ODnsExtension::MDNSKey* key);
+        virtual ODnsExtension::MDNSQueryJob* find_job(ODnsExtension::MDNSKey* key);
+        virtual ODnsExtension::MDNSQueryJob* find_history(ODnsExtension::MDNSKey* key);
+        virtual void done(ODnsExtension::MDNSQueryJob* qj);
+        virtual void remove_job(ODnsExtension::MDNSQueryJob* qj);
     public:
-        MDNSQueryScheduler();
+        MDNSQueryScheduler(ODnsExtension::TimeEventSet* _timeEventSet);
         virtual ~MDNSQueryScheduler();
+
+        static void elapseCallback(ODnsExtension::TimeEvent* e, void* data, void* thispointer);
+        virtual void post(ODnsExtension::MDNSKey* key, int immediately);
+        virtual void check_dup(ODnsExtension::MDNSKey* key);
+        virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
 };
 
 } /* namespace ODnsExtension */

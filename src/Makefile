@@ -80,6 +80,7 @@ OBJS = \
     $O/applications/dns/DNSClient.o \
     $O/applications/dns/DNSServerBase.o \
     $O/applications/mdns/MDNSResolver.o \
+    $O/common/MDNS.o \
     $O/common/DNSSimpleCache.o \
     $O/common/DNSCache.o \
     $O/common/mdns/MDNSQueryScheduler.o \
@@ -254,7 +255,15 @@ $O/applications/dns/DNSServerBase.o: applications/dns/DNSServerBase.cc \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
 $O/applications/mdns/MDNSResolver.o: applications/mdns/MDNSResolver.cc \
-	applications/mdns/MDNSResolver.h
+	applications/mdns/MDNSResolver.h \
+	common/DNS.h \
+	common/MDNS.h \
+	common/mdns/MDNSProbeScheduler.h \
+	common/mdns/MDNSQueryScheduler.h \
+	common/mdns/MDNSResponseScheduler.h \
+	common/mdns/TimeEventSet.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
 $O/common/DNSCache.o: common/DNSCache.cc \
 	common/DNS.h \
 	common/DNSCache.h \
@@ -266,12 +275,24 @@ $O/common/DNSSimpleCache.o: common/DNSSimpleCache.cc \
 	common/DNSSimpleCache.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
+$O/common/MDNS.o: common/MDNS.cc \
+	common/DNS.h \
+	common/MDNS.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
 $O/common/mdns/MDNSProbeScheduler.o: common/mdns/MDNSProbeScheduler.cc \
-	common/mdns/MDNSProbeScheduler.h
+	common/mdns/MDNSProbeScheduler.h \
+	common/mdns/TimeEventSet.h
 $O/common/mdns/MDNSQueryScheduler.o: common/mdns/MDNSQueryScheduler.cc \
-	common/mdns/MDNSQueryScheduler.h
+	common/DNS.h \
+	common/MDNS.h \
+	common/mdns/MDNSQueryScheduler.h \
+	common/mdns/TimeEventSet.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
 $O/common/mdns/MDNSResponseScheduler.o: common/mdns/MDNSResponseScheduler.cc \
-	common/mdns/MDNSResponseScheduler.h
+	common/mdns/MDNSResponseScheduler.h \
+	common/mdns/TimeEventSet.h
 $O/common/mdns/TimeEventSet.o: common/mdns/TimeEventSet.cc \
 	common/mdns/TimeEventSet.h
 $O/messages/DNSPacket_m.o: messages/DNSPacket_m.cc \

@@ -27,15 +27,33 @@
 #include <TimeEventSet.h>
 #include <DNSTools.h>
 #include <DNS.h>
+#include <MDNSProbeScheduler.h>
+#include <MDNSResponseScheduler.h>
+#include <MDNSQueryScheduler.h>
 
 
 /**
- * TODO - Generated class
+ * @brief MDNSResolver
+ *
+ * Provides functionality of a mdns resolver. New queries
+ * can be sent over the internal interface.
+ *
  */
 class MDNSResolver : public cSimpleModule
 {
   protected:
-    ODnsExtension::TimeEventSet timeEventSet;
+    ODnsExtension::TimeEventSet* timeEventSet;
+    ODnsExtension::MDNSProbeScheduler* probeScheduler;
+    ODnsExtension::MDNSResponseScheduler* responseScheduler;
+    ODnsExtension::MDNSQueryScheduler* queryScheduler;
+    cMessage* selfMessage;
+
+    simtime_t elapseTime = STR_SIMTIME("1ms"); // timer is set to 1ms, i.e. with a resolution of 1ms, elapsed times are checked.
+
+  public:
+    MDNSResolver();
+    ~MDNSResolver();
+
   protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
@@ -46,5 +64,9 @@ class MDNSResolver : public cSimpleModule
     virtual void handleAnnouncement(DNSPacket* p);
     virtual void handleResponse(DNSPacket* p);
 };
+
+#define MDNS_KIND_TIMER 0
+#define MDNS_KIND_EXTERNAL 1
+#define MDNS_KIND_INTERNAL_QUERY 2
 
 #endif

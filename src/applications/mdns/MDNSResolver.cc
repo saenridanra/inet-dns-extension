@@ -23,12 +23,102 @@
 
 Define_Module(MDNSResolver);
 
+MDNSResolver::MDNSResolver(){
+
+}
+
+MDNSResolver::~MDNSResolver(){
+    // delete objects used in here..
+    delete timeEventSet;
+    delete probeScheduler;
+    delete queryScheduler;
+    delete responseScheduler;
+}
+
 void MDNSResolver::initialize()
 {
-    // TODO - Generated method body
+    timeEventSet = new ODnsExtension::TimeEventSet();
+    selfMessage = new cMessage("timer");
+    selfMessage->setKind(MDNS_KIND_TIMER);
+    scheduleAt(simTime()+elapseTime, selfMessage);
+
+    probeScheduler = new ODnsExtension::MDNSProbeScheduler(timeEventSet);
+    queryScheduler = new ODnsExtension::MDNSQueryScheduler(timeEventSet);
+    responseScheduler = new ODnsExtension::MDNSResponseScheduler(timeEventSet);
 }
 
 void MDNSResolver::handleMessage(cMessage *msg)
 {
-    // TODO - Generated method body
+    if(msg->isSelfMessage()){
+        if(msg->getKind() == MDNS_KIND_TIMER){
+            elapsedTimeCheck();
+            return;
+        }
+    }
+    else{
+        // check which kind it is
+        if(msg->getKind() == MDNS_KIND_INTERNAL_QUERY){
+            // this is a message from a module utilizing the mdns resolver
+            // and wanting to perform a query..
+            delete msg;
+            return;
+        }
+        else if(msg->getKind() == MDNS_KIND_EXTERNAL){
+            DNSPacket* p = check_and_cast<DNSPacket*>(msg);
+            if(ODnsExtension::isQuery(p)){
+                handleQuery(p);
+                delete msg;
+                return;
+            }
+            else if(ODnsExtension::isResponse(p)){
+                handleResponse(p);
+                delete msg;
+                return;
+            }
+            else if(ODnsExtension::isProbe(p)){
+                handleProbe(p);
+                delete msg;
+                return;
+            }
+            else if(ODnsExtension::isAnnouncement(p)){
+                handleAnnouncement(p);
+                delete msg;
+                return;
+            }
+
+            // something went wrong, message unknown.
+            delete msg;
+            return;
+        }
+    }
+}
+
+void MDNSResolver::elapsedTimeCheck(){
+    // first, schedule new elapseTimeCheck
+    scheduleAt(simTime()+elapseTime, selfMessage);
+
+    // check if we have an event coming up now, i.e. check if we can get
+    // an event from the timeEventSet
+    ODnsExtension::TimeEvent* event;
+    if((event = timeEventSet->getTimeEventIfDue())){
+        // perform the timeEvent..
+        event->performCallback(); // the rest is handled in the callback
+    }
+
+}
+
+void MDNSResolver::handleProbe(DNSPacket* p){
+
+}
+
+void MDNSResolver::handleQuery(DNSPacket* p){
+
+}
+
+void MDNSResolver::handleAnnouncement(DNSPacket* p){
+
+}
+
+void MDNSResolver::handleResponse(DNSPacket* p){
+
 }

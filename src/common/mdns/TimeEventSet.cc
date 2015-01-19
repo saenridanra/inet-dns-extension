@@ -25,7 +25,6 @@ namespace ODnsExtension {
 
 TimeEventSet::TimeEventSet()
 {
-    // nothing to do here
 }
 
 TimeEventSet::~TimeEventSet()

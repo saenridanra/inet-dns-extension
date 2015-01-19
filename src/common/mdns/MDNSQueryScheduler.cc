@@ -23,15 +23,196 @@
 
 namespace ODnsExtension {
 
-MDNSQueryScheduler::MDNSQueryScheduler()
+MDNSQueryScheduler::MDNSQueryScheduler(ODnsExtension::TimeEventSet* _timeEventSet)
 {
-    // TODO Auto-generated constructor stub
-
+    timeEventSet = _timeEventSet;
 }
 
 MDNSQueryScheduler::~MDNSQueryScheduler()
 {
-    // TODO Auto-generated destructor stub
+    // free all lists ...
+}
+
+void MDNSQueryScheduler::elapseCallback(ODnsExtension::TimeEvent* e, void* data, void* thispointer)
+{
+    MDNSQueryScheduler * self = static_cast<MDNSQueryScheduler*>(thispointer);
+    self->elapse(e, data);
+}
+
+void MDNSQueryScheduler::elapse(ODnsExtension::TimeEvent* e, void* data)
+{
+
+}
+
+ODnsExtension::MDNSQueryJob* MDNSQueryScheduler::find_job(ODnsExtension::MDNSKey* key)
+{
+    ODnsExtension::MDNSQueryJob* qj;
+    GList* next = g_list_first(jobs);
+
+    while (next)
+    {
+        qj = (ODnsExtension::MDNSQueryJob*) next->data;
+
+        // check if they are the same
+        int comp = ODnsExtension::compareMDNSKey(key, qj->key);
+        if (!comp)
+        {
+            return qj;
+        }
+
+        next = g_list_next(next);
+    }
+
+    return NULL;
+
+}
+
+ODnsExtension::MDNSQueryJob* MDNSQueryScheduler::find_history(ODnsExtension::MDNSKey* key)
+{
+    ODnsExtension::MDNSQueryJob* qj;
+    GList* next = g_list_first(history);
+
+    while (next)
+    {
+        qj = (ODnsExtension::MDNSQueryJob*) next->data;
+
+        // check if they are the same
+        int comp = ODnsExtension::compareMDNSKey(key, qj->key);
+        if (!comp)
+        {
+            return qj;
+        }
+
+        next = g_list_next(next);
+    }
+
+    return NULL;
+}
+
+void MDNSQueryScheduler::post(ODnsExtension::MDNSKey* key, int immediately)
+{
+    MDNSQueryJob* qj;
+    simtime_t tv;
+
+    if ((qj = find_history(key)))
+        return;
+
+    if (!immediately)
+    {
+        int defer = intrand(100) + 20;
+        // create simtime value from random deferral value
+        char* stime = g_strdup_printf("%dms", defer);
+        tv = simTime() + STR_SIMTIME(stime);
+        g_free(stime);
+
+    }
+    else{
+        tv = simTime();
+    }
+
+    // update time if this question is a duplicate
+    if ((qj = find_job(key)))
+    {
+        if (tv < qj->delivery)
+        {
+            qj->delivery = tv;
+            timeEventSet->updateTimeEvent(qj->e, tv);
+        }
+    }
+    else{
+        // create new job..
+        qj = new_job(key);
+        qj->delivery = tv;
+
+        ODnsExtension::TimeEvent* e = new ODnsExtension::TimeEvent(this);
+        e->setData(qj);
+        e->setExpiry(tv);
+        e->setLastRun(0);
+        e->setCallback(ODnsExtension::MDNSQueryScheduler::elapseCallback);
+
+        timeEventSet->addTimeEvent(e);
+
+    }
+
+}
+
+void MDNSQueryScheduler::done(ODnsExtension::MDNSQueryJob* qj){
+    qj->done = 1;
+    jobs = g_list_remove(jobs, qj);
+    history = g_list_append(history, qj);
+    simtime_t now = simTime();
+    qj->delivery = now;
+
+    // update the time event
+
+    // add random deferral value between 20 and 120
+    int defer = intrand(100) + 20;
+    // create simtime value from random deferral value
+    char* stime = g_strdup_printf("%dms", defer);
+    simtime_t tv = STR_SIMTIME(stime);
+    g_free(stime);
+
+    timeEventSet->updateTimeEvent(qj->e, now+tv);
+}
+
+void MDNSQueryScheduler::check_dup(ODnsExtension::MDNSKey* key)
+{
+    MDNSQueryJob* qj;
+
+    if((qj = find_job(key))){
+        // found a matching upcoming job, we don't need
+        // to perform it anymore, since another node
+        // queried for it.
+
+        done(qj);
+        return;
+    }
+
+    // add random deferral value between 20 and 120
+    int defer = intrand(100) + 20;
+    // create simtime value from random deferral value
+    char* stime = g_strdup_printf("%dms", defer);
+    simtime_t tv = simTime() + STR_SIMTIME(stime);
+    g_free(stime);
+
+    if((qj = find_history(key))){
+        // just update the time for the existing job
+        qj->delivery = tv;
+        timeEventSet->updateTimeEvent(qj->e, tv);
+    }
+    else{
+        qj = new_job(key); // create a new job, since this one is not in the history
+
+        qj->delivery = tv;
+
+        ODnsExtension::TimeEvent* e = new ODnsExtension::TimeEvent(this);
+        e->setData(qj);
+        e->setExpiry(tv);
+        e->setLastRun(0);
+        e->setCallback(ODnsExtension::MDNSQueryScheduler::elapseCallback);
+
+        timeEventSet->addTimeEvent(e);
+    }
+
+}
+
+ODnsExtension::MDNSQueryJob* MDNSQueryScheduler::new_job(ODnsExtension::MDNSKey* key)
+{
+    MDNSQueryJob *qj = (MDNSQueryJob*) malloc(sizeof(qj));
+    qj->key->name = g_strdup(key->name);
+    qj->key->type = key->type;
+    qj->key->_class = key->_class;
+
+    qj->done = 0;
+
+    jobs = g_list_append(jobs, qj);
+
+    return qj;
+}
+
+void MDNSQueryScheduler::remove_job(ODnsExtension::MDNSQueryJob* qj)
+{
+
 }
 
 } /* namespace ODnsExtension */

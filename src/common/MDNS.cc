@@ -19,18 +19,36 @@
  THE SOFTWARE.
  */
 
-#include <mdns/MDNSProbeScheduler.h>
+#include "MDNS.h"
 
-namespace ODnsExtension {
-
-MDNSProbeScheduler::MDNSProbeScheduler(ODnsExtension::TimeEventSet* _timeEventSet)
-{
-    timeEventSet = _timeEventSet;
+int isProbe(DNSPacket* p){
+    // TODO: check if it's a PROBE
+    return 0;
 }
 
-MDNSProbeScheduler::~MDNSProbeScheduler()
-{
-    // TODO Auto-generated destructor stub
+int isAnnoucement(DNSPacket* p){
+    // TODO: check if it's an Announcement
+    return 0;
 }
 
-} /* namespace ODnsExtension */
+int isQuery(DNSPacket* p){
+    return !ODnsExtension::isQueryOrResponse(p);
+}
+
+int isResponse(DNSPacket* p){
+    return ODnsExtension::isQueryOrResponse(p);
+}
+
+int compareMDNSKey(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2){
+    if(key1 == key2) return 0;
+
+    int comp = g_strcmp0(key1->name, key2->name);
+
+    if(comp != 0) return comp;
+    if(key1->type > key2->type) return 1;
+    else if(key1->type < key2->type) return -1;
+    else if(key1->_class > key2->_class) return 1;
+    else if(key1->_class < key2->_class) return -1;
+
+    return 0;
+}

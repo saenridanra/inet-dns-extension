@@ -22,10 +22,9 @@
 
 namespace ODnsExtension {
 
-MDNSResponseScheduler::MDNSResponseScheduler()
+MDNSResponseScheduler::MDNSResponseScheduler(ODnsExtension::TimeEventSet* _timeEventSet)
 {
-    // TODO Auto-generated constructor stub
-
+    timeEventSet = _timeEventSet;
 }
 
 MDNSResponseScheduler::~MDNSResponseScheduler()

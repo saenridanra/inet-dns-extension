@@ -37,11 +37,15 @@ class TimeEvent{
         void* data;
         // callback function, to call the correct scheduler
         // to perform the job.
-        void (*callback) (ODnsExtension::TimeEvent*, void*);
+        void* scheduler;
+        void (*callback) (ODnsExtension::TimeEvent*, void*, void*);
 
 
     public:
-        TimeEvent();
+        TimeEvent(void* _scheduler){
+            scheduler = _scheduler;
+        }
+
         virtual ~TimeEvent();
 
         void* getData(){
@@ -53,10 +57,10 @@ class TimeEvent{
         }
 
         void performCallback(){
-            callback(this, data);
+            callback(this, data, scheduler);
         }
 
-        void setCallback(void (_callback) (ODnsExtension::TimeEvent*, void*)){
+        void setCallback(void (_callback) (ODnsExtension::TimeEvent*, void*, void*)){
             callback = _callback;
         }
 
