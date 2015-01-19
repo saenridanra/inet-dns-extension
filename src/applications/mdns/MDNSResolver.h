@@ -25,6 +25,8 @@
 
 #include <omnetpp.h>
 #include <TimeEventSet.h>
+#include <DNSCache.h>
+#include <DNSTTLCache.h>
 #include <DNSTools.h>
 #include <DNS.h>
 #include <MDNSProbeScheduler.h>
@@ -46,6 +48,9 @@ class MDNSResolver : public cSimpleModule
     ODnsExtension::MDNSProbeScheduler* probeScheduler;
     ODnsExtension::MDNSResponseScheduler* responseScheduler;
     ODnsExtension::MDNSQueryScheduler* queryScheduler;
+
+    ODnsExtension::DNSTTLCache* cache;
+
     cMessage* selfMessage;
 
     simtime_t elapseTime = STR_SIMTIME("1ms"); // timer is set to 1ms, i.e. with a resolution of 1ms, elapsed times are checked.

@@ -30,9 +30,9 @@
 /*
  * DNSPacket_m.h
  */
+#include "../messages/DNSPacket_m.h"
 
 #include "../common/DNS.h"
-#include "../messages/DNSPacket_m.h"
 #include "glib.h"
 #include "glib/gprintf.h"
 
@@ -68,7 +68,7 @@ DNSPacket* createQuery(char *msg_name, char *name, unsigned short dnsclass, unsi
  *      Creates a query with multiple questions
  */
 
-DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, char **name, unsigned short dnsclass,
+DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, unsigned short ancount, unsigned short nscount, unsigned short arcount, unsigned short dnsclass,
         unsigned short type, unsigned short id, unsigned short rd);
 
 /**
@@ -85,23 +85,30 @@ DNSPacket* createResponse(char *msg_name, unsigned short qdcount, unsigned short
         unsigned short arcount, unsigned short id, unsigned short opcode, unsigned short AA, unsigned short rd,
         unsigned short ra, unsigned short rcode);
 
+
+/**
+ * @brief appendQuestion
+ *      Appends a question to a previously generated DNS packet.
+ */
+int appendQuestions(DNSPacket *p, DNSQuestion *q, int index);
+
 /**
  * @brief appendAnswer
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAnswer(DNSPacket *p, ODnsExtension::DNSRecord *r, int index);
+int appendAnswer(DNSPacket *p, DNSRecord *r, int index);
 
 /**
  * @brief appendAuthority
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAuthority(DNSPacket *p, ODnsExtension::DNSRecord *r, int index);
+int appendAuthority(DNSPacket *p, DNSRecord *r, int index);
 
 /**
  * @brief appendAdditional
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAdditional(DNSPacket *p, ODnsExtension::DNSRecord *r, int index);
+int appendAdditional(DNSPacket *p, DNSRecord *r, int index);
 
 /**
  * @brief resolveResponse
@@ -180,7 +187,6 @@ void printDNSQuestion(DNSQuestion* q);
  *      0 otherwise
  */
 int freeDnsRecord(DNSRecord* r);
-
 
 }
 

@@ -67,7 +67,7 @@ DNSPacket* createQuery(char *msg_name, char *name, unsigned short dnsclass, unsi
  *      Creates a query with multiple questions
  */
 
-DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, char **name, unsigned short dnsclass,
+DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, unsigned short ancount, unsigned short nscount, unsigned short arcount, unsigned short dnsclass,
         unsigned short type, unsigned short id, unsigned short rd)
 {
     DNSPacket *q = new DNSPacket(msg_name);
@@ -75,9 +75,9 @@ DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, char **name, uns
     // Set id and options in header ..
     q->setId(id);
     q->setQdcount(qdcount);
-    q->setAncount(0);
-    q->setNscount(0);
-    q->setArcount(0);
+    q->setAncount(ancount);
+    q->setNscount(nscount);
+    q->setArcount(arcount);
 
     unsigned short options = 0;
     // QR and OPCODE already 0..
@@ -86,18 +86,6 @@ DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, char **name, uns
 
     // Setup question
     q->setNumQuestions(qdcount);
-
-    for (int i = 0; i < qdcount; i++)
-    {
-        DNSQuestion question;
-        question.qname = name[i];
-        question.qclass = dnsclass;
-        question.qtype = type;
-
-        // in this case we vary from standard implementations
-        // questions are appended as array in DNSPacket
-        q->setQuestions(i, question);
-    }
 
     q->setOptions(options);
     return q;
@@ -178,6 +166,17 @@ DNSPacket* createResponse(char *msg_name, unsigned short qdcount, unsigned short
     r->setOptions(options);
 
     return r;
+}
+
+/**
+ * @brief appendQuestion
+ *      Appends a question to a previously generated DNS packet.
+ */
+int appendQuestions(DNSPacket *p, ODnsExtension::DNSQuestion *q, int index)
+{
+    p->setQuestions(index, *q);
+
+    return 1;
 }
 
 /**

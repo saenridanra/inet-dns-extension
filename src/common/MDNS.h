@@ -49,6 +49,20 @@ int isResponse(DNSPacket* p);
 
 int compareMDNSKey(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2);
 
+/**
+ * @brief createQuestion
+ *
+ * Creates a dnsquestion from params
+ */
+DNSQuestion* createQuestion(char* name, unsigned short type, unsigned short _class);
+
+/**
+ * @brief createQuestionFromKey
+ *
+ * Creates a dnsquestion from an MDNSKey
+ */
+DNSQuestion* createQuestionFromKey(MDNSKey* key);
+
 
 }
 

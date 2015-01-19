@@ -25,6 +25,7 @@ namespace ODnsExtension {
 
 MDNSQueryScheduler::MDNSQueryScheduler(ODnsExtension::TimeEventSet* _timeEventSet)
 {
+
     timeEventSet = _timeEventSet;
 }
 
@@ -41,6 +42,35 @@ void MDNSQueryScheduler::elapseCallback(ODnsExtension::TimeEvent* e, void* data,
 
 void MDNSQueryScheduler::elapse(ODnsExtension::TimeEvent* e, void* data)
 {
+    ODnsExtension::MDNSQueryJob* qj = (ODnsExtension::MDNSQueryJob*) data;
+
+    if(qj->done){
+        remove_job(qj); // remove the job from history as it is done already
+        return;
+    }
+
+    DNSPacket* p;
+    GList* knownAnswers; // append known answers from the cache in here
+
+    GList* qlist;
+    GList* anlist;
+    GList* nslist;
+    GList* arlist;
+
+    int qdcount = 0;
+    int ancount = 0;
+    int nscount = 0;
+    int arcount = 0;
+    //char* msgname = g_strdup_printf("mdns_query#%d", id_count);
+    //p = ODnsExtension::createNQuery(msgname, qj->key->name, qj->key->_class, qj->key->type, id, 0);
+
+    qdcount++;
+    ODnsExtension::DNSQuestion* q;
+    q = createQuestionFromKey(qj->key);
+    qlist = g_list_append(qlist, q);
+
+    // append known answers for this query
+    //append_cache_entries(key, knownAnswers);
 
 }
 
@@ -199,6 +229,7 @@ void MDNSQueryScheduler::check_dup(ODnsExtension::MDNSKey* key)
 ODnsExtension::MDNSQueryJob* MDNSQueryScheduler::new_job(ODnsExtension::MDNSKey* key)
 {
     MDNSQueryJob *qj = (MDNSQueryJob*) malloc(sizeof(qj));
+    qj->id = id_count++;
     qj->key->name = g_strdup(key->name);
     qj->key->type = key->type;
     qj->key->_class = key->_class;
@@ -212,7 +243,27 @@ ODnsExtension::MDNSQueryJob* MDNSQueryScheduler::new_job(ODnsExtension::MDNSKey*
 
 void MDNSQueryScheduler::remove_job(ODnsExtension::MDNSQueryJob* qj)
 {
+    timeEventSet->removeTimeEvent(qj->e);
 
+    if(find_job(qj->key)){
+        jobs = g_list_remove(jobs, qj);
+        g_free(qj->key->name);
+        g_free(qj->key);
+        g_free(qj);
+        return;
+    }
+    else if(find_history(qj->key)){
+        jobs = g_list_remove(jobs, qj);
+        g_free(qj->key->name);
+        g_free(qj->key);
+        g_free(qj);
+        return;
+    }
+
+    // no ref found? i.e. just delete ...
+    g_free(qj->key->name);
+    g_free(qj->key);
+    g_free(qj);
 }
 
 } /* namespace ODnsExtension */

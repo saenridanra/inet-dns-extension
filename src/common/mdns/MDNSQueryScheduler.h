@@ -26,12 +26,14 @@
 #include <omnetpp.h>
 #include <TimeEventSet.h>
 #include <DNS.h>
+#include <DNSCache.h>
 #include <MDNS.h>
 #include <glib.h>
 
 namespace ODnsExtension {
 
 typedef struct MDNSQueryJob{
+    unsigned int id;
     ODnsExtension::TimeEvent* e;
     ODnsExtension::MDNSKey* key;
     int done;
@@ -48,6 +50,10 @@ class MDNSQueryScheduler
         GList* jobs;
         GList* history;
 
+        ODnsExtension::DNSCache* cache; // cache reference
+
+        unsigned int id_count = 0;
+
         virtual ODnsExtension::MDNSQueryJob* new_job(ODnsExtension::MDNSKey* key);
         virtual ODnsExtension::MDNSQueryJob* find_job(ODnsExtension::MDNSKey* key);
         virtual ODnsExtension::MDNSQueryJob* find_history(ODnsExtension::MDNSKey* key);
@@ -61,6 +67,10 @@ class MDNSQueryScheduler
         virtual void post(ODnsExtension::MDNSKey* key, int immediately);
         virtual void check_dup(ODnsExtension::MDNSKey* key);
         virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
+
+        virtual void setCache(ODnsExtension::DNSCache* _cache){
+            cache = _cache;
+        }
 };
 
 } /* namespace ODnsExtension */

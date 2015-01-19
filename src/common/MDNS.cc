@@ -52,3 +52,23 @@ int compareMDNSKey(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2){
 
     return 0;
 }
+
+ODnsExtension::DNSQuestion* createQuestion(char* name, unsigned short type, unsigned short _class){
+    ODnsExtension::DNSQuestion* q = (ODnsExtension::DNSQuestion*) malloc(sizeof(q));
+    q->qname = g_strdup(name);
+    q->qtype = type;
+    q->qclass = _class;
+
+    return q;
+
+}
+
+ODnsExtension::DNSQuestion* createQuestionFromKey(ODnsExtension::MDNSKey* key){
+    ODnsExtension::DNSQuestion* q = (ODnsExtension::DNSQuestion*) malloc(sizeof(q));
+    q->qname = g_strdup(key->name);
+    q->qtype = key->type;
+    q->qclass = key->_class;
+
+    return q;
+
+}

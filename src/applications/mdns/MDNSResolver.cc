@@ -43,8 +43,13 @@ void MDNSResolver::initialize()
     scheduleAt(simTime()+elapseTime, selfMessage);
 
     probeScheduler = new ODnsExtension::MDNSProbeScheduler(timeEventSet);
+    // TODO: Set cache of scheduler!
     queryScheduler = new ODnsExtension::MDNSQueryScheduler(timeEventSet);
+    // TODO: Set cache of scheduler!
     responseScheduler = new ODnsExtension::MDNSResponseScheduler(timeEventSet);
+    // TODO: Set cache of scheduler!
+
+    cache = new ODnsExtension::DNSTTLCache();
 }
 
 void MDNSResolver::handleMessage(cMessage *msg)
@@ -96,6 +101,10 @@ void MDNSResolver::handleMessage(cMessage *msg)
 void MDNSResolver::elapsedTimeCheck(){
     // first, schedule new elapseTimeCheck
     scheduleAt(simTime()+elapseTime, selfMessage);
+
+    // perform a cache cleanup, every entry that has passed
+    // it's TTL was not successfully updated
+    cache->cleanup();
 
     // check if we have an event coming up now, i.e. check if we can get
     // an event from the timeEventSet
