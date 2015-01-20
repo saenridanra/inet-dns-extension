@@ -68,8 +68,7 @@ DNSPacket* createQuery(char *msg_name, char *name, unsigned short dnsclass, unsi
  *      Creates a query with multiple questions
  */
 
-DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, unsigned short ancount, unsigned short nscount, unsigned short arcount, unsigned short dnsclass,
-        unsigned short type, unsigned short id, unsigned short rd);
+DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, unsigned short ancount, unsigned short nscount, unsigned short arcount, unsigned short id, unsigned short rd);
 
 /**
  * @brief resolveQuery
@@ -90,7 +89,7 @@ DNSPacket* createResponse(char *msg_name, unsigned short qdcount, unsigned short
  * @brief appendQuestion
  *      Appends a question to a previously generated DNS packet.
  */
-int appendQuestions(DNSPacket *p, DNSQuestion *q, int index);
+int appendQuestion(DNSPacket *p, DNSQuestion *q, int index);
 
 /**
  * @brief appendAnswer
@@ -187,6 +186,15 @@ void printDNSQuestion(DNSQuestion* q);
  *      0 otherwise
  */
 int freeDnsRecord(DNSRecord* r);
+
+/**
+ * @brief copyDnsRecord
+ *  creates a hard-copy of a given dns record.
+ *
+ * @return
+ *      the hard-copy created, not that this needs to be freed if not used anymore.
+ */
+DNSRecord* copyDnsRecord(DNSRecord* r);
 
 }
 

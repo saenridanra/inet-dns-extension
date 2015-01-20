@@ -155,6 +155,25 @@ GList* DNSTTLCache::get_from_cache(char* hash){
 
 }
 
+int DNSTTLCache::halfTTL(DNSRecord* r){
+    // this is very inefficient, a reverse map would be better,
+    // but for now this has to suffice..
+    std::set<ODnsExtension::DNSTimeRecord*>::iterator iterator;
+    for(iterator = dnsRecordPriorityCache.begin(); iterator != dnsRecordPriorityCache.end(); iterator++){
+        DNSTimeRecord* in_cache = *iterator;
+        if(r == in_cache->record){
+            char* stime = g_strdup_printf("%ds", in_cache->record->ttl);
+            simtime_t tv = simTime() + STR_SIMTIME(stime);
+            if((in_cache->expiry - in_cache->rcv_time) / tv < 0.5)
+                return 0;
+            else
+                return 1;
+        }
+    }
+
+    throw cRuntimeError("Checked for DNSRecord TTL, but not included in priority cache");
+}
+
 int DNSTTLCache::is_in_cache(char* hash){
     if(g_hash_table_contains(cache, hash)){
         return 1;

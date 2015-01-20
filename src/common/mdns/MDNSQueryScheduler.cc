@@ -49,28 +49,155 @@ void MDNSQueryScheduler::elapse(ODnsExtension::TimeEvent* e, void* data)
         return;
     }
 
-    DNSPacket* p;
-    GList* knownAnswers; // append known answers from the cache in here
+    int packetSize = 12; // initial header size
 
-    GList* qlist;
-    GList* anlist;
-    GList* nslist;
-    GList* arlist;
+    GList* qlist = NULL;
+    GList* anlist = NULL;
+    GList* nslist = NULL;
+    GList* arlist = NULL;
 
     int qdcount = 0;
     int ancount = 0;
     int nscount = 0;
     int arcount = 0;
-    //char* msgname = g_strdup_printf("mdns_query#%d", id_count);
-    //p = ODnsExtension::createNQuery(msgname, qj->key->name, qj->key->_class, qj->key->type, id, 0);
 
-    qdcount++;
+    int success = append_question(qj->key, &qlist, &anlist, &packetSize, &qdcount, &ancount);
+    done(qj);
+
+    // now try to append more questions if we didn't already exceed the packet size.
+    while(success){
+        // take another query job from the list..
+        MDNSQueryJob* head = (MDNSQueryJob*) g_list_first(jobs)->data;
+        success = append_question(head->key, &qlist, &anlist, &packetSize, &qdcount, &ancount);
+        done(head);
+    }
+
+    if(preparePacketAndSend(qlist, anlist, nslist, arlist, qdcount, ancount, nscount, arcount, packetSize, !success)){
+        // success, delegate?
+    }
+    else{
+        // some error message?
+    }
+
+}
+
+int MDNSQueryScheduler::preparePacketAndSend(GList* qlist, GList* anlist, GList* nslist, GList* arlist, int qdcount, int ancount, int nscount, int arcount, int packetSize, int TC){
+    char* msgname = g_strdup_printf("mdns_query#%d", id_count);
+    DNSPacket* p = ODnsExtension::createNQuery(msgname, qdcount, ancount, nscount, arcount, id_count++, 0);
+
+    int i = 0;
+    // append questions
+    GList* next = g_list_first(qlist);
+    while(next){
+        ODnsExtension::appendQuestion(p, (DNSQuestion*) next->data, i);
+        i++;
+        next = g_list_next(next);
+    }
+
+    // append answers if available
+    if(ancount > 0){
+        i = 0;
+        next = g_list_first(anlist);
+        while(next){
+            ODnsExtension::appendAnswer(p, (DNSRecord*) next->data, i);
+            i++;
+            next = g_list_next(next);
+        }
+    }
+
+    // append auth if available
+    if(nscount > 0){
+        i = 0;
+        next = g_list_first(nslist);
+        while(next){
+            ODnsExtension::appendAuthority(p, (DNSRecord*) next->data, i);
+            i++;
+            next = g_list_next(next);
+        }
+    }
+
+    // append add if available
+    if(arcount > 0){
+        i = 0;
+        next = g_list_first(arlist);
+        while(next){
+            ODnsExtension::appendAdditional(p, (DNSRecord*) next->data, i);
+            i++;
+            next = g_list_next(next);
+        }
+    }
+
+    // packet fully initialized, send it via multicast
+    p->setByteLength(packetSize);
+    IPvXAddress addr = IPvXAddressResolver().resolve("224.0.0.251");
+    outSock->sendTo(p, addr, MDNS_PORT);
+
+    // packet is out, we're finished
+    return 1;
+}
+
+int MDNSQueryScheduler::append_question(MDNSKey* key, GList** qlist, GList** anlist, int *packetSize, int* qdcount, int* ancount){
+    GList* knownAnswers = NULL; // append known answers from the cache in here
+
     ODnsExtension::DNSQuestion* q;
-    q = createQuestionFromKey(qj->key);
-    qlist = g_list_append(qlist, q);
+    q = createQuestionFromKey(key);
+
+    int qsize = sizeof(key->name) + 4; // name length + 4 bytes for type and class
+
+    if(*packetSize + qsize > MAX_MDNS_PACKET_SIZE){
+        return 0;
+    }
+
+    *qdcount++; // this throws a warning, but we actually want to increase the referenced value ..
+    *qlist = g_list_append(*qlist, q);
+
 
     // append known answers for this query
-    //append_cache_entries(key, knownAnswers);
+    knownAnswers = append_cache_entries(key, knownAnswers);
+
+    // try to append known answers, as long as max size is not exceeded
+    GList* next = g_list_first(knownAnswers);
+    while(next){
+        DNSRecord* record = (DNSRecord*) next->data;
+
+        // calculate size
+        int size = 10 + sizeof(record->rname) + record->rdlength;
+
+        if(*packetSize + size > MAX_MDNS_PACKET_SIZE){
+            return 0;
+        }
+
+        // append record to answer list
+        *anlist = g_list_append(*anlist, record);
+
+        next = g_list_next(next);
+    }
+    // all answers were appended, return success
+    return 1;
+}
+
+GList* MDNSQueryScheduler::append_cache_entries(MDNSKey* key, GList* list){
+    char* hash = g_strdup_printf("%s:%s:%s", key->name, getTypeStringForValue(key->type), getClassStringForValue(key->_class));
+    GList* from_cache = cache->get_from_cache(hash);
+    from_cache = g_list_first(from_cache);
+    DNSRecord* record;
+
+    while (from_cache)
+    {
+        record = (ODnsExtension::DNSRecord*) from_cache->data;
+
+        // try to append known answer if halfTTL not outlived..
+        if(cache->halfTTL(record)){
+            // everything is fine, we can append the answer..
+            // FIXME: create a copy of the record, this way it is
+            // too unsafe.
+            list = g_list_append(list, record);
+        }
+
+        from_cache = g_list_next(from_cache);
+    }
+
+    return list;
 
 }
 

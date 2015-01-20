@@ -33,4 +33,45 @@ MDNSProbeScheduler::~MDNSProbeScheduler()
     // TODO Auto-generated destructor stub
 }
 
+
+ODnsExtension::MDNSProbeJob* MDNSProbeScheduler::new_job(ODnsExtension::DNSRecord* r){
+
+}
+
+ODnsExtension::MDNSProbeJob* MDNSProbeScheduler::find_job(ODnsExtension::DNSRecord* r){
+
+}
+
+ODnsExtension::MDNSProbeJob* MDNSProbeScheduler::find_history(ODnsExtension::DNSRecord* r){
+
+}
+
+void MDNSProbeScheduler::done(ODnsExtension::MDNSProbeJob* qj){
+
+}
+
+void MDNSProbeScheduler::remove_job(ODnsExtension::MDNSProbeJob* qj){
+
+}
+
+int MDNSProbeScheduler::preparePacketAndSend(GList* qlist, GList* anlist, GList* nslist, GList* arlist, int qdcount, int ancount, int nscount, int arcount, int packetSize, int TC){
+
+}
+
+
+
+void MDNSProbeScheduler::elapseCallback(ODnsExtension::TimeEvent* e, void* data, void* thispointer){
+    MDNSProbeScheduler * self = static_cast<MDNSProbeScheduler*>(thispointer);
+    self->elapse(e, data);
+}
+
+void MDNSProbeScheduler::post(ODnsExtension::MDNSKey* key, int immediately){
+
+}
+
+void MDNSProbeScheduler::elapse(ODnsExtension::TimeEvent* e, void* data){
+
+}
+
+
 } /* namespace ODnsExtension */

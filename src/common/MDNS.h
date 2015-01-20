@@ -63,6 +63,8 @@ DNSQuestion* createQuestion(char* name, unsigned short type, unsigned short _cla
  */
 DNSQuestion* createQuestionFromKey(MDNSKey* key);
 
+#define MAX_MDNS_PACKET_SIZE 8000 // leaving plenty of room for UDP + IP + ETHERNET, since max size is 9000
+#define MDNS_PORT 5353
 
 }
 

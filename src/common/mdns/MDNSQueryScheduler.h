@@ -25,8 +25,12 @@
 
 #include <omnetpp.h>
 #include <TimeEventSet.h>
+#include <UDPSocket.h>
+#include <IPvXAddress.h>
+#include <IPvXAddressResolver.h>
 #include <DNS.h>
 #include <DNSCache.h>
+#include <DNSTTLCache.h>
 #include <MDNS.h>
 #include <glib.h>
 
@@ -50,7 +54,9 @@ class MDNSQueryScheduler
         GList* jobs;
         GList* history;
 
-        ODnsExtension::DNSCache* cache; // cache reference
+        UDPSocket* outSock; // socket on which to send the data via multicast...
+
+        ODnsExtension::DNSTTLCache* cache; // cache reference
 
         unsigned int id_count = 0;
 
@@ -59,6 +65,10 @@ class MDNSQueryScheduler
         virtual ODnsExtension::MDNSQueryJob* find_history(ODnsExtension::MDNSKey* key);
         virtual void done(ODnsExtension::MDNSQueryJob* qj);
         virtual void remove_job(ODnsExtension::MDNSQueryJob* qj);
+        virtual GList* append_cache_entries(MDNSKey* key, GList* list);
+        virtual int append_question(MDNSKey* key, GList** qlist, GList** anlist, int *packetSize, int* qdcount, int* ancount);
+        virtual int preparePacketAndSend(GList* qlist, GList* anlist, GList* nslist, GList* arlist, int qdcount, int ancount, int nscount, int arcount, int packetSize, int TC);
+
     public:
         MDNSQueryScheduler(ODnsExtension::TimeEventSet* _timeEventSet);
         virtual ~MDNSQueryScheduler();
@@ -68,7 +78,10 @@ class MDNSQueryScheduler
         virtual void check_dup(ODnsExtension::MDNSKey* key);
         virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
 
-        virtual void setCache(ODnsExtension::DNSCache* _cache){
+        virtual void setSocket(UDPSocket* sock){
+            outSock = sock;
+        }
+        virtual void setCache(ODnsExtension::DNSTTLCache* _cache){
             cache = _cache;
         }
 };

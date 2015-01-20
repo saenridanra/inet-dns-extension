@@ -256,6 +256,13 @@ $O/applications/dns/DNSServerBase.o: applications/dns/DNSServerBase.cc \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
 $O/applications/mdns/MDNSResolver.o: applications/mdns/MDNSResolver.cc \
+	$(INET_PROJ)/src/base/Compat.h \
+	$(INET_PROJ)/src/base/INETDefs.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
 	applications/mdns/MDNSResolver.h \
 	common/DNS.h \
 	common/DNSCache.h \
@@ -290,11 +297,32 @@ $O/common/MDNS.o: common/MDNS.cc \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
 $O/common/mdns/MDNSProbeScheduler.o: common/mdns/MDNSProbeScheduler.cc \
-	common/mdns/MDNSProbeScheduler.h \
-	common/mdns/TimeEventSet.h
-$O/common/mdns/MDNSQueryScheduler.o: common/mdns/MDNSQueryScheduler.cc \
+	$(INET_PROJ)/src/base/Compat.h \
+	$(INET_PROJ)/src/base/INETDefs.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
 	common/DNS.h \
 	common/DNSCache.h \
+	common/DNSTTLCache.h \
+	common/MDNS.h \
+	common/mdns/MDNSProbeScheduler.h \
+	common/mdns/TimeEventSet.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
+$O/common/mdns/MDNSQueryScheduler.o: common/mdns/MDNSQueryScheduler.cc \
+	$(INET_PROJ)/src/base/Compat.h \
+	$(INET_PROJ)/src/base/INETDefs.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
+	common/DNS.h \
+	common/DNSCache.h \
+	common/DNSTTLCache.h \
 	common/MDNS.h \
 	common/mdns/MDNSQueryScheduler.h \
 	common/mdns/TimeEventSet.h \
