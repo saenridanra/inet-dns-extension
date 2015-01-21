@@ -27,13 +27,49 @@
 
 namespace ODnsExtension {
 
+typedef struct MDNSResponseJob{
+    unsigned int id;
+    ODnsExtension::TimeEvent* e;
+    ODnsExtension::DNSRecord* r;
+    int done;
+
+    // when the job has to be performed.
+    simtime_t delivery;
+} mdns_response_job;
+
 class MDNSResponseScheduler
 {
     protected:
         ODnsExtension::TimeEventSet* timeEventSet;
+        GList* jobs;
+        GList* history;
+
+        UDPSocket* outSock; // socket on which to send the data via multicast...
+
+        ODnsExtension::DNSTTLCache* cache; // cache reference
+
+        unsigned int id_count = 0;
+
+        virtual ODnsExtension::MDNSResponseJob* new_job(ODnsExtension::DNSRecord* r);
+        virtual ODnsExtension::MDNSResponseJob* find_job(ODnsExtension::DNSRecord* r);
+        virtual ODnsExtension::MDNSResponseJob* find_history(ODnsExtension::DNSRecord* r);
+        virtual void done(ODnsExtension::MDNSResponseJob* rj);
+        virtual void remove_job(ODnsExtension::MDNSResponseJob* rj);
+        virtual int preparePacketAndSend(GList* qlist, GList* anlist, GList* nslist, GList* arlist, int qdcount, int ancount, int nscount, int arcount, int packetSize, int TC);
     public:
         MDNSResponseScheduler(ODnsExtension::TimeEventSet* _timeEventSet);
         virtual ~MDNSResponseScheduler();
+
+        static void elapseCallback(ODnsExtension::TimeEvent* e, void* data, void* thispointer);
+        virtual void post(ODnsExtension::DNSRecord* r, int immediately);
+        virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
+
+        virtual void setSocket(UDPSocket* sock){
+            outSock = sock;
+        }
+        virtual void setCache(ODnsExtension::DNSTTLCache* _cache){
+            cache = _cache;
+        }
 };
 
 } /* namespace ODnsExtension */

@@ -38,21 +38,12 @@ namespace ODnsExtension {
 
 #define MDNS_PROBE_WAIT 250 // wait 250ms, if no response, go to next state
 
-enum ProbeState{
-    NOT_SENT,
-    FIRST_QUERY,
-    SECOND_QUERY,
-    THIRD_QUERY
-};
-
 typedef struct MDNSProbeJob{
     unsigned int id;
     ODnsExtension::TimeEvent* e;
     ODnsExtension::DNSRecord* r; // we probe for records,
     // see if they are already taken..
     int done;
-
-    ProbeState state;
 
     // when the job has to be performed.
     simtime_t delivery;

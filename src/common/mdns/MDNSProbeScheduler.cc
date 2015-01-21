@@ -103,7 +103,6 @@ ODnsExtension::MDNSProbeJob* MDNSProbeScheduler::new_job(ODnsExtension::DNSRecor
     MDNSProbeJob* pj = (MDNSProbeJob*) (malloc(sizeof(pj)));
     pj->id = id_count++;
     pj->done = 0;
-    pj->state = ProbeState::NOT_SENT;
     pj->r = ODnsExtension::copyDnsRecord(r);
     signed int id;
     pj->delivery = 0;
