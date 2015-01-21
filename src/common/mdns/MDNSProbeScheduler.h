@@ -48,7 +48,7 @@ enum ProbeState{
 typedef struct MDNSProbeJob{
     unsigned int id;
     ODnsExtension::TimeEvent* e;
-    ODnsExtension::DNSRecord* record; // we probe for records,
+    ODnsExtension::DNSRecord* r; // we probe for records,
     // see if they are already taken..
     int done;
 
@@ -73,18 +73,20 @@ class MDNSProbeScheduler
 
         unsigned int id_count = 0;
 
-        virtual ODnsExtension::MDNSProbeJob* new_job(ODnsExtension::DNSRecord* record);
-        virtual ODnsExtension::MDNSProbeJob* find_job(ODnsExtension::DNSRecord* record);
-        virtual ODnsExtension::MDNSProbeJob* find_history(ODnsExtension::DNSRecord* record);
-        virtual void done(ODnsExtension::MDNSProbeJob* qj);
-        virtual void remove_job(ODnsExtension::MDNSProbeJob* qj);
-        virtual int preparePacketAndSend(GList* qlist, GList* anlist, GList* nslist, GList* arlist, int qdcount, int ancount, int nscount, int arcount, int packetSize, int TC);
+        virtual ODnsExtension::MDNSProbeJob* new_job(ODnsExtension::DNSRecord* r);
+        virtual ODnsExtension::MDNSProbeJob* find_job(ODnsExtension::DNSRecord* r);
+        virtual ODnsExtension::MDNSProbeJob* find_history(ODnsExtension::DNSRecord* r);
+        virtual void done(ODnsExtension::MDNSProbeJob* pj);
+        virtual void remove_job(ODnsExtension::MDNSProbeJob* pj);
+        virtual int preparePacketAndSend(GList* qlist, GList* nslist, int qdcount, int nscount, int packetSize, int TC);
+
+        virtual int append_question(ODnsExtension::MDNSProbeJob* pj, GList** qlist, GList** nslist, int *packetSize, int* qdcount, int* nscount);
     public:
         MDNSProbeScheduler(ODnsExtension::TimeEventSet* _timeEventSet);
         virtual ~MDNSProbeScheduler();
 
         static void elapseCallback(ODnsExtension::TimeEvent* e, void* data, void* thispointer);
-        virtual void post(ODnsExtension::MDNSKey* key, int immediately);
+        virtual void post(ODnsExtension::DNSRecord* r, int immediately);
         virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
 
         virtual void setSocket(UDPSocket* sock){

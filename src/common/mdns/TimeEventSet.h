@@ -46,7 +46,9 @@ class TimeEvent{
             scheduler = _scheduler;
         }
 
-        virtual ~TimeEvent();
+        virtual ~TimeEvent(){
+
+        }
 
         void* getData(){
             return data;
@@ -82,8 +84,12 @@ class TimeEvent{
 
 class TimeEventComparator{
     public:
-        TimeEventComparator();
-        virtual ~TimeEventComparator();
+        TimeEventComparator(){
+
+        }
+        virtual ~TimeEventComparator(){
+
+        }
 
         bool operator() (ODnsExtension::TimeEvent* t1, ODnsExtension::TimeEvent* t2){
             // t1 < t2,

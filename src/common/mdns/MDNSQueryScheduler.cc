@@ -67,9 +67,11 @@ void MDNSQueryScheduler::elapse(ODnsExtension::TimeEvent* e, void* data)
     // now try to append more questions if we didn't already exceed the packet size.
     while(success){
         // take another query job from the list..
-        MDNSQueryJob* head = (MDNSQueryJob*) g_list_first(jobs)->data;
-        success = append_question(head->key, &qlist, &anlist, &packetSize, &qdcount, &ancount);
-        done(head);
+        GList* head = g_list_first(jobs);
+        MDNSQueryJob* job = (MDNSQueryJob*) head->data;
+        success = append_question(job->key, &qlist, &anlist, &packetSize, &qdcount, &ancount);
+        head = g_list_next(head);
+        done(((MDNSQueryJob*) head->data));
     }
 
     if(preparePacketAndSend(qlist, anlist, nslist, arlist, qdcount, ancount, nscount, arcount, packetSize, !success)){
@@ -148,6 +150,8 @@ int MDNSQueryScheduler::append_question(MDNSKey* key, GList** qlist, GList** anl
         return 0;
     }
 
+    *packetSize += qsize;
+
     *qdcount++; // this throws a warning, but we actually want to increase the referenced value ..
     *qlist = g_list_append(*qlist, q);
 
@@ -166,6 +170,8 @@ int MDNSQueryScheduler::append_question(MDNSKey* key, GList** qlist, GList** anl
         if(*packetSize + size > MAX_MDNS_PACKET_SIZE){
             return 0;
         }
+
+        *packetSize += size;
 
         // append record to answer list
         *anlist = g_list_append(*anlist, record);

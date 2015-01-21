@@ -29,6 +29,7 @@ module DNSServerNode extends StandardHost
         auth: DNSAuthServer {
             parameters:
                 master_file = m_file;
+                @display("p=437,93");
         }
     connections:
         auth.udpOut --> udp.appIn++;

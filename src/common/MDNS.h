@@ -20,8 +20,8 @@
  */
 
 
-#ifndef MDNS_H_
-#define MDNS_H_
+#ifndef OPP_DNS_EXTENSION_MDNS_H_
+#define OPP_DNS_EXTENSION_MDNS_H_
 
 #include <omnetpp.h>
 #include <DNS.h>

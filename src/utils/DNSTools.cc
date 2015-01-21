@@ -426,6 +426,24 @@ void printDNSQuestion(DNSQuestion* q){
 }
 
 /**
+ * @brief freeDnsQuestion
+ *      frees the given dns question
+ * @return
+ *      1 if successful
+ *      0 otherwise
+ */
+int freeDnsQuestion(DNSQuestion* q){
+    if(!q){
+        return 0;
+    }
+
+    g_free(q->qname);
+    free(q);
+
+    return 1;
+}
+
+/**
  * @brief freeDnsRecord
  *      frees the given dns record
  * @return
@@ -452,7 +470,7 @@ int freeDnsRecord(DNSRecord* r){
  *      the hard-copy created, not that this needs to be freed if not used anymore.
  */
 DNSRecord* copyDnsRecord(DNSRecord* r){
-    DNSRecord* r_cpy = (DNSRecord*) malloc(sizeof(r));
+    DNSRecord* r_cpy = (DNSRecord*) malloc(sizeof(r_cpy));
     r_cpy->rname = g_strdup(r->rname);
     r_cpy->rdata = g_strdup(r->rdata);
     r_cpy->rclass = r->rclass;
@@ -461,6 +479,22 @@ DNSRecord* copyDnsRecord(DNSRecord* r){
     r_cpy->ttl = r->ttl;
 
     return r_cpy;
+}
+
+/**
+ * @brief copyDnsQuestion
+ *  creates a hard-copy of a given dns question.
+ *
+ * @return
+ *      the hard-copy created, not that this needs to be freed if not used anymore.
+ */
+DNSQuestion* copyDnsQuestion(DNSQuestion* q){
+    DNSQuestion* q_cpy = (DNSQuestion*) malloc(sizeof(q_cpy));
+    q_cpy->qname = g_strdup(q->qname);
+    q_cpy->qtype = q->qtype;
+    q_cpy->qclass = q->qclass;
+
+    return q_cpy;
 }
 
 /**

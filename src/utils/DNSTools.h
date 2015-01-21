@@ -179,6 +179,15 @@ void printDNSRecord(DNSRecord* r);
 void printDNSQuestion(DNSQuestion* q);
 
 /**
+ * @brief freeDnsQuestion
+ *      frees the given dns question
+ * @return
+ *      1 if successful
+ *      0 otherwise
+ */
+int freeDnsQuestion(DNSQuestion* q);
+
+/**
  * @brief freeDnsRecord
  *      frees the given dns record
  * @return
@@ -195,6 +204,15 @@ int freeDnsRecord(DNSRecord* r);
  *      the hard-copy created, not that this needs to be freed if not used anymore.
  */
 DNSRecord* copyDnsRecord(DNSRecord* r);
+
+/**
+ * @brief copyDnsQuestion
+ *  creates a hard-copy of a given dns question.
+ *
+ * @return
+ *      the hard-copy created, not that this needs to be freed if not used anymore.
+ */
+DNSQuestion* copyDnsQuestion(DNSQuestion* q);
 
 }
 

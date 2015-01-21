@@ -20,10 +20,12 @@
 
 package opp_dns_extension.networks;
 
+import opp_dns_extension.applications.dns.DNSAuthServer;
 import inet.nodes.ethernet.Eth1G;
 import inet.nodes.inet.Router;
 import inet.nodes.inet.StandardHost;
-import opp_dns_extension.applications.dns.DNSAuthServer;
+import opp_dns_extension.applications.dns.DNSServerNode;
+import opp_dns_extension.applications.dns.DNSClientNode;
 import inet.transport.IUDP;
 import inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator;
 import opp_dns_extension.applications.dns.DNSClientTraffGen;
@@ -38,7 +40,6 @@ network SimpleDNSNetwork
                 @display("p=532,303");
         }
         cli1: DNSClientNode {
-
             @display("p=403,303");
         }
         configurator: IPv4NetworkConfigurator {
@@ -51,32 +52,4 @@ network SimpleDNSNetwork
     connections:
         cli1.ethg++ <--> Eth1G <--> router.ethg++;
         dns1.ethg++ <--> Eth1G <--> router.ethg++;
-}
-
-module DNSClientNode extends StandardHost
-{
-    parameters:
-        hasUdp = true;
-
-    submodules:
-        cli: DNSClientTraffGen;
-    connections:
-        cli.udpOut --> udp.appIn++;
-        cli.udpIn <-- udp.appOut++;
-}
-
-module DNSServerNode extends StandardHost
-{
-    parameters:
-        hasUdp = true;
-        string m_file;
-
-    submodules:
-        auth: DNSAuthServer {
-            parameters:
-                master_file = m_file;
-        }
-    connections:
-        auth.udpOut --> udp.appIn++;
-        auth.udpIn <-- udp.appOut++;
 }

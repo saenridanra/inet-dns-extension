@@ -19,7 +19,7 @@
  THE SOFTWARE.
  */
 
-#include <mdns/TimeEventSet.h>
+#include <TimeEventSet.h>
 
 namespace ODnsExtension {
 

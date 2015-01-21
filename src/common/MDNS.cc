@@ -21,12 +21,14 @@
 
 #include "MDNS.h"
 
+namespace ODnsExtension {
+
 int isProbe(DNSPacket* p){
     // TODO: check if it's a PROBE
     return 0;
 }
 
-int isAnnoucement(DNSPacket* p){
+int isAnnouncement(DNSPacket* p){
     // TODO: check if it's an Announcement
     return 0;
 }
@@ -70,5 +72,7 @@ ODnsExtension::DNSQuestion* createQuestionFromKey(ODnsExtension::MDNSKey* key){
     q->qclass = key->_class;
 
     return q;
+
+}
 
 }

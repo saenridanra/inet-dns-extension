@@ -37,8 +37,12 @@ typedef struct DNSTimeRecord{
 
 class DNSTimeRecordComparator{
     public:
-        DNSTimeRecordComparator();
-        virtual ~DNSTimeRecordComparator();
+        DNSTimeRecordComparator(){
+
+        }
+        virtual ~DNSTimeRecordComparator(){
+
+        }
 
         bool operator() (ODnsExtension::DNSTimeRecord* t1, ODnsExtension::DNSTimeRecord* t2){
             // t1 < t2,
