@@ -88,6 +88,7 @@ OBJS = \
     $O/common/mdns/MDNSResponseScheduler.o \
     $O/common/mdns/MDNSProbeScheduler.o \
     $O/common/mdns/TimeEventSet.o \
+    $O/common/mdns/MDNSAnnouncer.o \
     $O/utils/DNSTools.o \
     $O/utils/DNSZoneConfig.o \
     $O/messages/DNSPacket_m.o
@@ -295,6 +296,15 @@ $O/common/DNSTTLCache.o: common/DNSTTLCache.cc \
 $O/common/MDNS.o: common/MDNS.cc \
 	common/DNS.h \
 	common/MDNS.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
+$O/common/mdns/MDNSAnnouncer.o: common/mdns/MDNSAnnouncer.cc \
+	common/DNS.h \
+	common/DNSCache.h \
+	common/DNSTTLCache.h \
+	common/MDNS.h \
+	common/mdns/MDNSAnnouncer.h \
+	common/mdns/TimeEventSet.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
 $O/common/mdns/MDNSProbeScheduler.o: common/mdns/MDNSProbeScheduler.cc \

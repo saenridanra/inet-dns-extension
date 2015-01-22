@@ -362,6 +362,10 @@ int MDNSResponseScheduler::preparePacketAndSend(GList* anlist, int ancount, int 
         }
     }
 
+    p->setByteLength(packetSize);
+    IPvXAddress addr = IPvXAddressResolver().resolve("224.0.0.251");
+    outSock->sendTo(p, addr, MDNS_PORT);
+
     return 1;
 }
 
