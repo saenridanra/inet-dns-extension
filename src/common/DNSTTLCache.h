@@ -77,13 +77,6 @@ class DNSTTLCache: public DNSCache
     GList* get_from_cache(char* hash);
 
     /**
-     * @brief halfTTL
-     *  returns whether the record has outlived half its lifetime.
-     */
-
-     int halfTTL(DNSRecord* r);
-
-    /**
      * @brief is_in_cache
      * @params
      *      hash - the hash value for the record, note it has the form <label:type:class>
@@ -92,6 +85,13 @@ class DNSTTLCache: public DNSCache
      *      0 otherwise
      */
     int is_in_cache(char* hash);
+
+    /**
+     * @brief halfTTL
+     *  returns whether the record has outlived half its lifetime.
+     */
+
+     int halfTTL(DNSRecord* r);
 
     /**
      * @brief remove_from_cache

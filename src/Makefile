@@ -266,6 +266,7 @@ $O/applications/mdns/MDNSResolver.o: applications/mdns/MDNSResolver.cc \
 	applications/mdns/MDNSResolver.h \
 	common/DNS.h \
 	common/DNSCache.h \
+	common/DNSSimpleCache.h \
 	common/DNSTTLCache.h \
 	common/MDNS.h \
 	common/mdns/MDNSProbeScheduler.h \
@@ -329,8 +330,22 @@ $O/common/mdns/MDNSQueryScheduler.o: common/mdns/MDNSQueryScheduler.cc \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
 $O/common/mdns/MDNSResponseScheduler.o: common/mdns/MDNSResponseScheduler.cc \
+	$(INET_PROJ)/src/base/Compat.h \
+	$(INET_PROJ)/src/base/INETDefs.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
+	common/DNS.h \
+	common/DNSCache.h \
+	common/DNSSimpleCache.h \
+	common/DNSTTLCache.h \
+	common/MDNS.h \
 	common/mdns/MDNSResponseScheduler.h \
-	common/mdns/TimeEventSet.h
+	common/mdns/TimeEventSet.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
 $O/common/mdns/TimeEventSet.o: common/mdns/TimeEventSet.cc \
 	common/mdns/TimeEventSet.h
 $O/messages/DNSPacket_m.o: messages/DNSPacket_m.cc \

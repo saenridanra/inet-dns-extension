@@ -155,6 +155,14 @@ GList* DNSTTLCache::get_from_cache(char* hash){
 
 }
 
+int DNSTTLCache::is_in_cache(char* hash){
+    if(g_hash_table_contains(cache, hash)){
+        return 1;
+    }
+
+    return 0;
+}
+
 int DNSTTLCache::halfTTL(DNSRecord* r){
     // this is very inefficient, a reverse map would be better,
     // but for now this has to suffice..
@@ -163,8 +171,9 @@ int DNSTTLCache::halfTTL(DNSRecord* r){
         DNSTimeRecord* in_cache = *iterator;
         if(r == in_cache->record){
             char* stime = g_strdup_printf("%ds", in_cache->record->ttl);
-            simtime_t tv = simTime() + STR_SIMTIME(stime);
-            if((in_cache->expiry - in_cache->rcv_time) / tv < 0.5)
+            simtime_t ttl_to_sim = STR_SIMTIME(stime);
+            simtime_t curr = in_cache->rcv_time + ttl_to_sim;
+            if((in_cache->expiry - curr).inUnit(-3) < (ttl_to_sim / 2).inUnit(-3))
                 return 0;
             else
                 return 1;
@@ -172,14 +181,6 @@ int DNSTTLCache::halfTTL(DNSRecord* r){
     }
 
     throw cRuntimeError("Checked for DNSRecord TTL, but not included in priority cache");
-}
-
-int DNSTTLCache::is_in_cache(char* hash){
-    if(g_hash_table_contains(cache, hash)){
-        return 1;
-    }
-
-    return 0;
 }
 
 void DNSTTLCache::cleanup(){

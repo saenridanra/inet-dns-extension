@@ -174,6 +174,7 @@ int MDNSQueryScheduler::append_question(MDNSKey* key, GList** qlist, GList** anl
         *packetSize += size;
 
         // append record to answer list
+        *ancount++;
         *anlist = g_list_append(*anlist, record);
 
         next = g_list_next(next);

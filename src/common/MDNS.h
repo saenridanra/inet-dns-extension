@@ -46,6 +46,7 @@ int isProbe(DNSPacket* p);
 int isAnnouncement(DNSPacket* p);
 int isQuery(DNSPacket* p);
 int isResponse(DNSPacket* p);
+int isGoodbye(DNSRecord* r);
 
 int compareMDNSKey(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2);
 

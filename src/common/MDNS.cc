@@ -41,6 +41,10 @@ int isResponse(DNSPacket* p){
     return ODnsExtension::isQueryOrResponse(p);
 }
 
+int isGoodbye(DNSRecord* r){
+    return r->ttl==0;
+}
+
 int compareMDNSKey(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2){
     if(key1 == key2) return 0;
 
