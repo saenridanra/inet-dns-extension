@@ -40,6 +40,8 @@ enum ProbeState{
 
 enum AnnouncerState{
     STARTING,
+    PROBING_HOSTNAME,
+    ANNOUNCING_HOSTNAME,
     PROBING,
     ANNOUNCING,
     FINISHED
@@ -56,10 +58,15 @@ class MDNSAnnouncer
     protected:
         ODnsExtension::TimeEventSet* timeEventSet;
         ODnsExtension::DNSTTLCache* auth_cache; // this cache is used for successfully
+        char* hostname;
+        char* target;
+        GHashTable* serviceToCacheMap; // lookup of services in cache
 
         int n_starting = 0;
         int n_probing = 0;
         int n_announcing = 0;
+
+        GList* to_announce; // this is a list consisting of MDNSService structs that have to be published
 
         GList* starting; // keep starting Probes here
         GList* probing;  // move them to probing list, when starting
@@ -68,8 +75,12 @@ class MDNSAnnouncer
         AnnouncerState s;
 
     public:
-        MDNSAnnouncer(ODnsExtension::TimeEventSet* _timeEventSet){
+        MDNSAnnouncer(ODnsExtension::TimeEventSet* _timeEventSet, GList* services, char* _hostname, char* _target){
             timeEventSet = _timeEventSet;
+            to_announce = services;
+            hostname = _hostname;
+            target = _target;
+            s = AnnouncerState::STARTING;
         }
         virtual ~MDNSAnnouncer(){
 
@@ -78,6 +89,7 @@ class MDNSAnnouncer
         virtual void initialize();
         virtual void restart();
         virtual int check_conflict(DNSRecord* r);
+        virtual void add_service(MDNSService* service);
         virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
 
         virtual ODnsExtension::DNSTTLCache* getCache(){

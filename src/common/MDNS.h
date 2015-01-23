@@ -31,8 +31,13 @@
 namespace ODnsExtension {
 
 // definition of a structure for services
+// this is a basic definition without
+// subtypes
 typedef struct MDNSService{
-
+   char* service_type;
+   char* name;
+   GList* txtrecords;
+   int   port;
 } mdns_service;
 
 typedef struct MDNSKey{

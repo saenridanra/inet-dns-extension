@@ -22,5 +22,46 @@
 
 namespace ODnsExtension {
 
+void MDNSAnnouncer::initialize(){
+    // add host probes, i.e. hostname.local A, AAAA record
+    if(s == AnnouncerState::STARTING){
+
+    }
+    else if(s == AnnouncerState::PROBING){
+        // add service probes
+        GList* next = g_list_first(to_announce);
+
+        // add entries to the starting list and create a timeout event, so the callback is performed..
+        while(next){
+            MDNSService* s = (MDNSService*) next->data;
+            add_service(s);
+            next = g_list_next(next);
+        }
+    }
+}
+
+void MDNSAnnouncer::restart(){
+
+}
+
+void add_service(MDNSService* service){
+
+    // Create an SRV record for the service
+    DNSRecord* service_record = (DNSRecord*) malloc(sizeof(service_record));
+    char* label = g_strdup_printf("%s.%s", service->name, service->service_type);
+
+    service_record->rname = g_strdup(label);
+    service_record->rtype = DNS_TYPE_VALUE_SRV;
+    service_record->rclass = DNS_CLASS_IN;
+    service_record->rdata = target;
+}
+
+int  MDNSAnnouncer::check_conflict(DNSRecord* r){
+
+}
+
+void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e, void* data){
+
+}
 
 } /* namespace ODnsExtension */
