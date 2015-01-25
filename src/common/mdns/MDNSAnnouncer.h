@@ -23,6 +23,7 @@
 #define MDNSANNOUNCER_H_
 
 #include <omnetpp.h>
+#include <IPvXAddress.h>
 #include <TimeEventSet.h>
 #include <DNS.h>
 #include <DNSCache.h>
@@ -34,16 +35,19 @@
 namespace ODnsExtension {
 
 enum ProbeState{
-    INITIAL,
-    STARTED
+    STARTING,
+    PROBING,
+    ANNOUNCING,
+    ANNOUNCED
 };
 
 enum AnnouncerState{
-    STARTING,
+    STARTING_HOSTNAME,
     PROBING_HOSTNAME,
     ANNOUNCING_HOSTNAME,
-    PROBING,
-    ANNOUNCING,
+    STARTING_SERVICES,
+    PROBING_SERVICES,
+    ANNOUNCING_SERVICES,
     FINISHED
 };
 
@@ -58,13 +62,10 @@ class MDNSAnnouncer
     protected:
         ODnsExtension::TimeEventSet* timeEventSet;
         ODnsExtension::DNSTTLCache* auth_cache; // this cache is used for successfully
+        IPvXAddress* hostaddress;
         char* hostname;
         char* target;
         GHashTable* serviceToCacheMap; // lookup of services in cache
-
-        int n_starting = 0;
-        int n_probing = 0;
-        int n_announcing = 0;
 
         GList* to_announce; // this is a list consisting of MDNSService structs that have to be published
 
@@ -75,12 +76,14 @@ class MDNSAnnouncer
         AnnouncerState s;
 
     public:
-        MDNSAnnouncer(ODnsExtension::TimeEventSet* _timeEventSet, GList* services, char* _hostname, char* _target){
+        MDNSAnnouncer(ODnsExtension::TimeEventSet* _timeEventSet, GList* services, char* _hostname, IPvXAddress* _hostaddress){
             timeEventSet = _timeEventSet;
             to_announce = services;
             hostname = _hostname;
-            target = _target;
-            s = AnnouncerState::STARTING;
+            hostaddress = _hostaddress;
+            s = AnnouncerState::STARTING_HOSTNAME;
+
+            serviceToCacheMap = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
         }
         virtual ~MDNSAnnouncer(){
 
