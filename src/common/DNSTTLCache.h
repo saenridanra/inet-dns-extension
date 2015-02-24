@@ -105,11 +105,26 @@ class DNSTTLCache: public DNSCache
     GList* remove_from_cache(char* hash);
 
     /**
+     * @brief remove_from_cache
+     * Removes the record from the cache and returns it.
+     *
+     * @params
+     *      hash - the hash value for the record, note it has the form <label:type:class>
+     *      r    - a specific record that has to be removed from the list for this hash
+     * @return
+     *      returns the removed records.
+     */
+    GList* remove_from_cache(char* hash, DNSRecord* r);
+
+    /**
      * @brief cleanup
      *  cleans records from the cache, which ttl expired
+     *
+     * @return
+     *      return removed records
      */
 
-    void cleanup();
+    GList* cleanup();
 
     /**
      * @brief evict
@@ -119,6 +134,20 @@ class DNSTTLCache: public DNSCache
      *      the evicted dns records.
      */
     GList* evict();
+
+    /**
+     * @brief get_matching_hashes
+     * Perform a cache walk on the hashes and check if
+     * we find substrings of @param hash
+     *
+     * @param
+     *  hash - hash that we want to match for
+     *
+     * @return
+     *      list of matching hashes in the cache
+     *
+     */
+    GList* get_matching_hashes(char* hash);
 
     protected:
         GHashTable* cache;

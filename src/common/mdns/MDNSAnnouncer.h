@@ -42,18 +42,21 @@ enum ProbeState{
 };
 
 enum AnnouncerState{
-    STARTING_HOSTNAME,
-    PROBING_HOSTNAME,
-    ANNOUNCING_HOSTNAME,
-    STARTING_SERVICES,
-    PROBING_SERVICES,
-    ANNOUNCING_SERVICES,
+    START,
+    RESTART,
+    PROBE,
+    SLEEP,
     FINISHED
 };
 
 struct Probe{
+        uint32_t* probe_id;
+        ODnsExtension::TimeEvent* e;
         ODnsExtension::DNSRecord* r;
-        int n_iter;
+        int n_iter = 0;
+        int collision_count = 1;
+
+        MDNSService* ref_service;
         ProbeState s;
 };
 
@@ -62,28 +65,38 @@ class MDNSAnnouncer
     protected:
         ODnsExtension::TimeEventSet* timeEventSet;
         ODnsExtension::DNSTTLCache* auth_cache; // this cache is used for successfully
+        ODnsExtension::MDNSProbeScheduler* probe_scheduler;
+        ODnsExtension::MDNSResponseScheduler* response_scheduler;
+
         IPvXAddress* hostaddress;
         char* hostname;
         char* target;
-        GHashTable* serviceToCacheMap; // lookup of services in cache
 
-        GList* to_announce; // this is a list consisting of MDNSService structs that have to be published
-
-        GList* starting; // keep starting Probes here
-        GList* probing;  // move them to probing list, when starting
-        GList* annoucing;// move them to announcing list when probing is finished
+        int id_internal = 0;
 
         AnnouncerState s;
 
+        GHashTable* probe_to_cache; // lookup of services in cache
+
+        GList* to_announce; // this is a list consisting of MDNSService structs that have to be published
+
+        GList* probing;  // probing list, when starting
+        GList* annoucing;// move them to announcing list when probing is finished
+
+        virtual void withdraw(Probe* p);
+        virtual void goodbye(Probe* p, int send_goodbye, int remove);
+
     public:
-        MDNSAnnouncer(ODnsExtension::TimeEventSet* _timeEventSet, GList* services, char* _hostname, IPvXAddress* _hostaddress){
+        MDNSAnnouncer(ODnsExtension::MDNSProbeScheduler* _probe_scheduler, ODnsExtension::MDNSResponseScheduler* _response_scheduler, ODnsExtension::TimeEventSet* _timeEventSet, GList* services, char* _hostname, IPvXAddress* _hostaddress){
+            probe_scheduler = _probe_scheduler;
+            response_scheduler = _response_scheduler;
             timeEventSet = _timeEventSet;
             to_announce = services;
             hostname = _hostname;
             hostaddress = _hostaddress;
-            s = AnnouncerState::STARTING_HOSTNAME;
+            s = AnnouncerState::START;
 
-            serviceToCacheMap = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
+            probe_to_cache = g_hash_table_new_full(g_int_hash, g_int_equal, g_free, NULL);
         }
         virtual ~MDNSAnnouncer(){
 

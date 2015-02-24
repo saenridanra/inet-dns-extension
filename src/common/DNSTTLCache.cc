@@ -134,7 +134,7 @@ int DNSTTLCache::put_into_cache(DNSRecord* record){
             time_record->expiry = time_record->rcv_time + tv;
         }
         else{
-            // update expiry and rcv time of the record
+            // TODO: update expiry and rcv time of the record
             // thereby removing it, and adding it again for update
             // of the priority set
             g_free(hash);
@@ -183,25 +183,23 @@ int DNSTTLCache::halfTTL(DNSRecord* r){
     throw cRuntimeError("Checked for DNSRecord TTL, but not included in priority cache");
 }
 
-void DNSTTLCache::cleanup(){
+GList* DNSTTLCache::cleanup(){
     std::set<ODnsExtension::DNSTimeRecord*>::iterator iterator;
+    GList* returnlist = NULL;
     for(iterator = dnsRecordPriorityCache.begin(); iterator != dnsRecordPriorityCache.end(); iterator++){
         DNSTimeRecord* r = *iterator;
         if(r->expiry > simTime()){
             // remove from caches
             dnsRecordPriorityCache.erase(r);
-            GList* list = remove_from_cache(r->hash);
-            list = g_list_first(list);
-            while(list){
-                freeDnsRecord((DNSRecord*) list->data);
-                free((DNSRecord*) list->data);
-            }
-            free(r);
+            DNSRecord* removed_record = remove_from_cache(r->hash, r->record);
+            g_list_append(removed_record);
         }
         else{
             break; // we're finished cleaning up.
         }
     }
+
+    return returnlist;
 }
 
 GList* DNSTTLCache::remove_from_cache(char* hash){
@@ -214,6 +212,12 @@ GList* DNSTTLCache::remove_from_cache(char* hash){
     return NULL;
 }
 
+DNSRecord* DNSTTLCache::remove_from_cache(char* hash, DNSRecord* r){
+    GList* from_cache = (GList*) g_hash_table_lookup(cache, hash);
+    g_list_remove(from_cache, r);
+    return r;
+}
+
 GList* DNSTTLCache::evict(){
     if(getCacheSize() == 0){
         return 0;
@@ -224,6 +228,24 @@ GList* DNSTTLCache::evict(){
     dnsRecordPriorityCache.erase(top);
 
     return remove_from_cache(top->hash);
+}
+
+GList* DNSTTLCache::get_matching_hashes(char* hash){
+    GList* hash_list = NULL;
+    GHashTableIter* iterator;
+    g_hash_table_iter_init(iterator, cache);
+    gpointer* key, value;
+
+    while(g_hash_table_iter_next(iterator, key, value)){
+        if(g_str_has_suffix(hash, key)){
+            // we have a match, append it to the return list
+            char* hash_cpy = g_strdup(key);
+            hash_list = g_list_append(hash_list, hash_cpy);
+        }
+    }
+
+    return hash_list;
+
 }
 
 }

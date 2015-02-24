@@ -28,6 +28,9 @@
 #include "UDPSocket.h"
 #include "UDPControlInfo_m.h" // to get teh src addr
 #include "IPvXAddressResolver.h"
+#include "DNSCache.h"
+#include "DNSTools.h"
+#include "DNS.h"
 #include <vector>
 
 #include "DNSTools.h"
@@ -48,6 +51,7 @@ class DNSServerBase : public cSimpleModule
 
     GHashTable* queryCache;
     GHashTable* queryAddressCache;
+    ODnsExtension::DNSCache* responseCache;
     std::vector<IPvXAddress> rootServers;
 
     // Socket over which DNS queries are sent/received

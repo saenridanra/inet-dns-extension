@@ -45,6 +45,7 @@ public:
     virtual GList* remove_from_cache(char* hash) = 0;
     virtual int is_in_cache(char* hash) = 0;
     virtual GList* evict() = 0;
+    virtual GList* get_matching_hashes(char* hash) = 0;
 
     void setMaxRecords(int _max_records)
     {

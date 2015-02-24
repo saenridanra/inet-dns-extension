@@ -71,6 +71,8 @@ DNSQuestion* createQuestionFromKey(MDNSKey* key);
 
 #define MAX_MDNS_PACKET_SIZE 8000 // leaving plenty of room for UDP + IP + ETHERNET, since max size is 9000
 #define MDNS_PORT 5353
+#define MDNS_HOST_TTL 120
+#define MDNS_SERVICE_TTL 60*75
 
 }
 
