@@ -76,7 +76,9 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
 OBJS = \
+    $O/applications/dns/DNSLocalCache.o \
     $O/applications/dns/DNSClientTraffGen.o \
+    $O/applications/dns/DNSEchoServer.o \
     $O/applications/dns/DNSServerBase.o \
     $O/applications/dns/DNSClient.o \
     $O/applications/dns/DNSAuthServer.o \
@@ -212,6 +214,7 @@ $O/applications/dns/DNSAuthServer.o: applications/dns/DNSAuthServer.cc \
 	applications/dns/DNSAuthServer.h \
 	applications/dns/DNSServerBase.h \
 	common/DNS.h \
+	common/DNSCache.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h \
 	utils/DNSZoneConfig.h
@@ -244,6 +247,36 @@ $O/applications/dns/DNSClientTraffGen.o: applications/dns/DNSClientTraffGen.cc \
 	common/DNSSimpleCache.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
+$O/applications/dns/DNSEchoServer.o: applications/dns/DNSEchoServer.cc \
+	$(INET_PROJ)/src/base/Compat.h \
+	$(INET_PROJ)/src/base/INETDefs.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	$(INET_PROJ)/src/transport/contract/UDPControlInfo_m.h \
+	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
+	applications/dns/DNSEchoServer.h \
+	common/DNS.h \
+	common/DNSCache.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
+$O/applications/dns/DNSLocalCache.o: applications/dns/DNSLocalCache.cc \
+	$(INET_PROJ)/src/base/Compat.h \
+	$(INET_PROJ)/src/base/INETDefs.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	$(INET_PROJ)/src/transport/contract/UDPControlInfo_m.h \
+	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
+	applications/dns/DNSLocalCache.h \
+	applications/dns/DNSServerBase.h \
+	common/DNS.h \
+	common/DNSCache.h \
+	common/DNSTTLCache.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
 $O/applications/dns/DNSServerBase.o: applications/dns/DNSServerBase.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
@@ -255,6 +288,7 @@ $O/applications/dns/DNSServerBase.o: applications/dns/DNSServerBase.cc \
 	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
 	applications/dns/DNSServerBase.h \
 	common/DNS.h \
+	common/DNSCache.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
 $O/applications/mdns/MDNSResolver.o: applications/mdns/MDNSResolver.cc \
@@ -305,11 +339,16 @@ $O/common/mdns/MDNSAnnouncer.o: common/mdns/MDNSAnnouncer.cc \
 	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
 	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
 	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
 	common/DNS.h \
 	common/DNSCache.h \
+	common/DNSSimpleCache.h \
 	common/DNSTTLCache.h \
 	common/MDNS.h \
 	common/mdns/MDNSAnnouncer.h \
+	common/mdns/MDNSProbeScheduler.h \
+	common/mdns/MDNSResponseScheduler.h \
 	common/mdns/TimeEventSet.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h

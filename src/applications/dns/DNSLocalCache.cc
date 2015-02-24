@@ -1,17 +1,23 @@
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+/* Copyright (c) 2014-2015 Andreas Rain
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ */
 
 #include "DNSLocalCache.h"
 
@@ -21,13 +27,12 @@ void DNSLocalCache::initialize(int stage)
 {
     DNSServerBase::initialize(stage);
 
-    recursion_available = (int) par("recursion_available").doubleValue();
+    recursion_available = 1;
+    response_count = 0;
 
     DNSServerBase::queryCache = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
     DNSServerBase::queryAddressCache = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
     DNSServerBase::responseCache = new ODnsExtension::DNSTTLCache();
-
-    response_count = 0;
 
 }
 
@@ -40,9 +45,11 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
 {
     DNSPacket* response;
     ODnsExtension::DNSQuestion q;
-    int id, opcode, rd, ra, an_records = 0,ns_records = 0, ar_records = 0;
-    GList* answer_list = NULL, ns_list = NULL, ar_list = NULL;
-    char* __class, type, msg_name, namehash;
+    int id, opcode, rd, ra, an_records = 0,ns_records = 0, ar_records = 0, stop_cache_lookup = 0, rec_query_created = 0;
+    GList* answer_list, ns_list, ar_list;
+    const char* __class;
+    const char* type;
+    char* msg_name, namehash;
 
     if (query->qdcount > 1)
     {
@@ -82,7 +89,7 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
     }
 
     // init type
-    // at the momemnt we only support A, AAAA and CNAME for local
+    // at the momemnt we only support A, AAAA for local
     // cache for usage in combination with the echo server
     switch (q.qtype)
     {
@@ -93,8 +100,6 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
             type = DNS_TYPE_STR_AAAA;
             break;
         case DNS_TYPE_VALUE_CNAME:
-            type = DNS_TYPE_STR_CNAME;
-            break;
         case DNS_TYPE_VALUE_HINFO:
         case DNS_TYPE_VALUE_MINFO:
         case DNS_TYPE_VALUE_MX:
@@ -110,33 +115,76 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
             return response;
     }
 
+    // first check the cache
     if(q.qtype == DNS_TYPE_VALUE_A || q.qtype == DNS_TYPE_VALUE_AAAA){
+        if (!rd || !ra){
+            // response with not found err, as recursion is not desired or not available
+            // and we don't cache A records directly
+            response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id, opcode, 0,
+                    rd, ra, 0);
+        }
+
         // we know we don't store A and AAAA records in the cache
         // i.e., check if we have a corresponding CNAME mapping in the
         // cache
-        char* cnhash = NULL;
         char* cnhash = g_strdup_printf("%s.%s.%s", q.qname, type, __class);
         GList* hashes = responseCache->get_matching_hashes(cnhash);
 
-        // walk through the hashes and initiate recursive queries TODO: what about multi queries?
-        // we will get lists for every CNAME in the cache
+        // walk through the hashes and initiate recursive queries
+        // for this simulation we can assume that we will only get one hash
+        // for which there are no double entries in the cache
+
+        hashes = g_list_first(hashes);
+        while(hashes && !stop_cache_lookup && !rec_query_created){
+            // use the hash to get the corresponding entry
+            char* tmp = (char*) hashes->data;
+            // check if there is and entry in the cache, if so
+            // we should follow it before querying
+            GList* records = NULL;
+            while(responseCache->is_in_cache(tmp)){
+                // get the list of records from the cache
+                records = responseCache->get_from_cache(tmp);
+                // this list should not be greater than one, if it is
+                // the cache may have been polluted, delete all entries
+                // and do the normal iterative query
+
+                if(g_list_next(records)){
+                    responseCache->remove_from_cache(tmp);
+                    stop_cache_lookup = 1;
+                    break;
+                }
+
+                // only one record, extract data into tmp
+                if(((DNSRecord*) records->data)->rtype == DNS_TYPE_VALUE_CNAME)
+                    tmp = (char*) ((DNSRecord*) records->data)->rdata;
+                else // end of chain but not a CNAME
+                    break;
+            }
+
+            // if the flag is not set, we can use the record to perform our recursive query
+            if(!stop_cache_lookup){
+                // the record is stored in *records
+                DNSRecord* end_of_chain_record = ((DNSRecord*) records->data);
+                // use the rdata in the record to create a recursive query
+                int p = intrand(rootServers.size());
+                DNSPacket *root_q = ODnsExtension::createQuery(msg_name, end_of_chain_record->rdata, DNS_CLASS_IN,
+                        query->questions[0].qtype, query->id, 1);
+
+                out.sendTo(root_q, rootServers[p], DNS_PORT);
+
+                rec_query_created = 1;
+            }
+
+            hashes = g_list_next(hashes);
+        }
+
+        g_free(cnhash);
+        if(!stop_cache_lookup && rec_query_created) // there were no problems, recursive query was generated
+            return NULL;
 
     }
-    else if(q.qtype == DNS_TYPE_VALUE_CNAME){
-        // check cache directly for the CNAME entry
-    }
 
-    // check if entry is in cache
-    if(g_str_has_suffix(q.qname, "."))
-        namehash = g_strdup_printf("%s:%s:%s", q.qname, type, __class);
-    else
-        namehash = g_strdup_printf("%s.:%s:%s", q.qname, type, __class);
-
-    answer_list = appendEntries(namehash, answer_list, q.qtype, &an_records);
-    g_free(namehash);
-
-    // we don't want to return the answers, we use them to ask the authority for the A record :)
-
+    // if we get here, cache lookup was unsuccessful
     if (recursion_available)
     {
         if (rd)
@@ -149,7 +197,7 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
 
             out.sendTo(root_q, rootServers[p], DNS_PORT);
 
-            return NULL; // so it is known that recursive resolving has been initiated
+            return NULL;
 
         }
         else
@@ -157,10 +205,11 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
             // response with not found err
             response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id, opcode, 0,
                     rd, ra, 0);
-        }
 
-        // set question
-        response->setQuestions(0, q);
+            // set question
+            response->setQuestions(0, q);
+            return response;
+        }
     }
     else
     {
@@ -169,152 +218,4 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
         return response;
     }
 
-    // append an, ns, ar to response
-    int index = 0;
-    GList *next = g_list_first(answer_list);
-
-    if (an_records > 0)
-    {
-        while (next)
-        {
-            ODnsExtension::appendAnswer(response, (ODnsExtension::DNSRecord*) next->data, index++);
-
-            next = g_list_next(next);
-        }
-    }
-    if(ns_records > 0){
-        next = g_list_first(ns_list);
-        index = 0;
-        while (next)
-        {
-            ODnsExtension::appendAuthority(response, (ODnsExtension::DNSRecord*) next->data, index++);
-
-            next = g_list_next(next);
-        }
-    }
-    if(ar_records > 0){
-        next = g_list_first(ar_list);
-        index = 0;
-        while (next)
-        {
-            ODnsExtension::appendAdditional(response, (ODnsExtension::DNSRecord*) next->data, index++);
-
-            next = g_list_next(next);
-        }
-    }
-    if(an_records == 0 && ns_records == 0 && ar_records == 0)
-    {
-        // do nothing ..
-    }
-
-    return response;
-
-}
-
-GList* DNSLocalCache::appendAuthority(GList *ns_list, int *ns_records){
-    char *nshash = g_strdup_printf("%s:%s:%s", config->getOrigin(), DNS_TYPE_STR_NS, DNS_CLASS_STR_IN);
-    ns_list = appendEntries(nshash, ns_list, DNS_TYPE_VALUE_NS, ns_records);
-    g_free(nshash);
-
-    return ns_list;
-}
-
-GList* DNSLocalCache::appendAdditionals(GList* ns_list, GList *ar_list, int *ar_records){
-    ar_list = appendTransitiveEntries(ns_list, ar_list,
-    DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, ar_records);
-    ar_list = appendTransitiveEntries(ns_list, ar_list,
-    DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, ar_records);
-
-    return ar_list;
-}
-
-GList* DNSLocalCache::appendEntries(char *hash, GList *dstlist, int type, int *num_records)
-{
-    GList* entries = config->getEntry(hash);
-    GList* next = g_list_first(entries);
-    ODnsExtension::DNSRecord *rr;
-
-    while (next)
-    {
-        zone_entry *entry = (zone_entry*) next->data;
-        rr = (ODnsExtension::DNSRecord*) malloc(sizeof(*rr));
-        rr->rdata = g_strdup(entry->data);
-
-        if (g_str_has_suffix(entry->domain, config->getOrigin()))
-        {
-            rr->rname = g_strdup(entry->domain);
-        }
-        else
-        {
-            rr->rname = g_strdup_printf("%s.%s", entry->domain, config->getOrigin());
-        }
-
-        rr->rclass = (short) DNS_CLASS_IN;
-        rr->rtype = (short) type;
-        rr->rdlength = strlen(rr->rdata);
-        rr->ttl = config->getTTL();
-
-        dstlist = g_list_append(dstlist, rr);
-        (*num_records)++;
-
-        // Check if transitive resolution is necessary:
-
-        next = g_list_next(next);
-    }
-    return dstlist;
-}
-
-GList* DNSLocalCache::appendTransitiveEntries(GList *srclist, GList *dstlist, const char* DNS_TYPE_STR,
-        int DNS_TYPE_VALUE, int *ar_records)
-{
-    GList *next = g_list_first(srclist);
-    char* hash;
-
-    // iterate through the source list
-    while (next)
-    {
-        // get the zone entry
-        zone_entry* record = (zone_entry*) next->data;
-
-        // calculate hash from domain + type + class
-        // first ar hash is for A records..
-        hash = g_strdup_printf("%s:%s:%s", record->data, DNS_TYPE_STR,
-        DNS_CLASS_STR_IN);
-
-        GList* transitive_entries = config->getEntry(hash);
-        g_free(hash);
-        GList* t_next = g_list_first(transitive_entries);
-        ODnsExtension::DNSRecord *dns_record;
-
-        // go through
-        while (t_next)
-        {
-            zone_entry *entry = (zone_entry*) t_next->data;
-            dns_record = (ODnsExtension::DNSRecord*) malloc(sizeof(*dns_record));
-            dns_record->rdata = g_strdup(entry->data);
-
-            if (g_str_has_suffix(entry->domain, config->getOrigin()))
-            {
-                dns_record->rname = g_strdup(entry->domain);
-            }
-            else
-            {
-                dns_record->rname = g_strdup_printf("%s.%s", entry->domain, config->getOrigin());
-            }
-
-            dns_record->rclass = (short) DNS_CLASS_IN;
-            dns_record->rtype = (short) DNS_TYPE_VALUE;
-            dns_record->rdlength = strlen(dns_record->rdata);
-            dns_record->ttl = config->getTTL();
-
-            dstlist = g_list_append(dstlist, dns_record);
-            (*ar_records)++;
-
-            t_next = g_list_next(t_next);
-        }
-
-        next = g_list_next(next);
-    }
-
-    return dstlist;
 }

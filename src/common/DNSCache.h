@@ -43,6 +43,7 @@ public:
     virtual int put_into_cache(DNSRecord* record) = 0;
     virtual GList* get_from_cache(char* hash) = 0;
     virtual GList* remove_from_cache(char* hash) = 0;
+    virtual DNSRecord* remove_from_cache(char* hash, DNSRecord* r) = 0;
     virtual int is_in_cache(char* hash) = 0;
     virtual GList* evict() = 0;
     virtual GList* get_matching_hashes(char* hash) = 0;

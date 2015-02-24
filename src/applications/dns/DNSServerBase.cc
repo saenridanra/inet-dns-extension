@@ -137,7 +137,7 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet){
             // store the response in the cache
             if(responseCache){
                 // check if the record is not an A or AAAA record
-                if(&packet->getAnswers(i).rtype != DNS_TYPE_VALUE_A && &packet->getAnswers(i).rtype != DNS_TYPE_VALUE_AAAA){
+                if(packet->getAnswers(i).rtype != DNS_TYPE_VALUE_A && packet->getAnswers(i).rtype != DNS_TYPE_VALUE_AAAA){
                     //create a copy and put it into the cache
                     DNSRecord* r = ODnsExtension::copyDnsRecord(&packet->getAnswers(i));
                     responseCache->put_into_cache(r);

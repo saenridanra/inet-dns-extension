@@ -52,7 +52,7 @@ void MDNSAnnouncer::initialize(){
         a_ptr_record->rclass = DNS_CLASS_IN;
         a_ptr_record->rdata = g_strdup(target);
         a_ptr_record->rdlength = sizeof(target) - 1;
-        a_pt_record->ttl = MDNS_HOST_TTL;
+        a_ptr_record->ttl = MDNS_HOST_TTL;
 
         aaaa_ptr_record->rname = g_strdup_printf("%s.ip6.arpa.", hostaddress->get6().str().c_str());
         aaaa_ptr_record->rtype = DNS_TYPE_VALUE_PTR;
@@ -71,30 +71,30 @@ void MDNSAnnouncer::initialize(){
         a->n_iter = 0;
         a->r = a_record;
         a->s = ProbeState::STARTING;
-        a->probe_id = malloc(sizeof(a->probe_id));
+        a->probe_id = (uint32_t*) malloc(sizeof(a->probe_id));
         *a->probe_id = id_internal++;
 
         a_ptr->n_iter = 0;
         a_ptr->r = a_ptr_record;
         a_ptr->s = ProbeState::STARTING;
-        a_ptr->probe_id = malloc(sizeof(a_ptr->probe_id));
+        a_ptr->probe_id = (uint32_t*) malloc(sizeof(a_ptr->probe_id));
         *a_ptr->probe_id = id_internal++;
 
         aaaa->n_iter = 0;
         aaaa->r = aaaa_record;
         aaaa->s = ProbeState::STARTING;
-        aaaa->probe_id = malloc(sizeof(aaaa->probe_id));
+        aaaa->probe_id = (uint32_t*) malloc(sizeof(aaaa->probe_id));
         *aaaa->probe_id = id_internal++;
         aaaa_ptr->n_iter = 0;
         aaaa_ptr->r = aaaa_record;
         aaaa_ptr->s = ProbeState::STARTING;
-        aaaa_ptr->probe_id = malloc(sizeof(aaaa_ptr->probe_id));
+        aaaa_ptr->probe_id = (uint32_t*) malloc(sizeof(aaaa_ptr->probe_id));
         *aaaa_ptr->probe_id = id_internal++;
 
-        starting = g_list_append(starting, a);
-        starting = g_list_append(starting, aaaa);
-        starting = g_list_append(starting, a_ptr);
-        starting = g_list_append(starting, aaaa_ptr);
+        probing = g_list_append(probing, a);
+        probing = g_list_append(probing, aaaa);
+        probing = g_list_append(probing, a_ptr);
+        probing = g_list_append(probing, aaaa_ptr);
 
         simtime_t tv = simTime() + STR_SIMTIME("20ms");
 
@@ -160,7 +160,7 @@ void MDNSAnnouncer::add_service(MDNSService* service){
     p->n_iter = 0;
     p->r = service_record;
     p->s = ProbeState::STARTING;
-    p->probe_id = malloc(sizeof(probe_id));
+    p->probe_id = (uint32_t*) malloc(sizeof(p->probe_id));
     *p->probe_id = id_internal++;
     p->ref_service = service;
 
@@ -169,7 +169,7 @@ void MDNSAnnouncer::add_service(MDNSService* service){
     simtime_t tv = simTime() + STR_SIMTIME("20ms");
 
     ODnsExtension::TimeEvent* e = new ODnsExtension::TimeEvent(this);
-    e->setData(a);
+    e->setData(p);
     e->setExpiry(tv);
     e->setLastRun(0);
     e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
@@ -191,7 +191,7 @@ void MDNSAnnouncer::add_service(MDNSService* service){
             p->n_iter = 0;
             p->r = txtrecord;
             p->s = ProbeState::STARTING;
-            p->probe_id = malloc(sizeof(probe_id));
+            p->probe_id = (uint32_t*) malloc(sizeof(p->probe_id));
             *p->probe_id = id_internal++;
             p->ref_service = service;
 
@@ -210,7 +210,7 @@ void MDNSAnnouncer::add_service(MDNSService* service){
     else{
         // add an empty txt record..
         DNSRecord* txtrecord = (DNSRecord*) malloc(sizeof(txtrecord));
-        char* txt = g_strdup_printf("");
+        char* txt = g_strdup("");
         txtrecord->rname = g_strdup(label);
         txtrecord->rtype = DNS_TYPE_VALUE_TXT;
         txtrecord->rclass = DNS_CLASS_IN;
@@ -222,7 +222,7 @@ void MDNSAnnouncer::add_service(MDNSService* service){
         p->n_iter = 0;
         p->r = txtrecord;
         p->s = ProbeState::STARTING;
-        p->probe_id = malloc(sizeof(probe_id));
+        p->probe_id = (uint32_t*) malloc(sizeof(p->probe_id));
         *p->probe_id = id_internal++;
 
         e = new ODnsExtension::TimeEvent(this);
@@ -246,7 +246,7 @@ int  MDNSAnnouncer::check_conflict(DNSRecord* r){
     while(next){
         Probe* p = (Probe*) next->data;
 
-        if(!g_strcmp0(p->r->rname, r->rname) && !g_strcmp0(p->r->rdata, r->rdata) && p->r->rtype == r->rtype && p->r->rclass = r->rclass)
+        if(!g_strcmp0(p->r->rname, r->rname) && !g_strcmp0(p->r->rdata, r->rdata) && p->r->rtype == r->rtype && p->r->rclass == r->rclass)
             break; // the other host announces the exact same record, we're finished here
         else if(!g_strcmp0(p->r->rname, r->rname)){
             // we have a conflict, remove the probe, and try with another label
@@ -264,7 +264,7 @@ int  MDNSAnnouncer::check_conflict(DNSRecord* r){
 void withdraw(Probe* p){
     // by withdrawing, the label is changed and the probing number reset
     p->n_iter = 0;
-    char* label_new = g_strdup_printf("%s-%d.%s", p->service->name, ++p->collision_count, p->ref_service->service_type);
+    char* label_new = g_strdup_printf("%s-%d.%s", p->ref_service->name, ++p->collision_count, p->ref_service->service_type);
     g_free(p->r->rname);
     // use the new label..
     p->r->rname = label_new;
@@ -276,7 +276,6 @@ void goodbye(Probe* p, int send_goodbye, int remove){
 
 void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e, void* data){
     Probe* p = (Probe*) data;
-    ODnsExtension::TimeEvent* e;
     simtime_t tv;
     // no probe has been sent out so far..
     if(p->s == ProbeState::STARTING){
@@ -298,13 +297,13 @@ void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e, void* data){
             response_scheduler->post(p->r, 1, NULL, 0);
 
             // add 2^(p->n_iter - 1) * 1s delay
-            tv = simTime() + (2^(p->n_iter - 1) * STR_SIMTIME("1s"));
+            tv = simTime() + ((int) pow(2,(p->n_iter - 1)) * STR_SIMTIME("1s"));
             timeEventSet->updateTimeEvent(p->e, tv);
         }
         else{
             // still need to send out some probes
             p->n_iter++;
-            scheduler->post(p->r, 0);
+            probe_scheduler->post(p->r, 0);
             // 250msec delay
             tv = simTime() + STR_SIMTIME("250ms");
             timeEventSet->updateTimeEvent(p->e, tv);
@@ -318,7 +317,7 @@ void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e, void* data){
 
             auth_cache->put_into_cache(p->r); // using the cache, we know when the record is up for eviction
             char* hash = g_strdup_printf("%s%s%s", p->r->rname, getTypeStringForValue(p->r->rtype), getClassStringForValue(p->r->rclass));
-            g_hash_table_insert(serviceToCacheMap, p->id, hash);
+            g_hash_table_insert(probe_to_cache, p->probe_id, hash);
         }
         else{
             // still have to send out annoucements
@@ -326,7 +325,7 @@ void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e, void* data){
             response_scheduler->post(p->r, 1, NULL, 0);
 
             // add 2^(p->n_iter - 1) * 1s delay
-            tv = simTime() + ((2^(p->n_iter - 1) * STR_SIMTIME("1s")));
+            tv = simTime() + (((int) pow(2,(p->n_iter - 1)) * STR_SIMTIME("1s")));
             timeEventSet->updateTimeEvent(p->e, tv);
         }
     }

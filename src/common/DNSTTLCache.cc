@@ -192,7 +192,7 @@ GList* DNSTTLCache::cleanup(){
             // remove from caches
             dnsRecordPriorityCache.erase(r);
             DNSRecord* removed_record = remove_from_cache(r->hash, r->record);
-            g_list_append(removed_record);
+            returnlist = g_list_append(returnlist, removed_record);
         }
         else{
             break; // we're finished cleaning up.
@@ -214,7 +214,7 @@ GList* DNSTTLCache::remove_from_cache(char* hash){
 
 DNSRecord* DNSTTLCache::remove_from_cache(char* hash, DNSRecord* r){
     GList* from_cache = (GList*) g_hash_table_lookup(cache, hash);
-    g_list_remove(from_cache, r);
+    r = (DNSRecord*) g_list_remove(from_cache, r);
     return r;
 }
 
@@ -234,12 +234,12 @@ GList* DNSTTLCache::get_matching_hashes(char* hash){
     GList* hash_list = NULL;
     GHashTableIter* iterator;
     g_hash_table_iter_init(iterator, cache);
-    gpointer* key, value;
+    gpointer *key, *value;
 
     while(g_hash_table_iter_next(iterator, key, value)){
-        if(g_str_has_suffix(hash, key)){
+        if(g_str_has_suffix(hash, (char*) key)){
             // we have a match, append it to the return list
-            char* hash_cpy = g_strdup(key);
+            char* hash_cpy = g_strdup((char*) key);
             hash_list = g_list_append(hash_list, hash_cpy);
         }
     }

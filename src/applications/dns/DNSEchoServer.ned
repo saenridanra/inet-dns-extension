@@ -20,6 +20,6 @@
 
 package opp_dns_extension.applications.dns;
 
-simple DNSLocalCache like DNSServerBase
+simple DNSEchoServer
 {
 }

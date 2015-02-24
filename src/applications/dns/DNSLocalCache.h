@@ -47,63 +47,6 @@ class DNSLocalCache : public DNSServerBase
   public:
         virtual void initialize(int stage);
         virtual void handleMessage(cMessage *msg);
-
-        /**
-         * @brief appendAuthority
-         *  Appends NS records to the authority section of the response.
-         * @params
-         *      ns_list : list in which NS records have to be put in.
-         *      ns_records : pointer to the count of ns_records.
-         *
-         * @return
-         *      returns the ns_list after updating it.
-         */
-        virtual GList* appendAuthority(GList *ns_list, int *ns_records);
-
-        /**
-         * @brief appendAdditionals
-         *  Appends A and AAAA records to the ar_list, based
-         *  on NS records in the ns_list
-         * @params
-         *      ns_list : list of NS records
-         *      ar_list : list in which A and AAAA records for NS records are stored
-         *      ns_records : pointer to the count of ar_records.
-         *
-         * @return
-         *      returns the ar_list after updating it.
-         */
-        virtual GList* appendAdditionals(GList *ns_list, GList* ar_list, int *ns_records);
-
-        /**
-         * @brief appendEntries
-         *  Appends entries to a list based on the hash passed to the method.
-         *
-         * @params
-         *      hash - hash value of the form label:type:class
-         *      dstlist - list in which the records are stored
-         *      type - the type to look for
-         *      num_records - pointer to a counter variable for the size of the list
-         *
-         * @return
-         *      returns the updated list
-         */
-        virtual GList* appendEntries(char *hash, GList *dstlist, int type, int *num_records);
-
-        /**
-         * @brief appendTransitiveEntries
-         *  Appends entries to a list based on records in srclist
-         *
-         * @params
-         *      srclist - source list, based on the data values of these records, other records are searched in the catalog.
-         *      dstlist - list in which the records are stored
-         *      DNS_TYPE_STR - string form of the dns type
-         *      DNS_TYPE_VALUE - integer value of the dns type
-         *      ar_records - pointer to a counter variable for the size of ar_list
-         */
-        virtual GList* appendTransitiveEntries(GList *srclist, GList *dstlist, const char* DNS_TYPE_STR, int DNS_TYPE_VALUE, int *ar_records);
-        /**
-        *
-        */
         DNSPacket* handleQuery(ODnsExtension::Query *query);
 };
 

@@ -112,9 +112,9 @@ class DNSTTLCache: public DNSCache
      *      hash - the hash value for the record, note it has the form <label:type:class>
      *      r    - a specific record that has to be removed from the list for this hash
      * @return
-     *      returns the removed records.
+     *      returns the removed record.
      */
-    GList* remove_from_cache(char* hash, DNSRecord* r);
+    DNSRecord* remove_from_cache(char* hash, DNSRecord* r);
 
     /**
      * @brief cleanup
