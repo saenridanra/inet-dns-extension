@@ -1,0 +1,23 @@
+$TTL    86400 ; 24 hours could have been written as 24h or 1d
+              ; $TTL used for all RRs without explicit TTL value
+$ORIGIN de.
+@      IN  SOA a.nic.de. its.denic.de. (
+                  2014110500    ; sn = serial number
+                  14400         ; ref = refresh = 2d
+                  7200          ; ret = update retry = 15m
+                  1209600       ; ex = expiry = 2w
+                  3600000       ; nx = nxdomain ttl = 1h
+                 )
+       IN  NS     a.nic.de.    ; in the domain
+
+a.nic.de.               IN      A       194.0.0.53       
+
+; server host definitions
+uni-konstanz.de. IN  NS     pan.rz.uni-konstanz.de.     ;
+uni-konstanz.de. IN  NS     uranos.rz.uni-konstanz.de.  ;
+uni-konstanz.de. IN  NS     dns3.uni-konstanz.de.    ;
+
+; A records for domains
+pan.rz.uni-konstanz.de.    IN  A   134.34.3.3   ;
+dns3.uni-konstanz.de.      IN  A   141.37.1.65  ;
+uranos.rz.uni-konstanz.de. IN  A   134.34.3.2   ;

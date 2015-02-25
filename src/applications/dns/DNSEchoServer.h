@@ -47,9 +47,9 @@ class DNSEchoServer : public cSimpleModule
   protected:
     const char *nameserver, *nameserver_ip;
 
-    const char* standard_query = "/^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\.(cca)\.((?:\w|-)+)\.(\w+\.\w+\.\w+)$/";
-    const char* a_query = "/^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\.(00)\.(\w+\.\w+\.\w+)$/";
+    const char* standard_query = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\.(cca)\\.((?:\\w|-)+)\\.(\\w+\\.\\w+\\.\\w+)";
 
+    const char* a_query = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\.(00)\\.(\\w+\\.\\w+\\.\\w+)";
     int receivedQueries = 0;
     int response_count = 0;
 

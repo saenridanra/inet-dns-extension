@@ -31,8 +31,8 @@ void DNSEchoServer::initialize(int stage) {
         nameserver_ip = par("nameserver_ip").stringValue();
 
         // compile regexes
-        standard_query_regex = g_regex_new(standard_query, G_REGEX_OPTIMIZE, G_REGEX_MATCH_NOTEMPTY, &regex_error);
-        a_query_regex = g_regex_new(a_query, G_REGEX_OPTIMIZE, G_REGEX_MATCH_NOTEMPTY, &regex_error);
+        standard_query_regex = g_regex_new(standard_query, G_REGEX_CASELESS, G_REGEX_MATCH_NOTEMPTY, &regex_error);
+        a_query_regex = g_regex_new(a_query, G_REGEX_CASELESS, G_REGEX_MATCH_NOTEMPTY, &regex_error);
     }
 }
 
@@ -83,8 +83,7 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
     DNSPacket* response;
 
     // first analyze query according to stateless dns
-    char* qname = g_ascii_strdown(query->questions[0].qname,
-            sizeof(query->questions[0].qname) - 1); // lower case query
+    char* qname = query->questions[0].qname; // lower case query
 
     // initializes options
     id = query->id;
@@ -103,19 +102,19 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
 
         //query
         if (g_match_info_matches(regex_match_info)) {
-            ip = g_match_info_fetch(regex_match_info, 0);
-            method = g_match_info_fetch(regex_match_info, 1);
-            alias = g_match_info_fetch(regex_match_info, 2);
-            qbase = g_match_info_fetch(regex_match_info, 3);
+            ip = g_match_info_fetch(regex_match_info, 1);
+            method = g_match_info_fetch(regex_match_info, 2);
+            alias = g_match_info_fetch(regex_match_info, 3);
+            qbase = g_match_info_fetch(regex_match_info, 4);
             have_match = 1;
         }
         if (!have_match) {
             g_regex_match(a_query_regex, qname, g_regex_get_match_flags(a_query_regex), &regex_match_info);
             //query for echo domain A
             if (g_match_info_matches(regex_match_info)) {
-                ip = g_match_info_fetch(regex_match_info, 0);
-                method = g_match_info_fetch(regex_match_info, 1);
-                qbase = g_match_info_fetch(regex_match_info, 2);
+                ip = g_match_info_fetch(regex_match_info, 1);
+                method = g_match_info_fetch(regex_match_info, 2);
+                qbase = g_match_info_fetch(regex_match_info, 3);
                 alias = "";
                 have_match = 1;
             }
@@ -179,6 +178,9 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
         r->rtype = (short) DNS_TYPE_VALUE_A;
         r->rdlength = strlen(r->rdata);
         r->ttl = 10000;
+
+        num_an_records++;
+        an_records = g_list_append(an_records, r);
     }
 
     // create response packet, append question and answers

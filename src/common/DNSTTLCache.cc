@@ -39,8 +39,7 @@ DNSTTLCache::~DNSTTLCache() {
 
         list = g_list_first(list);
         while(list){
-            freeDnsRecord(((DNSTimeRecord*) list->data)->record);
-            g_free((DNSRecord*) list->data);
+            freeDnsRecord((DNSRecord*) list->data);
             list = g_list_next(list);
         }
 
@@ -71,8 +70,7 @@ int DNSTTLCache::put_into_cache(DNSRecord* record){
                 GList* list = remove_from_cache(time_record->hash);
                 list = g_list_first(list);
                 while(list){
-                    freeDnsRecord((DNSRecord*) list->data);
-                    free((DNSRecord*) list->data);
+                    freeDnsRecord(((DNSTimeRecord*) list->data)->record);
                 }
                 free(time_record);
 
@@ -80,7 +78,6 @@ int DNSTTLCache::put_into_cache(DNSRecord* record){
         }
 
         GList* list = NULL;
-        list = g_list_append(list, (gpointer) record);
         DNSTimeRecord* time_record = (DNSTimeRecord*) malloc(sizeof(time_record));
 
         time_record->record = record;
@@ -93,7 +90,8 @@ int DNSTTLCache::put_into_cache(DNSRecord* record){
         time_record->expiry = time_record->rcv_time + tv;
 
         //g_printf("DEBUG MSG: New hash entering CACHE --- [%s], for record->rname=%s\n", hash, record->rname);
-        g_hash_table_insert(cache, hash, (gpointer) list);
+        list = g_list_append(list, time_record);
+        g_hash_table_insert(cache, hash, list);
         dnsRecordPriorityCache.insert(time_record);
         setCacheSize(getCacheSize()+1);
     }
@@ -117,21 +115,22 @@ int DNSTTLCache::put_into_cache(DNSRecord* record){
         if(!is_already_in_cache){
             // append the record
             from_cache = (GList*) g_hash_table_lookup(cache, hash);
-            from_cache = g_list_append(from_cache, (gpointer) record);
+            from_cache = g_list_append(from_cache, record);
 
             // replace the entry in the database
             g_hash_table_replace(cache, hash, (gpointer) from_cache);
 
 
             DNSTimeRecord* time_record = (DNSTimeRecord*) malloc(sizeof(time_record));
-            time_record->record = record;
-            time_record->hash = hash;
+            time_record->record = ODnsExtension::copyDnsRecord(record);
+            time_record->hash = g_strdup(hash);
             time_record->rcv_time = simTime();
 
             char* stime = g_strdup_printf("%ds", record->ttl);
             simtime_t tv = simTime() + STR_SIMTIME(stime);
             g_free(stime);
             time_record->expiry = time_record->rcv_time + tv;
+            dnsRecordPriorityCache.insert(time_record);
         }
         else{
             // TODO: update expiry and rcv time of the record
@@ -232,11 +231,11 @@ GList* DNSTTLCache::evict(){
 
 GList* DNSTTLCache::get_matching_hashes(char* hash){
     GList* hash_list = NULL;
-    GHashTableIter* iterator;
-    g_hash_table_iter_init(iterator, cache);
-    gpointer *key, *value;
+    GHashTableIter iterator;
+    g_hash_table_iter_init(&iterator, cache);
+    gpointer key, value;
 
-    while(g_hash_table_iter_next(iterator, key, value)){
+    while(g_hash_table_iter_next(&iterator, &key, &value)){
         if(g_str_has_suffix(hash, (char*) key)){
             // we have a match, append it to the return list
             char* hash_cpy = g_strdup((char*) key);

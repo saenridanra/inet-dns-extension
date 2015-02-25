@@ -111,6 +111,34 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
             ns_reference_hash = g_strdup_printf("%s.:%s:%s", q.qname, DNS_TYPE_STR_NS, DNS_CLASS_STR_IN);
 
         has_ns_reference = config->hasEntry(ns_reference_hash);
+
+        if(!has_ns_reference){
+            // ok we did not find a reference directly, do a longest suffix match
+            // to check if there is a suffix matching
+            GHashTable* zone = config->getEntries();
+            GHashTableIter iterator;
+            gpointer key, value;
+            g_hash_table_iter_init(&iterator, zone);
+            unsigned int max_len = 0;
+            char* tmp_ref_hash = NULL;
+            while(g_hash_table_iter_next(&iterator, &key, & value)){
+                if(g_str_has_suffix(ns_reference_hash, (char*) key)){
+                    if(strlen((char*) key) > max_len){
+                        max_len = strlen((char*) key);
+                        g_free(tmp_ref_hash);
+                        tmp_ref_hash = g_strdup((char*) key);
+                    }
+                }
+            }
+
+            if(tmp_ref_hash != NULL){
+                g_free(ns_reference_hash);
+                ns_reference_hash = g_strdup(tmp_ref_hash);
+                has_ns_reference = 1;
+                g_free(tmp_ref_hash);
+            }
+
+        }
     }
 
     g_free(trailing_qname);

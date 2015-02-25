@@ -166,11 +166,11 @@ DNSRecord* DNSSimpleCache::remove_from_cache(char* hash, DNSRecord* r){
 
 GList* DNSSimpleCache::get_matching_hashes(char* hash){
     GList* hash_list = NULL;
-    GHashTableIter* iterator;
-    g_hash_table_iter_init(iterator, cache);
-    gpointer *key, *value;
+    GHashTableIter iterator;
+    g_hash_table_iter_init(&iterator, cache);
+    gpointer key, value;
 
-    while(g_hash_table_iter_next(iterator, key, value)){
+    while(g_hash_table_iter_next(&iterator, &key, &value)){
         if(g_str_has_suffix(hash, (char*) key)){
             // we have a match, append it to the return list
             char* hash_cpy = g_strdup((char*) key);

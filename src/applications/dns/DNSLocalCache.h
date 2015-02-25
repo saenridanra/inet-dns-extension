@@ -25,7 +25,7 @@
 #include <omnetpp.h>
 #include "DNSServerBase.h"
 #include "DNS.h"
-#include "DNSTTLCache.h"
+#include "DNSSimpleCache.h"
 #include <string.h>
 #include <glib.h>
 #include <math.h>

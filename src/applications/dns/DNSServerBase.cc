@@ -24,7 +24,7 @@
 Define_Module(DNSServerBase);
 
 void DNSServerBase::initialize(int stage) {
-    if(stage == 0){
+    if (stage == 0) {
         cSimpleModule::initialize(stage);
         // Initialize gates
         //in.setOutputGate(gate("udpIn"));
@@ -32,9 +32,9 @@ void DNSServerBase::initialize(int stage) {
         out.bind(DNS_PORT);
 
         receivedQueries = 0;
-    }
-    else if(stage == 3){
-        rootServers = IPvXAddressResolver().resolve(cStringTokenizer(par("root_servers")).asVector());
+    } else if (stage == 3) {
+        rootServers = IPvXAddressResolver().resolve(
+                cStringTokenizer(par("root_servers")).asVector());
     }
 }
 
@@ -58,7 +58,7 @@ void DNSServerBase::handleMessage(cMessage *msg) {
                 IPvXAddress srcAddress = ctrl->getSrcAddr();
                 response = handleQuery(query);
 
-                if(response == NULL){ // only happens if recursive resolving was initiated
+                if (response == NULL) { // only happens if recursive resolving was initiated
                     // store the query in the cache...
 
                     uint32_t* key = (uint32_t*) malloc(sizeof(uint32_t));
@@ -71,24 +71,46 @@ void DNSServerBase::handleMessage(cMessage *msg) {
                     return;
                 }
 
+                /*g_printf(
+                        "\n[%s]:\t\t Responding with answer for query [%s] \n",
+                        this->getFullName(), response->getQuestions(0).qname);
+                for (int i = 0; i < response->getAncount(); i++) {
+                    g_printf("\t\t [Answer]: %s | %s\n",
+                            response->getAnswers(i).rname,
+                            response->getAnswers(i).rdata);
+                }
+                for (int i = 0; i < response->getNscount(); i++) {
+                    g_printf("\t\t [Answer]: %s | %s\n",
+                            response->getAuthorities(i).rname,
+                            response->getAuthorities(i).rdata);
+                }
+                for (int i = 0; i < response->getArcount(); i++) {
+                    g_printf("\t\t [Answer]: %s | %s\n",
+                            response->getAdditional(i).rname,
+                            response->getAdditional(i).rdata);
+                }*/
+
                 // and send the response to the source address
                 sendResponse(response, srcAddress);
-            }
-            else{
+            } else {
                 // Just got a response, lets see if its an answer fitting one of
                 // the queries we need to resolved.
-
                 response = handleRecursion((DNSPacket*) msg);
 
-                if(response != NULL){
+                if (response != NULL) {
                     // this was the final answer, i.e.
                     // get the original packet and the src addr
 
                     uint32_t *key = (uint32_t*) malloc(sizeof(uint32_t));
                     *key = (uint32_t) response->getId();
-                    char* returnAddress = (char*) g_hash_table_lookup(queryAddressCache, key);
+                    char* returnAddress = (char*) g_hash_table_lookup(
+                            queryAddressCache, key);
+                    DNSPacket* query = (DNSPacket*) g_hash_table_lookup(queryCache, key);
+                    g_hash_table_remove(queryCache, key);
+                    delete query;
                     g_hash_table_remove(queryAddressCache, key);
-                    IPvXAddress addr = IPvXAddressResolver().resolve(returnAddress);
+                    IPvXAddress addr = IPvXAddressResolver().resolve(
+                            returnAddress);
 
                     free(key);
                     // we're not an authority, set it here.
@@ -104,7 +126,7 @@ void DNSServerBase::handleMessage(cMessage *msg) {
 
 }
 
-DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet){
+DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet) {
     // first check if we have a query id that belongs to this packet
     // and the answer relates to the query
 
@@ -113,83 +135,116 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet){
     uint32_t *key = (uint32_t*) malloc(sizeof(uint32_t));
     *key = (uint32_t) packet->getId();
 
-    if(!g_hash_table_contains(queryCache, key)){
+    if (!g_hash_table_contains(queryCache, key)) {
         return NULL; // we do not have a query that belongs to this key
     }
 
-    DNSPacket* original_query = (DNSPacket*) g_hash_table_lookup(queryCache, key);
+    DNSPacket* original_query = (DNSPacket*) g_hash_table_lookup(queryCache,
+            key);
     free(key);
 
     // first check, see if there are actually answers
-    if(DNS_HEADER_AA(packet->getOptions()) && packet->getAncount() > 0){
+
+    //g_printf("[%s]:\t\t Received response for query [%s]\n",
+    //        this->getFullName(), original_query->getQuestions(0).qname);
+    if (DNS_HEADER_AA(packet->getOptions()) && packet->getAncount() > 0) {
         // we have what we looked for, return
-        char *msg_name = g_strdup_printf("dns_response#%d", original_query->getId());
+
+        //g_printf("[%s]:\t\t Received desired response [%s] \n",
+        //        this->getFullName(), original_query->getQuestions(0).qname);
+        char *msg_name = g_strdup_printf("dns_response#%d",
+                original_query->getId());
         response = ODnsExtension::createResponse(msg_name, 1,
-                                    packet->getAncount(), packet->getNscount(), packet->getArcount(), original_query->getId(), DNS_HEADER_OPCODE(original_query->getOptions()), 0,
-                                    DNS_HEADER_RD(original_query->getOptions()), 1, 0);
+                packet->getAncount(), packet->getNscount(),
+                packet->getArcount(), original_query->getId(),
+                DNS_HEADER_OPCODE(original_query->getOptions()), 0,
+                DNS_HEADER_RD(original_query->getOptions()), 1, 0);
 
         short i;
-        for(i = 0; i < packet->getQdcount(); i++){
+        for (i = 0; i < packet->getQdcount(); i++) {
             response->setQuestions(i, packet->getQuestions(i));
         }
-        for(i = 0; i < packet->getAncount(); i++){
+        for (i = 0; i < packet->getAncount(); i++) {
 
             // store the response in the cache
-            if(responseCache){
+            if (responseCache) {
                 // check if the record is not an A or AAAA record
-                if(packet->getAnswers(i).rtype != DNS_TYPE_VALUE_A && packet->getAnswers(i).rtype != DNS_TYPE_VALUE_AAAA){
+                if (packet->getAnswers(i).rtype != DNS_TYPE_VALUE_A
+                        && packet->getAnswers(i).rtype != DNS_TYPE_VALUE_AAAA) {
                     //create a copy and put it into the cache
-                    DNSRecord* r = ODnsExtension::copyDnsRecord(&packet->getAnswers(i));
+                    DNSRecord* r = ODnsExtension::copyDnsRecord(
+                            &(packet->getAnswers(i)));
                     responseCache->put_into_cache(r);
                 }
             }
 
             ODnsExtension::appendAnswer(response, &packet->getAnswers(i), i);
         }
-        for(i = 0; i < packet->getNscount(); i++){
-            ODnsExtension::appendAuthority(response, &packet->getAuthorities(i), i);
+        for (i = 0; i < packet->getNscount(); i++) {
+            ODnsExtension::appendAuthority(response, &packet->getAuthorities(i),
+                    i);
         }
-        for(i = 0; i < packet->getArcount(); i++){
-            ODnsExtension::appendAdditional(response, &packet->getAdditional(i), i);
+        for (i = 0; i < packet->getArcount(); i++) {
+            ODnsExtension::appendAdditional(response, &packet->getAdditional(i),
+                    i);
         }
 
         return response;
-    }
-    else if(DNS_HEADER_AA(packet->getOptions()) && packet->getAncount() == 0){
+    } else if (DNS_HEADER_AA(packet->getOptions())
+            && packet->getAncount() == 0) {
         // return the entry not found response
-        char *msg_name = g_strdup_printf("dns_response#%d", original_query->getId());
-        response = ODnsExtension::createResponse(msg_name, 1,
-                                    0, 0, 0, original_query->getId(), DNS_HEADER_OPCODE(original_query->getOptions()), 1,
-                                    DNS_HEADER_RD(original_query->getOptions()), 1, 3);
+        char *msg_name = g_strdup_printf("dns_response#%d",
+                original_query->getId());
+
+        //g_printf("[%s]:\t\t Entry not found [%s] \n", this->getFullName(),
+        //        original_query->getQuestions(0).qname);
+
+        response = ODnsExtension::createResponse(msg_name, 1, 0, 0, 0,
+                original_query->getId(),
+                DNS_HEADER_OPCODE(original_query->getOptions()), 1,
+                DNS_HEADER_RD(original_query->getOptions()), 1, 3);
 
         return response; // return the response with no entry found..
-    }
-    else if(packet->getNscount() > 0 && packet->getArcount() > 0 && !DNS_HEADER_AA(packet->getOptions())){
+    } else if (packet->getNscount()
+            > 0&& packet->getArcount() > 0 && !DNS_HEADER_AA(packet->getOptions())) {
         // we have an answer for a query
         // pick one at random and delegate the question
 
         int p = intrand(packet->getNscount());
         DNSRecord *r = &packet->getAdditional(p);
 
+        //g_printf("[%s]:\t\t Delegating query [%s] to: [%s][%s]\n",
+        //       this->getFullName(), original_query->getQuestions(0).qname,
+        //        r->rname, r->rdata);
+
         // query the name server for our original query
-        char *msg_name = g_strdup_printf("dns_query#%d--recursive", original_query->getId());
-        DNSPacket *query = ODnsExtension::createQuery(msg_name, original_query->getQuestions(0).qname, DNS_CLASS_IN, original_query->getQuestions(0).qtype, original_query->getId(), 1);
+        char *msg_name = g_strdup_printf("dns_query#%d--recursive",
+                original_query->getId());
+        DNSPacket *query = ODnsExtension::createQuery(msg_name,
+                original_query->getQuestions(0).qname, DNS_CLASS_IN,
+                original_query->getQuestions(0).qtype, original_query->getId(),
+                1);
 
         // Resolve the ip address for the record
         IPvXAddress address = IPvXAddressResolver().resolve(r->rdata);
         out.sendTo(query, address, DNS_PORT);
         return NULL; // since this packet is fine we pass it upwards
-    }
-    else if(packet->getNscount() > 0 && !DNS_HEADER_AA(packet->getOptions())){
+    } else if (packet->getNscount() > 0 && !DNS_HEADER_AA(packet->getOptions())) {
         // TODO: no ar record, we need to start at the beginning with this reference..
+        //g_printf("[%s]:\t\t No AR Record [%s] \n", this->getFullName(),
+        //        original_query->getQuestions(0).qname);
         return NULL;
-    }
-    else{
+    } else {
         // something went wrong, return a server failure query
-        char *msg_name = g_strdup_printf("dns_response#%d", original_query->getId());
-        response = ODnsExtension::createResponse(msg_name, 1,
-                                    0, 0, 0, original_query->getId(), DNS_HEADER_OPCODE(original_query->getOptions()), 0,
-                                    DNS_HEADER_RD(original_query->getOptions()), 1, 2);
+        char *msg_name = g_strdup_printf("dns_response#%d",
+                original_query->getId());
+
+        //g_printf("[%s]:\t\t No answer for query [%s] \n", this->getFullName(),
+        //        original_query->getQuestions(0).qname);
+        response = ODnsExtension::createResponse(msg_name, 1, 0, 0, 0,
+                original_query->getId(),
+                DNS_HEADER_OPCODE(original_query->getOptions()), 0,
+                DNS_HEADER_RD(original_query->getOptions()), 1, 2);
 
         return response; // return the response with no entry found..
     }
@@ -203,7 +258,10 @@ DNSPacket* DNSServerBase::handleQuery(ODnsExtension::Query* query) {
 
 void DNSServerBase::sendResponse(DNSPacket *response,
         IPvXAddress returnAddress) {
-    out.sendTo(response, returnAddress, DNS_PORT);
+    if(!returnAddress.isUnspecified())
+        out.sendTo(response, returnAddress, DNS_PORT);
+    else
+        g_print("Missing return address\n");
 }
 
 DNSPacket* DNSServerBase::unsupportedOperation(ODnsExtension::Query *q) {

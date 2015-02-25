@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for libopp_dns_extension
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep --make-so -O out -I/usr/include/glib-2.0 -I/usr/lib/glib2.0 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/ieee80211/radio -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/routing/aodv -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/common -I/LinuxFiles/Workspaces/opp_workspace/inet/src -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/icmpv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/world/obstacles -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/xmipv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/autorouting/ipv4 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/common -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/status -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/radio/propagation -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/ieee80211/radio/errormodel -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/radio -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/tcp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/ipv4 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/mobility/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/ipv4 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/base -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers -I/LinuxFiles/Workspaces/opp_workspace/inet/src/world/radio -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/ieee80211/mac -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/ipv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/sctp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/udp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/ipv6tunneling -I/LinuxFiles/Workspaces/opp_workspace/inet/src/applications/pingapp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/battery/models -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/ipv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/sctp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/tcp_common -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/arp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/udp -L/LinuxFiles/Workspaces/opp_workspace/inet/out/$$\(CONFIGNAME\)/src -linet -DINET_IMPORT -KINET_PROJ=/LinuxFiles/Workspaces/opp_workspace/inet
+#  opp_makemake -f --deep --make-so -O out -d networks/stateless_network -I/usr/include/glib-2.0 -I/usr/lib/glib2.0 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/ieee80211/radio -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/routing/aodv -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/common -I/LinuxFiles/Workspaces/opp_workspace/inet/src -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/icmpv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/world/obstacles -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/xmipv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/autorouting/ipv4 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/common -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/status -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/radio/propagation -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/ieee80211/radio/errormodel -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/radio -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/tcp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/ipv4 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/mobility/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/ipv4 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/base -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers -I/LinuxFiles/Workspaces/opp_workspace/inet/src/world/radio -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/ieee80211/mac -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/ipv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/sctp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/udp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/ipv6tunneling -I/LinuxFiles/Workspaces/opp_workspace/inet/src/applications/pingapp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/battery/models -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/ipv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/sctp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/tcp_common -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/arp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/udp -L/LinuxFiles/Workspaces/opp_workspace/inet/out/$$\(CONFIGNAME\)/src -linet -DINET_IMPORT -KINET_PROJ=/LinuxFiles/Workspaces/opp_workspace/inet
 #
 
 # Name of target to be created (-o option)
@@ -155,13 +155,19 @@ CXXFLAGS+=$(shell pkg-config --cflags glib-2.0) -DDEBUG_ENABLED
 all: $O/$(TARGET)
 	$(Q)$(LN) $O/$(TARGET) .
 
-$O/$(TARGET): $(OBJS)  $(wildcard $(EXTRA_OBJS)) Makefile
+$O/$(TARGET): $(OBJS) submakedirs $(wildcard $(EXTRA_OBJS)) Makefile
 	@$(MKPATH) $O
 	@echo Creating shared library: $@
 	$(Q)$(SHLIB_LD) -o $O/$(TARGET)  $(OBJS) $(EXTRA_OBJS) $(AS_NEEDED_OFF) $(WHOLE_ARCHIVE_ON) $(LIBS) $(WHOLE_ARCHIVE_OFF) $(OMNETPP_LIBS) $(LDFLAGS)
 	$(Q)$(SHLIB_POSTPROCESS) $O/$(TARGET)
 
-.PHONY: all clean cleanall depend msgheaders
+submakedirs:  networks__stateless_network_dir
+
+.PHONY: all clean cleanall depend msgheaders  networks__stateless_network
+networks__stateless_network: networks__stateless_network_dir
+
+networks__stateless_network_dir:
+	cd networks/stateless_network && $(MAKE) all
 
 .SUFFIXES: .cc
 
@@ -175,6 +181,7 @@ $O/%.o: %.cc $(COPTS_FILE)
 	$(Q)$(MSGC) -s _m.cc $(MSGCOPTS) $?
 
 msgheaders: $(MSGFILES:.msg=_m.h)
+	$(Q)cd networks/stateless_network && $(MAKE) msgheaders
 
 clean:
 	$(qecho) Cleaning...
@@ -194,12 +201,15 @@ clean:
 	$(Q)-rm -f networks/results/*_m.cc networks/results/*_m.h
 	$(Q)-rm -f utils/*_m.cc utils/*_m.h
 
+	-$(Q)cd networks/stateless_network && $(MAKE) clean
+
 cleanall: clean
 	$(Q)-rm -rf $(PROJECT_OUTPUT_DIR)
 
 depend:
 	$(qecho) Creating dependencies...
 	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc applications/dns/*.cc applications/mdns/*.cc common/*.cc common/mdns/*.cc messages/*.cc networks/*.cc networks/complex_dns_network/*.cc networks/complex_dns_network/results/*.cc networks/complex_dns_network/subnets/*.cc networks/results/*.cc utils/*.cc
+	$(Q)-cd networks/stateless_network && if [ -f Makefile ]; then $(MAKE) depend; fi
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/applications/dns/DNSAuthServer.o: applications/dns/DNSAuthServer.cc \
@@ -274,7 +284,7 @@ $O/applications/dns/DNSLocalCache.o: applications/dns/DNSLocalCache.cc \
 	applications/dns/DNSServerBase.h \
 	common/DNS.h \
 	common/DNSCache.h \
-	common/DNSTTLCache.h \
+	common/DNSSimpleCache.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
 $O/applications/dns/DNSServerBase.o: applications/dns/DNSServerBase.cc \

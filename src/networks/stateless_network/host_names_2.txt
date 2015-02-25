@@ -1,0 +1,7 @@
+A 134.34.165.30.cca.client2.echo.netfuture.ch
+A 134.34.165.30.00.echo.netfuture.ch.
+A client1.echo.netfuture.ch
+A client3.echo.netfuture.ch
+A client4.echo.netfuture.ch
+A client5.echo.netfuture.ch
+A client6.echo.netfuture.ch

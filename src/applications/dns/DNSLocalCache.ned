@@ -22,4 +22,9 @@ package opp_dns_extension.applications.dns;
 
 simple DNSLocalCache like DNSServerBase
 {
+    parameters:
+        string root_servers = default("");
+    gates:
+        input udpIn @labels(UDPControlInfo/down);
+        output udpOut @labels(UDPControlInfo/down);
 }

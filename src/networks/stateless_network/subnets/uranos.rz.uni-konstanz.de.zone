@@ -1,0 +1,25 @@
+$TTL	86400 ; 24 hours could have been written as 24h or 1d
+			  ; $TTL used for all RRs without explicit TTL value
+$ORIGIN uni-konstanz.de.
+@ 	   IN  SOA uranos.rz.uni-konstanz.de. hostmaster.uni-konstanz.de. (
+			      2003080800 ; sn = serial number
+                  172800     ; ref = refresh = 2d
+                  900        ; ret = update retry = 15m
+                  1209600    ; ex = expiry = 2w
+                  3600		 ; nx = nxdomain ttl = 1h
+			     )
+       IN  NS     pan.rz.uni-konstanz.de. 	 ; in the domain
+       IN  NS     uranos.rz.uni-konstanz.de. ; slave
+       IN  NS     dns3.uni-konstanz.de.		 ; external
+       IN  MX  	  imap.uni-konstanz.de. 	 ; external mail provider
+       IN  A      134.34.240.80				 ; ip of origin
+; server host definitions
+pan.rz 		    IN  A      134.34.3.11	 ; this server
+uranos.rz	    IN  A      134.34.3.2	 ; the slave server
+dns3 		    IN  A      141.37.1.65	 ; this server
+imap 		    IN  A	   134.34.240.42 ; mail server imap
+www             IN  CNAME  proxy-neu.rz  ; test on
+proxy-neu.rz    IN  A      134.34.240.80 ;
+
+; more definitions
+cms			IN  A	   134.34.240.75; webserver

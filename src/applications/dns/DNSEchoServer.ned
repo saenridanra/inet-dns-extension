@@ -22,4 +22,10 @@ package opp_dns_extension.applications.dns;
 
 simple DNSEchoServer
 {
+    parameters:
+        string nameserver = default("");
+        string nameserver_ip = default("");
+    gates:
+        input udpIn @labels(UDPControlInfo/down);
+        output udpOut @labels(UDPControlInfo/down);
 }

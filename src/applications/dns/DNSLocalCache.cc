@@ -32,7 +32,7 @@ void DNSLocalCache::initialize(int stage)
 
     DNSServerBase::queryCache = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
     DNSServerBase::queryAddressCache = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
-    DNSServerBase::responseCache = new ODnsExtension::DNSTTLCache();
+    DNSServerBase::responseCache = new ODnsExtension::DNSSimpleCache();
 
 }
 
