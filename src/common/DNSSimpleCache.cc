@@ -78,9 +78,9 @@ int DNSSimpleCache::put_into_cache(DNSRecord* record){
         }
 
         GList* list = NULL;
-        list = g_list_append(list, (gpointer) record);
+        list = g_list_append(list, record);
         //g_printf("DEBUG MSG: New hash entering CACHE --- [%s], for record->rname=%s\n", hash, record->rname);
-        g_hash_table_insert(cache, hash, (gpointer) list);
+        g_hash_table_insert(cache, hash, list);
         setCacheSize(getCacheSize()+1);
     }
     else{
@@ -129,11 +129,7 @@ GList* DNSSimpleCache::get_from_cache(char* hash){
 }
 
 int DNSSimpleCache::is_in_cache(char* hash){
-    if(g_hash_table_contains(cache, hash)){
-        return 1;
-    }
-
-    return 0;
+    return g_hash_table_contains(cache, hash);
 }
 
 GList* DNSSimpleCache::remove_from_cache(char* hash){

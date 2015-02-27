@@ -127,6 +127,8 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
     if (!have_match) {
         response = ODnsExtension::createResponse(msg_name, 1, num_an_records,
                 num_ns_records, num_ar_records, id, opcode, 1, rd, ra, 0);
+        appendQuestion(response, ODnsExtension::copyDnsQuestion(&query->questions[0]), 0);
+        return response;
     }
 
     // generate answer, check method
@@ -188,7 +190,7 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
     response = ODnsExtension::createResponse(msg_name, 1, num_an_records,
             num_ns_records, num_ar_records, id, opcode, 1, rd, ra, 0);
 
-    response->setQuestions(0, query->questions[0]);
+    appendQuestion(response, ODnsExtension::copyDnsQuestion(&query->questions[0]), 0);
 
     int index = 0;
     GList *next = g_list_first(an_records);

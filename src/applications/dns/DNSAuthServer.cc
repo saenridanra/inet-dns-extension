@@ -34,9 +34,7 @@ void DNSAuthServer::initialize(int stage)
     config->initialize(master_file);
 
     recursion_available = (int) par("recursion_available").doubleValue();
-
     DNSServerBase::queryCache = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
-    DNSServerBase::queryAddressCache = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
 
     response_count = 0;
 
@@ -90,7 +88,6 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
     q = query->questions[0];
 
     int is_authoritative = 0;
-    std::string query_name = q.qname;
     int pos = g_str_has_suffix(q.qname, g_strndup(config->getOrigin(), strlen(config->getOrigin()) - 1));
 
     // check here if there are direct NS references to this record
@@ -145,8 +142,7 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
 
 
     // generate msg name
-    char *msg_name = (char*) malloc(20);
-    sprintf(msg_name, "dns_response#%d", response_count++);
+    char *msg_name = g_strdup_printf(msg_name, "dns_response#%d", response_count++);
 
     if (pos > 0 && g_strcmp0(config->getOrigin(), ".") != 0 && !has_ns_reference)
     {
@@ -351,7 +347,7 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
                     ra, 0);
         }
 
-        response->setQuestions(0, q);
+        ODnsExtension::appendQuestion(response, ODnsExtension::copyDnsQuestion(&q), 0);
     }
     else
     {
@@ -377,6 +373,9 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
             response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id, opcode, 0,
                     rd, ra, 0);
 
+            // set question
+            ODnsExtension::appendQuestion(response, ODnsExtension::copyDnsQuestion(&q), 0);
+
 
         }
         else if(config->hasEntry(reference_hash)){
@@ -400,11 +399,17 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
             {
                 if (rd)
                 {
+                    // assign an id for the query cache
+                    int id = DNSServerBase::getIdAndInc();
+                    DNSServerBase::store_in_query_cache(id, query);
+                    g_free(msg_name);
+                    msg_name = g_strdup_printf("dns_query#%d--recursive", id);
+
                     // do the initial query towards a root server
                     // pick at random
                     int p = intrand(rootServers.size());
                     DNSPacket *root_q = ODnsExtension::createQuery(msg_name, query->questions[0].qname, DNS_CLASS_IN,
-                            query->questions[0].qtype, query->id, 1);
+                            query->questions[0].qtype, id, 1);
 
                     out.sendTo(root_q, rootServers[p], DNS_PORT);
 
@@ -419,7 +424,7 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
                 }
 
                 // set question
-                response->setQuestions(0, q);
+                ODnsExtension::appendQuestion(response, ODnsExtension::copyDnsQuestion(&q), 0);
             }
             else
             {

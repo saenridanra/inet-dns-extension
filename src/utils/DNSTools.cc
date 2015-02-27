@@ -118,7 +118,7 @@ struct Query* resolveQuery(cPacket* query)
     q->arcount = 0;
     q->options = v->getOptions();
 
-    DNSQuestion *questions = (DNSQuestion*) malloc(sizeof(DNSQuestion) * q->qdcount);
+    DNSQuestion *questions = (DNSQuestion*) malloc(sizeof(*questions) * q->qdcount);
     for(short i = 0; i < q->qdcount; i++){
         questions[i] = v->getQuestions(i);
     }
@@ -470,7 +470,7 @@ int freeDnsRecord(DNSRecord* r){
  *      the hard-copy created, not that this needs to be freed if not used anymore.
  */
 DNSRecord* copyDnsRecord(DNSRecord* r){
-    DNSRecord* r_cpy = (DNSRecord*) malloc(sizeof(r_cpy));
+    DNSRecord* r_cpy = (DNSRecord*) malloc(sizeof(*r_cpy));
     r_cpy->rname = g_strdup(r->rname);
     r_cpy->rdata = g_strdup(r->rdata);
     r_cpy->rclass = r->rclass;
@@ -489,7 +489,7 @@ DNSRecord* copyDnsRecord(DNSRecord* r){
  *      the hard-copy created, not that this needs to be freed if not used anymore.
  */
 DNSQuestion* copyDnsQuestion(DNSQuestion* q){
-    DNSQuestion* q_cpy = (DNSQuestion*) malloc(sizeof(q_cpy));
+    DNSQuestion* q_cpy = (DNSQuestion*) malloc(sizeof(*q_cpy));
     q_cpy->qname = g_strdup(q->qname);
     q_cpy->qtype = q->qtype;
     q_cpy->qclass = q->qclass;

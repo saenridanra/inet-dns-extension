@@ -93,6 +93,8 @@ struct Query
 
         // Questions from the query
         struct DNSQuestion* questions;
+
+        char* src_address;
 };
 
 struct DNSQuestion

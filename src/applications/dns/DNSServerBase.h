@@ -37,6 +37,16 @@
 #include "glib.h"
 
 /**
+ * CachedQuery structure includes
+ * the original query packet and the src address
+ * as a char string referenced by the internally assigned id.
+ */
+typedef struct CachedQuery{
+        int internal_id;
+        ODnsExtension::Query* query;
+} cached_query;
+
+/**
  * @brief DNSServerBase provides basic functionality
  * for DNSServers used within this framework.
  *
@@ -49,8 +59,8 @@ class DNSServerBase : public cSimpleModule
   protected:
     int receivedQueries;
 
+    int internal_query_id = 0;
     GHashTable* queryCache;
-    GHashTable* queryAddressCache;
     ODnsExtension::DNSCache* responseCache;
     std::vector<IPvXAddress> rootServers;
 
@@ -65,6 +75,10 @@ class DNSServerBase : public cSimpleModule
     virtual void sendResponse(DNSPacket *response, IPvXAddress returnAddress);
     virtual DNSPacket* handleQuery(ODnsExtension::Query *query);
     virtual DNSPacket* handleRecursion(DNSPacket* packet);
+    int store_in_query_cache(int id, ODnsExtension::Query* query);
+    int getIdAndInc(){return internal_query_id++;}
+    int remove_query_from_cache(int id, CachedQuery* cq);
+    CachedQuery* get_query_from_cache(int id);
 
 };
 

@@ -31,7 +31,6 @@ void DNSLocalCache::initialize(int stage)
     response_count = 0;
 
     DNSServerBase::queryCache = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
-    DNSServerBase::queryAddressCache = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
     DNSServerBase::responseCache = new ODnsExtension::DNSSimpleCache();
 
 }
@@ -63,15 +62,12 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
     opcode = DNS_HEADER_OPCODE(query->options);
     // recursion desired?
     rd = DNS_HEADER_RD(query->options);
-    // recursion available
-    ra = DNS_HEADER_RA(query->options);
 
     // Go through all questions and generate answers.
     q = query->questions[0];
 
     // generate msg name
-    msg_name = (char*) malloc(20);
-    sprintf(msg_name, "dns_response#%d", response_count++);
+    msg_name = g_strdup_printf("dns_response#%d", response_count++);
 
     // init class
     switch (q.qclass)
@@ -116,18 +112,19 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
     }
 
     // first check the cache
-    if(q.qtype == DNS_TYPE_VALUE_A || q.qtype == DNS_TYPE_VALUE_AAAA){
-        if (!rd || !ra){
+    if((q.qtype == DNS_TYPE_VALUE_A || q.qtype == DNS_TYPE_VALUE_AAAA) && responseCache){
+        if (!rd || !recursion_available){
             // response with not found err, as recursion is not desired or not available
             // and we don't cache A records directly
             response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id, opcode, 0,
                     rd, ra, 0);
+            return response;
         }
 
         // we know we don't store A and AAAA records in the cache
         // i.e., check if we have a corresponding CNAME mapping in the
         // cache
-        char* cnhash = g_strdup_printf("%s.%s.%s", q.qname, type, __class);
+        char* cnhash = g_strdup_printf("%s:%s:%s", q.qname, DNS_TYPE_STR_CNAME, __class);
         GList* hashes = responseCache->get_matching_hashes(cnhash);
 
         // walk through the hashes and initiate recursive queries
@@ -155,8 +152,9 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
                 }
 
                 // only one record, extract data into tmp
-                if(((DNSRecord*) records->data)->rtype == DNS_TYPE_VALUE_CNAME)
-                    tmp = (char*) ((DNSRecord*) records->data)->rdata;
+                if(((DNSRecord*) records->data)->rtype == DNS_TYPE_VALUE_CNAME){
+                    tmp = g_strdup_printf("%s:%s:%s", ((DNSRecord*) records->data)->rdata, DNS_TYPE_STR_CNAME, DNS_CLASS_STR_IN);
+                }
                 else // end of chain but not a CNAME
                     break;
             }
@@ -166,9 +164,14 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
                 // the record is stored in *records
                 DNSRecord* end_of_chain_record = ((DNSRecord*) records->data);
                 // use the rdata in the record to create a recursive query
+                int id = DNSServerBase::getIdAndInc();
+                DNSServerBase::store_in_query_cache(id, query);
+                g_free(msg_name);
+                msg_name = g_strdup_printf("dns_query#%d--recursive", id);
+
                 int p = intrand(rootServers.size());
                 DNSPacket *root_q = ODnsExtension::createQuery(msg_name, end_of_chain_record->rdata, DNS_CLASS_IN,
-                        query->questions[0].qtype, query->id, 1);
+                        query->questions[0].qtype, id, 1);
 
                 out.sendTo(root_q, rootServers[p], DNS_PORT);
 
@@ -189,11 +192,16 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
     {
         if (rd)
         {
+            int id = DNSServerBase::getIdAndInc();
+            DNSServerBase::store_in_query_cache(id, query);
+            g_free(msg_name);
+            msg_name = g_strdup_printf("dns_query#%d--recursive", id);
+
             // do the initial query towards a root server
             // pick at random
             int p = intrand(rootServers.size());
             DNSPacket *root_q = ODnsExtension::createQuery(msg_name, query->questions[0].qname, DNS_CLASS_IN,
-                    query->questions[0].qtype, query->id, 1);
+                    query->questions[0].qtype, id, 1);
 
             out.sendTo(root_q, rootServers[p], DNS_PORT);
 
