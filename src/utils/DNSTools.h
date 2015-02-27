@@ -35,6 +35,7 @@
 #include "../common/DNS.h"
 #include "glib.h"
 #include "glib/gprintf.h"
+#include "string.h"
 
 
 /**
@@ -165,6 +166,24 @@ int getTypeValueForString(char* type);
  *      the desired string value.
  */
 const char* getClassStringForValue(int _class);
+
+/**
+ * @brief dnsPacketToString
+ *
+ * @return
+ *      returns a char sequence representing the dnspacket
+ */
+
+char* dnsPacketToString(DNSPacket* packet);
+
+/**
+ * @brief estimateDnsPacketSize
+ *
+ * @return
+ *      The size of the DNSPacket
+ */
+
+int estimateDnsPacketSize(DNSPacket* packet);
 
 /**
  * @brief printDNSRecord

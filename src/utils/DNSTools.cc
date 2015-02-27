@@ -425,6 +425,82 @@ void printDNSQuestion(DNSQuestion* q){
     g_printf("%s\t\t%s\t%s\n", q->qname, getTypeStringForValue(q->qtype), getClassStringForValue(q->qclass));
 }
 
+
+/**
+ * @brief dnsPacketToString
+ *
+ * @return
+ *      returns a char sequence representing the dnspacket
+ */
+
+char* dnsPacketToString(DNSPacket* packet){
+    std::string dns_string = "";
+
+    dns_string.append(";;Question Section:\n");
+    dns_string.append(packet->getQuestions(0).qname);
+    dns_string.append(":");
+    dns_string.append(getClassStringForValue(packet->getQuestions(0).qclass));
+    dns_string.append(":");
+    dns_string.append(getTypeStringForValue(packet->getQuestions(0).qtype));
+    dns_string.append("\n");
+
+    dns_string.append("\n;;Answer Section:\n");
+    for(int i = 0; i < packet->getAncount(); i++){
+        dns_string.append(packet->getAnswers(i).rname);
+        dns_string.append(":");
+        dns_string.append(getClassStringForValue(packet->getAnswers(i).rclass));
+        dns_string.append(":");
+        dns_string.append(getTypeStringForValue(packet->getAnswers(i).rtype));
+        dns_string.append("\n");
+    }
+
+    dns_string.append("\n;;Authority Section:\n");
+    for(int i = 0; i < packet->getNscount(); i++){
+        dns_string.append(packet->getAuthorities(i).rname);
+        dns_string.append(":");
+        dns_string.append(getClassStringForValue(packet->getAuthorities(i).rclass));
+        dns_string.append(":");
+        dns_string.append(getTypeStringForValue(packet->getAuthorities(i).rtype));
+        dns_string.append("\n");
+    }
+
+    dns_string.append("\n;;Additional Section:\n");
+    for(int i = 0; i < packet->getArcount(); i++){
+        dns_string.append(packet->getAdditional(i).rname);
+        dns_string.append(":");
+        dns_string.append(getClassStringForValue(packet->getAdditional(i).rclass));
+        dns_string.append(":");
+        dns_string.append(getTypeStringForValue(packet->getAdditional(i).rtype));
+        dns_string.append("\n");
+    }
+
+    return g_strdup(dns_string.c_str());
+}
+
+/**
+ * @brief estimateDnsPacketSize
+ *
+ * @return
+ *      The size of the DNSPacket
+ */
+
+int estimateDnsPacketSize(DNSPacket* packet){
+    int size = 12; // initial header size
+
+    size += strlen(packet->getQuestions(0).qname) + 4; // name length + 4 bytes for type and class
+    for(int i = 0; i < packet->getAncount(); i++){
+        size += 5 + strlen(packet->getAnswers(i).rname) + strlen(packet->getAnswers(i).rdata);
+    }
+    for(int i = 0; i < packet->getNscount(); i++){
+        size += 5 + strlen(packet->getAuthorities(i).rname) + strlen(packet->getAuthorities(i).rdata);
+    }
+    for(int i = 0; i < packet->getArcount(); i++){
+        size += 5 + strlen(packet->getAdditional(i).rname) + strlen(packet->getAdditional(i).rdata);
+    }
+
+    return size;
+}
+
 /**
  * @brief freeDnsQuestion
  *      frees the given dns question

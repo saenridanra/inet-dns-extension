@@ -285,6 +285,7 @@ $O/applications/dns/DNSLocalCache.o: applications/dns/DNSLocalCache.cc \
 	common/DNS.h \
 	common/DNSCache.h \
 	common/DNSSimpleCache.h \
+	common/DNSTTLCache.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
 $O/applications/dns/DNSServerBase.o: applications/dns/DNSServerBase.cc \

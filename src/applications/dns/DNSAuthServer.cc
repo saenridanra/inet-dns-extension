@@ -411,7 +411,7 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
                     DNSPacket *root_q = ODnsExtension::createQuery(msg_name, query->questions[0].qname, DNS_CLASS_IN,
                             query->questions[0].qtype, id, 1);
 
-                    out.sendTo(root_q, rootServers[p], DNS_PORT);
+                    DNSServerBase::sendResponse(root_q, rootServers[p]);
 
                     return NULL; // so it is known that recursive resolving has been initiated
 

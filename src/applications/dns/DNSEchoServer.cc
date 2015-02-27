@@ -211,6 +211,7 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
 
 void DNSEchoServer::sendResponse(DNSPacket *response,
         IPvXAddress returnAddress) {
+    response->setByteLength(ODnsExtension::estimateDnsPacketSize(response));
     out.sendTo(response, returnAddress, DNS_PORT);
 }
 

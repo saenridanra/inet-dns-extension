@@ -295,7 +295,7 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
         IPvXAddress address = IPvXAddressResolver().resolve(r->rdata);
 
         if (!address.isUnspecified())
-            out.sendTo(query, address, DNS_PORT);
+            sendResponse(query, address);
 
         return NULL; // since this packet is fine we pass it upwards
     }
@@ -364,6 +364,9 @@ void DNSServerBase::sendResponse(DNSPacket *response, IPvXAddress returnAddress)
             g_print("Bad response\n");
             return;
         }
+
+        response->setByteLength(ODnsExtension::estimateDnsPacketSize(response));
+
         out.sendTo(response, returnAddress, DNS_PORT);
     }
     else

@@ -31,7 +31,7 @@ void DNSLocalCache::initialize(int stage)
     response_count = 0;
 
     DNSServerBase::queryCache = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
-    DNSServerBase::responseCache = new ODnsExtension::DNSSimpleCache();
+    DNSServerBase::responseCache = new ODnsExtension::DNSTTLCache();
 
 }
 
@@ -173,7 +173,7 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
                 DNSPacket *root_q = ODnsExtension::createQuery(msg_name, end_of_chain_record->rdata, DNS_CLASS_IN,
                         query->questions[0].qtype, id, 1);
 
-                out.sendTo(root_q, rootServers[p], DNS_PORT);
+                DNSServerBase::sendResponse(root_q, rootServers[p]);
 
                 rec_query_created = 1;
             }
@@ -203,7 +203,7 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
             DNSPacket *root_q = ODnsExtension::createQuery(msg_name, query->questions[0].qname, DNS_CLASS_IN,
                     query->questions[0].qtype, id, 1);
 
-            out.sendTo(root_q, rootServers[p], DNS_PORT);
+            DNSServerBase::sendResponse(root_q, rootServers[p]);
 
             return NULL;
 

@@ -185,6 +185,7 @@ int DNSClient::resolve(char* dns_name, int qtype, int primary, void (*callback) 
 
     // Send this packet to the primary DNS server, if that fails, the secondary DNS server
 
+    query->setByteLength(ODnsExtension::estimateDnsPacketSize(query));
     if(primary){
         out.sendTo(query, dns_servers[0], DNS_PORT);
     }
