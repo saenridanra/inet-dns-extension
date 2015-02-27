@@ -142,7 +142,7 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
 
 
     // generate msg name
-    char *msg_name = g_strdup_printf(msg_name, "dns_response#%d", response_count++);
+    char *msg_name = g_strdup_printf("dns_response#%d", response_count++);
 
     if (pos > 0 && g_strcmp0(config->getOrigin(), ".") != 0 && !has_ns_reference)
     {
@@ -362,7 +362,7 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
         char* reference_hash = g_strdup_printf("%s.:%s:%s", tokens[tokens.size()-1].c_str(), DNS_TYPE_STR_NS, __class);
 
 
-        if(has_ns_reference){ // see if we no a nameserver on the prefix
+        if(has_ns_reference){ // see if we know a nameserver on the prefix
             found_entry = 1;
             ns_list = appendEntries(ns_reference_hash, ns_list, DNS_TYPE_VALUE_NS, &ns_records);
 

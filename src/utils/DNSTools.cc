@@ -51,7 +51,7 @@ DNSPacket* createQuery(char *msg_name, char *name, unsigned short dnsclass, unsi
 
     q->setNumQuestions(1);
     DNSQuestion question;
-    question.qname = name;
+    question.qname = g_strdup(name);
     question.qclass = dnsclass;
     question.qtype = type;
     q->setQuestions(0, question); // in this case we vary from standard implementations

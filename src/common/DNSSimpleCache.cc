@@ -167,7 +167,7 @@ GList* DNSSimpleCache::get_matching_hashes(char* hash){
     gpointer key, value;
 
     while(g_hash_table_iter_next(&iterator, &key, &value)){
-        if(g_str_has_suffix(hash, (char*) key)){
+        if(g_str_has_suffix(hash, (char*) key) || g_str_has_suffix((char*) key, hash)){
             // we have a match, append it to the return list
             char* hash_cpy = g_strdup((char*) key);
             hash_list = g_list_append(hash_list, hash_cpy);
