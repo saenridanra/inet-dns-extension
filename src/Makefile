@@ -93,6 +93,7 @@ OBJS = \
     $O/common/mdns/MDNSResponseScheduler.o \
     $O/common/mdns/MDNSProbeScheduler.o \
     $O/common/mdns/TimeEventSet.o \
+    $O/common/mdns/MDNS_Privacy.o \
     $O/common/mdns/MDNSQueryScheduler.o \
     $O/common/mdns/MDNSAnnouncer.o \
     $O/utils/DNSZoneConfig.o \
@@ -327,6 +328,7 @@ $O/applications/mdns/MDNSResolver.o: applications/mdns/MDNSResolver.cc \
 	common/mdns/MDNSProbeScheduler.h \
 	common/mdns/MDNSQueryScheduler.h \
 	common/mdns/MDNSResponseScheduler.h \
+	common/mdns/MDNS_Privacy.h \
 	common/mdns/TimeEventSet.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
@@ -418,6 +420,18 @@ $O/common/mdns/MDNSResponseScheduler.o: common/mdns/MDNSResponseScheduler.cc \
 	common/MDNS.h \
 	common/mdns/MDNSResponseScheduler.h \
 	common/mdns/TimeEventSet.h \
+	messages/DNSPacket_m.h \
+	utils/DNSTools.h
+$O/common/mdns/MDNS_Privacy.o: common/mdns/MDNS_Privacy.cc \
+	$(INET_PROJ)/src/base/Compat.h \
+	$(INET_PROJ)/src/base/INETDefs.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv4Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	common/DNS.h \
+	common/MDNS.h \
+	common/mdns/MDNS_Privacy.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
 $O/common/mdns/TimeEventSet.o: common/mdns/TimeEventSet.cc \

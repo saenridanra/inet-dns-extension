@@ -20,6 +20,11 @@ simple MDNSResolver
     parameters:
         string hostname;
         string service_files;
+        string privacy_service_files;
+        string pairing_data;
+        
+        bool hasPrivacy = default(false);
+        
     gates:
         input mdnsIn @labels(UDPControlInfo/down);
         output mdnsOut @labels(UDPControlInfo/down);

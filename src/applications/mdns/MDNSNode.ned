@@ -25,11 +25,19 @@ module MDNSNode extends StandardHost
         hasUdp = true;
 		string hname = default("Dummy");
 		string sfile = default("");
+		string privacy_sfile = default("");
+		string pairing_data = default("");
+		
+		bool private = default(false);
+		
     submodules:
         resolver: MDNSResolver {
             parameters:
+                hasPrivacy = private;
                 hostname = hname;
                 service_files = sfile;
+                privacy_service_files = privacy_sfile;
+                pairing_data = pairing_data;
                 @display("p=437,93");
         }
     connections:

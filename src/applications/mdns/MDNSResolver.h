@@ -25,7 +25,7 @@
 
 #include <omnetpp.h>
 #include <TimeEventSet.h>
-#include "UDPControlInfo_m.h" // to get teh src addr
+#include "UDPControlInfo_m.h" // to get the src address
 #include "UDPSocket.h"
 #include "IPvXAddressResolver.h"
 
@@ -38,6 +38,8 @@
 #include <MDNSResponseScheduler.h>
 #include <MDNSQueryScheduler.h>
 #include <MDNSAnnouncer.h>
+
+#include <MDNS_Privacy.h>
 
 #include <iostream>
 #include <fstream>
@@ -64,11 +66,14 @@ class MDNSResolver : public cSimpleModule
     GList* services;
     char* hostname;
     IPvXAddress hostaddress;
-
     cMessage* selfMessage;
 
-    simtime_t last_schedule;
+    GHashTable* private_service_table;
+    GHashTable* friend_data_table;
 
+    bool hasPrivacy;
+
+    simtime_t last_schedule;
     simtime_t elapseTime = STR_SIMTIME("1ms"); // timer is set to 1ms, i.e. with a resolution of 1ms, elapsed times are checked.
 
   public:
@@ -87,6 +92,8 @@ class MDNSResolver : public cSimpleModule
 
     virtual void initializeServices();
     virtual void initializeServiceFile(const char* file);
+
+    virtual void initializePrivateServices();
 };
 
 #define MDNS_KIND_TIMER 0

@@ -69,8 +69,14 @@ void MDNSResolver::initialize(int stage) {
         hostname = g_strdup(par("hostname").stringValue());
         hostaddress = IPvXAddressResolver().addressOf(this->getParentModule());
 
+        hasPrivacy = par("hasPrivacy").boolValue();
+
         services = NULL;
         initializeServices();
+
+        if (hasPrivacy) {
+            initializePrivateServices();
+        }
 
         announcer = new ODnsExtension::MDNSAnnouncer(probeScheduler,
                 responseScheduler, timeEventSet, services, hostname,
@@ -264,9 +270,11 @@ void MDNSResolver::handleResponse(DNSPacket* p) {
                 bubble_popup.append("New cache entry:\n");
                 bubble_popup.append(r->rname);
                 bubble_popup.append(":");
-                bubble_popup.append(ODnsExtension::getTypeStringForValue(r->rtype));
+                bubble_popup.append(
+                        ODnsExtension::getTypeStringForValue(r->rtype));
                 bubble_popup.append(":");
-                bubble_popup.append(ODnsExtension::getClassStringForValue(r->rclass));
+                bubble_popup.append(
+                        ODnsExtension::getClassStringForValue(r->rclass));
                 bubble_popup.append("\nData: ");
                 bubble_popup.append(r->rdata);
                 bubble_popup.append("\n---------\n");
@@ -277,7 +285,7 @@ void MDNSResolver::handleResponse(DNSPacket* p) {
         }
     }
 
-    if(bubble_popup != ""){
+    if (bubble_popup != "") {
         EV << bubble_popup.c_str();
         this->getParentModule()->bubble(bubble_popup.c_str());
     }
@@ -339,6 +347,127 @@ void MDNSResolver::initializeServiceFile(const char* file) {
 
     if (!error) {
         services = g_list_append(services, service);
+    }
+
+}
+
+void MDNSResolver::initializePrivateServices() {
+    private_service_table = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
+    NULL);
+    friend_data_table = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
+    NULL);
+
+    // first read pairing data param and initialize
+    const char* pairing_data = par("pairing_data").stringValue();
+    // use tokenizer to separate by ; , which separates entries
+    cStringTokenizer tokenizer(pairing_data, ";");
+    const char *token;
+    const char *inner_token;
+
+    while (tokenizer.hasMoreTokens()) {
+        // initialize service file
+        token = tokenizer.nextToken();
+        // separate by , with new tokenizer
+        cStringTokenizer inner_tokenizer(pairing_data, ",");
+        int pos = 0;
+        const char* crypto_key;
+        const char* friend_id;
+        const char* privacy_service_instance_name;
+
+        while (inner_tokenizer.hasMoreTokens()) {
+            inner_token = inner_tokenizer.nextToken();
+            // the format of pairing data is fixed, first the friend id
+            // then the privacy_instance_name and then the crypto key
+            switch (pos) {
+            case 0:
+                friend_id = inner_token;
+                break;
+            case 1:
+                privacy_service_instance_name = inner_token;
+                break;
+            case 2:
+                crypto_key = inner_token;
+                break;
+            default:
+                break;
+            }
+
+            pos++;
+        }
+
+        // create a pairing data and friend data object, insert it into the hash table
+        ODnsExtension::PairingData* pdata = ODnsExtension::pairing_data_new(
+                crypto_key, friend_id, privacy_service_instance_name);
+        ODnsExtension::FriendData* fdata = ODnsExtension::friend_data_new(pdata,
+                DEFAULT_PRIVACY_SOCKET_PORT);
+        char* key = g_strdup(friend_id);
+        g_hash_table_insert(friend_data_table, key, fdata);
+    }
+
+    // now initialize private service files
+
+    const char* private_service_files =
+            par("privacy_service_files").stringValue();
+    const char* file;
+    cStringTokenizer tokenizer2(private_service_files);
+    while (tokenizer2.hasMoreTokens()) {
+        // init file by file:
+        file = tokenizer2.nextToken();
+        std::string line;
+        std::fstream private_service_file(file, std::ios::in);
+
+        GList* offered_to = NULL;
+        GList* offered_by = NULL;
+        const char* stype;
+        int is_private;
+
+        // go through the lines of the file
+        while (getline(private_service_file, line, '\n')) {
+            // parse line by '=' delimiter
+            cStringTokenizer inner_tokenizer(line.c_str(), "=");
+            // two tokens, label and value
+            std::vector<std::string> tokens = inner_tokenizer.asVector();
+
+            if(tokens.size() != 2)
+                cRuntimeError("Error initializing private service file %s", file);
+
+            if(tokens[0] == "type"){
+                stype = tokens[1].c_str();
+            }
+            else if(tokens[0] == "is_private"){
+                if(tokens[1] == "0")
+                    is_private = 0;
+                else if(tokens[1] == "1")
+                    is_private = 1;
+                else
+                    cRuntimeError("Error initializing private service file %s. Wrong value for is_private", file);
+            }
+            else if(tokens[0] == "offered_to"){
+                // parse list, comma separated
+                std::vector<std::string> offers = cStringTokenizer(tokens[1].c_str(), ",").asVector();
+                // put the offers into the list
+                for(unsigned int i = 0; i < offers.size(); i++)
+                    offered_to = g_list_append(offered_to, g_strdup(offers[i].c_str()));
+            }
+            else if(tokens[0] == "offered_by"){
+                // parse list, comma separated
+                std::vector<std::string> offers = cStringTokenizer(tokens[1].c_str(), ",").asVector();
+                // put the offers into the list
+                for(unsigned int i = 0; i < offers.size(); i++)
+                    offered_by = g_list_append(offered_by, g_strdup(offers[i].c_str()));
+            }
+            else{
+                cRuntimeError("Unrecognized line parsing private service file %s.", file);
+            }
+
+        }
+
+        // now populate the private service object, store it in the hash table
+        ODnsExtension::PrivateMDNSService* psrv = ODnsExtension::private_service_new(stype, is_private);
+        psrv->offered_to = offered_to;
+        psrv->offered_by = offered_by;
+        g_hash_table_insert(private_service_table, g_strdup(stype), psrv);
+
     }
 
 }
