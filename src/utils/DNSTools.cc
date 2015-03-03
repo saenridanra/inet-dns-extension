@@ -85,6 +85,9 @@ DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, unsigned short a
 
     // Setup question
     q->setNumQuestions(qdcount);
+    q->setNumAnswers(ancount);
+    q->setNumAuthorities(nscount);
+    q->setNumAdditional(arcount);
 
     q->setOptions(options);
     return q;

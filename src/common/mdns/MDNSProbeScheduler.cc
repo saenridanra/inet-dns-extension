@@ -23,9 +23,14 @@
 
 namespace ODnsExtension {
 
-MDNSProbeScheduler::MDNSProbeScheduler(ODnsExtension::TimeEventSet* _timeEventSet)
+MDNSProbeScheduler::MDNSProbeScheduler(ODnsExtension::TimeEventSet* _timeEventSet, UDPSocket* _outSock, void* resolver)
 {
     timeEventSet = _timeEventSet;
+    outSock = _outSock;
+    history = NULL;
+    jobs = NULL;
+
+    this->resolver = resolver;
 }
 
 MDNSProbeScheduler::~MDNSProbeScheduler()
@@ -81,8 +86,12 @@ ODnsExtension::MDNSProbeJob* MDNSProbeScheduler::find_history(ODnsExtension::DNS
 void MDNSProbeScheduler::done(ODnsExtension::MDNSProbeJob* pj)
 {
     pj->done = 1;
-    jobs = g_list_remove(jobs, pj);
-    history = g_list_append(history, pj);
+    jobs = g_list_remove(g_list_first(jobs), pj);
+    if(!g_list_find(history, pj))
+        history = g_list_append(history, pj);
+    else
+        return;
+
     simtime_t now = simTime();
     pj->delivery = now;
 
@@ -100,11 +109,10 @@ void MDNSProbeScheduler::done(ODnsExtension::MDNSProbeJob* pj)
 
 ODnsExtension::MDNSProbeJob* MDNSProbeScheduler::new_job(ODnsExtension::DNSRecord* r)
 {
-    MDNSProbeJob* pj = (MDNSProbeJob*) (malloc(sizeof(pj)));
+    MDNSProbeJob* pj = (MDNSProbeJob*) malloc(sizeof(*pj));
     pj->id = id_count++;
     pj->done = 0;
     pj->r = ODnsExtension::copyDnsRecord(r);
-    signed int id;
     pj->delivery = 0;
     // append the job to the list
     jobs = g_list_append(jobs, pj);
@@ -115,17 +123,20 @@ ODnsExtension::MDNSProbeJob* MDNSProbeScheduler::new_job(ODnsExtension::DNSRecor
 void MDNSProbeScheduler::remove_job(ODnsExtension::MDNSProbeJob* pj)
 {
     timeEventSet->removeTimeEvent(pj->e);
-
     if (find_job(pj->r))
     {
-        jobs = g_list_remove(jobs, pj);
+        GList* tmp = g_list_first(jobs);
+        tmp = g_list_remove(tmp, pj);
+        jobs = tmp;
         freeDnsRecord(pj->r);
         g_free(pj);
         return;
     }
     else if (find_history(pj->r))
     {
-        jobs = g_list_remove(history, pj);
+        GList* tmp = g_list_first(history);
+        tmp = g_list_remove(tmp, pj);
+        history = tmp;
         freeDnsRecord(pj->r);
         g_free(pj);
         return;
@@ -163,8 +174,7 @@ int MDNSProbeScheduler::preparePacketAndSend(GList* qlist, GList* nslist, int qd
 
     // packet fully initialized, send it via multicast
     p->setByteLength(packetSize);
-    IPvXAddress addr = IPvXAddressResolver().resolve("224.0.0.251");
-    outSock->sendTo(p, addr, MDNS_PORT);
+    outSock->sendTo(p, multicast_address, MDNS_PORT);
 
     // packet is out, we're finished
     return 1;
@@ -194,9 +204,9 @@ int MDNSProbeScheduler::append_question(ODnsExtension::MDNSProbeJob* pj, GList**
 
     *packetSize += qsize + size;
 
-    *qdcount++; // this throws a warning, but we actually want to increase the referenced value ..
+    (*qdcount)++;
     *qlist = g_list_append(*qlist, q);
-    *nscount++;
+    (*nscount)++;
     *nslist = g_list_append(*nslist, ODnsExtension::copyDnsRecord(pj->r));
 
     done(pj);
@@ -228,7 +238,7 @@ int MDNSProbeScheduler::append_question(ODnsExtension::MDNSProbeJob* pj, GList**
         *packetSize += size;
 
         // append record
-        *nscount++;
+        (*nscount)++;
         *nslist = g_list_append(*nslist, ODnsExtension::copyDnsRecord(job->r));
 
         done_records = g_list_append(done_records, job);
@@ -292,8 +302,11 @@ void MDNSProbeScheduler::post(ODnsExtension::DNSRecord* r, int immediately)
         e->setLastRun(0);
         e->setCallback(ODnsExtension::MDNSProbeScheduler::elapseCallback);
 
+        pj->e = e;
         timeEventSet->addTimeEvent(e);
     }
+
+    callback(&tv, resolver);
 }
 
 void MDNSProbeScheduler::elapse(ODnsExtension::TimeEvent* e, void* data)
@@ -317,9 +330,9 @@ void MDNSProbeScheduler::elapse(ODnsExtension::TimeEvent* e, void* data)
     int success = append_question(pj, &qlist, &nslist, &packetSize, &qdcount, &nscount);
 
     // now try to append more questions if we didn't already exceed the packet size.
-    while(success){
-        // take another query job from the list..
-        GList* head = g_list_first(jobs);
+    // take another query job from the list..
+    GList* head = g_list_first(jobs);
+    while(success && head){
         MDNSProbeJob* job = (MDNSProbeJob*) head->data;
         success = append_question(job, &qlist, &nslist, &packetSize, &qdcount, &nscount);
 

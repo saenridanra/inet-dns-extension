@@ -56,16 +56,20 @@ typedef struct MDNSResponseJob{
 class MDNSResponseScheduler
 {
     protected:
+        void* resolver;
         ODnsExtension::TimeEventSet* timeEventSet;
         GList* jobs;
         GList* history;
         GList* suppressed;
 
         UDPSocket* outSock; // socket on which to send the data via multicast...
+        IPvXAddress multicast_address = IPvXAddressResolver().resolve("225.0.0.1");
+
         ODnsExtension::DNSTTLCache* auth_cache; // cached auth records for aux walks
-        ODnsExtension::DNSTTLCache* cache; // cache reference
 
         unsigned int id_count = 0;
+
+        void (*callback) (void*, void*);
 
         virtual ODnsExtension::MDNSResponseJob* new_job(ODnsExtension::DNSRecord* r, int done, int suppress);
         virtual ODnsExtension::MDNSResponseJob* find_job(ODnsExtension::DNSRecord* r);
@@ -73,25 +77,29 @@ class MDNSResponseScheduler
         virtual ODnsExtension::MDNSResponseJob* find_suppressed(ODnsExtension::DNSRecord* r, IPvXAddress* querier);
         virtual void done(ODnsExtension::MDNSResponseJob* rj);
         virtual void remove_job(ODnsExtension::MDNSResponseJob* rj);
-        virtual void suppress(ODnsExtension::DNSRecord* r, int flush_cache, IPvXAddress* querier, int immediately);
         virtual int appendTransitiveEntries(ODnsExtension::DNSRecord* r, GList** anlist, int* packetSize, int* ancount);
         virtual int appendFromCache(char* hash, GList** anlist, int* packetSize, int* ancount);
         virtual int appendRecord(ODnsExtension::DNSRecord* r, GList** anlist, int* packetSize, int* ancount);
         virtual int preparePacketAndSend(GList* anlist, int ancount, int packetSize);
     public:
-        MDNSResponseScheduler(ODnsExtension::TimeEventSet* _timeEventSet);
+        MDNSResponseScheduler(ODnsExtension::TimeEventSet* _timeEventSet, UDPSocket* _outSock, void* resolver);
         virtual ~MDNSResponseScheduler();
 
         static void elapseCallback(ODnsExtension::TimeEvent* e, void* data, void* thispointer);
         virtual void post(ODnsExtension::DNSRecord* r,  int flush_cache, IPvXAddress* querier, int immediately);
         virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
         virtual void check_dup(ODnsExtension::DNSRecord* r, int flush_cache);
+        virtual void suppress(ODnsExtension::DNSRecord* r, int flush_cache, IPvXAddress* querier, int immediately);
+
+        void setCallback(void (_callback) (void*, void*)){
+            callback = _callback;
+        }
 
         virtual void setSocket(UDPSocket* sock){
             outSock = sock;
         }
         virtual void setCache(ODnsExtension::DNSTTLCache* _cache){
-            cache = _cache;
+            auth_cache = _cache;
         }
         virtual void setAuthCache(ODnsExtension::DNSTTLCache* _cache){
             auth_cache = _cache;

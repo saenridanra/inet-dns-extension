@@ -184,7 +184,7 @@ GList* DNSTTLCache::cleanup(){
     GList* returnlist = NULL;
     for(iterator = dnsRecordPriorityCache.begin(); iterator != dnsRecordPriorityCache.end(); iterator++){
         DNSTimeRecord* r = *iterator;
-        if(r->expiry > simTime()){
+        if(r->expiry < simTime()){
             // remove from caches
             dnsRecordPriorityCache.erase(r);
             DNSRecord* removed_record = remove_from_cache(r->hash, r->record);
@@ -223,13 +223,12 @@ DNSRecord* DNSTTLCache::remove_from_cache(char* hash, DNSRecord* r){
 
         if(!g_strcmp0(tr->record->rdata, r->rdata) && r->rtype == tr->record->rtype && tr->record->rclass == r->rclass){
             // we have the record
-            from_cache = g_list_remove(from_cache, tr);
+            from_cache = g_list_remove(g_list_first(from_cache), tr);
             // replace the list in the table
             g_hash_table_replace(cache, hash, from_cache);
             // free the time record, return the record
-            g_free(tr->hash);
             DNSRecord* return_record = tr->record;
-            dnsRecordPriorityCache.erase(tr);
+            remove_time_record(tr);
             free(tr);
             return return_record;
         }
@@ -239,6 +238,20 @@ DNSRecord* DNSTTLCache::remove_from_cache(char* hash, DNSRecord* r){
 
     // this means we did not find the record, return NULL
     return NULL;
+}
+
+
+
+void DNSTTLCache::remove_time_record(DNSTimeRecord* tr)
+{
+    std::set<ODnsExtension::DNSTimeRecord*, ODnsExtension::DNSTimeRecordComparator>::iterator it;
+
+    for(it = dnsRecordPriorityCache.begin(); it != dnsRecordPriorityCache.end(); it++){
+        if(*it == tr){
+            dnsRecordPriorityCache.erase(it++);
+            continue;
+        }
+    }
 }
 
 GList* DNSTTLCache::evict(){

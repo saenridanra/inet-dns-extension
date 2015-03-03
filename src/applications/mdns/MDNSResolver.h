@@ -25,14 +25,22 @@
 
 #include <omnetpp.h>
 #include <TimeEventSet.h>
+#include "UDPControlInfo_m.h" // to get teh src addr
+#include "UDPSocket.h"
+#include "IPvXAddressResolver.h"
+
 #include <DNSCache.h>
 #include <DNSTTLCache.h>
 #include <DNSTools.h>
 #include <DNS.h>
+
 #include <MDNSProbeScheduler.h>
 #include <MDNSResponseScheduler.h>
 #include <MDNSQueryScheduler.h>
+#include <MDNSAnnouncer.h>
 
+#include <iostream>
+#include <fstream>
 
 /**
  * @brief MDNSResolver
@@ -48,30 +56,43 @@ class MDNSResolver : public cSimpleModule
     ODnsExtension::MDNSProbeScheduler* probeScheduler;
     ODnsExtension::MDNSResponseScheduler* responseScheduler;
     ODnsExtension::MDNSQueryScheduler* queryScheduler;
-
+    ODnsExtension::MDNSAnnouncer* announcer;
     ODnsExtension::DNSTTLCache* cache;
 
+    UDPSocket outSock;
+
+    GList* services;
+    char* hostname;
+    IPvXAddress hostaddress;
+
     cMessage* selfMessage;
+
+    simtime_t last_schedule;
 
     simtime_t elapseTime = STR_SIMTIME("1ms"); // timer is set to 1ms, i.e. with a resolution of 1ms, elapsed times are checked.
 
   public:
     MDNSResolver();
     ~MDNSResolver();
+    virtual void initialize(int stage);
+    virtual int numInitStages() const { return 4; }
+    virtual void handleMessage(cMessage *msg);
+    static void callback(void* data, void* thispointer);
 
   protected:
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
-
     virtual void elapsedTimeCheck();
-    virtual void handleProbe(DNSPacket* p);
     virtual void handleQuery(DNSPacket* p);
-    virtual void handleAnnouncement(DNSPacket* p);
     virtual void handleResponse(DNSPacket* p);
+    virtual void scheduleSelfMessage(simtime_t tv);
+
+    virtual void initializeServices();
+    virtual void initializeServiceFile(const char* file);
 };
 
 #define MDNS_KIND_TIMER 0
 #define MDNS_KIND_EXTERNAL 1
 #define MDNS_KIND_INTERNAL_QUERY 2
+#define MDNS_KIND_INTERNAL_PUBLISH 3
+#define MDNS_KIND_INTERNAL_REVOKE 4
 
 #endif

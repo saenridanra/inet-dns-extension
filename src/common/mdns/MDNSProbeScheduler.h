@@ -42,6 +42,8 @@ typedef struct MDNSProbeJob{
     unsigned int id;
     ODnsExtension::TimeEvent* e;
     ODnsExtension::DNSRecord* r; // we probe for records,
+
+
     // see if they are already taken..
     int done;
 
@@ -54,15 +56,19 @@ typedef struct MDNSProbeJob{
 class MDNSProbeScheduler
 {
     protected:
+        void* resolver;
         ODnsExtension::TimeEventSet* timeEventSet;
         GList* jobs;
         GList* history;
 
         UDPSocket* outSock; // socket on which to send the data via multicast...
+        IPvXAddress multicast_address = IPvXAddressResolver().resolve("225.0.0.1");
 
         ODnsExtension::DNSTTLCache* cache; // cache reference
 
         unsigned int id_count = 0;
+
+        void (*callback) (void*, void*);
 
         virtual ODnsExtension::MDNSProbeJob* new_job(ODnsExtension::DNSRecord* r);
         virtual ODnsExtension::MDNSProbeJob* find_job(ODnsExtension::DNSRecord* r);
@@ -73,12 +79,16 @@ class MDNSProbeScheduler
 
         virtual int append_question(ODnsExtension::MDNSProbeJob* pj, GList** qlist, GList** nslist, int *packetSize, int* qdcount, int* nscount);
     public:
-        MDNSProbeScheduler(ODnsExtension::TimeEventSet* _timeEventSet);
+        MDNSProbeScheduler(ODnsExtension::TimeEventSet* _timeEventSet, UDPSocket* _outSock, void* resolver);
         virtual ~MDNSProbeScheduler();
 
         static void elapseCallback(ODnsExtension::TimeEvent* e, void* data, void* thispointer);
         virtual void post(ODnsExtension::DNSRecord* r, int immediately);
         virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
+
+        void setCallback(void (_callback) (void*, void*)){
+            callback = _callback;
+        }
 
         virtual void setSocket(UDPSocket* sock){
             outSock = sock;

@@ -96,8 +96,12 @@ class TimeEventComparator{
             // meaning t1s time is up before t2s
             if(t1->getExpiry() != t2->getExpiry())
                 return t1->getExpiry() < t2->getExpiry();
+            if(t1->getLastRun() != t2->getLastRun())
+                return t1->getLastRun() < t2->getLastRun();
+            if(t1->getData() != t2->getData())
+                return 1;
 
-            return t1->getLastRun() < t2->getLastRun();
+            return 0;
         }
 };
 
@@ -119,6 +123,7 @@ class TimeEventSet
         void updateTimeEvent(ODnsExtension::TimeEvent* t, simtime_t expiry);
         void removeTimeEvent(ODnsExtension::TimeEvent* t);
         ODnsExtension::TimeEvent* getTimeEventIfDue();
+        ODnsExtension::TimeEvent* getTopElement();
 };
 
 } /* namespace ODnsExtension */

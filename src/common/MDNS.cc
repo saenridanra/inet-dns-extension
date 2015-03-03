@@ -24,8 +24,7 @@
 namespace ODnsExtension {
 
 int isProbe(DNSPacket* p){
-    // TODO: check if it's a PROBE
-    return 0;
+    return isQuery(p) && p->getNscount() > 0;
 }
 
 int isAnnouncement(DNSPacket* p){
@@ -45,6 +44,20 @@ int isGoodbye(DNSRecord* r){
     return r->ttl==0;
 }
 
+MDNSKey* mdns_key_new(char* name, int type, int _class){
+    MDNSKey* k = (MDNSKey*) malloc(sizeof(*k));
+    k->name = g_strdup(name);
+    k->type = type;
+    k->_class = _class;
+
+    return k;
+}
+
+void mdns_key_free(MDNSKey* key){
+    g_free(key->name);
+    g_free(key);
+}
+
 int compareMDNSKey(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2){
     if(key1 == key2) return 0;
 
@@ -59,8 +72,20 @@ int compareMDNSKey(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2){
     return 0;
 }
 
+int compareMDNSKeyANY(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2){
+    if(key1 == key2) return 0;
+
+    int comp = g_strcmp0(key1->name, key2->name);
+
+    if(comp != 0) return comp;
+    else if(key1->_class > key2->_class) return 1;
+    else if(key1->_class < key2->_class) return -1;
+
+    return 0;
+}
+
 ODnsExtension::DNSQuestion* createQuestion(char* name, unsigned short type, unsigned short _class){
-    ODnsExtension::DNSQuestion* q = (ODnsExtension::DNSQuestion*) malloc(sizeof(q));
+    ODnsExtension::DNSQuestion* q = (ODnsExtension::DNSQuestion*) malloc(sizeof(*q));
     q->qname = g_strdup(name);
     q->qtype = type;
     q->qclass = _class;
@@ -70,7 +95,7 @@ ODnsExtension::DNSQuestion* createQuestion(char* name, unsigned short type, unsi
 }
 
 ODnsExtension::DNSQuestion* createQuestionFromKey(ODnsExtension::MDNSKey* key){
-    ODnsExtension::DNSQuestion* q = (ODnsExtension::DNSQuestion*) malloc(sizeof(q));
+    ODnsExtension::DNSQuestion* q = (ODnsExtension::DNSQuestion*) malloc(sizeof(*q));
     q->qname = g_strdup(key->name);
     q->qtype = key->type;
     q->qclass = key->_class;

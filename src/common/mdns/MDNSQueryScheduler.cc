@@ -23,10 +23,16 @@
 
 namespace ODnsExtension {
 
-MDNSQueryScheduler::MDNSQueryScheduler(ODnsExtension::TimeEventSet* _timeEventSet)
+MDNSQueryScheduler::MDNSQueryScheduler(ODnsExtension::TimeEventSet* _timeEventSet, UDPSocket* _outSock, void* resolver)
 {
 
     timeEventSet = _timeEventSet;
+    outSock = _outSock;
+    history = NULL;
+    jobs = NULL;
+
+    this->resolver = resolver;
+
 }
 
 MDNSQueryScheduler::~MDNSQueryScheduler()
@@ -65,13 +71,13 @@ void MDNSQueryScheduler::elapse(ODnsExtension::TimeEvent* e, void* data)
     done(qj);
 
     // now try to append more questions if we didn't already exceed the packet size.
-    while(success){
+    GList* head = g_list_first(jobs);
+    while(success && head){
         // take another query job from the list..
-        GList* head = g_list_first(jobs);
         MDNSQueryJob* job = (MDNSQueryJob*) head->data;
         success = append_question(job->key, &qlist, &anlist, &packetSize, &qdcount, &ancount);
         head = g_list_next(head);
-        done(((MDNSQueryJob*) head->data));
+        done(job);
     }
 
     if(preparePacketAndSend(qlist, anlist, nslist, arlist, qdcount, ancount, nscount, arcount, packetSize, !success)){
@@ -131,8 +137,7 @@ int MDNSQueryScheduler::preparePacketAndSend(GList* qlist, GList* anlist, GList*
 
     // packet fully initialized, send it via multicast
     p->setByteLength(packetSize);
-    IPvXAddress addr = IPvXAddressResolver().resolve("224.0.0.251");
-    outSock->sendTo(p, addr, MDNS_PORT);
+    outSock->sendTo(p, multicast_address, MDNS_PORT);
 
     // packet is out, we're finished
     return 1;
@@ -152,7 +157,7 @@ int MDNSQueryScheduler::append_question(MDNSKey* key, GList** qlist, GList** anl
 
     *packetSize += qsize;
 
-    *qdcount++; // this throws a warning, but we actually want to increase the referenced value ..
+    (*qdcount)++; // this throws a warning, but we actually want to increase the referenced value ..
     *qlist = g_list_append(*qlist, q);
 
 
@@ -174,7 +179,7 @@ int MDNSQueryScheduler::append_question(MDNSKey* key, GList** qlist, GList** anl
         *packetSize += size;
 
         // append record to answer list
-        *ancount++;
+        (*ancount)++;
         *anlist = g_list_append(*anlist, record);
 
         next = g_list_next(next);
@@ -294,9 +299,12 @@ void MDNSQueryScheduler::post(ODnsExtension::MDNSKey* key, int immediately)
         e->setLastRun(0);
         e->setCallback(ODnsExtension::MDNSQueryScheduler::elapseCallback);
 
+        qj->e = e;
         timeEventSet->addTimeEvent(e);
 
     }
+
+    callback(&tv, resolver);
 
 }
 
@@ -344,7 +352,7 @@ void MDNSQueryScheduler::check_dup(ODnsExtension::MDNSKey* key)
         qj->delivery = tv;
         timeEventSet->updateTimeEvent(qj->e, tv);
     }
-    else{
+    /*else{
         qj = new_job(key); // create a new job, since this one is not in the history
 
         qj->delivery = tv;
@@ -355,15 +363,17 @@ void MDNSQueryScheduler::check_dup(ODnsExtension::MDNSKey* key)
         e->setLastRun(0);
         e->setCallback(ODnsExtension::MDNSQueryScheduler::elapseCallback);
 
+        qj->e = e;
         timeEventSet->addTimeEvent(e);
-    }
+    }*/
 
 }
 
 ODnsExtension::MDNSQueryJob* MDNSQueryScheduler::new_job(ODnsExtension::MDNSKey* key)
 {
-    MDNSQueryJob *qj = (MDNSQueryJob*) malloc(sizeof(qj));
+    MDNSQueryJob *qj = (MDNSQueryJob*) malloc(sizeof(*qj));
     qj->id = id_count++;
+    qj->key = (MDNSKey*) malloc(sizeof(MDNSKey*));
     qj->key->name = g_strdup(key->name);
     qj->key->type = key->type;
     qj->key->_class = key->_class;
@@ -387,7 +397,7 @@ void MDNSQueryScheduler::remove_job(ODnsExtension::MDNSQueryJob* qj)
         return;
     }
     else if(find_history(qj->key)){
-        jobs = g_list_remove(jobs, qj);
+        history = g_list_remove(history, qj);
         g_free(qj->key->name);
         g_free(qj->key);
         g_free(qj);

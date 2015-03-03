@@ -75,10 +75,6 @@ protected:
     GList* to_announce; // this is a list consisting of MDNSService structs that have to be published
 
     GList* probing;  // probing list, when starting
-    GList* annoucing;  // move them to announcing list when probing is finished
-
-    virtual void withdraw(Probe* p);
-    virtual void goodbye(Probe* p, int send_goodbye, int remove);
 
 public:
     MDNSAnnouncer(ODnsExtension::MDNSProbeScheduler* _probe_scheduler,
@@ -104,7 +100,10 @@ public:
     virtual void restart();
     virtual int check_conflict(DNSRecord* r);
     virtual void add_service(MDNSService* service);
+    virtual GList* get_announced_services();
     virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
+    virtual void withdraw(Probe* p);
+    virtual void goodbye(Probe* p, int send_goodbye, int remove);
 
     virtual ODnsExtension::DNSTTLCache* getCache() {
         return auth_cache;

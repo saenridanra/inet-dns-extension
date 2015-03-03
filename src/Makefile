@@ -60,6 +60,9 @@ INCLUDE_PATH = \
     -Inetworks/complex_dns_network/results \
     -Inetworks/complex_dns_network/subnets \
     -Inetworks/results \
+    -Inetworks/simple_mdns_example \
+    -Inetworks/simple_mdns_example/results \
+    -Inetworks/simple_mdns_example/services \
     -Iutils
 
 # Additional object and library files to link with
@@ -199,6 +202,9 @@ clean:
 	$(Q)-rm -f networks/complex_dns_network/results/*_m.cc networks/complex_dns_network/results/*_m.h
 	$(Q)-rm -f networks/complex_dns_network/subnets/*_m.cc networks/complex_dns_network/subnets/*_m.h
 	$(Q)-rm -f networks/results/*_m.cc networks/results/*_m.h
+	$(Q)-rm -f networks/simple_mdns_example/*_m.cc networks/simple_mdns_example/*_m.h
+	$(Q)-rm -f networks/simple_mdns_example/results/*_m.cc networks/simple_mdns_example/results/*_m.h
+	$(Q)-rm -f networks/simple_mdns_example/services/*_m.cc networks/simple_mdns_example/services/*_m.h
 	$(Q)-rm -f utils/*_m.cc utils/*_m.h
 
 	-$(Q)cd networks/stateless_network && $(MAKE) clean
@@ -208,7 +214,7 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc applications/dns/*.cc applications/mdns/*.cc common/*.cc common/mdns/*.cc messages/*.cc networks/*.cc networks/complex_dns_network/*.cc networks/complex_dns_network/results/*.cc networks/complex_dns_network/subnets/*.cc networks/results/*.cc utils/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc applications/dns/*.cc applications/mdns/*.cc common/*.cc common/mdns/*.cc messages/*.cc networks/*.cc networks/complex_dns_network/*.cc networks/complex_dns_network/results/*.cc networks/complex_dns_network/subnets/*.cc networks/results/*.cc networks/simple_mdns_example/*.cc networks/simple_mdns_example/results/*.cc networks/simple_mdns_example/services/*.cc utils/*.cc
 	$(Q)-cd networks/stateless_network && if [ -f Makefile ]; then $(MAKE) depend; fi
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
@@ -309,6 +315,7 @@ $O/applications/mdns/MDNSResolver.o: applications/mdns/MDNSResolver.cc \
 	$(INET_PROJ)/src/networklayer/contract/IPv6Address.h \
 	$(INET_PROJ)/src/networklayer/contract/IPvXAddress.h \
 	$(INET_PROJ)/src/networklayer/contract/IPvXAddressResolver.h \
+	$(INET_PROJ)/src/transport/contract/UDPControlInfo_m.h \
 	$(INET_PROJ)/src/transport/contract/UDPSocket.h \
 	applications/mdns/MDNSResolver.h \
 	common/DNS.h \
@@ -316,6 +323,7 @@ $O/applications/mdns/MDNSResolver.o: applications/mdns/MDNSResolver.cc \
 	common/DNSSimpleCache.h \
 	common/DNSTTLCache.h \
 	common/MDNS.h \
+	common/mdns/MDNSAnnouncer.h \
 	common/mdns/MDNSProbeScheduler.h \
 	common/mdns/MDNSQueryScheduler.h \
 	common/mdns/MDNSResponseScheduler.h \

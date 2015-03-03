@@ -152,6 +152,8 @@ class DNSTTLCache: public DNSCache
     protected:
         GHashTable* cache;
         std::set<ODnsExtension::DNSTimeRecord*, ODnsExtension::DNSTimeRecordComparator> dnsRecordPriorityCache;
+
+        void remove_time_record(DNSTimeRecord* tr);
 };
 
 } /* namespace ODnsExtension */

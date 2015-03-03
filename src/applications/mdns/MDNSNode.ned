@@ -15,12 +15,24 @@
 
 package opp_dns_extension.applications.mdns;
 
-simple MDNSResolver
+import inet.nodes.inet.StandardHost;
+import opp_dns_extension.applications.mdns.MDNSResolver;
+import inet.transport.IUDP;
+
+module MDNSNode extends StandardHost
 {
     parameters:
-        string hostname;
-        string service_files;
-    gates:
-        input mdnsIn @labels(UDPControlInfo/down);
-        output mdnsOut @labels(UDPControlInfo/down);
+        hasUdp = true;
+		string hname = default("Dummy");
+		string sfile = default("");
+    submodules:
+        resolver: MDNSResolver {
+            parameters:
+                hostname = hname;
+                service_files = sfile;
+                @display("p=437,93");
+        }
+    connections:
+        resolver.mdnsOut --> udp.appIn++;
+        resolver.mdnsIn <-- udp.appOut++;
 }

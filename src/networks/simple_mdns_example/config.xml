@@ -1,0 +1,23 @@
+<config>
+
+  <interface hosts="alice" towards="multicast_router" address="172.0.0.1" netmask="255.255.255.0" mtu="1500"/>
+  <interface hosts="bob" towards="multicast_router" address="172.0.0.2" netmask="255.255.255.0" mtu="1500"/>
+  <interface hosts="carol" towards="multicast_router" address="172.0.0.3" netmask="255.255.255.0" mtu="1500"/>
+
+  <interface hosts="multicast_router" towards="alice" address="172.0.0.4" netmask="255.255.255.0" mtu="1500"/>
+  <interface hosts="multicast_router" towards="bob" address="172.0.0.5" netmask="255.255.255.0" mtu="1500"/>
+  <interface hosts="multicast_router" towards="carol" address="172.0.0.6" netmask="255.255.255.0" mtu="1500"/>
+
+  <multicast-group hosts="alice bob carol" towards="multicast_router" address="225.0.0.1"/>
+
+  <route hosts="alice" destination="*" netmask="/0" gateway="multicast_router" metric="0"/>
+  <route hosts="bob" destination="*" netmask="/0" gateway="multicast_router" metric="0"/>
+  <route hosts="carol" destination="*" netmask="/0" gateway="multicast_router" metric="0"/>
+
+  <route hosts="multicast_router" destination="alice" netmask="/32" metric="0" interface="ppp0"/>
+  <route hosts="multicast_router" destination="bob" netmask="/32" metric="0" interface="ppp1"/>
+  <route hosts="multicast_router" destination="carol" netmask="/32" metric="0" interface="ppp2"/>
+
+  <multicast-route hosts="multicast_router" groups="225.0.0.1" children="ppp*"/>
+
+</config>

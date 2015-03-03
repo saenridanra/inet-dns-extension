@@ -22,9 +22,14 @@
 
 namespace ODnsExtension {
 
-MDNSResponseScheduler::MDNSResponseScheduler(ODnsExtension::TimeEventSet* _timeEventSet)
+MDNSResponseScheduler::MDNSResponseScheduler(ODnsExtension::TimeEventSet* _timeEventSet, UDPSocket* _outSock, void* resolver)
 {
     timeEventSet = _timeEventSet;
+    outSock = _outSock;
+    history = NULL;
+    jobs = NULL;
+    suppressed = NULL;
+    this->resolver = resolver;
 }
 
 MDNSResponseScheduler::~MDNSResponseScheduler()
@@ -34,7 +39,7 @@ MDNSResponseScheduler::~MDNSResponseScheduler()
 
 
 ODnsExtension::MDNSResponseJob* MDNSResponseScheduler::new_job(ODnsExtension::DNSRecord* r, int done, int suppress){
-    MDNSResponseJob* rj = (MDNSResponseJob*) (malloc(sizeof(rj)));
+    MDNSResponseJob* rj = (MDNSResponseJob*) (malloc(sizeof(*rj)));
     rj->id = id_count++;
     rj->done = done;
     rj->suppressed = suppress;
@@ -169,13 +174,13 @@ void MDNSResponseScheduler::remove_job(ODnsExtension::MDNSResponseJob* rj){
     timeEventSet->removeTimeEvent(rj->e);
 
     if(rj->done){
-        jobs = g_list_remove(history, rj);
+        history = g_list_remove(history, rj);
         freeDnsRecord(rj->r);
         g_free(rj);
         return;
     }
     else if(rj->suppressed){
-        jobs = g_list_remove(suppressed, rj);
+        suppressed = g_list_remove(suppressed, rj);
         freeDnsRecord(rj->r);
         g_free(rj);
         return;
@@ -326,6 +331,7 @@ int MDNSResponseScheduler::appendFromCache(char* hash, GList** anlist, int* pack
         *packetSize += size;
 
         appendRecord(from_cache->record, anlist, packetSize, ancount);
+        (*ancount)++;
     }
     return 1;
 }
@@ -341,7 +347,8 @@ int MDNSResponseScheduler::appendRecord(ODnsExtension::DNSRecord* r, GList** anl
     *packetSize += size;
 
     // append record to answer list
-    *anlist = g_list_append(*anlist, r);
+    *anlist = g_list_append(*anlist, ODnsExtension::copyDnsRecord(r));
+    (*ancount)++;
 
     return appendTransitiveEntries(r, anlist,  packetSize, ancount);
 }
@@ -363,8 +370,7 @@ int MDNSResponseScheduler::preparePacketAndSend(GList* anlist, int ancount, int 
     }
 
     p->setByteLength(packetSize);
-    IPvXAddress addr = IPvXAddressResolver().resolve("224.0.0.251");
-    outSock->sendTo(p, addr, MDNS_PORT);
+    outSock->sendTo(p, multicast_address, MDNS_PORT);
 
     return 1;
 }
@@ -419,10 +425,15 @@ void MDNSResponseScheduler::post(ODnsExtension::DNSRecord* r, int flush_cache, I
         e->setExpiry(tv);
         e->setLastRun(0);
         e->setCallback(ODnsExtension::MDNSResponseScheduler::elapseCallback);
+
+        rj->e = e;
+        timeEventSet->addTimeEvent(e);
         if(querier){
             rj->querier = querier;
         }
     }
+
+    callback(&tv, resolver);
 
 }
 
@@ -472,6 +483,9 @@ void MDNSResponseScheduler::check_dup(ODnsExtension::DNSRecord* r, int flush_cac
         e->setExpiry(now+tv);
         e->setLastRun(0);
         e->setCallback(ODnsExtension::MDNSResponseScheduler::elapseCallback);
+        rj->e = e;
+
+        timeEventSet->addTimeEvent(e);
     }
 
     rj->flush_cache = flush_cache;
@@ -490,8 +504,8 @@ void MDNSResponseScheduler::elapse(ODnsExtension::TimeEvent* e, void* data){
     int success = appendRecord(rj->r, &anlist, &packetSize, &ancount);
     done(rj);
 
-    while(success){
-        GList* head = g_list_first(jobs);
+    GList* head = g_list_first(jobs);
+    while(success && head){
         MDNSResponseJob* job = (MDNSResponseJob*) head->data;
         success = appendRecord(job->r, &anlist, &packetSize, &ancount);
 

@@ -50,15 +50,19 @@ typedef struct MDNSQueryJob{
 class MDNSQueryScheduler
 {
     protected:
+        void* resolver;
         ODnsExtension::TimeEventSet* timeEventSet;
         GList* jobs;
         GList* history;
 
         UDPSocket* outSock; // socket on which to send the data via multicast...
+        IPvXAddress multicast_address = IPvXAddressResolver().resolve("225.0.0.1");
 
         ODnsExtension::DNSTTLCache* cache; // cache reference
 
         unsigned int id_count = 0;
+
+        void (*callback) (void*, void*);
 
         virtual ODnsExtension::MDNSQueryJob* new_job(ODnsExtension::MDNSKey* key);
         virtual ODnsExtension::MDNSQueryJob* find_job(ODnsExtension::MDNSKey* key);
@@ -70,13 +74,16 @@ class MDNSQueryScheduler
         virtual int preparePacketAndSend(GList* qlist, GList* anlist, GList* nslist, GList* arlist, int qdcount, int ancount, int nscount, int arcount, int packetSize, int TC);
 
     public:
-        MDNSQueryScheduler(ODnsExtension::TimeEventSet* _timeEventSet);
+        MDNSQueryScheduler(ODnsExtension::TimeEventSet* _timeEventSet, UDPSocket* _outSock, void* resolver);
         virtual ~MDNSQueryScheduler();
-
         static void elapseCallback(ODnsExtension::TimeEvent* e, void* data, void* thispointer);
         virtual void post(ODnsExtension::MDNSKey* key, int immediately);
         virtual void check_dup(ODnsExtension::MDNSKey* key);
         virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
+
+        void setCallback(void (_callback) (void*, void*)){
+            callback = _callback;
+        }
 
         virtual void setSocket(UDPSocket* sock){
             outSock = sock;

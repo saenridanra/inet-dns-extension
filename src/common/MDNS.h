@@ -54,6 +54,9 @@ int isResponse(DNSPacket* p);
 int isGoodbye(DNSRecord* r);
 
 int compareMDNSKey(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2);
+int compareMDNSKeyANY(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2);
+MDNSKey* mdns_key_new(char* name, int type, int _class);
+void mdns_key_free(MDNSKey* key);
 
 /**
  * @brief createQuestion

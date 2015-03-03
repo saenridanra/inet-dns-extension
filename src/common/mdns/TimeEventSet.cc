@@ -46,7 +46,7 @@ void TimeEventSet::addTimeEvent(ODnsExtension::TimeEvent* t)
 void TimeEventSet::updateTimeEvent(ODnsExtension::TimeEvent* t, simtime_t expiry)
 {
     // first erase it
-    timeEventSet.erase(t);
+    removeTimeEvent(t);
     // set expiry
     t->setExpiry(expiry);
     // insert it again for resorting
@@ -55,7 +55,18 @@ void TimeEventSet::updateTimeEvent(ODnsExtension::TimeEvent* t, simtime_t expiry
 
 void TimeEventSet::removeTimeEvent(ODnsExtension::TimeEvent* t)
 {
-    timeEventSet.erase(t);
+    std::set<ODnsExtension::TimeEvent*, ODnsExtension::TimeEventComparator>::iterator it;
+
+    for(it = timeEventSet.begin(); it != timeEventSet.end(); it++){
+        if(*it == t){
+            timeEventSet.erase(it++);
+            continue;
+        }
+    }
+}
+
+ODnsExtension::TimeEvent* TimeEventSet::getTopElement(){
+    return *timeEventSet.begin();
 }
 
 
@@ -63,13 +74,14 @@ ODnsExtension::TimeEvent* TimeEventSet::getTimeEventIfDue(){
     if(timeEventSet.empty()) return NULL;
 
     simtime_t now = simTime();
-    ODnsExtension::TimeEvent* top = *timeEventSet.begin();
+    std::set<ODnsExtension::TimeEvent*, ODnsExtension::TimeEventComparator>::iterator it = timeEventSet.begin();
+    ODnsExtension::TimeEvent* top = *it;
     if(top->getExpiry() <= now){
         // if another timevent is scheduled then it will
         // be readded by the scheduler accordingly so
         // it is at it's designated position. For now we
         // can remove it from the set.
-        timeEventSet.erase(top);
+        timeEventSet.erase(it);
         return top;
     }
 
