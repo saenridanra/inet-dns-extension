@@ -32,6 +32,7 @@
 #include <DNSCache.h>
 #include <DNSTTLCache.h>
 #include <MDNS.h>
+#include <MDNS_Privacy.h>
 #include <glib.h>
 
 namespace ODnsExtension {
@@ -56,7 +57,13 @@ class MDNSQueryScheduler
         GList* history;
 
         UDPSocket* outSock; // socket on which to send the data via multicast...
+        UDPSocket* privacySock;
         IPvXAddress multicast_address = IPvXAddressResolver().resolve("225.0.0.1");
+
+        GHashTable* private_service_table;
+        GHashTable* friend_data_table;
+        GHashTable* instance_name_table;
+        int hasPrivacy = 0;
 
         ODnsExtension::DNSTTLCache* cache; // cache reference
 
@@ -70,8 +77,8 @@ class MDNSQueryScheduler
         virtual void done(ODnsExtension::MDNSQueryJob* qj);
         virtual void remove_job(ODnsExtension::MDNSQueryJob* qj);
         virtual GList* append_cache_entries(MDNSKey* key, GList* list);
-        virtual int append_question(MDNSKey* key, GList** qlist, GList** anlist, int *packetSize, int* qdcount, int* ancount);
-        virtual int preparePacketAndSend(GList* qlist, GList* anlist, GList* nslist, GList* arlist, int qdcount, int ancount, int nscount, int arcount, int packetSize, int TC);
+        virtual int append_question(MDNSKey* key, GList** qlist, GList** anlist, int *packetSize, int* qdcount, int* ancount, int is_private);
+        virtual int preparePacketAndSend(GList* qlist, GList* anlist, GList* nslist, GList* arlist, int qdcount, int ancount, int nscount, int arcount, int packetSize, int TC, int is_private);
 
     public:
         MDNSQueryScheduler(ODnsExtension::TimeEventSet* _timeEventSet, UDPSocket* _outSock, void* resolver);
@@ -90,6 +97,14 @@ class MDNSQueryScheduler
         }
         virtual void setCache(ODnsExtension::DNSTTLCache* _cache){
             cache = _cache;
+        }
+
+        virtual void setPrivacyData(GHashTable* private_service_table, GHashTable* friend_data_table, GHashTable* instance_name_table, UDPSocket* privacySocket){
+            this->private_service_table = private_service_table;
+            this->friend_data_table = friend_data_table;
+            this->instance_name_table = instance_name_table;
+            this->privacySock = privacySocket;
+            hasPrivacy = 1;
         }
 };
 

@@ -1,0 +1,4 @@
+type=_presence._tcp.local
+is_private=1
+offered_to=carol
+offered_by=carol

@@ -22,10 +22,13 @@ simple MDNSResolver
         string service_files;
         string privacy_service_files;
         string pairing_data;
+        string own_instance_name;
         
         bool hasPrivacy = default(false);
         
     gates:
         input mdnsIn @labels(UDPControlInfo/down);
         output mdnsOut @labels(UDPControlInfo/down);
+        input privacyIn @labels(UDPControlInfo/down);
+        output privacyOut @labels(UDPControlInfo/down);
 }

@@ -62,6 +62,7 @@ class MDNSResolver : public cSimpleModule
     ODnsExtension::DNSTTLCache* cache;
 
     UDPSocket outSock;
+    UDPSocket privacySock;
 
     GList* services;
     char* hostname;
@@ -70,6 +71,9 @@ class MDNSResolver : public cSimpleModule
 
     GHashTable* private_service_table;
     GHashTable* friend_data_table;
+    GHashTable* instance_name_table;
+
+    const char* own_instance_name;
 
     bool hasPrivacy;
 

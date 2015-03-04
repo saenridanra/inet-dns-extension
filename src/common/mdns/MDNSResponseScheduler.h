@@ -33,6 +33,7 @@
 #include <DNSSimpleCache.h>
 #include <DNSTTLCache.h>
 #include <MDNS.h>
+#include <MDNS_Privacy.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 
@@ -63,7 +64,13 @@ class MDNSResponseScheduler
         GList* suppressed;
 
         UDPSocket* outSock; // socket on which to send the data via multicast...
+        UDPSocket* privacySock;
         IPvXAddress multicast_address = IPvXAddressResolver().resolve("225.0.0.1");
+
+        GHashTable* private_service_table;
+        GHashTable* friend_data_table;
+        GHashTable* instance_name_table;
+        int hasPrivacy = 0;
 
         ODnsExtension::DNSTTLCache* auth_cache; // cached auth records for aux walks
 
@@ -80,7 +87,7 @@ class MDNSResponseScheduler
         virtual int appendTransitiveEntries(ODnsExtension::DNSRecord* r, GList** anlist, int* packetSize, int* ancount);
         virtual int appendFromCache(char* hash, GList** anlist, int* packetSize, int* ancount);
         virtual int appendRecord(ODnsExtension::DNSRecord* r, GList** anlist, int* packetSize, int* ancount);
-        virtual int preparePacketAndSend(GList* anlist, int ancount, int packetSize);
+        virtual int preparePacketAndSend(GList* anlist, int ancount, int packetSize, int is_private);
     public:
         MDNSResponseScheduler(ODnsExtension::TimeEventSet* _timeEventSet, UDPSocket* _outSock, void* resolver);
         virtual ~MDNSResponseScheduler();
@@ -103,6 +110,14 @@ class MDNSResponseScheduler
         }
         virtual void setAuthCache(ODnsExtension::DNSTTLCache* _cache){
             auth_cache = _cache;
+        }
+
+        virtual void setPrivacyData(GHashTable* private_service_table, GHashTable* friend_data_table, GHashTable* instance_name_table, UDPSocket* privacySocket){
+            this->private_service_table = private_service_table;
+            this->friend_data_table = friend_data_table;
+            this->instance_name_table = instance_name_table;
+            this->privacySock = privacySocket;
+            hasPrivacy = 1;
         }
 };
 

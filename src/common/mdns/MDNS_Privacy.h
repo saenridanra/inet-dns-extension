@@ -19,8 +19,8 @@
  THE SOFTWARE.
  */
 
-#ifndef MDNS_PRIVACY_H_
-#define MDNS_PRIVACY_H_
+#ifndef __OPP_DNS_EXTENSION_MDNS_PRIVACY_H_
+#define __OPP_DNS_EXTENSION_MDNS_PRIVACY_H_
 
 #include <omnetpp.h>
 
@@ -34,16 +34,16 @@
 namespace ODnsExtension{
 
 typedef struct PrivateMDNSService{
-    const char* service_type;
+    char* service_type;
     int is_private;
     GList* offered_to;
     GList* offered_by;
 } private_mdns_service;
 
 typedef struct PairingData{
-    const char* crypto_key;
-    const char* friend_id;
-    const char* privacy_service_instance_name;
+    char* crypto_key;
+    char* friend_id;
+    char* privacy_service_instance_name;
 } pairing_data;
 
 typedef struct FriendData{
@@ -51,15 +51,16 @@ typedef struct FriendData{
     IPvXAddress address;
     int port;
     simtime_t last_informed;
+    int online = 0;
 } friend_data;
 
 char* extract_stype(char* label);
-PrivateMDNSService* private_service_new(const char* service_type, int is_private);
-PairingData* pairing_data_new(const char* crypto_key, const char* friend_id, const char* privacy_instance_name);
+PrivateMDNSService* private_service_new(char* service_type, int is_private);
+PairingData* pairing_data_new(char* crypto_key, char* friend_id, char* privacy_instance_name);
 FriendData* friend_data_new(PairingData* pdata, int port);
 
 #define DEFAULT_PRIVACY_SOCKET_PORT 9977
 
 }
 
-#endif /* MDNS_PRIVACY_H_ */
+#endif /* __OPP_DNS_EXTENSION_MDNS_PRIVACY_H_ */

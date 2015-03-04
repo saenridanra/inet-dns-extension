@@ -1,0 +1,3 @@
+service_type=_presence._tcp.local
+instance_name=carol
+port=5060

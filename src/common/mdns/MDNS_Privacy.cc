@@ -21,7 +21,7 @@
 
 #include <MDNS_Privacy.h>
 
-using namespace ODnsExtension;
+namespace ODnsExtension{
 
 GRegex* privacy_regex = NULL;
 GError* regex_error = NULL;
@@ -37,20 +37,21 @@ char* extract_stype(char* label){
     char* match = NULL;
     g_regex_match(privacy_regex, label, g_regex_get_match_flags(privacy_regex), &regex_match_info);
     if (g_match_info_matches(regex_match_info)) {
-        match = g_match_info_fetch(regex_match_info, 1);
+        match = g_match_info_fetch(regex_match_info, 0);
     }
 
+    if(match == NULL) match = g_strdup("");
     return match;
 }
 
-ODnsExtension::PrivateMDNSService* private_service_new(const char* service_type, int is_private){
+ODnsExtension::PrivateMDNSService* private_service_new(char* service_type, int is_private){
     ODnsExtension::PrivateMDNSService* service = (ODnsExtension::PrivateMDNSService*) malloc(sizeof(*service));
     service->service_type = service_type;
     service->is_private = is_private;
     return service;
 }
 
-ODnsExtension::PairingData* pairing_data_new(const char* crypto_key, const char* friend_id, const char* privacy_instance_name){
+ODnsExtension::PairingData* pairing_data_new(char* crypto_key, char* friend_id, char* privacy_instance_name){
     ODnsExtension::PairingData* pdata = (ODnsExtension::PairingData*) malloc(sizeof(*pdata));
     pdata->crypto_key = crypto_key;
     pdata->friend_id = friend_id;
@@ -63,6 +64,8 @@ ODnsExtension::FriendData* friend_data_new(ODnsExtension::PairingData* pdata, in
     ODnsExtension::FriendData* fdata = (ODnsExtension::FriendData*) malloc(sizeof(*fdata));
     fdata->pdata = pdata;
     fdata->port = port;
-
+    fdata->online = 0;
     return fdata;
+}
+
 }

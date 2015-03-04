@@ -23,24 +23,29 @@ module MDNSNode extends StandardHost
 {
     parameters:
         hasUdp = true;
+        
 		string hname = default("Dummy");
 		string sfile = default("");
 		string privacy_sfile = default("");
-		string pairing_data = default("");
+		string pdata = default("");
+        string own_instance = default("");
 		
 		bool private = default(false);
 		
     submodules:
         resolver: MDNSResolver {
             parameters:
+                own_instance_name = own_instance;
                 hasPrivacy = private;
                 hostname = hname;
                 service_files = sfile;
                 privacy_service_files = privacy_sfile;
-                pairing_data = pairing_data;
+                pairing_data = pdata;
                 @display("p=437,93");
         }
     connections:
         resolver.mdnsOut --> udp.appIn++;
         resolver.mdnsIn <-- udp.appOut++;
+        resolver.privacyOut --> udp.appIn++;
+        resolver.privacyIn <--  udp.appOut++;
 }

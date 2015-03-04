@@ -1,0 +1,4 @@
+type=_ssh._tcp.local
+is_private=1
+offered_to=bob
+offered_by=bob

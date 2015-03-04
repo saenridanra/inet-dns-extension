@@ -41,6 +41,10 @@ void MDNSResolver::initialize(int stage) {
         outSock.bind(MDNS_PORT);
         outSock.setTimeToLive(15);
 
+        privacySock.setOutputGate(gate("privacyOut"));
+        privacySock.bind(DEFAULT_PRIVACY_SOCKET_PORT);
+        privacySock.setTimeToLive(15);
+
     } else if (stage == 3) {
         timeEventSet = new ODnsExtension::TimeEventSet();
         selfMessage = new cMessage("timer");
@@ -68,13 +72,13 @@ void MDNSResolver::initialize(int stage) {
 
         hostname = g_strdup(par("hostname").stringValue());
         hostaddress = IPvXAddressResolver().addressOf(this->getParentModule());
-
         hasPrivacy = par("hasPrivacy").boolValue();
 
         services = NULL;
         initializeServices();
 
         if (hasPrivacy) {
+            own_instance_name = par("own_instance_name").stringValue();
             initializePrivateServices();
         }
 
@@ -124,6 +128,7 @@ void MDNSResolver::handleMessage(cMessage *msg) {
             delete msg;
             return;
         }
+
     }
 }
 
@@ -280,6 +285,45 @@ void MDNSResolver::handleResponse(DNSPacket* p) {
                 bubble_popup.append("\n---------\n");
 
                 cache->put_into_cache(ODnsExtension::copyDnsRecord(r));
+
+                // look if this record belongs to a friend announcing a privacy service
+                if (hasPrivacy && r->rtype == DNS_TYPE_VALUE_SRV) {
+                    // check probe whether it is a friend, then we can set the status to online
+                    if (g_hash_table_contains(instance_name_table, r->rname)) {
+                        // the hash table contains the user in question
+                        ODnsExtension::FriendData* fdata =
+                                (ODnsExtension::FriendData*) g_hash_table_lookup(
+                                        instance_name_table, r->rname);
+                        // set to online and last_informed
+                        if ((fdata->last_informed
+                                < simTime() - STR_SIMTIME("0s")
+                                || fdata->last_informed <= STR_SIMTIME("0s"))
+                                && !ODnsExtension::isGoodbye(r)) {
+                            IPvXAddress querier =
+                                    check_and_cast<UDPDataIndication *>(
+                                            p->getControlInfo())->getSrcAddr();
+                            fdata->address = querier;
+                            fdata->last_informed = simTime();
+                            fdata->online = 1;
+
+                            DNSRecord* record = (DNSRecord*) malloc(
+                                    sizeof(*record));
+                            record->rname = g_strdup_printf("%s.%s",
+                                    own_instance_name, "_privacy._tcp.local");
+                            record->rtype = DNS_TYPE_VALUE_SRV;
+                            record->rclass = DNS_CLASS_IN;
+                            record->rdata = g_strdup_printf("%s.local",
+                                    hostname);
+
+                            responseScheduler->post(record, 0, NULL, 0); // post our own response into the scheduler
+                            // it will be checked and sent via the privacy socket
+                        } else if (ODnsExtension::isGoodbye(r)) {
+                            // user went offline
+                            fdata->online = 0;
+                        }
+                    }
+                }
+
                 responseScheduler->check_dup(r, 0);
             }
         }
@@ -356,6 +400,15 @@ void MDNSResolver::initializePrivateServices() {
     NULL);
     friend_data_table = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
     NULL);
+    instance_name_table = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
+    NULL);
+
+    probeScheduler->setPrivacyData(private_service_table, friend_data_table,
+            instance_name_table, &privacySock);
+    queryScheduler->setPrivacyData(private_service_table, friend_data_table,
+            instance_name_table, &privacySock);
+    responseScheduler->setPrivacyData(private_service_table, friend_data_table,
+            instance_name_table, &privacySock);
 
     // first read pairing data param and initialize
     const char* pairing_data = par("pairing_data").stringValue();
@@ -370,9 +423,9 @@ void MDNSResolver::initializePrivateServices() {
         // separate by , with new tokenizer
         cStringTokenizer inner_tokenizer(pairing_data, ",");
         int pos = 0;
-        const char* crypto_key;
-        const char* friend_id;
-        const char* privacy_service_instance_name;
+        char* crypto_key;
+        char* friend_id;
+        char* privacy_service_instance_name;
 
         while (inner_tokenizer.hasMoreTokens()) {
             inner_token = inner_tokenizer.nextToken();
@@ -380,13 +433,13 @@ void MDNSResolver::initializePrivateServices() {
             // then the privacy_instance_name and then the crypto key
             switch (pos) {
             case 0:
-                friend_id = inner_token;
+                friend_id = g_strdup(inner_token);
                 break;
             case 1:
-                privacy_service_instance_name = inner_token;
+                privacy_service_instance_name = g_strdup(inner_token);
                 break;
             case 2:
-                crypto_key = inner_token;
+                crypto_key = g_strdup(inner_token);
                 break;
             default:
                 break;
@@ -399,9 +452,10 @@ void MDNSResolver::initializePrivateServices() {
         ODnsExtension::PairingData* pdata = ODnsExtension::pairing_data_new(
                 crypto_key, friend_id, privacy_service_instance_name);
         ODnsExtension::FriendData* fdata = ODnsExtension::friend_data_new(pdata,
-                DEFAULT_PRIVACY_SOCKET_PORT);
-        char* key = g_strdup(friend_id);
-        g_hash_table_insert(friend_data_table, key, fdata);
+        DEFAULT_PRIVACY_SOCKET_PORT);
+        g_hash_table_insert(friend_data_table, friend_id, fdata);
+        g_hash_table_insert(instance_name_table, privacy_service_instance_name,
+                fdata);
     }
 
     // now initialize private service files
@@ -418,7 +472,7 @@ void MDNSResolver::initializePrivateServices() {
 
         GList* offered_to = NULL;
         GList* offered_by = NULL;
-        const char* stype;
+        char* stype;
         int is_private;
 
         // go through the lines of the file
@@ -428,42 +482,48 @@ void MDNSResolver::initializePrivateServices() {
             // two tokens, label and value
             std::vector<std::string> tokens = inner_tokenizer.asVector();
 
-            if(tokens.size() != 2)
-                cRuntimeError("Error initializing private service file %s", file);
+            if (tokens.size() != 2)
+                cRuntimeError("Error initializing private service file %s",
+                        file);
 
-            if(tokens[0] == "type"){
-                stype = tokens[1].c_str();
-            }
-            else if(tokens[0] == "is_private"){
-                if(tokens[1] == "0")
+            if (tokens[0] == "type") {
+                stype = g_strdup(tokens[1].c_str());
+            } else if (tokens[0] == "is_private") {
+                if (tokens[1] == "0")
                     is_private = 0;
-                else if(tokens[1] == "1")
+                else if (tokens[1] == "1")
                     is_private = 1;
                 else
-                    cRuntimeError("Error initializing private service file %s. Wrong value for is_private", file);
-            }
-            else if(tokens[0] == "offered_to"){
+                    cRuntimeError(
+                            "Error initializing private service file %s. Wrong value for is_private",
+                            file);
+            } else if (tokens[0] == "offered_to") {
                 // parse list, comma separated
-                std::vector<std::string> offers = cStringTokenizer(tokens[1].c_str(), ",").asVector();
+                std::vector<std::string> offers = cStringTokenizer(
+                        tokens[1].c_str(), ",").asVector();
                 // put the offers into the list
-                for(unsigned int i = 0; i < offers.size(); i++)
-                    offered_to = g_list_append(offered_to, g_strdup(offers[i].c_str()));
-            }
-            else if(tokens[0] == "offered_by"){
+                for (unsigned int i = 0; i < offers.size(); i++)
+                    offered_to = g_list_append(offered_to,
+                            g_strdup(offers[i].c_str()));
+            } else if (tokens[0] == "offered_by") {
                 // parse list, comma separated
-                std::vector<std::string> offers = cStringTokenizer(tokens[1].c_str(), ",").asVector();
+                std::vector<std::string> offers = cStringTokenizer(
+                        tokens[1].c_str(), ",").asVector();
                 // put the offers into the list
-                for(unsigned int i = 0; i < offers.size(); i++)
-                    offered_by = g_list_append(offered_by, g_strdup(offers[i].c_str()));
-            }
-            else{
-                cRuntimeError("Unrecognized line parsing private service file %s.", file);
+                for (unsigned int i = 0; i < offers.size(); i++)
+                    offered_by = g_list_append(offered_by,
+                            g_strdup(offers[i].c_str()));
+            } else {
+                cRuntimeError(
+                        "Unrecognized line parsing private service file %s.",
+                        file);
             }
 
         }
 
         // now populate the private service object, store it in the hash table
-        ODnsExtension::PrivateMDNSService* psrv = ODnsExtension::private_service_new(stype, is_private);
+        ODnsExtension::PrivateMDNSService* psrv =
+                ODnsExtension::private_service_new(stype, is_private);
         psrv->offered_to = offered_to;
         psrv->offered_by = offered_by;
         g_hash_table_insert(private_service_table, g_strdup(stype), psrv);
