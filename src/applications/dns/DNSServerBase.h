@@ -34,7 +34,8 @@
 #include <vector>
 
 #include "DNSTools.h"
-#include "glib.h"
+#include "list"
+#include "unordered_map"
 
 /**
  * CachedQuery structure includes
@@ -60,7 +61,7 @@ class DNSServerBase : public cSimpleModule
     int receivedQueries;
 
     int internal_query_id = 0;
-    GHashTable* queryCache;
+    std::unordered_map<int, CachedQuery*> queryCache;
     ODnsExtension::DNSCache* responseCache;
     std::vector<IPvXAddress> rootServers;
 

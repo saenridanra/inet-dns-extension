@@ -27,8 +27,9 @@
 #include "DNSZoneConfig.h"
 #include "DNS.h"
 #include <string.h>
-#include <glib.h>
 #include <math.h>
+#include <list>
+#include <unordered_map>
 
 /**
  * @brief DNSAuthServer is a simple omnetpp module
@@ -38,16 +39,16 @@
  */
 class DNSAuthServer : public DNSServerBase
 {
-  public:
+    public:
 
-    std::string master_file;
-    DNSZoneConfig* config;
+        std::string master_file;
+        DNSZoneConfig* config;
 
-    int recursion_available;
-    int response_count;
+        int recursion_available;
+        int response_count;
 
-  protected:
-  public:
+    protected:
+    public:
         virtual void initialize(int stage);
         virtual void handleMessage(cMessage *msg);
 
@@ -61,7 +62,8 @@ class DNSAuthServer : public DNSServerBase
          * @return
          *      returns the ns_list after updating it.
          */
-        virtual GList* appendAuthority(GList *ns_list, int *ns_records);
+        virtual std::list<ODnsExtension::DNSRecord*> appendAuthority(std::list<ODnsExtension::DNSRecord*> ns_list,
+                int *ns_records);
 
         /**
          * @brief appendAdditionals
@@ -75,7 +77,8 @@ class DNSAuthServer : public DNSServerBase
          * @return
          *      returns the ar_list after updating it.
          */
-        virtual GList* appendAdditionals(GList *ns_list, GList* ar_list, int *ns_records);
+        virtual std::list<ODnsExtension::DNSRecord*> appendAdditionals(std::list<ODnsExtension::DNSRecord*> ns_list,
+                std::list<ODnsExtension::DNSRecord*> ar_list, int *ns_records);
 
         /**
          * @brief appendEntries
@@ -90,7 +93,8 @@ class DNSAuthServer : public DNSServerBase
          * @return
          *      returns the updated list
          */
-        virtual GList* appendEntries(char *hash, GList *dstlist, int type, int *num_records);
+        virtual std::list<ODnsExtension::DNSRecord*> appendEntries(std::string hash,
+                std::list<ODnsExtension::DNSRecord*> dstlist, int type, int *num_records);
 
         /**
          * @brief appendTransitiveEntries
@@ -103,10 +107,21 @@ class DNSAuthServer : public DNSServerBase
          *      DNS_TYPE_VALUE - integer value of the dns type
          *      ar_records - pointer to a counter variable for the size of ar_list
          */
-        virtual GList* appendTransitiveEntries(GList *srclist, GList *dstlist, const char* DNS_TYPE_STR, int DNS_TYPE_VALUE, int *ar_records);
+        virtual std::list<ODnsExtension::DNSRecord*> appendTransitiveEntries(
+                std::list<ODnsExtension::DNSRecord*> srclist, std::list<ODnsExtension::DNSRecord*> dstlist,
+                const char* DNS_TYPE_STR, int DNS_TYPE_VALUE, int *ar_records);
+
         /**
-        *
-        */
+         * @brief handleQuery
+         *
+         * Query handler called by the DNSServerBase do perform more specific functions.
+         *
+         * @param
+         *   query - the query that has to be handled
+         *
+         * @return
+         *       returns a DNSPacket if a response has been generated based on the query.
+         */
         DNSPacket* handleQuery(ODnsExtension::Query *query);
 };
 

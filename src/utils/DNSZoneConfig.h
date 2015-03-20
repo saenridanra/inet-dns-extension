@@ -23,30 +23,36 @@
 #define __OPP_DNS_EXTENSION_DNSZONECONFIG_H_
 
 #include <omnetpp.h>
+
+#include "utils/Utils.h"
+
 #include <iostream>
 #include <vector>
 #include <string>
+#include "list"
+#include "unordered_map"
 #include <fstream>
-#include <glib.h>
 
 typedef struct soa{
-    char* mname;
-    char* rname;
+    std::string mname;
+    std::string rname;
     int serial;
     int refresh;
     int retry;
     int expire;
     int minimum;
+
+    soa() : mname(NULL), rname(NULL), serial(0), refresh(0), retry(0), expire(0), minimum(0) {}
 } soa;
 
 typedef struct zone_entry{
-    char* domain;
-    char* __class;
-    char* type;
-    char* data;
-} zone_entry;
+    std::string domain;
+    std::string __class;
+    std::string type;
+    std::string data;
 
-guint zone_entry_destroy(gpointer _entry);
+    zone_entry() : domain(NULL), __class(NULL), type(NULL), data(NULL) {}
+} zone_entry;
 
 enum states{
     VARS,
@@ -70,8 +76,8 @@ protected:
     /**
      * Catalog definitions
      */
-    char *origin;
-    GHashTable* zone_catalog;
+    std::string origin;
+    std::unordered_map<std::string, std::list<zone_entry*>> zone_catalog;
 
     soa* zone_soa;
 
@@ -85,10 +91,10 @@ public:
 
     virtual int getTTL();
     struct soa* getSOA();
-    virtual char* getOrigin();
-    int hasEntry(char* hash);
-    GList* getEntry(char* hash);
-    virtual GHashTable* getEntries();
+    virtual std::string getOrigin();
+    int hasEntry(std::string hash);
+    std::list<zone_entry*> getEntry(std::string hash);
+    virtual std::unordered_map<std::string, std::list<zone_entry*>> getEntries();
 
 };
 

@@ -141,7 +141,12 @@ void MDNSProbeScheduler::remove_job(ODnsExtension::MDNSProbeJob* pj) {
 int MDNSProbeScheduler::preparePacketAndSend(GList* qlist, GList* nslist,
         int qdcount, int nscount, int packetSize, int TC, int is_private) {
     int i = 0;
-    char* msgname = g_strdup_printf("mdns_query#%d", id_count);
+    char* msgname;
+    if(!is_private)
+        msgname = g_strdup_printf("MDNS_probe#%d", id_count);
+    else
+        msgname = g_strdup_printf("PRIVATE_probe#%d", id_count);
+
     DNSPacket* p = ODnsExtension::createNQuery(msgname, qdcount, 0, nscount, 0,
             id_count++, 0);
 
@@ -167,8 +172,12 @@ int MDNSProbeScheduler::preparePacketAndSend(GList* qlist, GList* nslist,
     // packet fully initialized, send it via multicast
     p->setByteLength(packetSize);
     if (!is_private) {
+        const char* dstr = "i=msg/bcast,red";
+        p->setDisplayString(dstr);
         outSock->sendTo(p, multicast_address, MDNS_PORT);
     } else {
+        const char* dstr = "i=msg/packet,green";
+        p->setDisplayString(dstr);
         char* service_type = ODnsExtension::extract_stype(
                 p->getQuestions(0).qname);
         ODnsExtension::PrivateMDNSService* psrv =

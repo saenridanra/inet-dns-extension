@@ -29,7 +29,6 @@ void DNSServerBase::initialize(int stage)
     {
         cSimpleModule::initialize(stage);
         // Initialize gates
-        //in.setOutputGate(gate("udpIn"));
         out.setOutputGate(gate("udpOut"));
         out.bind(DNS_PORT);
 
@@ -62,7 +61,7 @@ void DNSServerBase::handleMessage(cMessage *msg)
                 cPacket *pk = check_and_cast<cPacket *>(msg);
                 UDPDataIndication *ctrl = check_and_cast<UDPDataIndication *>(pk->getControlInfo());
                 IPvXAddress srcAddress = ctrl->getSrcAddr();
-                query->src_address = g_strdup(srcAddress.str().c_str());
+                query->src_address = srcAddress.str();
                 response = handleQuery(query);
 
                 if (response == NULL)
@@ -71,28 +70,8 @@ void DNSServerBase::handleMessage(cMessage *msg)
                     return;
                 }
 
-                /*g_printf(
-                 "\n[%s]:\t\t Responding with answer for query [%s] \n",
-                 this->getFullName(), ((DNSPacket*) msg)->getQuestions(0).qname);
-                 for (int i = 0; i < response->getAncount(); i++) {
-                 g_printf("\t\t [Answer]: %s | %s\n",
-                 response->getAnswers(i).rname,
-                 response->getAnswers(i).rdata);
-                 }
-                 for (int i = 0; i < response->getNscount(); i++) {
-                 g_printf("\t\t [Answer]: %s | %s\n",
-                 response->getAuthorities(i).rname,
-                 response->getAuthorities(i).rdata);
-                 }
-                 for (int i = 0; i < response->getArcount(); i++) {
-                 g_printf("\t\t [Answer]: %s | %s\n",
-                 response->getAdditional(i).rname,
-                 response->getAdditional(i).rdata);
-                }*/
-
                 // free the query
-                g_free(query->src_address);
-                free(query);
+                delete query;
                 // and send the response to the source address
                 sendResponse(response, srcAddress);
             }
@@ -110,25 +89,6 @@ void DNSServerBase::handleMessage(cMessage *msg)
                     CachedQuery* cq = (CachedQuery*) get_query_from_cache(id);
 
                     IPvXAddress addr = IPvXAddressResolver().resolve(cq->query->src_address);
-
-                    /*g_printf(
-                     "\n[%s]:\t\t Responding with answer for query [%s] \n",
-                     this->getFullName(), ((DNSPacket*) msg)->getQuestions(0).qname);
-                     for (int i = 0; i < response->getAncount(); i++) {
-                     g_printf("\t\t [Answer]: %s | %s\n",
-                     response->getAnswers(i).rname,
-                     response->getAnswers(i).rdata);
-                     }
-                     for (int i = 0; i < response->getNscount(); i++) {
-                     g_printf("\t\t [Answer]: %s | %s\n",
-                     response->getAuthorities(i).rname,
-                     response->getAuthorities(i).rdata);
-                     }
-                     for (int i = 0; i < response->getArcount(); i++) {
-                     g_printf("\t\t [Answer]: %s | %s\n",
-                     response->getAdditional(i).rname,
-                     response->getAdditional(i).rdata);
-                    }*/
 
                     // free cached query data
                     remove_query_from_cache(id, cq);
@@ -152,30 +112,21 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
     // and the answer relates to the query
 
     DNSPacket* response;
-    uint32_t *key = (uint32_t*) malloc(sizeof(uint32_t));
-    *key = (uint32_t) packet->getId();
 
-    if (!g_hash_table_contains(queryCache, key))
+    if (!queryCache.count(packet->getId()))
     {
         return NULL; // we do not have a query that belongs to this key
     }
 
-    CachedQuery* cq = (CachedQuery*) g_hash_table_lookup(queryCache, key);
+    CachedQuery* cq = (CachedQuery*) queryCache[packet->getId()];
     ODnsExtension::Query* original_query = cq->query;
-    free(key);
 
     // first check, see if there are actually answers
-
-    /*g_printf("[%s]:\t\t Received response for query [%s]\n",
-            this->getFullName(), packet->getQuestions(0).qname);*/
 
     if (DNS_HEADER_AA(packet->getOptions()) && packet->getAncount() > 0)
     {
         // we have what we looked for, return
-
-        //g_printf("[%s]:\t\t Received desired response [%s] \n",
-        //        this->getFullName(), original_query->getQuestions(0).qname);
-        char *msg_name = g_strdup_printf("dns_response#%d", original_query->id);
+        std::string msg_name = std::string("dns_response#") + std::string(original_query->id);
         response = ODnsExtension::createResponse(msg_name, 1, packet->getAncount(), packet->getNscount(),
                 packet->getArcount(), original_query->id, DNS_HEADER_OPCODE(original_query->options), 0,
                 DNS_HEADER_RD(original_query->options), 1, 0);
@@ -185,6 +136,8 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
         {
             ODnsExtension::appendQuestion(response, ODnsExtension::copyDnsQuestion(&cq->query->questions[i]), i);
         }
+
+        std::string bubble_popup = "";
         for (i = 0; i < packet->getAncount(); i++)
         {
 
@@ -197,6 +150,17 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
                 {
                     //create a copy and put it into the cache
                     DNSRecord* r = ODnsExtension::copyDnsRecord(&(packet->getAnswers(i)));
+
+                    // put the record into the cache
+                    bubble_popup.append("New cache entry:\n");
+                    bubble_popup.append(r->rname);
+                    bubble_popup.append(":");
+                    bubble_popup.append(ODnsExtension::getTypeStringForValue(r->rtype));
+                    bubble_popup.append(":");
+                    bubble_popup.append(ODnsExtension::getClassStringForValue(r->rclass));
+                    bubble_popup.append("\nData: ");
+                    bubble_popup.append(r->rdata);
+                    bubble_popup.append("\n---------\n");
                     responseCache->put_into_cache(r);
                 }
             }
@@ -204,44 +168,52 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
             ODnsExtension::appendAnswer(response, ODnsExtension::copyDnsRecord(&packet->getAnswers(i)), i);
         }
 
-        if(responseCache && g_strcmp0(original_query->questions[0].qname, packet->getQuestions(0).qname)){
+        if (bubble_popup != "")
+        {
+            EV << bubble_popup.c_str();
+            this->getParentModule()->bubble(bubble_popup.c_str());
+        }
+
+        if (responseCache && original_query->questions[0].qname == packet->getQuestions(0).qname)
+        {
             // we have a mismatch in the queries, this means we followed a CNAME chain
             // and used the end of chain to query the server, hence we need to append
             // the CNAME chain
 
-            char* cnhash = g_strdup_printf("%s:%s:%s", original_query->questions[0].qname, DNS_TYPE_STR_CNAME, DNS_CLASS_STR_IN);
-            GList* hashes = responseCache->get_matching_hashes(cnhash);
+            std::string cnhash = original_query->questions[0].qname + ":" + DNS_TYPE_STR_CNAME + ":" +
+                    DNS_CLASS_STR_IN;
+            std::list<std::string> hashes = responseCache->get_matching_hashes(cnhash);
 
-            int num_hashes = g_list_length(hashes);
+            int num_hashes = hashes.size();
             // reset size of answers to ancount + hashes length
             response->setNumAnswers(response->getAncount() + num_hashes);
             response->setAncount(response->getAncount() + num_hashes);
 
-            hashes = g_list_first(hashes);
             int pos = packet->getAncount();
-            while(hashes){
+            for(auto it = hashes.begin(); it != hashes.end(); it++)
+            {
                 // use the hash to get the corresponding entry
-                char* tmp = (char*) hashes->data;
-                GList* records = NULL;
-                records = responseCache->get_from_cache(tmp);
+                std::string tmp = (std::string) *it;
+                std::list<DNSRecord*> records = responseCache->get_from_cache(tmp);
 
-                if(!records)
+                if (records == NULL)
                     break;
 
                 // list should not be greater one otherwise there is a collision
-                if(g_list_next(records)){
+                if (records.size() > 1)
+                {
                     responseCache->remove_from_cache(tmp);
                     break;
                 }
 
                 // only one record, extract data into tmp
-                if(((DNSRecord*) records->data)->rtype == DNS_TYPE_VALUE_CNAME){
+                if (((DNSRecord*) *(records.begin()))->rtype == DNS_TYPE_VALUE_CNAME)
+                {
                     // append record to the section
-                    ODnsExtension::appendAnswer(response, ODnsExtension::copyDnsRecord(((DNSRecord*) records->data)), pos);
+                    ODnsExtension::appendAnswer(response, ODnsExtension::copyDnsRecord(((DNSRecord*) *(records.begin()))),
+                            pos);
                     pos++;
                 }
-
-                hashes = g_list_next(hashes);
             }
         }
 
@@ -259,10 +231,7 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
     else if (DNS_HEADER_AA(packet->getOptions()) && packet->getAncount() == 0)
     {
         // return the entry not found response
-        char *msg_name = g_strdup_printf("dns_response#%d", original_query->id);
-
-        /*g_printf("[%s]:\t\t Entry not found [%s] \n", this->getFullName(),
-                packet->getQuestions(0).qname);*/
+        std::string msg_name = "dns_response#" + std::string(original_query->id);
 
         response = ODnsExtension::createResponse(msg_name, 1, 0, 0, 0, original_query->id,
                 DNS_HEADER_OPCODE(original_query->options), 1, DNS_HEADER_RD(original_query->options), 1, 3);
@@ -282,12 +251,8 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
         int p = intrand(packet->getNscount());
         DNSRecord *r = &packet->getAdditional(p);
 
-        //g_printf("[%s]:\t\t Delegating query [%s] to: [%s][%s]\n",
-        //       this->getFullName(), original_query->getQuestions(0).qname,
-        //        r->rname, r->rdata);
-
         // query the name server for our original query
-        char *msg_name = g_strdup_printf("dns_query#%d--recursive", cq->internal_id);
+        std::string msg_name = "dns_query#" + std::string(cq->internal_id) + std::string("--recursive");
         DNSPacket *query = ODnsExtension::createQuery(msg_name, packet->getQuestions(0).qname, DNS_CLASS_IN,
                 packet->getQuestions(0).qtype, cq->internal_id, 1);
 
@@ -302,17 +267,12 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
     else if (packet->getNscount() > 0 && !DNS_HEADER_AA(packet->getOptions()))
     {
         // TODO: no ar record, we need to start at the beginning with this reference..
-        //g_printf("[%s]:\t\t No AR Record [%s] \n", this->getFullName(),
-        //        original_query->getQuestions(0).qname);
         return NULL;
     }
     else
     {
         // something went wrong, return a server failure query
-        char *msg_name = g_strdup_printf("dns_response#%d", original_query->id);
-
-        //g_printf("[%s]:\t\t No answer for query [%s] \n", this->getFullName(),
-        //        original_query->getQuestions(0).qname);
+        std::string msg_name = "dns_response#" + std::string(original_query->id);
         response = ODnsExtension::createResponse(msg_name, 1, 0, 0, 0, original_query->id,
                 DNS_HEADER_OPCODE(original_query->options), 0, DNS_HEADER_RD(original_query->options), 1, 2);
 
@@ -324,30 +284,26 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
 
 int DNSServerBase::remove_query_from_cache(int id, CachedQuery* cq)
 {
-    g_hash_table_remove(queryCache, &id);
-    g_free(cq->query->src_address);
-    free(cq->query);
-    free(cq);
+    queryCache.erase(id);
+    delete cq;
     return 1;
 }
 
 CachedQuery* DNSServerBase::get_query_from_cache(int id)
 {
-    CachedQuery* q = (CachedQuery*) g_hash_table_lookup(queryCache, &id);
+    CachedQuery* q = (CachedQuery*) queryCache[id];
     return q;
 }
 
 int DNSServerBase::store_in_query_cache(int id, ODnsExtension::Query* query)
 {
     // store the query in the cache...
-    uint32_t* key = (uint32_t*) malloc(sizeof(uint32_t));
-    *key = id;
 
-    CachedQuery* q = (CachedQuery*) malloc(sizeof(*q));
+    CachedQuery* q = new CachedQuery();
     q->internal_id = id;
     q->query = query;
 
-    g_hash_table_insert(queryCache, key, q);
+    queryCache[id] = q;
     return 1;
 }
 
@@ -360,8 +316,9 @@ void DNSServerBase::sendResponse(DNSPacket *response, IPvXAddress returnAddress)
 {
     if (!returnAddress.isUnspecified())
     {
-        if(response == NULL){
-            g_print("Bad response\n");
+        if (response == NULL)
+        {
+            std::cout << "Bad response\n" << std::endl;
             return;
         }
 
@@ -370,11 +327,11 @@ void DNSServerBase::sendResponse(DNSPacket *response, IPvXAddress returnAddress)
         out.sendTo(response, returnAddress, DNS_PORT);
     }
     else
-        g_print("Missing return address\n");
+        std::cout << "Missing return address\n" << std::endl;
 }
 
 DNSPacket* DNSServerBase::unsupportedOperation(ODnsExtension::Query *q)
 {
-// TODO: return unsupported packet.
+    // TODO: return unsupported packet.
     return NULL;
 }

@@ -40,6 +40,13 @@ TimeEventSet::~TimeEventSet()
 
 void TimeEventSet::addTimeEvent(ODnsExtension::TimeEvent* t)
 {
+    // always add a small random delay to the timer,
+    // so that we don't have "simultaneous" events .."
+    int rand_delay = intrand(10); // delay of 10 ms
+    char* stime = g_strdup_printf("%dms", rand_delay);
+    t->setExpiry(t->getExpiry() + STR_SIMTIME(stime));
+    g_free(stime);
+
     timeEventSet.insert(t);
 }
 

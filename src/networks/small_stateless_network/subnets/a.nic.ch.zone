@@ -1,0 +1,19 @@
+$TTL    86400 ; 24 hours could have been written as 24h or 1d
+              ; $TTL used for all RRs without explicit TTL value
+$ORIGIN ch.
+@      IN  SOA a.nic.ch. helpdesk.nic.ch. (
+                  2014110500    ; sn = serial number
+                  14400         ; ref = refresh = 2d
+                  7200          ; ret = update retry = 15m
+                  1209600       ; ex = expiry = 2w
+                  3600000       ; nx = nxdomain ttl = 1h
+                 )
+       IN  NS     a.nic.ch.    ; in the domain
+
+a.nic.ch.               IN      A       130.59.1.80
+  
+; server host definitions
+netfuture.ch. IN  NS        echo.netfuture.ch.     ;
+
+; A records for domains
+echo.netfuture.ch.	IN	A	87.245.127.186	;

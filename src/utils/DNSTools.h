@@ -33,8 +33,6 @@
 #include "../messages/DNSPacket_m.h"
 
 #include "../common/DNS.h"
-#include "glib.h"
-#include "glib/gprintf.h"
 #include "string.h"
 
 
@@ -61,7 +59,7 @@ namespace ODnsExtension {
  *      Creates simple DNS Queries for exactly one question
  *      (usually used by dns clients).
  */
-DNSPacket* createQuery(char *msg_name, char *name, unsigned short dnsclass, unsigned short type,
+DNSPacket* createQuery(std::string msg_name, std::string name, unsigned short dnsclass, unsigned short type,
         unsigned short id, unsigned short rd);
 
 /**
@@ -69,7 +67,7 @@ DNSPacket* createQuery(char *msg_name, char *name, unsigned short dnsclass, unsi
  *      Creates a query with multiple questions
  */
 
-DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, unsigned short ancount, unsigned short nscount, unsigned short arcount, unsigned short id, unsigned short rd);
+DNSPacket* createNQuery(std::string msg_name, unsigned short qdcount, unsigned short ancount, unsigned short nscount, unsigned short arcount, unsigned short id, unsigned short rd);
 
 /**
  * @brief resolveQuery
@@ -81,7 +79,7 @@ struct Query* resolveQuery(cPacket* query);
  * @brief createResponse
  *      Creates a dns response header.
  */
-DNSPacket* createResponse(char *msg_name, unsigned short qdcount, unsigned short ancount, unsigned short nscount,
+DNSPacket* createResponse(std::string msg_name, unsigned short qdcount, unsigned short ancount, unsigned short nscount,
         unsigned short arcount, unsigned short id, unsigned short opcode, unsigned short AA, unsigned short rd,
         unsigned short ra, unsigned short rcode);
 
@@ -147,7 +145,7 @@ const char** getTypeArray();
  * @return
  *      the desired string value.
  */
-const char* getTypeStringForValue(int type);
+std::string getTypeStringForValue(int type);
 
 /**
  * @brief getTypeStringForValue
@@ -156,7 +154,7 @@ const char* getTypeStringForValue(int type);
  * @return
  *      the according type value.
  */
-int getTypeValueForString(char* type);
+int getTypeValueForString(std::string type);
 
 /**
  * @brief getClassStringForValue
@@ -165,7 +163,7 @@ int getTypeValueForString(char* type);
  * @return
  *      the desired string value.
  */
-const char* getClassStringForValue(int _class);
+std::string getClassStringForValue(int _class);
 
 /**
  * @brief dnsPacketToString
@@ -174,7 +172,7 @@ const char* getClassStringForValue(int _class);
  *      returns a char sequence representing the dnspacket
  */
 
-char* dnsPacketToString(DNSPacket* packet);
+std::string dnsPacketToString(DNSPacket* packet);
 
 /**
  * @brief estimateDnsPacketSize

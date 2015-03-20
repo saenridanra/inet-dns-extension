@@ -23,7 +23,12 @@ import inet.nodes.ethernet.Eth1G;
 
 network Simple_mdns_privacy_example
 {
-    @display("bgb=894,645");
+    @display("bgb=1046,645");
+    types:
+        simple Unnamed
+        {
+        }
+
     submodules:
         alice: MDNSNode {
             private = true;
@@ -62,7 +67,7 @@ network Simple_mdns_privacy_example
             @display("p=399,112;i=device/laptop");
         }
         eve: StandardHost {
-            @display("p=198,217;i=device/laptop");
+            @display("p=198,217;i=,#FF2121,30");
         }
 
         multicast_router: Router {
@@ -75,6 +80,21 @@ network Simple_mdns_privacy_example
         configurator: IPv4NetworkConfigurator {
             config = xmldoc("config.xml");
             @display("p=121,37");
+        }
+        Start: StandardHost {
+            @display("p=948,54;i=device/laptop,#080808;b=200,60,rect");
+        }
+        Hostname_Announced: StandardHost {
+            @display("p=948,135;i=device/laptop,orange;b=200,60,rect");
+        }
+        Finished_Announce: StandardHost {
+            @display("p=948,226;i=device/laptop,#449544,100;b=200,60,rect");
+        }
+        Multicast_Packet: StandardHost {
+            @display("p=948,316;i=msg/bcast,red;b=200,60,rect");
+        }
+        Private_Unicast: StandardHost {
+            @display("p=948,404;i=msg/packet,green;b=200,60,rect");
         }
     connections:
         alice.pppg++ <--> Eth1G <--> multicast_router.pppg[0];

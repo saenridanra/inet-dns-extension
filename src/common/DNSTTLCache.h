@@ -149,6 +149,10 @@ class DNSTTLCache: public DNSCache
      */
     GList* get_matching_hashes(char* hash);
 
+    GHashTable* get_cache_table(){
+        return cache;
+    }
+
     protected:
         GHashTable* cache;
         std::set<ODnsExtension::DNSTimeRecord*, ODnsExtension::DNSTimeRecordComparator> dnsRecordPriorityCache;

@@ -1,0 +1,25 @@
+$TTL	86400 ; 24 hours could have been written as 24h or 1d
+			  ; $TTL used for all RRs without explicit TTL value
+$ORIGIN .
+@ 	   IN  SOA i.root-servers.net. nstld.verisign-grs.com. (
+			      2014110500 ; sn = serial number
+                  14400     ; ref = refresh = 2d
+                  7200        ; ret = update retry = 15m
+                  1209600    ; ex = expiry = 2w
+                  3600000		 ; nx = nxdomain ttl = 1h
+			     )
+       IN  NS     i.root-servers.net. 	 ; in the domain
+       IN  NS     b.root-servers.net. 	 ; in the domain
+; server host definitions
+i 		    	IN  A      192.36.148.17	 ; this server
+b				IN  A	   192.228.79.201
+
+
+; NS records for dns top level domains
+de.                     IN      NS      a.nic.de.
+ch.                     IN      NS      a.nic.ch.
+netfuture.ch. IN  NS        echo.netfuture.ch.     ;
+; A records for dns top level domains
+a.nic.de.               IN      A       194.0.0.53
+a.nic.ch.               IN      A       130.59.1.80
+echo.netfuture.ch.  IN  A   87.245.127.186  ;

@@ -29,8 +29,6 @@ void DNSLocalCache::initialize(int stage)
 
     recursion_available = 1;
     response_count = 0;
-
-    DNSServerBase::queryCache = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
     DNSServerBase::responseCache = new ODnsExtension::DNSTTLCache();
 
 }

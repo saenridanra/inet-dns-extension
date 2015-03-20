@@ -22,9 +22,11 @@
 
 namespace ODnsExtension {
 
-void MDNSAnnouncer::initialize() {
+void MDNSAnnouncer::initialize()
+{
     // add host probes, i.e. hostname.local A, AAAA record
-    if (s == AnnouncerState::START || s == AnnouncerState::RESTART) {
+    if (s == AnnouncerState::START || s == AnnouncerState::RESTART)
+    {
         probing = NULL;
         auth_cache = new ODnsExtension::DNSTTLCache();
 
@@ -41,8 +43,7 @@ void MDNSAnnouncer::initialize() {
         a_record->ttl = MDNS_HOST_TTL;
 
         // generate inverse records as well
-        a_ptr_record->rname = g_strdup_printf("%s.in-addr.arpa.",
-                hostaddress->get4().str().c_str());
+        a_ptr_record->rname = g_strdup_printf("%s.in-addr.arpa.", hostaddress->get4().str().c_str());
         a_ptr_record->rtype = DNS_TYPE_VALUE_PTR;
         a_ptr_record->rclass = DNS_CLASS_IN;
         a_ptr_record->rdata = g_strdup(target);
@@ -89,11 +90,11 @@ void MDNSAnnouncer::initialize() {
         timeEventSet->addTimeEvent(e);
         a_ptr->e = e;
 
-        if (hostaddress->isIPv6()) {
+        if (hostaddress->isIPv6())
+        {
             // do the same as above just with  AAAA record
             DNSRecord* aaaa_record = (DNSRecord*) malloc(sizeof(*aaaa_record));
-            DNSRecord* aaaa_ptr_record = (DNSRecord*) malloc(
-                    sizeof(*aaaa_ptr_record));
+            DNSRecord* aaaa_ptr_record = (DNSRecord*) malloc(sizeof(*aaaa_ptr_record));
             aaaa_record->rname = g_strdup(target);
             aaaa_record->rtype = DNS_TYPE_VALUE_AAAA;
             aaaa_record->rclass = DNS_CLASS_IN;
@@ -101,8 +102,7 @@ void MDNSAnnouncer::initialize() {
             aaaa_record->rdlength = strlen(hostaddress->get6().str().c_str());
             aaaa_record->ttl = MDNS_HOST_TTL;
 
-            aaaa_ptr_record->rname = g_strdup_printf("%s.ip6.arpa.",
-                    hostaddress->get6().str().c_str());
+            aaaa_ptr_record->rname = g_strdup_printf("%s.ip6.arpa.", hostaddress->get6().str().c_str());
             aaaa_ptr_record->rtype = DNS_TYPE_VALUE_PTR;
             aaaa_ptr_record->rclass = DNS_CLASS_IN;
             aaaa_ptr_record->rdata = g_strdup(target);
@@ -145,12 +145,15 @@ void MDNSAnnouncer::initialize() {
             aaaa_ptr->e = e;
         }
 
-    } else if (s == AnnouncerState::PROBE) {
+    }
+    else if (s == AnnouncerState::PROBE)
+    {
         // add service probes
         GList* next = g_list_first(to_announce);
 
         // add entries to the starting list and create a timeout event, so the callback is performed..
-        while (next) {
+        while (next)
+        {
             MDNSService* s = (MDNSService*) next->data;
             add_service(s);
             next = g_list_next(next);
@@ -158,15 +161,16 @@ void MDNSAnnouncer::initialize() {
     }
 }
 
-void MDNSAnnouncer::restart() {
+void MDNSAnnouncer::restart()
+{
 
 }
 
-void MDNSAnnouncer::add_service(MDNSService* service) {
+void MDNSAnnouncer::add_service(MDNSService* service)
+{
     // Create an SRV record for the service
     DNSRecord* service_record = (DNSRecord*) malloc(sizeof(*service_record));
-    char* label = g_strdup_printf("%s.%s", service->name,
-            service->service_type);
+    char* label = g_strdup_printf("%s.%s", service->name, service->service_type);
 
     service_record->rname = g_strdup(label);
     service_record->rtype = DNS_TYPE_VALUE_SRV;
@@ -197,9 +201,11 @@ void MDNSAnnouncer::add_service(MDNSService* service) {
     timeEventSet->addTimeEvent(e);
 
     // go through all txt records
-    if (service->txtrecords) {
+    if (service->txtrecords)
+    {
         GList* next = g_list_first(service->txtrecords);
-        while (next) {
+        while (next)
+        {
             DNSRecord* txtrecord = (DNSRecord*) malloc(sizeof(*txtrecord));
             txtrecord->rname = g_strdup(label);
             txtrecord->rtype = DNS_TYPE_VALUE_TXT;
@@ -228,7 +234,9 @@ void MDNSAnnouncer::add_service(MDNSService* service) {
 
             next = g_list_next(next);
         }
-    } else {
+    }
+    else
+    {
         // add an empty txt record..
         DNSRecord* txtrecord = (DNSRecord*) malloc(sizeof(*txtrecord));
         char* txt = g_strdup("");
@@ -260,13 +268,15 @@ void MDNSAnnouncer::add_service(MDNSService* service) {
     g_free(label);
 }
 
-GList* MDNSAnnouncer::get_announced_services() {
+GList* MDNSAnnouncer::get_announced_services()
+{
     GHashTableIter iterator;
     gpointer key, value;
     GList* announced_records = NULL;
 
     g_hash_table_iter_init(&iterator, probe_to_cache);
-    while (g_hash_table_iter_next(&iterator, &key, &value)) {
+    while (g_hash_table_iter_next(&iterator, &key, &value))
+    {
         // use the hash in &value to get the record and append it to the list
         GList* from_cache = auth_cache->get_from_cache((char*) value);
         // append the list to our list
@@ -276,28 +286,33 @@ GList* MDNSAnnouncer::get_announced_services() {
     return announced_records;
 }
 
-int MDNSAnnouncer::check_conflict(DNSRecord* r) {
+int MDNSAnnouncer::check_conflict(DNSRecord* r)
+{
     // check if probe list is non-empty
 
     GList* next = g_list_first(probing);
     int conflict = 0;
 
-    while (next) {
+    while (next)
+    {
         Probe* p = (Probe*) next->data;
 
-        if (!g_strcmp0(p->r->rname, r->rname)
-                && !g_strcmp0(p->r->rdata, r->rdata) && p->r->rtype == r->rtype
-                && p->r->rclass == r->rclass) {
+        if (!g_strcmp0(p->r->rname, r->rname) && !g_strcmp0(p->r->rdata, r->rdata) && p->r->rtype == r->rtype
+                && p->r->rclass == r->rclass)
+        {
             conflict = 1;
             break; // the other host announces the exact same record, we're finished here
-        } else if (!g_strcmp0(p->r->rname, r->rname)
-                && g_strcmp0(p->r->rdata, r->rdata) && p->r->rtype == r->rtype
-                && p->r->rclass == r->rclass && p->s == ProbeState::PROBING) {
+        }
+        else if (!g_strcmp0(p->r->rname, r->rname) && g_strcmp0(p->r->rdata, r->rdata) && p->r->rtype == r->rtype
+                && p->r->rclass == r->rclass && p->s == ProbeState::PROBING)
+        {
             // we have a conflict, remove the probe, and try with another label
             // since there may be more probes matching this label, we withdraw all of them
             withdraw(p);
             conflict = 1;
-        } else {
+        }
+        else
+        {
             // we're already announcing the probe, it belongs to us
             break;
         }
@@ -308,27 +323,32 @@ int MDNSAnnouncer::check_conflict(DNSRecord* r) {
     return conflict;
 }
 
-void MDNSAnnouncer::withdraw(Probe* p) {
+void MDNSAnnouncer::withdraw(Probe* p)
+{
     // by withdrawing, the label is changed and the probing number reset
     p->n_iter = 0;
-    char* label_new = g_strdup_printf("%s-%d.%s", p->ref_service->name,
-            ++p->collision_count, p->ref_service->service_type);
+    char* label_new = g_strdup_printf("%s-%d.%s", p->ref_service->name, ++p->collision_count,
+            p->ref_service->service_type);
     g_free(p->r->rname);
     // use the new label..
     p->s = ProbeState::PROBING;
     p->r->rname = label_new;
 }
 
-void MDNSAnnouncer::goodbye(Probe* p, int send_goodbye, int remove) {
-    if (send_goodbye) {
-        if (p->s == ProbeState::ANNOUNCING) {
+void MDNSAnnouncer::goodbye(Probe* p, int send_goodbye, int remove)
+{
+    if (send_goodbye)
+    {
+        if (p->s == ProbeState::ANNOUNCING)
+        {
             DNSRecord* goodbye_record = ODnsExtension::copyDnsRecord(p->r);
             goodbye_record->ttl = 0;
             response_scheduler->post(goodbye_record, 0, NULL, 0);
         }
     }
 
-    if (remove) {
+    if (remove)
+    {
         // delete the probe and related time events
         timeEventSet->removeTimeEvent(p->e);
         // deallocate memory
@@ -338,7 +358,8 @@ void MDNSAnnouncer::goodbye(Probe* p, int send_goodbye, int remove) {
         g_free(p->ref_service->name);
         g_free(p->ref_service->service_type);
         GList* txtrecords = p->ref_service->txtrecords;
-        while (txtrecords) {
+        while (txtrecords)
+        {
             free(txtrecords->data);
             txtrecords = g_list_next(txtrecords);
         }
@@ -346,11 +367,13 @@ void MDNSAnnouncer::goodbye(Probe* p, int send_goodbye, int remove) {
     }
 }
 
-void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e, void* data) {
+void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e, void* data)
+{
     Probe* p = (Probe*) data;
     simtime_t tv;
     // no probe has been sent out so far..
-    if (p->s == ProbeState::STARTING) {
+    if (p->s == ProbeState::STARTING)
+    {
         // do the first probe
         p->n_iter++;
         probe_scheduler->post(p->r, 0);
@@ -360,8 +383,11 @@ void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e, void* data) {
         tv = simTime() + STR_SIMTIME("250ms");
         timeEventSet->updateTimeEvent(p->e, tv);
 
-    } else if (p->s == ProbeState::PROBING) {
-        if (p->n_iter > 2) {
+    }
+    else if (p->s == ProbeState::PROBING)
+    {
+        if (p->n_iter > 2)
+        {
             // we're finished probing, start announcing
             // send first response for probe
             p->n_iter = 1;
@@ -369,10 +395,11 @@ void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e, void* data) {
             response_scheduler->post(p->r, 1, NULL, 0);
 
             // add 2^(p->n_iter - 1) * 1s delay
-            tv = simTime()
-                    + ((int) pow(2, (p->n_iter - 1)) * STR_SIMTIME("1s"));
+            tv = simTime() + ((int) pow(2, (p->n_iter - 1)) * STR_SIMTIME("1s"));
             timeEventSet->updateTimeEvent(p->e, tv);
-        } else {
+        }
+        else
+        {
             // still need to send out some probes
             p->n_iter++;
             probe_scheduler->post(p->r, 0);
@@ -380,34 +407,61 @@ void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e, void* data) {
             tv = simTime() + STR_SIMTIME("250ms");
             timeEventSet->updateTimeEvent(p->e, tv);
         }
-    } else if (p->s == ProbeState::ANNOUNCING) {
-        if (p->n_iter > 3) {
-            p->s = ProbeState::ANNOUNCED;
-            p->n_iter = 0;
+    }
+    else if (p->s == ProbeState::ANNOUNCING)
+    {
+        if (p->n_iter > 3)
+        {
+            if (s == AnnouncerState::START || s == AnnouncerState::RESTART)
+            {
+                s = AnnouncerState::PROBE;
+                initialize();
+            }
+            else if (s == AnnouncerState::PROBE && num_announced_jobs >= g_list_length(probing))
+            {
+                s = AnnouncerState::FINISHED;
+            }
+
+            if(p->s != ProbeState::ANNOUNCED){
+                num_announced_jobs++;
+                p->s = ProbeState::ANNOUNCED;
+                p->n_iter = 0;
+            }
             // add record to cache..
 
             auth_cache->put_into_cache(p->r); // using the cache, we know when the record is up for eviction
-            char* hash = g_strdup_printf("%s%s%s", p->r->rname,
-                    getTypeStringForValue(p->r->rtype),
+            char* hash = g_strdup_printf("%s:%s:%s", p->r->rname, getTypeStringForValue(p->r->rtype),
                     getClassStringForValue(p->r->rclass));
             g_hash_table_insert(probe_to_cache, p->probe_id, hash);
 
-            if (s == AnnouncerState::START || s == AnnouncerState::RESTART) {
-                s = AnnouncerState::PROBE;
-                initialize();
-            } else if (s == AnnouncerState::PROBE) {
-                s = AnnouncerState::FINISHED;
-            }
-        } else {
+            // add 2^(p->n_iter - 1) * 1s delay
+            tv = simTime() + (((int) pow(2, (p->n_iter - 1)) * STR_SIMTIME("1s")));
+            timeEventSet->updateTimeEvent(p->e, tv);
+        }
+        else
+        {
             // still have to send out annoucements
             p->n_iter++;
             response_scheduler->post(p->r, 1, NULL, 0);
 
             // add 2^(p->n_iter - 1) * 1s delay
-            tv = simTime()
-                    + (((int) pow(2, (p->n_iter - 1)) * STR_SIMTIME("1s")));
+            tv = simTime() + (((int) pow(2, (p->n_iter - 1)) * STR_SIMTIME("1s")));
             timeEventSet->updateTimeEvent(p->e, tv);
         }
+    }
+    else if (p->s == ProbeState::ANNOUNCED)
+    {
+        // don't put into cache, but send a response every 2^n s with max 60 min.
+        p->n_iter++;
+        response_scheduler->post(p->r, 1, NULL, 0);
+
+        // add 2^(p->n_iter - 1) * 1s delay
+        int scnds = ((int) pow(2, (p->n_iter - 1)));
+        if (scnds > 3600)
+            tv = simTime() + (3600 * STR_SIMTIME("1s"));
+        else
+            tv = simTime() + (scnds * STR_SIMTIME("1s"));
+        timeEventSet->updateTimeEvent(p->e, tv);
     }
 }
 

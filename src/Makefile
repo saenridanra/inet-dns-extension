@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for libopp_dns_extension
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep --make-so -O out -I/usr/include/glib-2.0 -I/usr/lib/glib2.0 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/ieee80211/radio -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/routing/aodv -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/common -I/LinuxFiles/Workspaces/opp_workspace/inet/src -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/icmpv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/world/obstacles -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/xmipv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/autorouting/ipv4 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/common -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/status -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/radio/propagation -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/ieee80211/radio/errormodel -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/radio -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/tcp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/ipv4 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/mobility/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/ipv4 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/base -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers -I/LinuxFiles/Workspaces/opp_workspace/inet/src/world/radio -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/ieee80211/mac -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/ipv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/sctp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/udp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/ipv6tunneling -I/LinuxFiles/Workspaces/opp_workspace/inet/src/applications/pingapp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/battery/models -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/ipv6 -I/LinuxFiles/Workspaces/opp_workspace/inet/src/util/headerserializers/sctp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/linklayer/contract -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/tcp_common -I/LinuxFiles/Workspaces/opp_workspace/inet/src/networklayer/arp -I/LinuxFiles/Workspaces/opp_workspace/inet/src/transport/udp -L/LinuxFiles/Workspaces/opp_workspace/inet/out/$$\(CONFIGNAME\)/src -linet -DINET_IMPORT -KINET_PROJ=/LinuxFiles/Workspaces/opp_workspace/inet
+#  opp_makemake -f --deep --make-so -I/usr/include/glib-2.0 -I/home/saen/master-project/workspaces/omnetpp/inet/src/transport/tcp_common -I/home/saen/master-project/workspaces/omnetpp/inet/src/base -I/home/saen/master-project/workspaces/omnetpp/inet/src/util -I/home/saen/master-project/workspaces/omnetpp/inet/src/linklayer/ieee80211/mac -I/home/saen/master-project/workspaces/omnetpp/inet/src/transport/udp -I/home/saen/master-project/workspaces/omnetpp/inet/src/linklayer/ieee80211/radio/errormodel -I/home/saen/master-project/workspaces/omnetpp/inet/src/util/headerserializers -I/home/saen/master-project/workspaces/omnetpp/inet/src/linklayer/ieee80211/radio -I/home/saen/master-project/workspaces/omnetpp/inet/src/status -I/home/saen/master-project/workspaces/omnetpp/inet/src/transport/sctp -I/home/saen/master-project/workspaces/omnetpp/inet/src/networklayer/icmpv6 -I/home/saen/master-project/workspaces/omnetpp/inet/src/linklayer/radio/propagation -I/home/saen/master-project/workspaces/omnetpp/inet/src/transport/contract -I/home/saen/master-project/workspaces/omnetpp/inet/src/networklayer/ipv6tunneling -I/home/saen/master-project/workspaces/omnetpp/inet/src/world/radio -I/home/saen/master-project/workspaces/omnetpp/inet/src/linklayer/contract -I/home/saen/master-project/workspaces/omnetpp/inet/src/util/headerserializers/udp -I/home/saen/master-project/workspaces/omnetpp/inet/src/util/headerserializers/tcp -I/home/saen/master-project/workspaces/omnetpp/inet/src/linklayer/radio -I/home/saen/master-project/workspaces/omnetpp/inet/src/world/obstacles -I/home/saen/master-project/workspaces/omnetpp/inet/src/networklayer/common -I/home/saen/master-project/workspaces/omnetpp/inet/src/networklayer/ipv6 -I/home/saen/master-project/workspaces/omnetpp/inet/src/networklayer/arp -I/home/saen/master-project/workspaces/omnetpp/inet/src/networklayer/routing/aodv -I/home/saen/master-project/workspaces/omnetpp/inet/src/networklayer/contract -I/home/saen/master-project/workspaces/omnetpp/inet/src -I/home/saen/master-project/workspaces/omnetpp/inet/src/networklayer/xmipv6 -I/home/saen/master-project/workspaces/omnetpp/inet/src/util/headerserializers/sctp -I/home/saen/master-project/workspaces/omnetpp/inet/src/util/headerserializers/ipv6 -I/home/saen/master-project/workspaces/omnetpp/inet/src/battery/models -I/home/saen/master-project/workspaces/omnetpp/inet/src/networklayer/autorouting/ipv4 -I/home/saen/master-project/workspaces/omnetpp/inet/src/networklayer/ipv4 -I/home/saen/master-project/workspaces/omnetpp/inet/src/mobility/contract -I/home/saen/master-project/workspaces/omnetpp/inet/src/applications/pingapp -I/home/saen/master-project/workspaces/omnetpp/inet/src/linklayer/common -I/home/saen/master-project/workspaces/omnetpp/inet/src/util/headerserializers/ipv4 -L/home/saen/master-project/workspaces/omnetpp/inet/out/$$\(CONFIGNAME\)/src -linet -DINET_IMPORT -KINET_PROJ=/home/saen/master-project/workspaces/omnetpp/inet
 #
 
 # Name of target to be created (-o option)
@@ -11,43 +11,42 @@ TARGET = libopp_dns_extension$(SHARED_LIB_SUFFIX)
 # C++ include paths (with -I)
 INCLUDE_PATH = \
     -I/usr/include/glib-2.0 \
-    -I/usr/lib/glib2.0 \
-    -I$(INET_PROJ)/src/linklayer/ieee80211/radio \
-    -I$(INET_PROJ)/src/networklayer/routing/aodv \
-    -I$(INET_PROJ)/src/networklayer/common \
-    -I$(INET_PROJ)/src \
-    -I$(INET_PROJ)/src/networklayer/icmpv6 \
-    -I$(INET_PROJ)/src/world/obstacles \
-    -I$(INET_PROJ)/src/networklayer/xmipv6 \
-    -I$(INET_PROJ)/src/networklayer/contract \
-    -I$(INET_PROJ)/src/networklayer/autorouting/ipv4 \
+    -I$(INET_PROJ)/src/transport/tcp_common \
+    -I$(INET_PROJ)/src/base \
     -I$(INET_PROJ)/src/util \
-    -I$(INET_PROJ)/src/linklayer/common \
-    -I$(INET_PROJ)/src/transport/contract \
-    -I$(INET_PROJ)/src/status \
-    -I$(INET_PROJ)/src/linklayer/radio/propagation \
+    -I$(INET_PROJ)/src/linklayer/ieee80211/mac \
+    -I$(INET_PROJ)/src/transport/udp \
     -I$(INET_PROJ)/src/linklayer/ieee80211/radio/errormodel \
-    -I$(INET_PROJ)/src/linklayer/radio \
+    -I$(INET_PROJ)/src/util/headerserializers \
+    -I$(INET_PROJ)/src/linklayer/ieee80211/radio \
+    -I$(INET_PROJ)/src/status \
+    -I$(INET_PROJ)/src/transport/sctp \
+    -I$(INET_PROJ)/src/networklayer/icmpv6 \
+    -I$(INET_PROJ)/src/linklayer/radio/propagation \
+    -I$(INET_PROJ)/src/transport/contract \
+    -I$(INET_PROJ)/src/networklayer/ipv6tunneling \
+    -I$(INET_PROJ)/src/world/radio \
+    -I$(INET_PROJ)/src/linklayer/contract \
+    -I$(INET_PROJ)/src/util/headerserializers/udp \
     -I$(INET_PROJ)/src/util/headerserializers/tcp \
+    -I$(INET_PROJ)/src/linklayer/radio \
+    -I$(INET_PROJ)/src/world/obstacles \
+    -I$(INET_PROJ)/src/networklayer/common \
+    -I$(INET_PROJ)/src/networklayer/ipv6 \
+    -I$(INET_PROJ)/src/networklayer/arp \
+    -I$(INET_PROJ)/src/networklayer/routing/aodv \
+    -I$(INET_PROJ)/src/networklayer/contract \
+    -I$(INET_PROJ)/src \
+    -I$(INET_PROJ)/src/networklayer/xmipv6 \
+    -I$(INET_PROJ)/src/util/headerserializers/sctp \
+    -I$(INET_PROJ)/src/util/headerserializers/ipv6 \
+    -I$(INET_PROJ)/src/battery/models \
+    -I$(INET_PROJ)/src/networklayer/autorouting/ipv4 \
     -I$(INET_PROJ)/src/networklayer/ipv4 \
     -I$(INET_PROJ)/src/mobility/contract \
-    -I$(INET_PROJ)/src/util/headerserializers/ipv4 \
-    -I$(INET_PROJ)/src/base \
-    -I$(INET_PROJ)/src/util/headerserializers \
-    -I$(INET_PROJ)/src/world/radio \
-    -I$(INET_PROJ)/src/linklayer/ieee80211/mac \
-    -I$(INET_PROJ)/src/networklayer/ipv6 \
-    -I$(INET_PROJ)/src/transport/sctp \
-    -I$(INET_PROJ)/src/util/headerserializers/udp \
-    -I$(INET_PROJ)/src/networklayer/ipv6tunneling \
     -I$(INET_PROJ)/src/applications/pingapp \
-    -I$(INET_PROJ)/src/battery/models \
-    -I$(INET_PROJ)/src/util/headerserializers/ipv6 \
-    -I$(INET_PROJ)/src/util/headerserializers/sctp \
-    -I$(INET_PROJ)/src/linklayer/contract \
-    -I$(INET_PROJ)/src/transport/tcp_common \
-    -I$(INET_PROJ)/src/networklayer/arp \
-    -I$(INET_PROJ)/src/transport/udp \
+    -I$(INET_PROJ)/src/linklayer/common \
+    -I$(INET_PROJ)/src/util/headerserializers/ipv4 \
     -I. \
     -Iapplications \
     -Iapplications/dns \
@@ -57,13 +56,19 @@ INCLUDE_PATH = \
     -Imessages \
     -Inetworks \
     -Inetworks/complex_dns_network \
+    -Inetworks/complex_dns_network/results \
     -Inetworks/complex_dns_network/subnets \
+    -Inetworks/results \
     -Inetworks/simple_mdns_example \
+    -Inetworks/simple_mdns_example/results \
     -Inetworks/simple_mdns_example/services \
     -Inetworks/simple_mdns_privacy_example \
     -Inetworks/simple_mdns_privacy_example/privacy_services \
     -Inetworks/simple_mdns_privacy_example/results \
     -Inetworks/simple_mdns_privacy_example/services \
+    -Inetworks/small_stateless_network \
+    -Inetworks/small_stateless_network/results \
+    -Inetworks/small_stateless_network/subnets \
     -Inetworks/stateless_network \
     -Inetworks/stateless_network/results \
     -Inetworks/stateless_network/subnets \
@@ -83,25 +88,26 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
 OBJS = \
+    $O/applications/dns/DNSAuthServer.o \
+    $O/applications/dns/DNSEchoServer.o \
     $O/applications/dns/DNSLocalCache.o \
     $O/applications/dns/DNSClientTraffGen.o \
-    $O/applications/dns/DNSEchoServer.o \
-    $O/applications/dns/DNSServerBase.o \
     $O/applications/dns/DNSClient.o \
-    $O/applications/dns/DNSAuthServer.o \
+    $O/applications/dns/DNSServerBase.o \
     $O/applications/mdns/MDNSResolver.o \
-    $O/common/DNSTTLCache.o \
     $O/common/MDNS.o \
-    $O/common/DNSCache.o \
+    $O/common/DNSTTLCache.o \
     $O/common/DNSSimpleCache.o \
+    $O/common/DNSCache.o \
+    $O/common/mdns/MDNSQueryScheduler.o \
     $O/common/mdns/MDNSResponseScheduler.o \
     $O/common/mdns/MDNSProbeScheduler.o \
     $O/common/mdns/TimeEventSet.o \
     $O/common/mdns/MDNS_Privacy.o \
-    $O/common/mdns/MDNSQueryScheduler.o \
     $O/common/mdns/MDNSAnnouncer.o \
-    $O/utils/DNSZoneConfig.o \
     $O/utils/DNSTools.o \
+    $O/utils/DNSZoneConfig.o \
+    $O/utils/Utils.o \
     $O/messages/DNSPacket_m.o
 
 # Message files
@@ -109,7 +115,7 @@ MSGFILES = \
     messages/DNSPacket.msg
 
 # Other makefile variables (-K)
-INET_PROJ=/LinuxFiles/Workspaces/opp_workspace/inet
+INET_PROJ=/home/saen/master-project/workspaces/omnetpp/inet
 
 #------------------------------------------------------------------------------
 
@@ -197,13 +203,19 @@ clean:
 	$(Q)-rm -f messages/*_m.cc messages/*_m.h
 	$(Q)-rm -f networks/*_m.cc networks/*_m.h
 	$(Q)-rm -f networks/complex_dns_network/*_m.cc networks/complex_dns_network/*_m.h
+	$(Q)-rm -f networks/complex_dns_network/results/*_m.cc networks/complex_dns_network/results/*_m.h
 	$(Q)-rm -f networks/complex_dns_network/subnets/*_m.cc networks/complex_dns_network/subnets/*_m.h
+	$(Q)-rm -f networks/results/*_m.cc networks/results/*_m.h
 	$(Q)-rm -f networks/simple_mdns_example/*_m.cc networks/simple_mdns_example/*_m.h
+	$(Q)-rm -f networks/simple_mdns_example/results/*_m.cc networks/simple_mdns_example/results/*_m.h
 	$(Q)-rm -f networks/simple_mdns_example/services/*_m.cc networks/simple_mdns_example/services/*_m.h
 	$(Q)-rm -f networks/simple_mdns_privacy_example/*_m.cc networks/simple_mdns_privacy_example/*_m.h
 	$(Q)-rm -f networks/simple_mdns_privacy_example/privacy_services/*_m.cc networks/simple_mdns_privacy_example/privacy_services/*_m.h
 	$(Q)-rm -f networks/simple_mdns_privacy_example/results/*_m.cc networks/simple_mdns_privacy_example/results/*_m.h
 	$(Q)-rm -f networks/simple_mdns_privacy_example/services/*_m.cc networks/simple_mdns_privacy_example/services/*_m.h
+	$(Q)-rm -f networks/small_stateless_network/*_m.cc networks/small_stateless_network/*_m.h
+	$(Q)-rm -f networks/small_stateless_network/results/*_m.cc networks/small_stateless_network/results/*_m.h
+	$(Q)-rm -f networks/small_stateless_network/subnets/*_m.cc networks/small_stateless_network/subnets/*_m.h
 	$(Q)-rm -f networks/stateless_network/*_m.cc networks/stateless_network/*_m.h
 	$(Q)-rm -f networks/stateless_network/results/*_m.cc networks/stateless_network/results/*_m.h
 	$(Q)-rm -f networks/stateless_network/subnets/*_m.cc networks/stateless_network/subnets/*_m.h
@@ -214,7 +226,7 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc applications/dns/*.cc applications/mdns/*.cc common/*.cc common/mdns/*.cc messages/*.cc networks/*.cc networks/complex_dns_network/*.cc networks/complex_dns_network/subnets/*.cc networks/simple_mdns_example/*.cc networks/simple_mdns_example/services/*.cc networks/simple_mdns_privacy_example/*.cc networks/simple_mdns_privacy_example/privacy_services/*.cc networks/simple_mdns_privacy_example/results/*.cc networks/simple_mdns_privacy_example/services/*.cc networks/stateless_network/*.cc networks/stateless_network/results/*.cc networks/stateless_network/subnets/*.cc utils/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc applications/dns/*.cc applications/mdns/*.cc common/*.cc common/mdns/*.cc messages/*.cc networks/*.cc networks/complex_dns_network/*.cc networks/complex_dns_network/results/*.cc networks/complex_dns_network/subnets/*.cc networks/results/*.cc networks/simple_mdns_example/*.cc networks/simple_mdns_example/results/*.cc networks/simple_mdns_example/services/*.cc networks/simple_mdns_privacy_example/*.cc networks/simple_mdns_privacy_example/privacy_services/*.cc networks/simple_mdns_privacy_example/results/*.cc networks/simple_mdns_privacy_example/services/*.cc networks/small_stateless_network/*.cc networks/small_stateless_network/results/*.cc networks/small_stateless_network/subnets/*.cc networks/stateless_network/*.cc networks/stateless_network/results/*.cc networks/stateless_network/subnets/*.cc utils/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/applications/dns/DNSAuthServer.o: applications/dns/DNSAuthServer.cc \
@@ -232,7 +244,8 @@ $O/applications/dns/DNSAuthServer.o: applications/dns/DNSAuthServer.cc \
 	common/DNSCache.h \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h \
-	utils/DNSZoneConfig.h
+	utils/DNSZoneConfig.h \
+	utils/Utils.h
 $O/applications/dns/DNSClient.o: applications/dns/DNSClient.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
@@ -446,5 +459,7 @@ $O/utils/DNSTools.o: utils/DNSTools.cc \
 	messages/DNSPacket_m.h \
 	utils/DNSTools.h
 $O/utils/DNSZoneConfig.o: utils/DNSZoneConfig.cc \
-	utils/DNSZoneConfig.h
+	utils/DNSZoneConfig.h \
+	utils/Utils.h
+$O/utils/Utils.o: utils/Utils.cc
 

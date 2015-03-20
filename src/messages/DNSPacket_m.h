@@ -29,6 +29,7 @@ typedef struct ODnsExtension::DNSRecord DNSRecord;
  * // author: Andreas Rain, Distributed Systems Group, University of Konstanz
  * packet DNSPacket
  * {
+ *     string displayString = "i=msg/packet,blue;b=60,15,blue,black,5";
  *     unsigned short id;
  *     unsigned short options;
  *     unsigned short qdcount;
@@ -49,6 +50,7 @@ typedef struct ODnsExtension::DNSRecord DNSRecord;
 class DNSPacket : public ::cPacket
 {
   protected:
+    opp_string displayString_var;
     unsigned short id_var;
     unsigned short options_var;
     unsigned short qdcount_var;
@@ -81,6 +83,8 @@ class DNSPacket : public ::cPacket
     virtual void parsimUnpack(cCommBuffer *b);
 
     // field getter/setter methods
+    virtual const char * getDisplayString() const;
+    virtual void setDisplayString(const char * displayString);
     virtual unsigned short getId() const;
     virtual void setId(unsigned short id);
     virtual unsigned short getOptions() const;

@@ -368,7 +368,10 @@ int MDNSResponseScheduler::appendRecord(ODnsExtension::DNSRecord* r,
 
 int MDNSResponseScheduler::preparePacketAndSend(GList* anlist, int ancount,
         int packetSize, int is_private) {
-    char* msgname = g_strdup_printf("mdns_response#%d", id_count);
+
+    char* msgname;
+    if(!is_private) msgname = g_strdup_printf("MDNS_response#%d", id_count);
+    else msgname = g_strdup_printf("PRIVATE_response#%d", id_count);
     DNSPacket* p = ODnsExtension::createResponse(msgname, 0, ancount, 0, 0,
             id_count, 0, 1, 0, 0, 0);
 
@@ -386,8 +389,12 @@ int MDNSResponseScheduler::preparePacketAndSend(GList* anlist, int ancount,
 
     p->setByteLength(packetSize);
     if (!is_private) {
+        const char* dstr = "i=msg/bcast,red";
+        p->setDisplayString(dstr);
         outSock->sendTo(p, multicast_address, MDNS_PORT);
     } else {
+        const char* dstr = "i=msg/packet,green";
+        p->setDisplayString(dstr);
         char* service_type = ODnsExtension::extract_stype(
                 p->getAnswers(0).rname);
         ODnsExtension::PrivateMDNSService* psrv =
@@ -542,10 +549,10 @@ void MDNSResponseScheduler::elapse(ODnsExtension::TimeEvent* e, void* data) {
         remove_job(rj);
         return;
     }
-
+    char* service_type;
     if (hasPrivacy) {
         // check whether the record is of private nature
-        char* service_type = ODnsExtension::extract_stype(rj->r->rname);
+        service_type = ODnsExtension::extract_stype(rj->r->rname);
         if (g_hash_table_contains(private_service_table, service_type)) {
             ODnsExtension::PrivateMDNSService* psrv =
                     (ODnsExtension::PrivateMDNSService*) g_hash_table_lookup(
@@ -584,6 +591,25 @@ void MDNSResponseScheduler::elapse(ODnsExtension::TimeEvent* e, void* data) {
             head = g_list_next(head);
 
             if (success && !_private_job) {
+                done(job);
+            }
+        }
+    }
+    else{
+        GList* head = g_list_first(jobs);
+        // append records with matching service_type!GList* head = g_list_first(jobs);
+        while (success && head) {
+            MDNSResponseJob* job = (MDNSResponseJob*) head->data;
+            char* job_stype = ODnsExtension::extract_stype(job->r->rname);
+            // append if it is not the same job
+            int not_equal = !g_strcmp0(service_type, job_stype) && g_strcmp0(job->r->rdata, rj->r->rdata);
+            if(not_equal){
+                success = appendRecord(job->r, &anlist, &packetSize, &ancount);
+            }
+
+            head = g_list_next(head);
+
+            if (not_equal && success) {
                 done(job);
             }
         }

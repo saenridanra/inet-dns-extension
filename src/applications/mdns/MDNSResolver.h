@@ -59,6 +59,7 @@ class MDNSResolver : public cSimpleModule
     ODnsExtension::MDNSResponseScheduler* responseScheduler;
     ODnsExtension::MDNSQueryScheduler* queryScheduler;
     ODnsExtension::MDNSAnnouncer* announcer;
+    ODnsExtension::AnnouncerState announcer_state;
     ODnsExtension::DNSTTLCache* cache;
 
     UDPSocket outSock;

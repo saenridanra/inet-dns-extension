@@ -21,37 +21,43 @@
 
 #include <MDNS_Privacy.h>
 
-namespace ODnsExtension{
+namespace ODnsExtension {
 
 GRegex* privacy_regex = NULL;
 GError* regex_error = NULL;
 GMatchInfo* regex_match_info = NULL;
 
-char* extract_stype(char* label){
+char* extract_stype(char* label)
+{
     // compile once
-    if(privacy_regex == NULL){
+    if (privacy_regex == NULL)
+    {
         const char* privacy_type_expr = "_.+\\._.+\\.local";
         privacy_regex = g_regex_new(privacy_type_expr, G_REGEX_CASELESS, G_REGEX_MATCH_NOTEMPTY, &regex_error);
     }
 
     char* match = NULL;
     g_regex_match(privacy_regex, label, g_regex_get_match_flags(privacy_regex), &regex_match_info);
-    if (g_match_info_matches(regex_match_info)) {
+    if (g_match_info_matches(regex_match_info))
+    {
         match = g_match_info_fetch(regex_match_info, 0);
     }
 
-    if(match == NULL) match = g_strdup("");
+    if (match == NULL)
+        match = g_strdup("");
     return match;
 }
 
-ODnsExtension::PrivateMDNSService* private_service_new(char* service_type, int is_private){
+ODnsExtension::PrivateMDNSService* private_service_new(char* service_type, int is_private)
+{
     ODnsExtension::PrivateMDNSService* service = (ODnsExtension::PrivateMDNSService*) malloc(sizeof(*service));
     service->service_type = service_type;
     service->is_private = is_private;
     return service;
 }
 
-ODnsExtension::PairingData* pairing_data_new(char* crypto_key, char* friend_id, char* privacy_instance_name){
+ODnsExtension::PairingData* pairing_data_new(char* crypto_key, char* friend_id, char* privacy_instance_name)
+{
     ODnsExtension::PairingData* pdata = (ODnsExtension::PairingData*) malloc(sizeof(*pdata));
     pdata->crypto_key = crypto_key;
     pdata->friend_id = friend_id;
@@ -60,11 +66,13 @@ ODnsExtension::PairingData* pairing_data_new(char* crypto_key, char* friend_id, 
     return pdata;
 }
 
-ODnsExtension::FriendData* friend_data_new(ODnsExtension::PairingData* pdata, int port){
+ODnsExtension::FriendData* friend_data_new(ODnsExtension::PairingData* pdata, int port)
+{
     ODnsExtension::FriendData* fdata = (ODnsExtension::FriendData*) malloc(sizeof(*fdata));
     fdata->pdata = pdata;
     fdata->port = port;
     fdata->online = 0;
+    fdata->last_informed = STR_SIMTIME("0s");
     return fdata;
 }
 

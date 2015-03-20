@@ -57,6 +57,7 @@ Register_Class(DNSPacket);
 
 DNSPacket::DNSPacket(const char *name, int kind) : ::cPacket(name,kind)
 {
+    this->displayString_var = "i=msg/packet,blue;b=60,15,blue,black,5";
     this->id_var = 0;
     this->options_var = 0;
     this->qdcount_var = 0;
@@ -104,6 +105,7 @@ DNSPacket& DNSPacket::operator=(const DNSPacket& other)
 
 void DNSPacket::copy(const DNSPacket& other)
 {
+    this->displayString_var = other.displayString_var;
     this->id_var = other.id_var;
     this->options_var = other.options_var;
     this->qdcount_var = other.qdcount_var;
@@ -135,6 +137,7 @@ void DNSPacket::copy(const DNSPacket& other)
 void DNSPacket::parsimPack(cCommBuffer *b)
 {
     ::cPacket::parsimPack(b);
+    doPacking(b,this->displayString_var);
     doPacking(b,this->id_var);
     doPacking(b,this->options_var);
     doPacking(b,this->qdcount_var);
@@ -154,6 +157,7 @@ void DNSPacket::parsimPack(cCommBuffer *b)
 void DNSPacket::parsimUnpack(cCommBuffer *b)
 {
     ::cPacket::parsimUnpack(b);
+    doUnpacking(b,this->displayString_var);
     doUnpacking(b,this->id_var);
     doUnpacking(b,this->options_var);
     doUnpacking(b,this->qdcount_var);
@@ -192,6 +196,16 @@ void DNSPacket::parsimUnpack(cCommBuffer *b)
         this->additional_var = new DNSRecord[additional_arraysize];
         doUnpacking(b,this->additional_var,additional_arraysize);
     }
+}
+
+const char * DNSPacket::getDisplayString() const
+{
+    return displayString_var.c_str();
+}
+
+void DNSPacket::setDisplayString(const char * displayString)
+{
+    this->displayString_var = displayString;
 }
 
 unsigned short DNSPacket::getId() const
@@ -413,7 +427,7 @@ const char *DNSPacketDescriptor::getProperty(const char *propertyname) const
 int DNSPacketDescriptor::getFieldCount(void *object) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
-    return basedesc ? 10+basedesc->getFieldCount(object) : 10;
+    return basedesc ? 11+basedesc->getFieldCount(object) : 11;
 }
 
 unsigned int DNSPacketDescriptor::getFieldTypeFlags(void *object, int field) const
@@ -431,12 +445,13 @@ unsigned int DNSPacketDescriptor::getFieldTypeFlags(void *object, int field) con
         FD_ISEDITABLE,
         FD_ISEDITABLE,
         FD_ISEDITABLE,
+        FD_ISEDITABLE,
         FD_ISARRAY | FD_ISCOMPOUND,
         FD_ISARRAY | FD_ISCOMPOUND,
         FD_ISARRAY | FD_ISCOMPOUND,
         FD_ISARRAY | FD_ISCOMPOUND,
     };
-    return (field>=0 && field<10) ? fieldTypeFlags[field] : 0;
+    return (field>=0 && field<11) ? fieldTypeFlags[field] : 0;
 }
 
 const char *DNSPacketDescriptor::getFieldName(void *object, int field) const
@@ -448,6 +463,7 @@ const char *DNSPacketDescriptor::getFieldName(void *object, int field) const
         field -= basedesc->getFieldCount(object);
     }
     static const char *fieldNames[] = {
+        "displayString",
         "id",
         "options",
         "qdcount",
@@ -459,23 +475,24 @@ const char *DNSPacketDescriptor::getFieldName(void *object, int field) const
         "authorities",
         "additional",
     };
-    return (field>=0 && field<10) ? fieldNames[field] : NULL;
+    return (field>=0 && field<11) ? fieldNames[field] : NULL;
 }
 
 int DNSPacketDescriptor::findField(void *object, const char *fieldName) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     int base = basedesc ? basedesc->getFieldCount(object) : 0;
-    if (fieldName[0]=='i' && strcmp(fieldName, "id")==0) return base+0;
-    if (fieldName[0]=='o' && strcmp(fieldName, "options")==0) return base+1;
-    if (fieldName[0]=='q' && strcmp(fieldName, "qdcount")==0) return base+2;
-    if (fieldName[0]=='a' && strcmp(fieldName, "ancount")==0) return base+3;
-    if (fieldName[0]=='n' && strcmp(fieldName, "nscount")==0) return base+4;
-    if (fieldName[0]=='a' && strcmp(fieldName, "arcount")==0) return base+5;
-    if (fieldName[0]=='q' && strcmp(fieldName, "questions")==0) return base+6;
-    if (fieldName[0]=='a' && strcmp(fieldName, "answers")==0) return base+7;
-    if (fieldName[0]=='a' && strcmp(fieldName, "authorities")==0) return base+8;
-    if (fieldName[0]=='a' && strcmp(fieldName, "additional")==0) return base+9;
+    if (fieldName[0]=='d' && strcmp(fieldName, "displayString")==0) return base+0;
+    if (fieldName[0]=='i' && strcmp(fieldName, "id")==0) return base+1;
+    if (fieldName[0]=='o' && strcmp(fieldName, "options")==0) return base+2;
+    if (fieldName[0]=='q' && strcmp(fieldName, "qdcount")==0) return base+3;
+    if (fieldName[0]=='a' && strcmp(fieldName, "ancount")==0) return base+4;
+    if (fieldName[0]=='n' && strcmp(fieldName, "nscount")==0) return base+5;
+    if (fieldName[0]=='a' && strcmp(fieldName, "arcount")==0) return base+6;
+    if (fieldName[0]=='q' && strcmp(fieldName, "questions")==0) return base+7;
+    if (fieldName[0]=='a' && strcmp(fieldName, "answers")==0) return base+8;
+    if (fieldName[0]=='a' && strcmp(fieldName, "authorities")==0) return base+9;
+    if (fieldName[0]=='a' && strcmp(fieldName, "additional")==0) return base+10;
     return basedesc ? basedesc->findField(object, fieldName) : -1;
 }
 
@@ -488,6 +505,7 @@ const char *DNSPacketDescriptor::getFieldTypeString(void *object, int field) con
         field -= basedesc->getFieldCount(object);
     }
     static const char *fieldTypeStrings[] = {
+        "string",
         "unsigned short",
         "unsigned short",
         "unsigned short",
@@ -499,7 +517,7 @@ const char *DNSPacketDescriptor::getFieldTypeString(void *object, int field) con
         "DNSRecord",
         "DNSRecord",
     };
-    return (field>=0 && field<10) ? fieldTypeStrings[field] : NULL;
+    return (field>=0 && field<11) ? fieldTypeStrings[field] : NULL;
 }
 
 const char *DNSPacketDescriptor::getFieldProperty(void *object, int field, const char *propertyname) const
@@ -511,22 +529,22 @@ const char *DNSPacketDescriptor::getFieldProperty(void *object, int field, const
         field -= basedesc->getFieldCount(object);
     }
     switch (field) {
-        case 6:
+        case 7:
             if (!strcmp(propertyname,"sizeGetter")) return "getNumQuestions";
             if (!strcmp(propertyname,"sizeSetter")) return "setNumQuestions";
             if (!strcmp(propertyname,"sizetype")) return "short";
             return NULL;
-        case 7:
+        case 8:
             if (!strcmp(propertyname,"sizeGetter")) return "getNumAnswers";
             if (!strcmp(propertyname,"sizeSetter")) return "setNumAnswers";
             if (!strcmp(propertyname,"sizetype")) return "short";
             return NULL;
-        case 8:
+        case 9:
             if (!strcmp(propertyname,"sizeGetter")) return "getNumAuthorities";
             if (!strcmp(propertyname,"sizeSetter")) return "setNumAuthorities";
             if (!strcmp(propertyname,"sizetype")) return "short";
             return NULL;
-        case 9:
+        case 10:
             if (!strcmp(propertyname,"sizeGetter")) return "getNumAdditional";
             if (!strcmp(propertyname,"sizeSetter")) return "setNumAdditional";
             if (!strcmp(propertyname,"sizetype")) return "short";
@@ -545,10 +563,10 @@ int DNSPacketDescriptor::getArraySize(void *object, int field) const
     }
     DNSPacket *pp = (DNSPacket *)object; (void)pp;
     switch (field) {
-        case 6: return pp->getNumQuestions();
-        case 7: return pp->getNumAnswers();
-        case 8: return pp->getNumAuthorities();
-        case 9: return pp->getNumAdditional();
+        case 7: return pp->getNumQuestions();
+        case 8: return pp->getNumAnswers();
+        case 9: return pp->getNumAuthorities();
+        case 10: return pp->getNumAdditional();
         default: return 0;
     }
 }
@@ -563,16 +581,17 @@ std::string DNSPacketDescriptor::getFieldAsString(void *object, int field, int i
     }
     DNSPacket *pp = (DNSPacket *)object; (void)pp;
     switch (field) {
-        case 0: return ulong2string(pp->getId());
-        case 1: return ulong2string(pp->getOptions());
-        case 2: return ulong2string(pp->getQdcount());
-        case 3: return ulong2string(pp->getAncount());
-        case 4: return ulong2string(pp->getNscount());
-        case 5: return ulong2string(pp->getArcount());
-        case 6: {std::stringstream out; out << pp->getQuestions(i); return out.str();}
-        case 7: {std::stringstream out; out << pp->getAnswers(i); return out.str();}
-        case 8: {std::stringstream out; out << pp->getAuthorities(i); return out.str();}
-        case 9: {std::stringstream out; out << pp->getAdditional(i); return out.str();}
+        case 0: return oppstring2string(pp->getDisplayString());
+        case 1: return ulong2string(pp->getId());
+        case 2: return ulong2string(pp->getOptions());
+        case 3: return ulong2string(pp->getQdcount());
+        case 4: return ulong2string(pp->getAncount());
+        case 5: return ulong2string(pp->getNscount());
+        case 6: return ulong2string(pp->getArcount());
+        case 7: {std::stringstream out; out << pp->getQuestions(i); return out.str();}
+        case 8: {std::stringstream out; out << pp->getAnswers(i); return out.str();}
+        case 9: {std::stringstream out; out << pp->getAuthorities(i); return out.str();}
+        case 10: {std::stringstream out; out << pp->getAdditional(i); return out.str();}
         default: return "";
     }
 }
@@ -587,12 +606,13 @@ bool DNSPacketDescriptor::setFieldAsString(void *object, int field, int i, const
     }
     DNSPacket *pp = (DNSPacket *)object; (void)pp;
     switch (field) {
-        case 0: pp->setId(string2ulong(value)); return true;
-        case 1: pp->setOptions(string2ulong(value)); return true;
-        case 2: pp->setQdcount(string2ulong(value)); return true;
-        case 3: pp->setAncount(string2ulong(value)); return true;
-        case 4: pp->setNscount(string2ulong(value)); return true;
-        case 5: pp->setArcount(string2ulong(value)); return true;
+        case 0: pp->setDisplayString((value)); return true;
+        case 1: pp->setId(string2ulong(value)); return true;
+        case 2: pp->setOptions(string2ulong(value)); return true;
+        case 3: pp->setQdcount(string2ulong(value)); return true;
+        case 4: pp->setAncount(string2ulong(value)); return true;
+        case 5: pp->setNscount(string2ulong(value)); return true;
+        case 6: pp->setArcount(string2ulong(value)); return true;
         default: return false;
     }
 }
@@ -606,10 +626,10 @@ const char *DNSPacketDescriptor::getFieldStructName(void *object, int field) con
         field -= basedesc->getFieldCount(object);
     }
     switch (field) {
-        case 6: return opp_typename(typeid(DNSQuestion));
-        case 7: return opp_typename(typeid(DNSRecord));
+        case 7: return opp_typename(typeid(DNSQuestion));
         case 8: return opp_typename(typeid(DNSRecord));
         case 9: return opp_typename(typeid(DNSRecord));
+        case 10: return opp_typename(typeid(DNSRecord));
         default: return NULL;
     };
 }
@@ -624,10 +644,10 @@ void *DNSPacketDescriptor::getFieldStructPointer(void *object, int field, int i)
     }
     DNSPacket *pp = (DNSPacket *)object; (void)pp;
     switch (field) {
-        case 6: return (void *)(&pp->getQuestions(i)); break;
-        case 7: return (void *)(&pp->getAnswers(i)); break;
-        case 8: return (void *)(&pp->getAuthorities(i)); break;
-        case 9: return (void *)(&pp->getAdditional(i)); break;
+        case 7: return (void *)(&pp->getQuestions(i)); break;
+        case 8: return (void *)(&pp->getAnswers(i)); break;
+        case 9: return (void *)(&pp->getAuthorities(i)); break;
+        case 10: return (void *)(&pp->getAdditional(i)); break;
         default: return NULL;
     }
 }

@@ -34,7 +34,6 @@ void DNSAuthServer::initialize(int stage)
     config->initialize(master_file);
 
     recursion_available = (int) par("recursion_available").doubleValue();
-    DNSServerBase::queryCache = g_hash_table_new_full(g_int_hash, g_int_equal, free, NULL);
 
     response_count = 0;
 
@@ -68,12 +67,12 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
     const char* __class;
     const char* type;
 
-    char* namehash;
-    char* cnhash;
+    std::string namehash;
+    std::string cnhash;
 
-    GList* answer_list = NULL;
-    GList* ns_list = NULL;
-    GList* ar_list = NULL;
+    std::list<DNSRecord*> answer_list;
+    std::list<DNSRecord*> ns_list;
+    std::list<DNSRecord*> ar_list;
 
     // initializes options
     id = query->id;
@@ -88,63 +87,63 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
     q = query->questions[0];
 
     int is_authoritative = 0;
-    int pos = g_str_has_suffix(q.qname, g_strndup(config->getOrigin(), strlen(config->getOrigin()) - 1));
+    int pos = ODnsExtension::stdstr_has_suffix(q.qname, config->getOrigin());
 
     // check here if there are direct NS references to this record
     // then this server is not an authority and should instead
     // respond with the NS records..
 
-    char* trailing_qname = g_strdup_printf("%s.", q.qname);
+    std::string trailing_qname = q.qname + std::string(".");
     int has_ns_reference = 0;
-    char* ns_reference_hash;
+    std::string ns_reference_hash;
 
     // only check this if the query is not the origin
 
-    if( g_strcmp0(config->getOrigin(), q.qname) != 0 && g_strcmp0(config->getOrigin(), trailing_qname) != 0){
-
-        if(g_str_has_suffix(q.qname, "."))
-            ns_reference_hash = g_strdup_printf("%s:%s:%s", q.qname, DNS_TYPE_STR_NS, DNS_CLASS_STR_IN);
+    if (config->getOrigin() != q.qname && config->getOrigin() != trailing_qname)
+    {
+        ns_reference_hash = q.qname;
+        if (ODnsExtension::stdstr_has_suffix(q.qname, std::string(".")))
+            ns_reference_hash = ns_reference_hash + std::string(":");
         else
-            ns_reference_hash = g_strdup_printf("%s.:%s:%s", q.qname, DNS_TYPE_STR_NS, DNS_CLASS_STR_IN);
+            ns_reference_hash = ns_reference_hash + std::string(".:");
+
+        ns_reference_hash = ns_reference_hash + std::string(DNS_TYPE_STR_NS) + std::string(":")
+                + std::string(DNS_CLASS_STR_IN);
 
         has_ns_reference = config->hasEntry(ns_reference_hash);
 
-        if(!has_ns_reference){
+        if (!has_ns_reference)
+        {
             // ok we did not find a reference directly, do a longest suffix match
             // to check if there is a suffix matching
-            GHashTable* zone = config->getEntries();
-            GHashTableIter iterator;
-            gpointer key, value;
-            g_hash_table_iter_init(&iterator, zone);
+            std::unordered_map<std::string, std::list<zone_entry*>> zone = config->getEntries();
             unsigned int max_len = 0;
-            char* tmp_ref_hash = NULL;
-            while(g_hash_table_iter_next(&iterator, &key, & value)){
-                if(g_str_has_suffix(ns_reference_hash, (char*) key)){
-                    if(strlen((char*) key) > max_len){
-                        max_len = strlen((char*) key);
-                        g_free(tmp_ref_hash);
-                        tmp_ref_hash = g_strdup((char*) key);
+            std::string tmp_ref_hash = "";
+            for (auto it = zone.begin(); it != zone.end(); ++it)
+            {
+                if (ODnsExtension::stdstr_has_suffix(ns_reference_hash, it->first))
+                {
+                    if (it->first.length() > max_len)
+                    {
+                        max_len = it->first.length();
+                        tmp_ref_hash = std::string(it->first);
                     }
                 }
             }
 
-            if(tmp_ref_hash != NULL){
-                g_free(ns_reference_hash);
-                ns_reference_hash = g_strdup(tmp_ref_hash);
+            if (tmp_ref_hash != "")
+            {
+                ns_reference_hash = std::string(tmp_ref_hash);
                 has_ns_reference = 1;
-                g_free(tmp_ref_hash);
             }
 
         }
     }
 
-    g_free(trailing_qname);
-
-
     // generate msg name
-    char *msg_name = g_strdup_printf("dns_response#%d", response_count++);
+    std::string msg_name = std::string("dns_response#%d") + std::to_string(response_count++);
 
-    if (pos > 0 && g_strcmp0(config->getOrigin(), ".") != 0 && !has_ns_reference)
+    if (pos > 0 && config->getOrigin() != "." && !has_ns_reference)
     {
         is_authoritative = 1;
     }
@@ -212,7 +211,6 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
     }
 
     // now we can lookup the name in the database
-
     if (is_authoritative)
     {
         if (q.qtype == DNS_TYPE_VALUE_ANY)
@@ -221,31 +219,34 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
             const char** type_array = ODnsExtension::getTypeArray();
             for (uint32_t i = 0; i < sizeof(type_array); i++)
             {
-                char* type_str = g_strdup(type_array[i]);
-                if(g_str_has_suffix(q.qname, "."))
-                    namehash = g_strdup_printf("%s:%s:%s", q.qname, type_str, __class);
+                std::string type_str = std::string(type_array[i]);
+                namehash = q.qname;
+                if (ODnsExtension::stdstr_has_suffix(q.qname, std::string(".")))
+                    namehash = namehash + std::string(":");
                 else
-                    namehash = g_strdup_printf("%s.:%s:%s", q.qname, type_str, __class);
+                    namehash = namehash + std::string(".:");
+
+                namehash = namehash + std::string(":") + std::string(__class);
 
                 // we basically just have to append every record that matches
                 // the hash to the answer section
                 answer_list = appendEntries(namehash, answer_list, ODnsExtension::getTypeValueForString(type_str),
                         &an_records);
-                g_free(type_str);
-                g_free(namehash);
             }
 
         }
         else
         {
             // we have a specific record, so lets look it up in the hash table
-            if(g_str_has_suffix(q.qname, "."))
-                namehash = g_strdup_printf("%s:%s:%s", q.qname, type, __class);
+            namehash = q.qname;
+            if (ODnsExtension::stdstr_has_suffix(q.qname, std::string(".")))
+                namehash = namehash + std::string(":");
             else
-                namehash = g_strdup_printf("%s.:%s:%s", q.qname, type, __class);
+                namehash = namehash + std::string(".:");
+
+            namehash = namehash + std::string(type) + std::string(":") + std::string(__class);
 
             answer_list = appendEntries(namehash, answer_list, q.qtype, &an_records);
-            g_free(namehash);
 
             if (an_records > 0)
             {
@@ -266,32 +267,29 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
                 if (q.qtype != DNS_TYPE_VALUE_CNAME)
                 {
                     // get NS records
-                    int old_an_records = an_records;
-
-                    if(g_str_has_suffix(q.qname, "."))
-                        cnhash = g_strdup_printf("%s:%s:%s", q.qname,
-                    DNS_TYPE_STR_CNAME, __class);
+                    cnhash = q.qname;
+                    if (ODnsExtension::stdstr_has_suffix(q.qname, std::string(".")))
+                        cnhash = q.qname + std::string(":");
                     else
-                        cnhash = g_strdup_printf("%s.:%s:%s", q.qname,
-                    DNS_TYPE_STR_CNAME, __class);
+                        cnhash = q.qname + std::string(".:");
+
+                    cnhash = cnhash + std::string(DNS_TYPE_STR_CNAME) + std::string(":") + std::string(__class);
+
                     answer_list = appendEntries(cnhash, answer_list,
                     DNS_TYPE_VALUE_CNAME, &an_records);
-                    g_free(cnhash);
 
                     // now we don't add the QTYPE record to additional, but to the answer section
                     // iterate through the CNAME records, add the QTYPE records accordingly....
-                    int an_records_cpy = an_records; // since an_records is modified on the fly
-                    for (int i = old_an_records; i < an_records_cpy; i++)
+                    for (auto it = answer_list.begin(); it != answer_list.end(); ++it)
                     {
-                        DNSRecord* t_r = (DNSRecord*) g_list_nth(answer_list, i)->data;
+                        DNSRecord* t_r = (DNSRecord*) *it;
                         // use the data string to create a hash and find the qtype record
-                        char* namecpy = strdup(t_r->rdata);
-                        cnhash = g_strdup_printf("%s.%s:%s:%s", namecpy, config->getOrigin(), type, __class);
+                        std::string namecpy = std::string(t_r->strdata);
+                        cnhash = namecpy + std::string(".") + config->getOrigin() + std::string(":") + std::string(type)
+                                + std::string(":") + std::string(__class);
 
                         // get entries for type using this hash
                         answer_list = appendEntries(cnhash, answer_list, q.qtype, &an_records);
-
-                        g_free(cnhash);
                     }
                 }
             }
@@ -301,29 +299,27 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
                 if (q.qtype != DNS_TYPE_VALUE_CNAME)
                 {
                     // get NS records
-                    int old_an_records = an_records;
-                    if(g_str_has_suffix(q.qname, "."))
-                        cnhash = g_strdup_printf("%s:%s:%s", q.qname,
-                                DNS_TYPE_STR_CNAME, __class);
+                    cnhash = q.qname;
+                    if (ODnsExtension::stdstr_has_suffix(q.qname, std::string(".")))
+                        cnhash = q.qname + std::string(":");
                     else
-                        cnhash = g_strdup_printf("%s.:%s:%s", q.qname,
-                                DNS_TYPE_STR_CNAME, __class);
+                        cnhash = q.qname + std::string(".:");
+
+                    cnhash = cnhash + std::string(DNS_TYPE_STR_CNAME) + std::string(":") + std::string(__class);
+
                     answer_list = appendEntries(cnhash, answer_list,
                     DNS_TYPE_VALUE_CNAME, &an_records);
-                    g_free(cnhash);
 
-                    int an_records_cpy = an_records; // since an_records is modified on the fly
-                    for (int i = old_an_records; i < an_records_cpy; i++)
+                    for (auto it = answer_list.begin(); it != answer_list.end(); ++it)
                     {
-                        DNSRecord* t_r = (DNSRecord*) g_list_nth(answer_list, i)->data;
+                        DNSRecord* t_r = (DNSRecord*) *it;
                         // use the data string to create a hash and find the qtype record
-                        char* namecpy = strdup(t_r->rdata);
-                        cnhash = g_strdup_printf("%s.%s:%s:%s", namecpy, config->getOrigin(), type, __class);
+                        std::string namecpy = std::string(t_r->strdata);
+                        cnhash = namecpy + std::string(".") + config->getOrigin() + std::string(":") + std::string(type)
+                                + std::string(":") + std::string(__class);
 
                         // get entries for type using this hash
                         answer_list = appendEntries(cnhash, answer_list, q.qtype, &an_records);
-
-                        g_free(cnhash);
                     }
                 }
             }
@@ -339,7 +335,8 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
         {
             // append authority
             ns_list = appendAuthority(ns_list, &ns_records);
-            if(ns_records > 0){
+            if (ns_records > 0)
+            {
                 ar_list = appendAdditionals(ns_list, ar_list, &ar_records);
             }
 
@@ -354,38 +351,41 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
         // we're not authoritative, but maybe we have an entry that points
         // to an NS that is authoritative for a suffix of the query
 
-        gboolean found_entry = 0;
+        bool found_entry = false;
 
         // tokenize the question label. check if theres an entry for the last suffix, i.e. last token
-        std::vector<std::string> tokens = cStringTokenizer(q.qname, ".").asVector();
+        std::vector<std::string> tokens = cStringTokenizer(q.qname.c_str(), ".").asVector();
         // check last token and create hash using NS
-        char* reference_hash = g_strdup_printf("%s.:%s:%s", tokens[tokens.size()-1].c_str(), DNS_TYPE_STR_NS, __class);
+        std::string reference_hash = tokens[tokens.size() - 1] + std::string(".:") + std::string(DNS_TYPE_STR_NS)
+                + std::string(":") + std::string(__class);
 
-
-        if(has_ns_reference){ // see if we know a nameserver on the prefix
-            found_entry = 1;
+        if (has_ns_reference)
+        { // see if we know a nameserver on the prefix
+            found_entry = true;
             ns_list = appendEntries(ns_reference_hash, ns_list, DNS_TYPE_VALUE_NS, &ns_records);
 
             ar_list = appendTransitiveEntries(ns_list, ar_list, DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, &ar_records);
             ar_list = appendTransitiveEntries(ns_list, ar_list, DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, &ar_records);
 
             // response with with no AA set
-            response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id, opcode, 0,
-                    rd, ra, 0);
+            response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id, opcode, 0, rd,
+                    ra, 0);
 
             // set question
             ODnsExtension::appendQuestion(response, ODnsExtension::copyDnsQuestion(&q), 0);
 
-
         }
-        else if(config->hasEntry(reference_hash)){
-            found_entry = 1;
+        else if (config->hasEntry(reference_hash))
+        {
+            found_entry = true;
             ns_list = appendEntries(reference_hash, ns_list, DNS_TYPE_VALUE_NS, &ns_records);
 
-            if(ns_records != 0){
+            if (ns_records != 0)
+            {
 
                 ar_list = appendTransitiveEntries(ns_list, ar_list, DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, &ar_records);
-                ar_list = appendTransitiveEntries(ns_list, ar_list, DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, &ar_records);
+                ar_list = appendTransitiveEntries(ns_list, ar_list, DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA,
+                        &ar_records);
 
                 // response with with no AA set
                 response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id, opcode, 0,
@@ -393,7 +393,8 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
             }
         }
 
-        if(!found_entry){
+        if (!found_entry)
+        {
 
             if (recursion_available)
             {
@@ -402,8 +403,7 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
                     // assign an id for the query cache
                     int id = DNSServerBase::getIdAndInc();
                     DNSServerBase::store_in_query_cache(id, query);
-                    g_free(msg_name);
-                    msg_name = g_strdup_printf("dns_query#%d--recursive", id);
+                    msg_name = std::string("dns_query#%d--recursive") + std::to_string(id);
 
                     // do the initial query towards a root server
                     // pick at random
@@ -419,8 +419,8 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
                 else
                 {
                     // response with not found err
-                    response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id, opcode, 0,
-                            rd, ra, 0);
+                    response = ODnsExtension::createResponse(msg_name, 1, an_records, ns_records, ar_records, id,
+                            opcode, 0, rd, ra, 0);
                 }
 
                 // set question
@@ -437,38 +437,30 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
 
     // append an, ns, ar to response
     int index = 0;
-    GList *next = g_list_first(answer_list);
-
     if (an_records > 0)
     {
-        while (next)
+        for (auto it = answer_list.begin(); it != answer_list.end(); ++it)
         {
-            ODnsExtension::appendAnswer(response, (ODnsExtension::DNSRecord*) next->data, index++);
-
-            next = g_list_next(next);
+            ODnsExtension::appendAnswer(response, (ODnsExtension::DNSRecord*) *it, index++);
         }
     }
-    if(ns_records > 0){
-        next = g_list_first(ns_list);
+    if (ns_records > 0)
+    {
         index = 0;
-        while (next)
+        for (auto it = ns_list.begin(); it != ns_list.end(); ++it)
         {
-            ODnsExtension::appendAuthority(response, (ODnsExtension::DNSRecord*) next->data, index++);
-
-            next = g_list_next(next);
+            ODnsExtension::appendAuthority(response, (ODnsExtension::DNSRecord*) *it, index++);
         }
     }
-    if(ar_records > 0){
-        next = g_list_first(ar_list);
+    if (ar_records > 0)
+    {
         index = 0;
-        while (next)
+        for (auto it = ar_list.begin(); it != ar_list.end(); ++it)
         {
-            ODnsExtension::appendAdditional(response, (ODnsExtension::DNSRecord*) next->data, index++);
-
-            next = g_list_next(next);
+            ODnsExtension::appendAdditional(response, (ODnsExtension::DNSRecord*) *it, index++);
         }
     }
-    if(an_records == 0 && ns_records == 0 && ar_records == 0)
+    if (an_records == 0 && ns_records == 0 && ar_records == 0)
     {
         // just append the SOA entry.
     }
@@ -477,15 +469,17 @@ DNSPacket* DNSAuthServer::handleQuery(ODnsExtension::Query *query)
 
 }
 
-GList* DNSAuthServer::appendAuthority(GList *ns_list, int *ns_records){
-    char *nshash = g_strdup_printf("%s:%s:%s", config->getOrigin(), DNS_TYPE_STR_NS, DNS_CLASS_STR_IN);
+std::list<ODnsExtension::DNSRecord*> DNSAuthServer::appendAuthority(std::list<ODnsExtension::DNSRecord*> ns_list, int *ns_records)
+{
+    std::string nshash = config->getOrigin() + std::string(":") + std::string(DNS_TYPE_STR_NS) + std::string(":")
+            + std::string(DNS_CLASS_STR_IN);
     ns_list = appendEntries(nshash, ns_list, DNS_TYPE_VALUE_NS, ns_records);
-    g_free(nshash);
-
     return ns_list;
 }
 
-GList* DNSAuthServer::appendAdditionals(GList* ns_list, GList *ar_list, int *ar_records){
+std::list<ODnsExtension::DNSRecord*> DNSAuthServer::appendAdditionals(std::list<ODnsExtension::DNSRecord*> ns_list, std::list<ODnsExtension::DNSRecord*> ar_list,
+        int *ar_records)
+{
     ar_list = appendTransitiveEntries(ns_list, ar_list,
     DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, ar_records);
     ar_list = appendTransitiveEntries(ns_list, ar_list,
@@ -494,92 +488,83 @@ GList* DNSAuthServer::appendAdditionals(GList* ns_list, GList *ar_list, int *ar_
     return ar_list;
 }
 
-GList* DNSAuthServer::appendEntries(char *hash, GList *dstlist, int type, int *num_records)
+std::list<DNSRecord*> DNSAuthServer::appendEntries(std::string hash, std::list<ODnsExtension::DNSRecord*> dstlist, int type,
+        int *num_records)
 {
-    GList* entries = config->getEntry(hash);
-    GList* next = g_list_first(entries);
+    std::list<zone_entry*> entries = config->getEntry(hash);
     ODnsExtension::DNSRecord *rr;
 
-    while (next)
+    for (auto it = entries.begin(); it != entries.end(); ++it)
     {
-        zone_entry *entry = (zone_entry*) next->data;
-        rr = (ODnsExtension::DNSRecord*) malloc(sizeof(*rr));
-        rr->rdata = g_strdup(entry->data);
+        zone_entry *entry = (zone_entry*) *it;
+        rr = new DNSRecord();
+        rr->rdata = NULL;
+        rr->strdata = std::string(entry->data);
 
-        if (g_str_has_suffix(entry->domain, config->getOrigin()))
+        if (ODnsExtension::stdstr_has_suffix(entry->domain, config->getOrigin()))
         {
-            rr->rname = g_strdup(entry->domain);
+            rr->rname = std::string(entry->domain);
         }
         else
         {
-            rr->rname = g_strdup_printf("%s.%s", entry->domain, config->getOrigin());
+            rr->rname = std::string(entry->domain) + std::string(".") + std::string(config->getOrigin());
         }
 
         rr->rclass = (short) DNS_CLASS_IN;
         rr->rtype = (short) type;
-        rr->rdlength = strlen(rr->rdata);
+        rr->rdlength = entry->data.length();
         rr->ttl = config->getTTL();
 
-        dstlist = g_list_append(dstlist, rr);
+        dstlist.push_back(rr);
         (*num_records)++;
-
-        // Check if transitive resolution is necessary:
-
-        next = g_list_next(next);
     }
     return dstlist;
 }
 
-GList* DNSAuthServer::appendTransitiveEntries(GList *srclist, GList *dstlist, const char* DNS_TYPE_STR,
-        int DNS_TYPE_VALUE, int *ar_records)
+std::list<ODnsExtension::DNSRecord*> DNSAuthServer::appendTransitiveEntries(std::list<ODnsExtension::DNSRecord*> srclist,
+        std::list<ODnsExtension::DNSRecord*> dstlist, const char* DNS_TYPE_STR, int DNS_TYPE_VALUE, int *ar_records)
 {
-    GList *next = g_list_first(srclist);
-    char* hash;
+    std::string hash;
 
     // iterate through the source list
-    while (next)
+    for (auto it = srclist.begin(); it != srclist.end(); ++it)
     {
         // get the zone entry
-        zone_entry* record = (zone_entry*) next->data;
+        zone_entry* record = (zone_entry*) *it;
 
         // calculate hash from domain + type + class
         // first ar hash is for A records..
-        hash = g_strdup_printf("%s:%s:%s", record->data, DNS_TYPE_STR,
-        DNS_CLASS_STR_IN);
+        hash = record->data + std::string(":") + std::string(DNS_TYPE_STR) + std::string(":")
+                + std::string(DNS_CLASS_STR_IN);
 
-        GList* transitive_entries = config->getEntry(hash);
-        g_free(hash);
-        GList* t_next = g_list_first(transitive_entries);
+        std::list<zone_entry*> transitive_entries = config->getEntry(hash);
         ODnsExtension::DNSRecord *dns_record;
 
         // go through
-        while (t_next)
+        for (auto it_2 = transitive_entries.begin(); it_2 != transitive_entries.end(); ++it_2)
         {
-            zone_entry *entry = (zone_entry*) t_next->data;
-            dns_record = (ODnsExtension::DNSRecord*) malloc(sizeof(*dns_record));
-            dns_record->rdata = g_strdup(entry->data);
+            zone_entry *entry = (zone_entry*) *it_2;
+            dns_record = new DNSRecord();
+            dns_record->rdata = NULL;
+            dns_record->strdata = std::string(entry->data);
 
-            if (g_str_has_suffix(entry->domain, config->getOrigin()))
+            if (ODnsExtension::stdstr_has_suffix(entry->domain, config->getOrigin()))
             {
-                dns_record->rname = g_strdup(entry->domain);
+                dns_record->rname = std::string(entry->domain);
             }
             else
             {
-                dns_record->rname = g_strdup_printf("%s.%s", entry->domain, config->getOrigin());
+                dns_record->rname = entry->domain + std::string(".") + config->getOrigin();
             }
 
             dns_record->rclass = (short) DNS_CLASS_IN;
             dns_record->rtype = (short) DNS_TYPE_VALUE;
-            dns_record->rdlength = strlen(dns_record->rdata);
+            dns_record->rdlength = entry->data.length();
             dns_record->ttl = config->getTTL();
 
-            dstlist = g_list_append(dstlist, dns_record);
+            dstlist.push_back(dns_record);
             (*ar_records)++;
-
-            t_next = g_list_next(t_next);
         }
-
-        next = g_list_next(next);
     }
 
     return dstlist;

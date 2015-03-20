@@ -30,7 +30,7 @@ const char* DNS_TYPE_ARRAY_ANY[13] = {"A", "NS", "CNAME", "SOA", "NULL", "PTR", 
  *      Creates simple DNS Queries for exactly one question
  *      (usually used by dns clients).
  */
-DNSPacket* createQuery(char *msg_name, char *name, unsigned short dnsclass, unsigned short type, unsigned short id,
+DNSPacket* createQuery(std::string msg_name, std::string name, unsigned short dnsclass, unsigned short type, unsigned short id,
         unsigned short rd)
 {
     DNSPacket *q = new DNSPacket(msg_name);
@@ -50,10 +50,7 @@ DNSPacket* createQuery(char *msg_name, char *name, unsigned short dnsclass, unsi
     // Setup question
 
     q->setNumQuestions(1);
-    DNSQuestion question;
-    question.qname = g_strdup(name);
-    question.qclass = dnsclass;
-    question.qtype = type;
+    DNSQuestion* question = new DNSQuestion(name, dnsclass, type);
     q->setQuestions(0, question); // in this case we vary from standard implementations
                                   // questions are appended as array in DNSPacket
 
@@ -67,7 +64,7 @@ DNSPacket* createQuery(char *msg_name, char *name, unsigned short dnsclass, unsi
  *      Creates a query with multiple questions
  */
 
-DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, unsigned short ancount, unsigned short nscount, unsigned short arcount, unsigned short id, unsigned short rd)
+DNSPacket* createNQuery(std::string msg_name, unsigned short qdcount, unsigned short ancount, unsigned short nscount, unsigned short arcount, unsigned short id, unsigned short rd)
 {
     DNSPacket *q = new DNSPacket(msg_name);
 
@@ -97,7 +94,7 @@ DNSPacket* createNQuery(char *msg_name, unsigned short qdcount, unsigned short a
  * @brief resolveQuery
  *      Extracts information in order to resolve a DNS query.
  */
-struct Query* resolveQuery(cPacket* query)
+struct Query resolveQuery(cPacket* query)
 {
     DNSPacket* v = dynamic_cast<DNSPacket*>(query);
 
@@ -110,23 +107,14 @@ struct Query* resolveQuery(cPacket* query)
         throw E_WRONG_QR;
     }
 
-    struct Query* q = (Query*) malloc(sizeof(Query));
-
-    // Parse v into q
-
-    q->id = v->getId();
-    q->qdcount = v->getQdcount();
-    q->ancount = 0;
-    q->nscount = 0;
-    q->arcount = 0;
-    q->options = v->getOptions();
-
-    DNSQuestion *questions = (DNSQuestion*) malloc(sizeof(*questions) * q->qdcount);
+    DNSQuestion questions [q->qdcount];
     for(short i = 0; i < q->qdcount; i++){
         questions[i] = v->getQuestions(i);
     }
 
     q->questions = questions;
+
+    struct Query* q = new Query(v->getId(), v->getOptions(), v->getQdcount(), 0, 0, 0, questions, NULL);
 
     return q;
 }
@@ -135,7 +123,7 @@ struct Query* resolveQuery(cPacket* query)
  * @brief createResponse
  *      Creates a dns response header.
  */
-DNSPacket* createResponse(char *msg_name, unsigned short qdcount, unsigned short ancount, unsigned short nscount, unsigned short arcount,
+DNSPacket* createResponse(std::string msg_name, unsigned short qdcount, unsigned short ancount, unsigned short nscount, unsigned short arcount,
         unsigned short id, unsigned short opcode, unsigned short AA, unsigned short rd, unsigned short ra,
         unsigned short rcode)
 {
@@ -231,35 +219,20 @@ struct Response* resolveResponse(cPacket *response)
         throw E_WRONG_QR;
     }
 
-    struct Response* r = (Response*) malloc(sizeof(Response));
-
-    // Append answers separately in another method
-
-
-
-    // Parse v into q
-
-    r->id = v->getId();
-    r->qdcount = 0;
-    r->ancount = v->getAncount();
-    r->nscount = v->getNscount();
-    r->arcount = v->getArcount();
-    r->options = v->getOptions();
-
     // Migrate Answers
-    DNSRecord *answers = (DNSRecord*) malloc(sizeof(DNSRecord) * r->ancount);
+    DNSRecord answers [v->getNumAnswers()];
     for(short i = 0; i < r->ancount; i++){
         answers[i] = v->getAnswers(i);
     }
 
     // Migrate Authoritative Records
-    DNSRecord *authoritative = (DNSRecord*) malloc(sizeof(DNSRecord) * r->nscount);
+    DNSRecord authoritative [v->getNumAuthorities()];
     for(short i = 0; i < r->nscount; i++){
         authoritative[i] = v->getAuthorities(i);
     }
 
     // Migrate Additional Records
-    DNSRecord *additional = (DNSRecord*) malloc(sizeof(DNSRecord) * r->arcount);
+    DNSRecord additional [v->getNumAdditional()];
     for(short i = 0; i < r->arcount; i++){
         additional[i] = v->getAdditional(i);
     }
@@ -267,6 +240,8 @@ struct Response* resolveResponse(cPacket *response)
     r->answers = answers;
     r->authoritative = authoritative;
     r->additional = additional;
+
+    struct Response* r = new Response(v->getId(), v->getOptions(), v->getQdcount(), 0, 0, 0, answers, authoritative, additional);
 
     return r;
 }
@@ -308,7 +283,7 @@ int isQueryOrResponse(cPacket *p)
     return -1;
 }
 
-const char* getTypeStringForValue(int type){
+std::string getTypeStringForValue(int type){
     // init type
 
     const char* rtype;
@@ -358,7 +333,7 @@ const char* getTypeStringForValue(int type){
             break;
     }
 
-    return rtype;
+    return std::string(rtype);
 }
 
 /**
@@ -368,21 +343,21 @@ const char* getTypeStringForValue(int type){
  * @return
  *      the according type value. -1 if the type is not available.
  */
-int getTypeValueForString(char* type){
-    if(g_strcmp0(type, DNS_TYPE_STR_A) == 0) return DNS_TYPE_VALUE_A;
-    if(g_strcmp0(type, DNS_TYPE_STR_AAAA) == 0) return DNS_TYPE_VALUE_AAAA;
-    if(g_strcmp0(type, DNS_TYPE_STR_CNAME) == 0) return DNS_TYPE_VALUE_CNAME;
-    if(g_strcmp0(type, DNS_TYPE_STR_HINFO) == 0) return DNS_TYPE_VALUE_HINFO;
-    if(g_strcmp0(type, DNS_TYPE_STR_MINFO) == 0) return DNS_TYPE_VALUE_MINFO;
-    if(g_strcmp0(type, DNS_TYPE_STR_MX) == 0) return DNS_TYPE_VALUE_MX;
-    if(g_strcmp0(type, DNS_TYPE_STR_NS) == 0) return DNS_TYPE_VALUE_NS;
-    if(g_strcmp0(type, DNS_TYPE_STR_NULL) == 0) return DNS_TYPE_VALUE_NULL;
-    if(g_strcmp0(type, DNS_TYPE_STR_PTR) == 0) return DNS_TYPE_VALUE_PTR;
-    if(g_strcmp0(type, DNS_TYPE_STR_SOA) == 0) return DNS_TYPE_VALUE_SOA;
-    if(g_strcmp0(type, DNS_TYPE_STR_TXT) == 0) return DNS_TYPE_VALUE_TXT;
-    if(g_strcmp0(type, DNS_TYPE_STR_SRV) == 0) return DNS_TYPE_VALUE_SRV;
-    if(g_strcmp0(type, DNS_TYPE_STR_ANY) == 0) return DNS_TYPE_VALUE_ANY;
-    if(g_strcmp0(type, DNS_TYPE_STR_AXFR) == 0) return DNS_TYPE_VALUE_AXFR;
+int getTypeValueForString(std::string type){
+    if(type == DNS_TYPE_STR_A) return DNS_TYPE_VALUE_A;
+    if(type == DNS_TYPE_STR_AAAA) return DNS_TYPE_VALUE_AAAA;
+    if(type == DNS_TYPE_STR_CNAME) return DNS_TYPE_VALUE_CNAME;
+    if(type == DNS_TYPE_STR_HINFO) return DNS_TYPE_VALUE_HINFO;
+    if(type == DNS_TYPE_STR_MINFO) return DNS_TYPE_VALUE_MINFO;
+    if(type == DNS_TYPE_STR_MX) return DNS_TYPE_VALUE_MX;
+    if(type == DNS_TYPE_STR_NS) return DNS_TYPE_VALUE_NS;
+    if(type == DNS_TYPE_STR_NULL) return DNS_TYPE_VALUE_NULL;
+    if(type == DNS_TYPE_STR_PTR) return DNS_TYPE_VALUE_PTR;
+    if(type == DNS_TYPE_STR_SOA) return DNS_TYPE_VALUE_SOA;
+    if(type == DNS_TYPE_STR_TXT) return DNS_TYPE_VALUE_TXT;
+    if(type == DNS_TYPE_STR_SRV) return DNS_TYPE_VALUE_SRV;
+    if(type == DNS_TYPE_STR_ANY) return DNS_TYPE_VALUE_ANY;
+    if(type == DNS_TYPE_STR_AXFR) return DNS_TYPE_VALUE_AXFR;
 
     return -1;
 }
@@ -394,7 +369,7 @@ int getTypeValueForString(char* type){
  * @return
  *      the desired string value.
  */
-const char* getClassStringForValue(int _class){
+std::string getClassStringForValue(int _class){
     const char* __class;
 
     switch (_class)
@@ -417,15 +392,15 @@ const char* getClassStringForValue(int _class){
         default: break;
     }
 
-    return __class;
+    return std::string(__class);
 }
 
 void printDNSRecord(DNSRecord* r){
-    g_printf("%s\t\t%s\t%s\t%s\n", r->rname, getTypeStringForValue(r->rtype), getClassStringForValue(r->rclass), r->rdata);
+    std::cout << r->rname << "\t\t" << getTypeStringForValue(r->rtype) << "\t" << getClassStringForValue(r->rclass) << "\t" << r->rdata << std::endl;
 }
 
 void printDNSQuestion(DNSQuestion* q){
-    g_printf("%s\t\t%s\t%s\n", q->qname, getTypeStringForValue(q->qtype), getClassStringForValue(q->qclass));
+    std::cout << q->qname << "\t\t" << getTypeStringForValue(q->qtype) << "\t" << getClassStringForValue(q->qclass) << std::endl;
 }
 
 
@@ -436,7 +411,7 @@ void printDNSQuestion(DNSQuestion* q){
  *      returns a char sequence representing the dnspacket
  */
 
-char* dnsPacketToString(DNSPacket* packet){
+std::string dnsPacketToString(DNSPacket* packet){
     std::string dns_string = "";
 
     dns_string.append(";;Question Section:\n");
@@ -477,7 +452,7 @@ char* dnsPacketToString(DNSPacket* packet){
         dns_string.append("\n");
     }
 
-    return g_strdup(dns_string.c_str());
+    return dns_string;
 }
 
 /**
@@ -516,8 +491,7 @@ int freeDnsQuestion(DNSQuestion* q){
         return 0;
     }
 
-    g_free(q->qname);
-    free(q);
+    delete q;
 
     return 1;
 }
@@ -534,9 +508,7 @@ int freeDnsRecord(DNSRecord* r){
         return 0;
     }
 
-    g_free(r->rname);
-    g_free(r->rdata);
-    free(r);
+    delete r;
 
     return 1;
 }
@@ -546,17 +518,29 @@ int freeDnsRecord(DNSRecord* r){
  *  creates a hard-copy of a given dns record.
  *
  * @return
- *      the hard-copy created, not that this needs to be freed if not used anymore.
+ *      the hard-copy created, the struct should be deleted accordingly.
  */
 DNSRecord* copyDnsRecord(DNSRecord* r){
-    DNSRecord* r_cpy = (DNSRecord*) malloc(sizeof(*r_cpy));
-    r_cpy->rname = g_strdup(r->rname);
-    r_cpy->rdata = g_strdup(r->rdata);
-    r_cpy->rclass = r->rclass;
-    r_cpy->rdlength = r->rdlength;
-    r_cpy->rtype = r->rtype;
-    r_cpy->ttl = r->ttl;
+    // hard-cpy void * data..
 
+    void* cpy_data;
+    switch(r->rtype){
+        case DNS_TYPE_VALUE_SRV: // user the srv struct, containing service domain, name, port, weight, etc...
+            SRVData* srv_cpy = new SRVData();
+            srv_cpy->service = ((SRVData*) r->rdata)->service;
+            srv_cpy->name = ((SRVData*) r->rdata)->name;
+            srv_cpy->proto = ((SRVData*) r->rdata)->proto;
+            srv_cpy->target = ((SRVData*) r->rdata)->target;
+            srv_cpy->ttl = ((SRVData*) r->rdata)->ttl;
+            srv_cpy->port = ((SRVData*) r->rdata)->port;
+            srv_cpy->weight = ((SRVData*) r->rdata)->weight;
+            srv_cpy->priority = ((SRVData*) r->rdata)->priority;
+            break;
+        default: cpy_data = std::string((const char*) r->rdata); // consider data to be of type const char*
+            break;
+    }
+
+    DNSRecord* r_cpy = new DNSRecord(r->rname, r->rtype, r->rclass, r->ttl, r->rdlength, cpy_data);
     return r_cpy;
 }
 
@@ -568,11 +552,7 @@ DNSRecord* copyDnsRecord(DNSRecord* r){
  *      the hard-copy created, not that this needs to be freed if not used anymore.
  */
 DNSQuestion* copyDnsQuestion(DNSQuestion* q){
-    DNSQuestion* q_cpy = (DNSQuestion*) malloc(sizeof(*q_cpy));
-    q_cpy->qname = g_strdup(q->qname);
-    q_cpy->qtype = q->qtype;
-    q_cpy->qclass = q->qclass;
-
+    DNSQuestion* q_cpy = new DNSQuestion(q->qname, q->qtype, q->qclass);
     return q_cpy;
 }
 

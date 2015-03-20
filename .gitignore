@@ -52,6 +52,12 @@ Makefile.in
 
 .settings
 
+work
 work/
 out/
 results/
+
+*~
+
+.tkenv*
+/.last-copts

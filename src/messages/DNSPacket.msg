@@ -31,6 +31,8 @@ struct DNSRecord;
 // DNSPacket definition
 // author: Andreas Rain, Distributed Systems Group, University of Konstanz
 packet DNSPacket {
+    
+    string displayString = "i=msg/packet,blue;b=60,15,blue,black,5";
     unsigned short id;
     unsigned short options; 
     unsigned short qdcount; 

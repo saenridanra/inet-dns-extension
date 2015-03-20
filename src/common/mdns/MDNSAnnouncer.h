@@ -67,6 +67,7 @@ protected:
     char* target;
 
     int id_internal = 0;
+    int num_announced_jobs = 0;
 
     AnnouncerState s;
 
@@ -104,6 +105,14 @@ public:
     virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
     virtual void withdraw(Probe* p);
     virtual void goodbye(Probe* p, int send_goodbye, int remove);
+
+    virtual int getNumAnnounced(){
+        return num_announced_jobs;
+    }
+
+    virtual AnnouncerState getState(){
+        return s;
+    }
 
     virtual ODnsExtension::DNSTTLCache* getCache() {
         return auth_cache;

@@ -93,31 +93,65 @@ void DNSClient::handleMessage(cMessage *msg) {
         key=(uint32_t *)malloc(sizeof(uint32_t));
         *key = response->id;
 
+
+        std::string bubble_popup = "Resolved query: ";
         g_print("**********************\nResolved query:\n\n;;Question Section:\n");
         DNSPacket* q = (DNSPacket*) g_hash_table_lookup(queries, key);
         ODnsExtension::printDNSQuestion(&q->getQuestions(0));
+        bubble_popup.append(q->getQuestions(0).qname);
+        bubble_popup.append("\n");
         delete q;
 
+        bubble_popup.append(";;Answer Section:\n");
         g_print("\n;;Answer Section:\n");
         for(int i = 0; i < response->ancount; i++){
             DNSRecord* r = &response->answers[i];
             ODnsExtension::printDNSRecord(r);
+            bubble_popup.append(r->rname);
+            bubble_popup.append(":");
+            bubble_popup.append(ODnsExtension::getTypeStringForValue(r->rtype));
+            bubble_popup.append(":");
+            bubble_popup.append(ODnsExtension::getClassStringForValue(r->rclass));
+            bubble_popup.append("\nData: ");
+            bubble_popup.append(r->rdata);
+            bubble_popup.append("\n");
             cache->put_into_cache(r);
         }
 
+        bubble_popup.append(";;Authority Section:\n");
         g_print("\n;;Authority Section:\n");
         for(int i = 0; i < response->nscount; i++){
             DNSRecord* r = &response->authoritative[i];
             ODnsExtension::printDNSRecord(r);
+            bubble_popup.append(r->rname);
+            bubble_popup.append(":");
+            bubble_popup.append(ODnsExtension::getTypeStringForValue(r->rtype));
+            bubble_popup.append(":");
+            bubble_popup.append(ODnsExtension::getClassStringForValue(r->rclass));
+            bubble_popup.append("\nData: ");
+            bubble_popup.append(r->rdata);
+            bubble_popup.append("\n");
             cache->put_into_cache(r);
         }
 
+        bubble_popup.append(";;Additional Section:\n");
         g_print("\n;;Additional Section:\n");
         for(int i = 0; i < response->arcount; i++){
             DNSRecord* r = &response->additional[i];
             ODnsExtension::printDNSRecord(r);
+            bubble_popup.append(r->rname);
+            bubble_popup.append(":");
+            bubble_popup.append(ODnsExtension::getTypeStringForValue(r->rtype));
+            bubble_popup.append(":");
+            bubble_popup.append(ODnsExtension::getClassStringForValue(r->rclass));
+            bubble_popup.append("\nData: ");
+            bubble_popup.append(r->rdata);
+            bubble_popup.append("\n");
             cache->put_into_cache(r);
         }
+
+        EV << bubble_popup.c_str();
+        this->getParentModule()->bubble(bubble_popup.c_str());
         g_print("**********************\n");
 
         g_hash_table_remove(queries, &response->id);

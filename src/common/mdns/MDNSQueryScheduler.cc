@@ -126,7 +126,13 @@ void MDNSQueryScheduler::elapse(ODnsExtension::TimeEvent* e, void* data) {
 int MDNSQueryScheduler::preparePacketAndSend(GList* qlist, GList* anlist,
         GList* nslist, GList* arlist, int qdcount, int ancount, int nscount,
         int arcount, int packetSize, int TC, int is_private) {
-    char* msgname = g_strdup_printf("mdns_query#%d", id_count);
+
+    char* msgname;
+    if(!is_private)
+        msgname = g_strdup_printf("MDNS_query#%d", id_count);
+    else
+        msgname = g_strdup_printf("PRIVATE_query#%d", id_count);
+
     DNSPacket* p = ODnsExtension::createNQuery(msgname, qdcount, ancount,
             nscount, arcount, id_count++, 0);
 
@@ -175,8 +181,12 @@ int MDNSQueryScheduler::preparePacketAndSend(GList* qlist, GList* anlist,
     // packet fully initialized, send it via multicast
     p->setByteLength(packetSize);
     if (!is_private) {
+        const char* dstr = "i=msg/bcast,red";
+        p->setDisplayString(dstr);
         outSock->sendTo(p, multicast_address, MDNS_PORT);
     } else {
+        const char* dstr = "i=msg/packet,green";
+        p->setDisplayString(dstr);
         char* service_type = ODnsExtension::extract_stype(
                 p->getQuestions(0).qname);
         ODnsExtension::PrivateMDNSService* psrv =

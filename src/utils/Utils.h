@@ -19,48 +19,21 @@
  THE SOFTWARE.
  */
 
-#ifndef __OPP_DNS_EXTENSION_MDNS_PRIVACY_H_
-#define __OPP_DNS_EXTENSION_MDNS_PRIVACY_H_
+#ifndef UTILS_H_
+#define UTILS_H_
 
-#include <omnetpp.h>
+#include <string>
 
-#include "IPvXAddressResolver.h"
-#include <DNSTools.h>
-#include <DNS.h>
-#include <MDNS.h>
+namespace ODnsExtension {
 
-#include <glib.h>
-
-namespace ODnsExtension{
-
-typedef struct PrivateMDNSService{
-    char* service_type;
-    int is_private;
-    GList* offered_to;
-    GList* offered_by;
-} private_mdns_service;
-
-typedef struct PairingData{
-    char* crypto_key;
-    char* friend_id;
-    char* privacy_service_instance_name;
-} pairing_data;
-
-typedef struct FriendData{
-    PairingData* pdata;
-    IPvXAddress address;
-    int port;
-    simtime_t last_informed;
-    int online;
-} friend_data;
-
-char* extract_stype(char* label);
-PrivateMDNSService* private_service_new(char* service_type, int is_private);
-PairingData* pairing_data_new(char* crypto_key, char* friend_id, char* privacy_instance_name);
-FriendData* friend_data_new(PairingData* pdata, int port);
-
-#define DEFAULT_PRIVACY_SOCKET_PORT 9977
+    /**
+     * STD STRING HELPER FUNCTIONS
+     *
+     * Some functions for convenient usage
+     */
+    int stdstr_has_suffix(std::string base, std::string suffix);
 
 }
 
-#endif /* __OPP_DNS_EXTENSION_MDNS_PRIVACY_H_ */
+
+#endif /* UTILS_H_ */

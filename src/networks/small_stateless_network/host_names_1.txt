@@ -1,0 +1,3 @@
+A 134.34.165.25.cca.client1.echo.netfuture.ch
+A 134.34.165.25.00.echo.netfuture.ch.
+A client2.echo.netfuture.ch
