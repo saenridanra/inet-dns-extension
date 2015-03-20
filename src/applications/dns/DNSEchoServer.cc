@@ -27,12 +27,8 @@ void DNSEchoServer::initialize(int stage) {
 
         receivedQueries = 0;
 
-        nameserver = par("nameserver").stringValue();
-        nameserver_ip = par("nameserver_ip").stringValue();
-
-        // compile regexes
-        standard_query_regex = g_regex_new(standard_query, G_REGEX_CASELESS, G_REGEX_MATCH_NOTEMPTY, &regex_error);
-        a_query_regex = g_regex_new(a_query, G_REGEX_CASELESS, G_REGEX_MATCH_NOTEMPTY, &regex_error);
+        nameserver = par("nameserver").stdstringValue();
+        nameserver_ip = par("nameserver_ip").stdstringValue();
     }
 }
 
@@ -77,13 +73,20 @@ void DNSEchoServer::handleMessage(cMessage *msg) {
 
 DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
     int have_match = 0;
-    char *ip, *method, *alias, *qbase, *alias_domain, *echo_domain, *msg_name;
+    std::string ip, method, alias, qbase, alias_domain, echo_domain, msg_name;
+
+    std::regex r_standard_query ("(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\.(cca)\\.((?:\\w|-)+)\\.(\\w+\\.\\w+\\.\\w+)");
+    std::regex r_a_query ("(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\.(00)\\.(\\w+\\.\\w+\\.\\w+)");
+
     int num_an_records = 0, num_ns_records = 0, num_ar_records = 0, id, opcode, rd, ra;
-    GList* an_records = NULL;
+    std::list<DNSRecord*> an_records;
     DNSPacket* response;
 
+    // create string obj. matcher
+    auto m = std::smatch{};
+
     // first analyze query according to stateless dns
-    char* qname = query->questions[0].qname; // lower case query
+    std::string qname = query->questions[0].qname; // lower case query
 
     // initializes options
     id = query->id;
@@ -98,31 +101,27 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
     // can easily be extended to other types using the reference
     // implementation of stateless dns
     if (query->questions[0].qtype == DNS_TYPE_VALUE_A) {
-        g_regex_match(standard_query_regex, qname, g_regex_get_match_flags(standard_query_regex), &regex_match_info);
-
         //query
-        if (g_match_info_matches(regex_match_info)) {
-            ip = g_match_info_fetch(regex_match_info, 1);
-            method = g_match_info_fetch(regex_match_info, 2);
-            alias = g_match_info_fetch(regex_match_info, 3);
-            qbase = g_match_info_fetch(regex_match_info, 4);
+        if (std::regex_match(qname, m, r_standard_query)) {
+            ip = m[1].str();
+            method = m[2].str();
+            alias = m[3].str();
+            qbase = m[4].str();
             have_match = 1;
         }
         if (!have_match) {
-            g_regex_match(a_query_regex, qname, g_regex_get_match_flags(a_query_regex), &regex_match_info);
             //query for echo domain A
-            if (g_match_info_matches(regex_match_info)) {
-                ip = g_match_info_fetch(regex_match_info, 1);
-                method = g_match_info_fetch(regex_match_info, 2);
-                qbase = g_match_info_fetch(regex_match_info, 3);
-                alias = "";
+            if (std::regex_match(qname, m, r_a_query)) {
+                ip = m[1].str();
+                method = m[2].str();
+                qbase = m[3].str();
+                alias = std::string("");
                 have_match = 1;
             }
         }
     }
 
-    msg_name = (char*) malloc(20);
-    sprintf(msg_name, "dns_response#%d", response_count++);
+    msg_name = std::string("dns_response#") + std::to_string(response_count++);
 
     if (!have_match) {
         response = ODnsExtension::createResponse(msg_name, 1, num_an_records,
@@ -132,57 +131,57 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
     }
 
     // generate answer, check method
-    alias_domain = g_strdup_printf("%s.%s", alias, qbase);
-    echo_domain = g_strdup_printf("%s.00.%s", ip, qbase);
+    alias_domain = alias + std::string(".") + qbase;
+    echo_domain = ip + std::string(".00.") + qbase;
 
     // basic methods for the simulation
-    if (!g_strcmp0(method, "00")) {
-        DNSRecord* r = (ODnsExtension::DNSRecord*) malloc(sizeof(*r));
-        r->rdata = g_strdup(ip);
-        r->rname = g_strdup(qname);
+    if (method == "00") {
+        DNSRecord* r = new DNSRecord();
+        r->strdata = ip;
+        r->rname = qname;
         r->rclass = (short) DNS_CLASS_IN;
         r->rtype = (short) query->questions[0].qtype;
-        r->rdlength = strlen(r->rdata);
+        r->rdlength = ip.length();
         r->ttl = 10000;
 
         num_an_records++;
-        an_records = g_list_append(an_records, r);
-    } else if (!g_strcmp0(method, "cca")) {
+        an_records.push_back(r);
+    } else if (method == "cca") {
         // first cname RR
-        DNSRecord* r = (ODnsExtension::DNSRecord*) malloc(sizeof(*r));
-        r->rname = g_strdup(qname);
-        r->rdata = g_strdup(alias_domain);
+        DNSRecord* r = new DNSRecord();
+        r->rname = qname;
+        r->strdata = alias_domain;
         r->rclass = (short) DNS_CLASS_IN;
         r->rtype = DNS_TYPE_VALUE_CNAME;
-        r->rdlength = strlen(r->rdata);
+        r->rdlength = alias_domain.length();
         r->ttl = 10000;
 
         num_an_records++;
-        an_records = g_list_append(an_records, r);
+        an_records.push_back(r);
 
         // second cname RR
-        r = (ODnsExtension::DNSRecord*) malloc(sizeof(*r));
-        r->rname = g_strdup(alias_domain);
-        r->rdata = g_strdup(echo_domain);
+        r = new DNSRecord();
+        r->rname = alias_domain;
+        r->strdata = echo_domain;
         r->rclass = (short) DNS_CLASS_IN;
         r->rtype = (short) DNS_TYPE_VALUE_CNAME;
-        r->rdlength = strlen(r->rdata);
+        r->rdlength = echo_domain.length();
         r->ttl = 10000;
 
         num_an_records++;
-        an_records = g_list_append(an_records, r);
+        an_records.push_back(r);
 
         // A RR
-        r = (ODnsExtension::DNSRecord*) malloc(sizeof(*r));
-        r->rname = g_strdup(echo_domain);
-        r->rdata = g_strdup(ip);
+        r = new DNSRecord();
+        r->rname = echo_domain;
+        r->strdata = ip;
         r->rclass = (short) DNS_CLASS_IN;
         r->rtype = (short) DNS_TYPE_VALUE_A;
-        r->rdlength = strlen(r->rdata);
+        r->rdlength = ip.length();
         r->ttl = 10000;
 
         num_an_records++;
-        an_records = g_list_append(an_records, r);
+        an_records.push_back(r);
     }
 
     // create response packet, append question and answers
@@ -193,15 +192,10 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
     appendQuestion(response, ODnsExtension::copyDnsQuestion(&query->questions[0]), 0);
 
     int index = 0;
-    GList *next = g_list_first(an_records);
 
-    if (an_records > 0) {
-        while (next) {
-            ODnsExtension::appendAnswer(response,
-                    (ODnsExtension::DNSRecord*) next->data, index++);
-
-            next = g_list_next(next);
-        }
+    for (auto it : an_records) {
+        ODnsExtension::appendAnswer(response,
+                it, index++);
     }
 
     // no auth or add records in this case, return the response

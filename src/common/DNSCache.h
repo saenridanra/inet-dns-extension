@@ -24,8 +24,8 @@
 
 #include "DNS.h"
 #include "../utils/DNSTools.h"
-#include "glib.h"
-#include "glib/gprintf.h"
+#include <list>
+#include <unordered_map>
 
 namespace ODnsExtension {
 
@@ -41,12 +41,12 @@ public:
     DNSCache();
     virtual ~DNSCache();
     virtual int put_into_cache(DNSRecord* record) = 0;
-    virtual GList* get_from_cache(char* hash) = 0;
-    virtual GList* remove_from_cache(char* hash) = 0;
-    virtual DNSRecord* remove_from_cache(char* hash, DNSRecord* r) = 0;
-    virtual int is_in_cache(char* hash) = 0;
-    virtual GList* evict() = 0;
-    virtual GList* get_matching_hashes(char* hash) = 0;
+    std::list<DNSRecord*> get_from_cache(std::string hash);
+    std::list<DNSRecord*> remove_from_cache(std::string hash);
+    virtual DNSRecord* remove_from_cache(std::string hash, DNSRecord* r) = 0;
+    virtual int is_in_cache(std::string hash) = 0;
+    std::list<DNSRecord*> evict();
+    virtual std::list<std::string> get_matching_hashes(std::string hash) = 0;
 
     void setMaxRecords(int _max_records)
     {

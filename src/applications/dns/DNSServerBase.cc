@@ -88,7 +88,7 @@ void DNSServerBase::handleMessage(cMessage *msg)
                     int id = ((DNSPacket*) msg)->getId();
                     CachedQuery* cq = (CachedQuery*) get_query_from_cache(id);
 
-                    IPvXAddress addr = IPvXAddressResolver().resolve(cq->query->src_address);
+                    IPvXAddress addr = IPvXAddressResolver().resolve(cq->query->src_address.c_str());
 
                     // free cached query data
                     remove_query_from_cache(id, cq);
@@ -126,7 +126,7 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
     if (DNS_HEADER_AA(packet->getOptions()) && packet->getAncount() > 0)
     {
         // we have what we looked for, return
-        std::string msg_name = std::string("dns_response#") + std::string(original_query->id);
+        std::string msg_name = std::string("dns_response#") + std::to_string(original_query->id);
         response = ODnsExtension::createResponse(msg_name, 1, packet->getAncount(), packet->getNscount(),
                 packet->getArcount(), original_query->id, DNS_HEADER_OPCODE(original_query->options), 0,
                 DNS_HEADER_RD(original_query->options), 1, 0);
@@ -153,13 +153,13 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
 
                     // put the record into the cache
                     bubble_popup.append("New cache entry:\n");
-                    bubble_popup.append(r->rname);
+                    bubble_popup.append(r->rname.c_str());
                     bubble_popup.append(":");
                     bubble_popup.append(ODnsExtension::getTypeStringForValue(r->rtype));
                     bubble_popup.append(":");
                     bubble_popup.append(ODnsExtension::getClassStringForValue(r->rclass));
                     bubble_popup.append("\nData: ");
-                    bubble_popup.append(r->rdata);
+                    bubble_popup.append(r->strdata.c_str());
                     bubble_popup.append("\n---------\n");
                     responseCache->put_into_cache(r);
                 }
@@ -196,7 +196,7 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
                 std::string tmp = (std::string) *it;
                 std::list<DNSRecord*> records = responseCache->get_from_cache(tmp);
 
-                if (records == NULL)
+                if (!records.empty())
                     break;
 
                 // list should not be greater one otherwise there is a collision
@@ -231,7 +231,7 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
     else if (DNS_HEADER_AA(packet->getOptions()) && packet->getAncount() == 0)
     {
         // return the entry not found response
-        std::string msg_name = "dns_response#" + std::string(original_query->id);
+        std::string msg_name = "dns_response#" + std::to_string(original_query->id);
 
         response = ODnsExtension::createResponse(msg_name, 1, 0, 0, 0, original_query->id,
                 DNS_HEADER_OPCODE(original_query->options), 1, DNS_HEADER_RD(original_query->options), 1, 3);
@@ -252,12 +252,12 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
         DNSRecord *r = &packet->getAdditional(p);
 
         // query the name server for our original query
-        std::string msg_name = "dns_query#" + std::string(cq->internal_id) + std::string("--recursive");
+        std::string msg_name = "dns_query#" + std::to_string(cq->internal_id) + std::string("--recursive");
         DNSPacket *query = ODnsExtension::createQuery(msg_name, packet->getQuestions(0).qname, DNS_CLASS_IN,
                 packet->getQuestions(0).qtype, cq->internal_id, 1);
 
         // Resolve the ip address for the record
-        IPvXAddress address = IPvXAddressResolver().resolve(r->rdata);
+        IPvXAddress address = IPvXAddressResolver().resolve(r->strdata.c_str());
 
         if (!address.isUnspecified())
             sendResponse(query, address);
@@ -272,7 +272,7 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
     else
     {
         // something went wrong, return a server failure query
-        std::string msg_name = "dns_response#" + std::string(original_query->id);
+        std::string msg_name = "dns_response#" + std::to_string(original_query->id);
         response = ODnsExtension::createResponse(msg_name, 1, 0, 0, 0, original_query->id,
                 DNS_HEADER_OPCODE(original_query->options), 0, DNS_HEADER_RD(original_query->options), 1, 2);
 

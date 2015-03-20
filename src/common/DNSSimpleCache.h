@@ -56,7 +56,7 @@ public:
      * @return
      *      the desired dns records, returns null if there is no such record for the given hash.
      */
-    GList* get_from_cache(char* hash);
+    std::list<DNSRecord*> get_from_cache(std::string hash);
 
     /**
      * @brief is_in_cache
@@ -66,7 +66,7 @@ public:
      *      1 if there is an entry
      *      0 otherwise
      */
-    int is_in_cache(char* hash);
+    int is_in_cache(std::string hash);
 
     /**
      * @brief remove_from_cache
@@ -77,7 +77,7 @@ public:
      * @return
      *      returns the removed records.
      */
-    GList* remove_from_cache(char* hash);
+    std::list<DNSRecord*> remove_from_cache(std::string hash);
 
     /**
      * @brief remove_from_cache
@@ -89,7 +89,7 @@ public:
      * @return
      *      returns the removed record.
      */
-    DNSRecord* remove_from_cache(char* hash, DNSRecord* r);
+    DNSRecord* remove_from_cache(std::string hash, DNSRecord* r);
 
     /**
      * @brief evict
@@ -98,7 +98,7 @@ public:
      * @return
      *      the evicted dns records.
      */
-    GList* evict();
+    std::list<DNSRecord*> evict();
 
     /**
      * @brief get_matching_hashes
@@ -112,10 +112,10 @@ public:
      *      list of matching hashes in the cache
      *
      */
-    GList* get_matching_hashes(char* hash);
+    std::list<std::string> get_matching_hashes(std::string hash);
 
 protected:
-    GHashTable* cache;
+    std::unordered_map<std::string, std::list<DNSRecord*>> cache;
 };
 
 } /* namespace ODnsExtension */

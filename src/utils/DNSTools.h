@@ -231,6 +231,16 @@ DNSRecord* copyDnsRecord(DNSRecord* r);
  */
 DNSQuestion* copyDnsQuestion(DNSQuestion* q);
 
+/**
+ * @brief recordDataEqual
+ *  compared rdata or strdata depending on type
+ *  and checks if data is equal
+ *
+ * @return
+ *      true if the records are equal
+ */
+int recordDataEqual(DNSRecord* r1, DNSRecord* r2);
+
 }
 
 #endif /* DNSTOOLS_H_ */

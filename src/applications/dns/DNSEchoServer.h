@@ -31,10 +31,11 @@
 #include "DNSCache.h"
 #include "DNSTools.h"
 #include "DNS.h"
+#include <regex>
 #include <vector>
+#include <list>
 
 #include "DNSTools.h"
-#include "glib.h"
 
 /**
  * @brief DNSEchoServer
@@ -45,18 +46,9 @@
 class DNSEchoServer : public cSimpleModule
 {
   protected:
-    const char *nameserver, *nameserver_ip;
-
-    const char* standard_query = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\.(cca)\\.((?:\\w|-)+)\\.(\\w+\\.\\w+\\.\\w+)";
-
-    const char* a_query = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\.(00)\\.(\\w+\\.\\w+\\.\\w+)";
+    std::string nameserver, nameserver_ip;
     int receivedQueries = 0;
     int response_count = 0;
-
-    GRegex* standard_query_regex;
-    GRegex* a_query_regex;
-    GError* regex_error;
-    GMatchInfo* regex_match_info;
 
     // Socket over which DNS queries are sent/received
     UDPSocket out;

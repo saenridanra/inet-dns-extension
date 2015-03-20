@@ -82,135 +82,162 @@ namespace ODnsExtension {
 // Some other useful definitions
 #define DNS_PORT 53
 
-struct Query
-{
-        unsigned short id;
-        unsigned short options;
-        unsigned short qdcount;
-        unsigned short ancount;
-        unsigned short nscount;
-        unsigned short arcount;
+struct Query {
+    unsigned short id;
+    unsigned short options;
+    unsigned short qdcount;
+    unsigned short ancount;
+    unsigned short nscount;
+    unsigned short arcount;
 
-        // Questions from the query
-        struct DNSQuestion* questions;
+    // Questions from the query
+    struct DNSQuestion* questions;
 
-        std::string src_address;
+    std::string src_address;
 
-        Query(): id(0), options(0), qdcount(0), ancount(0), nscount(0), arcount(0), questions(NULL), src_address(NULL) {}
+    Query() :
+            id(0), options(0), qdcount(0), ancount(0), nscount(0), arcount(0), questions(
+                    NULL), src_address(NULL) {
+    }
 
-        Query(unsigned short _id, unsigned short _options, unsigned short _qdcount, unsigned short _ancount,
-                unsigned short _nscount, unsigned short _arcount, DNSQuestion* _questions, std::string _src_address) :
-                id(_id), options(_options), qdcount(_qdcount), ancount(_ancount), nscount(_nscount), arcount(_arcount), questions(
-                        _questions), src_address(_src_address)
-        {
-        }
+    Query(unsigned short _id, unsigned short _options, unsigned short _qdcount,
+            unsigned short _ancount, unsigned short _nscount,
+            unsigned short _arcount, DNSQuestion* _questions,
+            std::string _src_address) :
+            id(_id), options(_options), qdcount(_qdcount), ancount(_ancount), nscount(
+                    _nscount), arcount(_arcount), questions(_questions), src_address(
+                    _src_address) {
+    }
 
 };
 
-struct DNSQuestion
-{
-        /*
-         * Domain name consisting of a sequence of labels.
-         */
-        std::string qname;
-        /*
-         * Two octet code specifying type of the query.
-         */
-        unsigned short qtype;
-        /*
-         * Two octect code specifying type of the query.
-         */
-        unsigned short qclass;
+struct DNSQuestion {
+    /*
+     * Domain name consisting of a sequence of labels.
+     */
+    std::string qname;
+    /*
+     * Two octet code specifying type of the query.
+     */
+    unsigned short qtype;
+    /*
+     * Two octect code specifying type of the query.
+     */
+    unsigned short qclass;
 
-        DNSQuestion() : qname(NULL), qtype(0), qclass(0) {}
+    DNSQuestion() :
+            qname(NULL), qtype(0), qclass(0) {
+    }
 
-        DNSQuestion(std::string _qname, unsigned short _qtype, unsigned short _qclass) :
-                qname(_qname), qtype(_qtype), qclass(_qclass)
-        {
-        }
+    DNSQuestion(std::string _qname, unsigned short _qtype,
+            unsigned short _qclass) :
+            qname(_qname), qtype(_qtype), qclass(_qclass) {
+    }
 };
 
-struct Response
-{
-        unsigned short id;
-        unsigned short options;
-        unsigned short qdcount;
-        unsigned short ancount;
-        unsigned short nscount;
-        unsigned short arcount;
+struct Response {
+    unsigned short id;
+    unsigned short options;
+    unsigned short qdcount;
+    unsigned short ancount;
+    unsigned short nscount;
+    unsigned short arcount;
 
-        // Answers from the query
-        struct DNSRecord* answers;
-        struct DNSRecord* authoritative;
-        struct DNSRecord* additional;
+    // Answers from the query
+    struct DNSRecord* answers;
+    struct DNSRecord* authoritative;
+    struct DNSRecord* additional;
 
-        Response(): id(0), options(0), qdcount(0), ancount(0), nscount(0), arcount(0), answers(NULL), authoritative(NULL), additional(NULL) {}
+    Response() :
+            id(0), options(0), qdcount(0), ancount(0), nscount(0), arcount(0), answers(
+                    NULL), authoritative(NULL), additional(NULL) {
+    }
 
-        Response(unsigned short _id, unsigned short _options, unsigned short _qdcount, unsigned short _ancount,
-                unsigned short _nscount, unsigned short _arcount, DNSRecord* _answers, DNSRecord* _authoritative,
-                DNSRecord* _additional) :
-                id(_id), options(_options), qdcount(_qdcount), ancount(_ancount), nscount(_nscount), arcount(_arcount), answers(
-                        _answers), authoritative(_authoritative), additional(_additional)
-        {
-        }
-};
-
-struct DNSRecord
-{
-        /*
-         * Name of the domain name record.
-         */
-        std::string rname;
-        /*
-         * Two octet code specifying RR type.
-         */
-        unsigned short rtype;
-        /*
-         * Two octet code specifying the RData class.
-         */
-        unsigned short rclass;
-        /*
-         * 32-bit unsigned integer specifying how long
-         * the record may be cached.
-         */
-        unsigned int ttl;
-        /*
-         * 16-bit unsigned integer specifying the length
-         * in octets of the rdata section.
-         */
-        unsigned short rdlength;
-
-        /*
-         * Variable length string. Format is according to rtype
-         * and rclass of this record.
-         */
-        void* rdata;
-
-        std::string strdata;
-
-        DNSRecord() : rname(NULL), rtype(0), rclass(0), ttl(0), rdlength(0), rdata(NULL) {}
-
-        DNSRecord(std::string _rname, unsigned short _rtype, unsigned short _rclass, unsigned int _ttl,
-                unsigned short _rdlength, void* _rdata) :
-                rname(_rname), rtype(_rtype), rclass(_rclass), ttl(_ttl), rdlength(_rdlength), rdata(_rdata)
-        {
-        }
+    Response(unsigned short _id, unsigned short _options,
+            unsigned short _qdcount, unsigned short _ancount,
+            unsigned short _nscount, unsigned short _arcount,
+            DNSRecord* _answers, DNSRecord* _authoritative,
+            DNSRecord* _additional) :
+            id(_id), options(_options), qdcount(_qdcount), ancount(_ancount), nscount(
+                    _nscount), arcount(_arcount), answers(_answers), authoritative(
+                    _authoritative), additional(_additional) {
+    }
 };
 
 /**
  * Define different structs for the datatypes used in the domain name system
  */
-struct SRVData{
-        std::string service;
-        std::string proto;
-        std::string name;
-        std::string target;
-        unsigned short ttl;
-        unsigned short weight;
-        unsigned short priority;
-        unsigned short port;
+struct SRVData {
+    std::string service;
+    std::string proto;
+    std::string name;
+    std::string target;
+    unsigned short ttl;
+    unsigned short weight;
+    unsigned short priority;
+    unsigned short port;
 
-        SRVData() : service(NULL), proto(NULL), name(NULL), target(NULL), ttl(0), weight(0), priority(0), port(0) {};
+    SRVData() :
+            service(NULL), proto(NULL), name(NULL), target(NULL), ttl(0), weight(
+                    0), priority(0), port(0) {
+    }
+    ;
+};
+
+struct DNSRecord {
+    /*
+     * Name of the domain name record.
+     */
+    std::string rname;
+    /*
+     * Two octet code specifying RR type.
+     */
+    unsigned short rtype;
+    /*
+     * Two octet code specifying the RData class.
+     */
+    unsigned short rclass;
+    /*
+     * 32-bit unsigned integer specifying how long
+     * the record may be cached.
+     */
+    unsigned int ttl;
+    /*
+     * 16-bit unsigned integer specifying the length
+     * in octets of the rdata section.
+     */
+    unsigned short rdlength;
+
+    /*
+     * Variable length string. Format is according to rtype
+     * and rclass of this record.
+     */
+    void* rdata;
+
+    std::string strdata;
+
+    DNSRecord() :
+            rname(NULL), rtype(0), rclass(0), ttl(0), rdlength(0), rdata(NULL) {
+    }
+
+    DNSRecord(std::string _rname, unsigned short _rtype, unsigned short _rclass,
+            unsigned int _ttl, unsigned short _rdlength, void* _rdata) :
+            rname(_rname), rtype(_rtype), rclass(_rclass), ttl(_ttl), rdlength(
+                    _rdlength), rdata(_rdata) {
+    }
+
+    ~DNSRecord() {
+        if (rdata != NULL) {
+            switch (rtype) { // TODO: Add cases if more complex data types arise
+            case DNS_TYPE_VALUE_SRV:
+                delete ((SRVData*) rdata);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    ;
 };
 
 /**

@@ -28,35 +28,41 @@
 
 namespace ODnsExtension {
 
-typedef struct DNSTimeRecord{
-   DNSRecord*  record;
-   char* hash;
-   simtime_t rcv_time;
-   simtime_t expiry;
+typedef struct DNSTimeRecord {
+    DNSRecord* record;
+    std::string hash;
+    simtime_t rcv_time;
+    simtime_t expiry;
+
+    DNSTimeRecord() :
+            record(NULL), hash(NULL), rcv_time(0), expiry(0) {
+    }
+    ;
+
 } dns_time_record;
 
-class DNSTimeRecordComparator{
-    public:
-        DNSTimeRecordComparator(){
+class DNSTimeRecordComparator {
+public:
+    DNSTimeRecordComparator() {
 
-        }
-        virtual ~DNSTimeRecordComparator(){
+    }
+    virtual ~DNSTimeRecordComparator() {
 
-        }
+    }
 
-        bool operator() (ODnsExtension::DNSTimeRecord* t1, ODnsExtension::DNSTimeRecord* t2){
-            // t1 < t2,
-            // meaning t1s time is up before t2s
+    bool operator()(ODnsExtension::DNSTimeRecord* t1,
+            ODnsExtension::DNSTimeRecord* t2) {
+        // t1 < t2,
+        // meaning t1s time is up before t2s
 
-            return t1->expiry < t2->expiry;
-        }
+        return t1->expiry < t2->expiry;
+    }
 };
 
-class DNSTTLCache: public DNSCache
-{
-    public:
-        DNSTTLCache();
-        virtual ~DNSTTLCache();/**
+class DNSTTLCache: public DNSCache {
+public:
+    DNSTTLCache();
+    virtual ~DNSTTLCache();/**
 
      * @brief put_into_cache
      * @params
@@ -74,7 +80,7 @@ class DNSTTLCache: public DNSCache
      * @return
      *      the desired dns records, returns null if there is no such record for the given hash.
      */
-    GList* get_from_cache(char* hash);
+    std::list<DNSRecord*> get_from_cache(std::string hash);
 
     /**
      * @brief is_in_cache
@@ -84,14 +90,14 @@ class DNSTTLCache: public DNSCache
      *      1 if there is an entry
      *      0 otherwise
      */
-    int is_in_cache(char* hash);
+    int is_in_cache(std::string hash);
 
     /**
      * @brief halfTTL
      *  returns whether the record has outlived half its lifetime.
      */
 
-     int halfTTL(DNSRecord* r);
+    int halfTTL(DNSRecord* r);
 
     /**
      * @brief remove_from_cache
@@ -102,7 +108,7 @@ class DNSTTLCache: public DNSCache
      * @return
      *      returns the removed records.
      */
-    GList* remove_from_cache(char* hash);
+    std::list<DNSRecord*> remove_from_cache(std::string hash);
 
     /**
      * @brief remove_from_cache
@@ -114,7 +120,7 @@ class DNSTTLCache: public DNSCache
      * @return
      *      returns the removed record.
      */
-    DNSRecord* remove_from_cache(char* hash, DNSRecord* r);
+    DNSRecord* remove_from_cache(std::string hash, DNSRecord* r);
 
     /**
      * @brief cleanup
@@ -124,7 +130,7 @@ class DNSTTLCache: public DNSCache
      *      return removed records
      */
 
-    GList* cleanup();
+    std::list<DNSRecord*> cleanup();
 
     /**
      * @brief evict
@@ -133,7 +139,7 @@ class DNSTTLCache: public DNSCache
      * @return
      *      the evicted dns records.
      */
-    GList* evict();
+    std::list<DNSRecord*> evict();
 
     /**
      * @brief get_matching_hashes
@@ -147,17 +153,25 @@ class DNSTTLCache: public DNSCache
      *      list of matching hashes in the cache
      *
      */
-    GList* get_matching_hashes(char* hash);
+    std::list<std::string> get_matching_hashes(std::string hash);
 
-    GHashTable* get_cache_table(){
+    /**
+     * @brief
+     * Retrieve the cache table used for caching Records
+     *
+     * @return
+     *      an unordered map containing hash/record pairs.
+     */
+    std::unordered_map<std::string, std::list<DNSTimeRecord*>> get_cache_table() {
         return cache;
     }
 
-    protected:
-        GHashTable* cache;
-        std::set<ODnsExtension::DNSTimeRecord*, ODnsExtension::DNSTimeRecordComparator> dnsRecordPriorityCache;
+protected:
+    std::unordered_map<std::string, std::list<DNSTimeRecord*>> cache;
+    std::set<ODnsExtension::DNSTimeRecord*,
+            ODnsExtension::DNSTimeRecordComparator> dnsRecordPriorityCache;
 
-        void remove_time_record(DNSTimeRecord* tr);
+    void remove_time_record(DNSTimeRecord* tr);
 };
 
 } /* namespace ODnsExtension */

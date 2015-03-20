@@ -26,25 +26,22 @@ namespace ODnsExtension {
 DNSSimpleCache::DNSSimpleCache() {
     // we don't need to destroy  the record in the hashfunc, since the evction
     // returns the record. If necessary it will be deleted
-    cache = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
     setCacheSize(0);
 }
 
 DNSSimpleCache::~DNSSimpleCache() {
     // Destroy the cache
-    while(g_hash_table_size(cache) > 0){
+    while(getCacheSize() > 0){
         // evict and free the record.
-        GList* list = evict();
-        GList* cpy = list;
+        std::list<DNSRecord*> list = (std::list<DNSRecord*>) evict();
         setCacheSize(getCacheSize()-1);
 
-        list = g_list_first(list);
-        while(list){
-            freeDnsRecord((DNSRecord*) list->data);
-            list = g_list_next(list);
+        for(auto it : list){
+            freeDnsRecord(*it);
         }
+        // clear list elements
+        list.clear();
 
-        g_list_free(cpy);
     }
 }
 
@@ -55,61 +52,54 @@ int DNSSimpleCache::put_into_cache(DNSRecord* record){
         throw cRuntimeError("Retrieved invalid record to put into cache");
     }
 
-    const char* type = getTypeStringForValue(record->rtype);
-    const char* _class = getClassStringForValue(record->rclass);
+    std::string type = std::string(getTypeStringForValue(record->rtype));
+    std::string _class = std::string(getClassStringForValue(record->rclass));
 
     // create hash:
-    char* hash = g_strdup_printf("%s:%s:%s", record->rname, type, _class);
+    std::string hash = record->rname + std::string(":") + type + std::string(":") + _class;
 
     // check if it is in the cache
     if(!is_in_cache(hash)){
         if(DNSCache::getCacheSize() > DNSCache::getMaxRecords()){
             // evict and free 10% of the records.
             for(int i=0; i < floor(DNSCache::getMaxRecords()/10); i++){
-                GList* list = evict();
-                setCacheSize(getCacheSize()-1);
+                std::list<DNSRecord*> list = (std::list<DNSRecord*>) evict();
 
-                list = g_list_first(list);
-                while(list){
-                    freeDnsRecord((DNSRecord*) list->data);
-                    list = g_list_next(list);
+                for(auto it = list.begin(); it != list.end(); ++it){
+                    freeDnsRecord(*it);
                 }
+                // clear list elements
+                list.clear();
+
+                setCacheSize(getCacheSize()-1);
             }
         }
 
-        GList* list = NULL;
-        list = g_list_append(list, record);
-        //g_printf("DEBUG MSG: New hash entering CACHE --- [%s], for record->rname=%s\n", hash, record->rname);
-        g_hash_table_insert(cache, hash, list);
+        std::list<DNSRecord*>;
+        list.push_back(record);
+
+        cache[hash] = list;
         setCacheSize(getCacheSize()+1);
     }
     else{
         // check if the data is still the same
-        GList* from_cache = (GList*) g_hash_table_lookup(cache, hash);
-        from_cache = g_list_first(from_cache);
+        std::list<DNSRecord*> from_cache = cache[hash];
 
         int is_already_in_cache = 0;
-        while(from_cache){
+        for(auto it : from_cache){
             DNSRecord* record_from_cache = (DNSRecord*) from_cache->data;
 
-            if(g_strcmp0(record->rdata, record_from_cache->rdata) == 0){
+            if(ODnsExtension::recordDataEqual(record_from_cache, record)){
                 is_already_in_cache = 1;
                 break;
             }
-
-            from_cache = g_list_next(from_cache);
         }
 
         if(!is_already_in_cache){
             // append the record
-            from_cache = (GList*) g_hash_table_lookup(cache, hash);
-            from_cache = g_list_append(from_cache, (gpointer) record);
-
-            // replace the entry in the database
-            g_hash_table_replace(cache, hash, (gpointer) from_cache);
-        }
-        else{
-            g_free(hash);
+            from_cache = cache[hash];
+            from_cache.push_back(record);
+            cache[hash] = from_cache;
         }
     }
 
@@ -118,63 +108,59 @@ int DNSSimpleCache::put_into_cache(DNSRecord* record){
 
 }
 
-GList* DNSSimpleCache::get_from_cache(char* hash){
-    GList* from_cache = (GList*) g_hash_table_lookup(cache, hash);
-    if(from_cache){
-        return from_cache;
-    }
-
-    return NULL;
-
+std::list<DNSRecord*> DNSSimpleCache::get_from_cache(std::string hash){
+    if(!is_in_cache(hash)) return NULL;
+    return cache[hash];
 }
 
-int DNSSimpleCache::is_in_cache(char* hash){
-    return g_hash_table_contains(cache, hash);
+int DNSSimpleCache::is_in_cache(std::string hash){
+    return cache.find(hash) != cache.end();
 }
 
-GList* DNSSimpleCache::remove_from_cache(char* hash){
-    GList* from_cache = (GList*) g_hash_table_lookup(cache, hash);
-    if(from_cache){
-        g_hash_table_remove(cache, hash);
-        setCacheSize(getCacheSize()-1);
-        return from_cache;
-    }
-    return NULL;
+std::list<DNSRecord*> DNSSimpleCache::remove_from_cache(std::string hash){
+    if(!is_in_cache(hash)) return NULL;
+    std::list from_cache = cache[hash];
+    cache.erase(hash);
+    return from_cache;
 }
 
-GList* DNSSimpleCache::evict(){
+std::list<DNSRecord*> DNSSimpleCache::evict(){
     if(getCacheSize() == 0){
         return 0;
     }
-    char* eviction_key;
+    std::string eviction_key;
 
     int p = intrand(getCacheSize());
-    eviction_key = (char*) (g_list_nth(g_hash_table_get_keys(cache), p)->data);
+    int c = 0;
+    for(auto kv : cache) {
+        if(c == p){
+            eviction_key = kv->first;
+            break;
+        }
+    }
 
     return remove_from_cache(eviction_key);
 }
 
-DNSRecord* DNSSimpleCache::remove_from_cache(char* hash, DNSRecord* r){
-    GList* from_cache = (GList*) g_hash_table_lookup(cache, hash);
-    g_list_remove(from_cache, r);
+DNSRecord* DNSSimpleCache::remove_from_cache(std::string hash, DNSRecord* r){
+    if(!is_in_cache(hash)) return NULL;
+    std::list from_cache = cache[hash];
+    from_cache.erase(r);
+    cache[hash] = from_cache;
     return r;
 }
 
-GList* DNSSimpleCache::get_matching_hashes(char* hash){
-    GList* hash_list = NULL;
-    GHashTableIter iterator;
-    g_hash_table_iter_init(&iterator, cache);
-    gpointer key, value;
-
-    while(g_hash_table_iter_next(&iterator, &key, &value)){
-        if(g_str_has_suffix(hash, (char*) key)){
+std::list<std::string> DNSSimpleCache::get_matching_hashes(std::string hash){
+    std::list<std::string> hashes;
+    for(auto kv : cache){
+        if(ODnsExtension::stdstr_has_suffix(hash, kv.first)){
             // we have a match, append it to the return list
-            char* hash_cpy = g_strdup((char*) key);
-            hash_list = g_list_append(hash_list, hash_cpy);
+            std:string hash_cpy = std::string(kv.first);
+            hashes.push_back(hash_cpy);
         }
     }
 
-    return hash_list;
+    return hashes;
 
 }
 

@@ -28,7 +28,8 @@
 #include "DNSTTLCache.h"
 #include "DNSSimpleCache.h"
 #include <string.h>
-#include <glib.h>
+#include <list>
+#include <unordered_map>
 #include <math.h>
 
 /**
