@@ -19,7 +19,6 @@
  THE SOFTWARE.
  */
 
-
 #ifndef MDNSQUERYSCHEDULER_H_
 #define MDNSQUERYSCHEDULER_H_
 
@@ -33,79 +32,98 @@
 #include <DNSTTLCache.h>
 #include <MDNS.h>
 #include <MDNS_Privacy.h>
-#include <glib.h>
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
 
 namespace ODnsExtension {
 
-typedef struct MDNSQueryJob{
+typedef struct MDNSQueryJob {
     unsigned int id;
     ODnsExtension::TimeEvent* e;
-    ODnsExtension::MDNSKey* key;
+    std::shared_ptr<ODnsExtension::MDNSKey> key;
     int done;
 
     // when the job has to be performed.
     simtime_t delivery;
 
+    MDNSQueryJob() :
+            id(0), e(NULL), key(NULL), done(0), delivery(0) {
+    }
+    ;
+
 } query_job;
 
-class MDNSQueryScheduler
-{
-    protected:
-        void* resolver;
-        ODnsExtension::TimeEventSet* timeEventSet;
-        GList* jobs;
-        GList* history;
+class MDNSQueryScheduler {
+protected:
+    void* resolver;
+    ODnsExtension::TimeEventSet* timeEventSet;
+    std::vector<std::shared_ptr<MDNSQueryJob>> jobs;
+    std::vector<std::shared_ptr<MDNSQueryJob>> history;
 
-        UDPSocket* outSock; // socket on which to send the data via multicast...
-        UDPSocket* privacySock;
-        IPvXAddress multicast_address = IPvXAddressResolver().resolve("225.0.0.1");
+    UDPSocket* outSock; // socket on which to send the data via multicast...
+    UDPSocket* privacySock;
+    IPvXAddress multicast_address = IPvXAddressResolver().resolve("225.0.0.1");
 
-        GHashTable* private_service_table;
-        GHashTable* friend_data_table;
-        GHashTable* instance_name_table;
-        int hasPrivacy = 0;
+    std::unordered_map<std::string, std::shared_ptr<PrivateMDNSService>> *private_service_table;
+    std::unordered_map<std::string, std::shared_ptr<FriendData>> *friend_data_table;
+    std::unordered_map<std::string, std::shared_ptr<FriendData>> *instance_name_table;
+    int hasPrivacy = 0;
 
-        ODnsExtension::DNSTTLCache* cache; // cache reference
+    ODnsExtension::DNSTTLCache* cache; // cache reference
 
-        unsigned int id_count = 0;
+    unsigned int id_count = 0;
 
-        void (*callback) (void*, void*);
+    void (*callback)(void*, void*);
 
-        virtual ODnsExtension::MDNSQueryJob* new_job(ODnsExtension::MDNSKey* key);
-        virtual ODnsExtension::MDNSQueryJob* find_job(ODnsExtension::MDNSKey* key);
-        virtual ODnsExtension::MDNSQueryJob* find_history(ODnsExtension::MDNSKey* key);
-        virtual void done(ODnsExtension::MDNSQueryJob* qj);
-        virtual void remove_job(ODnsExtension::MDNSQueryJob* qj);
-        virtual GList* append_cache_entries(MDNSKey* key, GList* list);
-        virtual int append_question(MDNSKey* key, GList** qlist, GList** anlist, int *packetSize, int* qdcount, int* ancount, int is_private);
-        virtual int preparePacketAndSend(GList* qlist, GList* anlist, GList* nslist, GList* arlist, int qdcount, int ancount, int nscount, int arcount, int packetSize, int TC, int is_private);
+    virtual std::shared_ptr<ODnsExtension::MDNSQueryJob> new_job(std::shared_ptr<ODnsExtension::MDNSKey> key);
+    virtual std::shared_ptr<ODnsExtension::MDNSQueryJob> find_job(std::shared_ptr<ODnsExtension::MDNSKey> key);
+    virtual std::shared_ptr<ODnsExtension::MDNSQueryJob> find_history(
+            std::shared_ptr<ODnsExtension::MDNSKey> key);
+    virtual void done(std::shared_ptr<ODnsExtension::MDNSQueryJob> qj);
+    virtual void remove_job(std::shared_ptr<ODnsExtension::MDNSQueryJob> qj);
+    virtual std::list<std::shared_ptr<DNSRecord>> append_cache_entries(std::shared_ptr<MDNSKey> key,
+            std::list<std::shared_ptr<DNSRecord>> list);
+    virtual int append_question(std::shared_ptr<MDNSKey> key, std::list<std::shared_ptr<DNSQuestion>>* qlist,
+            std::list<std::shared_ptr<DNSRecord>>* anlist, int *packetSize, int* qdcount,
+            int* ancount, int is_private);
+    virtual int preparePacketAndSend(std::list<std::shared_ptr<DNSQuestion>> qlist,
+            std::list<std::shared_ptr<DNSRecord>> anlist, std::list<std::shared_ptr<DNSRecord>> nslist,
+            std::list<std::shared_ptr<DNSRecord>> arlist, int qdcount, int ancount, int nscount,
+            int arcount, int packetSize, int TC, int is_private);
 
-    public:
-        MDNSQueryScheduler(ODnsExtension::TimeEventSet* _timeEventSet, UDPSocket* _outSock, void* resolver);
-        virtual ~MDNSQueryScheduler();
-        static void elapseCallback(ODnsExtension::TimeEvent* e, void* data, void* thispointer);
-        virtual void post(ODnsExtension::MDNSKey* key, int immediately);
-        virtual void check_dup(ODnsExtension::MDNSKey* key);
-        virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
+public:
+    MDNSQueryScheduler(ODnsExtension::TimeEventSet* _timeEventSet,
+            UDPSocket* _outSock, void* resolver);
+    virtual ~MDNSQueryScheduler();
+    static void elapseCallback(ODnsExtension::TimeEvent* e, void* data,
+            void* thispointer);
+    virtual void post(std::shared_ptr<ODnsExtension::MDNSKey> key, int immediately);
+    virtual void check_dup(std::shared_ptr<ODnsExtension::MDNSKey> key);
+    virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
 
-        void setCallback(void (_callback) (void*, void*)){
-            callback = _callback;
-        }
+    void setCallback(void (_callback)(void*, void*)) {
+        callback = _callback;
+    }
 
-        virtual void setSocket(UDPSocket* sock){
-            outSock = sock;
-        }
-        virtual void setCache(ODnsExtension::DNSTTLCache* _cache){
-            cache = _cache;
-        }
+    virtual void setSocket(UDPSocket* sock) {
+        outSock = sock;
+    }
+    virtual void setCache(ODnsExtension::DNSTTLCache* _cache) {
+        cache = _cache;
+    }
 
-        virtual void setPrivacyData(GHashTable* private_service_table, GHashTable* friend_data_table, GHashTable* instance_name_table, UDPSocket* privacySocket){
-            this->private_service_table = private_service_table;
-            this->friend_data_table = friend_data_table;
-            this->instance_name_table = instance_name_table;
-            this->privacySock = privacySocket;
-            hasPrivacy = 1;
-        }
+    virtual void setPrivacyData(
+            std::unordered_map<std::string, std::shared_ptr<PrivateMDNSService>>* private_service_table,
+            std::unordered_map<std::string, std::shared_ptr<FriendData>>* friend_data_table,
+            std::unordered_map<std::string, std::shared_ptr<FriendData>>* instance_name_table,
+            UDPSocket* privacySocket) {
+        this->private_service_table = private_service_table;
+        this->friend_data_table = friend_data_table;
+        this->instance_name_table = instance_name_table;
+        this->privacySock = privacySocket;
+        hasPrivacy = 1;
+    }
 };
 
 } /* namespace ODnsExtension */

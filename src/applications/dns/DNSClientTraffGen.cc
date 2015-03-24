@@ -62,8 +62,8 @@ void DNSClientTraffGen::handleTimer(cMessage *msg){
     int p = intrand(host_names.size());
 
     // choose the dns name, resolve using DNSClient
-    char* host_name = (char*) host_names[p].c_str();
-    char* type = (char*) types[p].c_str();
+    std::string host_name = host_names[p];
+    std::string type = types[p];
     int _type = ODnsExtension::getTypeValueForString(type);
     if(_type == -1){
         cRuntimeError("Malformated hostname_file with unknown type.");

@@ -31,9 +31,9 @@
 #include "DNSCache.h"
 #include "DNSTools.h"
 #include "DNS.h"
-#include <vector>
 
-#include "DNSTools.h"
+#include <memory>
+#include <vector>
 #include "list"
 #include "unordered_map"
 
@@ -44,7 +44,9 @@
  */
 typedef struct CachedQuery{
         int internal_id;
-        ODnsExtension::Query* query;
+        std::shared_ptr<ODnsExtension::Query> query;
+
+        CachedQuery(): internal_id(0) {};
 } cached_query;
 
 /**
@@ -61,7 +63,7 @@ class DNSServerBase : public cSimpleModule
     int receivedQueries;
 
     int internal_query_id = 0;
-    std::unordered_map<int, CachedQuery*> queryCache;
+    std::unordered_map<int, std::shared_ptr<CachedQuery>> queryCache;
     ODnsExtension::DNSCache* responseCache;
     std::vector<IPvXAddress> rootServers;
 
@@ -72,14 +74,14 @@ class DNSServerBase : public cSimpleModule
     virtual void initialize(int stage);
     virtual int numInitStages() const { return 4; }
     virtual void handleMessage(cMessage *msg);
-    virtual DNSPacket* unsupportedOperation(ODnsExtension::Query *q);
+    virtual DNSPacket* unsupportedOperation(std::shared_ptr<ODnsExtension::Query> q);
     virtual void sendResponse(DNSPacket *response, IPvXAddress returnAddress);
-    virtual DNSPacket* handleQuery(ODnsExtension::Query *query);
+    virtual DNSPacket* handleQuery(std::shared_ptr<ODnsExtension::Query> query);
     virtual DNSPacket* handleRecursion(DNSPacket* packet);
-    int store_in_query_cache(int id, ODnsExtension::Query* query);
+    int store_in_query_cache(int id, std::shared_ptr<ODnsExtension::Query> query);
     int getIdAndInc(){return internal_query_id++;}
-    int remove_query_from_cache(int id, CachedQuery* cq);
-    CachedQuery* get_query_from_cache(int id);
+    int remove_query_from_cache(int id, std::shared_ptr<CachedQuery> cq);
+    std::shared_ptr<CachedQuery> get_query_from_cache(int id);
 
 };
 

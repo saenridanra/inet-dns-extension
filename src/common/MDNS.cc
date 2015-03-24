@@ -40,28 +40,27 @@ int isResponse(DNSPacket* p){
     return ODnsExtension::isQueryOrResponse(p);
 }
 
-int isGoodbye(DNSRecord* r){
+int isGoodbye(std::shared_ptr<DNSRecord> r){
     return r->ttl==0;
 }
 
-MDNSKey* mdns_key_new(char* name, int type, int _class){
-    MDNSKey* k = (MDNSKey*) malloc(sizeof(*k));
-    k->name = g_strdup(name);
+std::shared_ptr<MDNSKey> mdns_key_new(std::string name, int type, int _class){
+    std::shared_ptr<MDNSKey> k(new MDNSKey());
+    k->name = name;
     k->type = type;
     k->_class = _class;
 
     return k;
 }
 
-void mdns_key_free(MDNSKey* key){
-    g_free(key->name);
-    g_free(key);
+void mdns_key_free(std::shared_ptr<MDNSKey> key){
+    key.reset();
 }
 
-int compareMDNSKey(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2){
+int compareMDNSKey(std::shared_ptr<ODnsExtension::MDNSKey> key1, std::shared_ptr<ODnsExtension::MDNSKey> key2){
     if(key1 == key2) return 0;
 
-    int comp = g_strcmp0(key1->name, key2->name);
+    int comp = key1->name.compare(key2->name);
 
     if(comp != 0) return comp;
     if(key1->type > key2->type) return 1;
@@ -72,10 +71,10 @@ int compareMDNSKey(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2){
     return 0;
 }
 
-int compareMDNSKeyANY(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2){
+int compareMDNSKeyANY(std::shared_ptr<ODnsExtension::MDNSKey> key1, std::shared_ptr<ODnsExtension::MDNSKey> key2){
     if(key1 == key2) return 0;
 
-    int comp = g_strcmp0(key1->name, key2->name);
+    int comp = key1->name.compare(key2->name);
 
     if(comp != 0) return comp;
     else if(key1->_class > key2->_class) return 1;
@@ -84,9 +83,9 @@ int compareMDNSKeyANY(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2
     return 0;
 }
 
-ODnsExtension::DNSQuestion* createQuestion(char* name, unsigned short type, unsigned short _class){
-    ODnsExtension::DNSQuestion* q = (ODnsExtension::DNSQuestion*) malloc(sizeof(*q));
-    q->qname = g_strdup(name);
+std::shared_ptr<ODnsExtension::DNSQuestion> createQuestion(std::string name, unsigned short type, unsigned short _class){
+    std::shared_ptr<ODnsExtension::DNSQuestion> q(new DNSQuestion());
+    q->qname = name;
     q->qtype = type;
     q->qclass = _class;
 
@@ -94,9 +93,9 @@ ODnsExtension::DNSQuestion* createQuestion(char* name, unsigned short type, unsi
 
 }
 
-ODnsExtension::DNSQuestion* createQuestionFromKey(ODnsExtension::MDNSKey* key){
-    ODnsExtension::DNSQuestion* q = (ODnsExtension::DNSQuestion*) malloc(sizeof(*q));
-    q->qname = g_strdup(key->name);
+std::shared_ptr<ODnsExtension::DNSQuestion> createQuestionFromKey(std::shared_ptr<ODnsExtension::MDNSKey> key){
+    std::shared_ptr<ODnsExtension::DNSQuestion> q(new DNSQuestion());
+    q->qname = key->name;
     q->qtype = key->type;
     q->qclass = key->_class;
 

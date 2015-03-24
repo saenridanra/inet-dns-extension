@@ -17,13 +17,14 @@
 
 // cplusplus {{
 #include "../common/DNS.h"
+#include <memory>
 
 typedef struct ODnsExtension::DNSQuestion DNSQuestion;
 typedef struct ODnsExtension::DNSRecord DNSRecord;
 // }}
 
 /**
- * Class generated from <tt>messages/DNSPacket.msg:33</tt> by nedtool.
+ * Class generated from <tt>messages/DNSPacket.msg:34</tt> by nedtool.
  * <pre>
  * // DNSPacket definition
  * // author: Andreas Rain, Distributed Systems Group, University of Konstanz

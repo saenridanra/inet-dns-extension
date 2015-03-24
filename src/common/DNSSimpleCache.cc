@@ -33,19 +33,15 @@ DNSSimpleCache::~DNSSimpleCache() {
     // Destroy the cache
     while(getCacheSize() > 0){
         // evict and free the record.
-        std::list<DNSRecord*> list = (std::list<DNSRecord*>) evict();
+        std::list<std::shared_ptr<DNSRecord>> list = evict();
         setCacheSize(getCacheSize()-1);
-
-        for(auto it : list){
-            freeDnsRecord(*it);
-        }
         // clear list elements
         list.clear();
 
     }
 }
 
-int DNSSimpleCache::put_into_cache(DNSRecord* record){
+int DNSSimpleCache::put_into_cache(std::shared_ptr<DNSRecord> record){
     // calculate the hash, check if it's already in the cache.
 
     if(!record->rdata){
@@ -63,11 +59,7 @@ int DNSSimpleCache::put_into_cache(DNSRecord* record){
         if(DNSCache::getCacheSize() > DNSCache::getMaxRecords()){
             // evict and free 10% of the records.
             for(int i=0; i < floor(DNSCache::getMaxRecords()/10); i++){
-                std::list<DNSRecord*> list = (std::list<DNSRecord*>) evict();
-
-                for(auto it = list.begin(); it != list.end(); ++it){
-                    freeDnsRecord(*it);
-                }
+                std::list<std::shared_ptr<DNSRecord>> list = (std::list<std::shared_ptr<DNSRecord>>) evict();
                 // clear list elements
                 list.clear();
 
@@ -75,7 +67,7 @@ int DNSSimpleCache::put_into_cache(DNSRecord* record){
             }
         }
 
-        std::list<DNSRecord*>;
+        std::list<std::shared_ptr<DNSRecord>> list;
         list.push_back(record);
 
         cache[hash] = list;
@@ -83,11 +75,11 @@ int DNSSimpleCache::put_into_cache(DNSRecord* record){
     }
     else{
         // check if the data is still the same
-        std::list<DNSRecord*> from_cache = cache[hash];
+        std::list<std::shared_ptr<DNSRecord>> from_cache = cache[hash];
 
         int is_already_in_cache = 0;
-        for(auto it : from_cache){
-            DNSRecord* record_from_cache = (DNSRecord*) from_cache->data;
+        for(auto it = from_cache.begin(); it != from_cache.end(); ++it){
+            std::shared_ptr<DNSRecord> record_from_cache = *it;
 
             if(ODnsExtension::recordDataEqual(record_from_cache, record)){
                 is_already_in_cache = 1;
@@ -108,8 +100,8 @@ int DNSSimpleCache::put_into_cache(DNSRecord* record){
 
 }
 
-std::list<DNSRecord*> DNSSimpleCache::get_from_cache(std::string hash){
-    if(!is_in_cache(hash)) return NULL;
+std::list<std::shared_ptr<DNSRecord>> DNSSimpleCache::get_from_cache(std::string hash){
+    if(!is_in_cache(hash)) return std::list<std::shared_ptr<DNSRecord>>();
     return cache[hash];
 }
 
@@ -117,16 +109,16 @@ int DNSSimpleCache::is_in_cache(std::string hash){
     return cache.find(hash) != cache.end();
 }
 
-std::list<DNSRecord*> DNSSimpleCache::remove_from_cache(std::string hash){
-    if(!is_in_cache(hash)) return NULL;
-    std::list from_cache = cache[hash];
+std::list<std::shared_ptr<DNSRecord>> DNSSimpleCache::remove_from_cache(std::string hash){
+    if(!is_in_cache(hash)) return std::list<std::shared_ptr<DNSRecord>>();
+    std::list<std::shared_ptr<DNSRecord>> from_cache = cache[hash];
     cache.erase(hash);
     return from_cache;
 }
 
-std::list<DNSRecord*> DNSSimpleCache::evict(){
+std::list<std::shared_ptr<DNSRecord>> DNSSimpleCache::evict(){
     if(getCacheSize() == 0){
-        return 0;
+        return std::list<std::shared_ptr<DNSRecord>>();
     }
     std::string eviction_key;
 
@@ -134,7 +126,7 @@ std::list<DNSRecord*> DNSSimpleCache::evict(){
     int c = 0;
     for(auto kv : cache) {
         if(c == p){
-            eviction_key = kv->first;
+            eviction_key = kv.first;
             break;
         }
     }
@@ -142,10 +134,10 @@ std::list<DNSRecord*> DNSSimpleCache::evict(){
     return remove_from_cache(eviction_key);
 }
 
-DNSRecord* DNSSimpleCache::remove_from_cache(std::string hash, DNSRecord* r){
+std::shared_ptr<DNSRecord> DNSSimpleCache::remove_from_cache(std::string hash, std::shared_ptr<DNSRecord> r){
     if(!is_in_cache(hash)) return NULL;
-    std::list from_cache = cache[hash];
-    from_cache.erase(r);
+    std::list<std::shared_ptr<DNSRecord>> from_cache = cache[hash];
+    from_cache.erase(std::find(from_cache.begin(), from_cache.end(), r));
     cache[hash] = from_cache;
     return r;
 }
@@ -155,7 +147,7 @@ std::list<std::string> DNSSimpleCache::get_matching_hashes(std::string hash){
     for(auto kv : cache){
         if(ODnsExtension::stdstr_has_suffix(hash, kv.first)){
             // we have a match, append it to the return list
-            std:string hash_cpy = std::string(kv.first);
+            std::string hash_cpy = std::string(kv.first);
             hashes.push_back(hash_cpy);
         }
     }

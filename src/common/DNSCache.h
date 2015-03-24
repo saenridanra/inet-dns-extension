@@ -23,9 +23,10 @@
 #define DNSCACHE_H_
 
 #include "DNS.h"
-#include "../utils/DNSTools.h"
+#include "DNSTools.h"
 #include <list>
 #include <unordered_map>
+#include <memory>
 
 namespace ODnsExtension {
 
@@ -40,12 +41,12 @@ class DNSCache {
 public:
     DNSCache();
     virtual ~DNSCache();
-    virtual int put_into_cache(DNSRecord* record) = 0;
-    std::list<DNSRecord*> get_from_cache(std::string hash);
-    std::list<DNSRecord*> remove_from_cache(std::string hash);
-    virtual DNSRecord* remove_from_cache(std::string hash, DNSRecord* r) = 0;
+    virtual int put_into_cache(std::shared_ptr<DNSRecord>) = 0;
+    virtual std::list<std::shared_ptr<DNSRecord>> get_from_cache(std::string hash) = 0;
+    virtual std::list<std::shared_ptr<DNSRecord>> remove_from_cache(std::string hash) = 0;
+    virtual std::shared_ptr<ODnsExtension::DNSRecord> remove_from_cache(std::string hash, std::shared_ptr<ODnsExtension::DNSRecord> r) = 0;
     virtual int is_in_cache(std::string hash) = 0;
-    std::list<DNSRecord*> evict();
+    virtual std::list<std::shared_ptr<DNSRecord>> evict() = 0;
     virtual std::list<std::string> get_matching_hashes(std::string hash) = 0;
 
     void setMaxRecords(int _max_records)

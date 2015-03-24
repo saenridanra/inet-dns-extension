@@ -56,9 +56,9 @@ class DNSEchoServer : public cSimpleModule
     virtual void initialize(int stage);
     virtual int numInitStages() const { return 4; }
     virtual void handleMessage(cMessage *msg);
-    virtual DNSPacket* unsupportedOperation(ODnsExtension::Query *q);
+    virtual DNSPacket* unsupportedOperation(std::shared_ptr<ODnsExtension::Query> q);
     virtual void sendResponse(DNSPacket *response, IPvXAddress returnAddress);
-    virtual DNSPacket* handleQuery(ODnsExtension::Query *query);
+    virtual DNSPacket* handleQuery(std::shared_ptr<ODnsExtension::Query> query);
 };
 
 #endif

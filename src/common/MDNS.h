@@ -27,6 +27,8 @@
 #include <DNS.h>
 #include <DNSTools.h>
 #include "DNSPacket_m.h"
+#include <list>
+#include <memory>
 
 namespace ODnsExtension {
 
@@ -34,16 +36,21 @@ namespace ODnsExtension {
 // this is a basic definition without
 // subtypes
 typedef struct MDNSService{
-   char* service_type;
-   char* name;
-   GList* txtrecords;
+   std::string service_type;
+   std::string name;
+   std::list<std::string> txtrecords;
    int   port;
+
+   MDNSService() : service_type(""), name(""), port(-1) {}
+
 } mdns_service;
 
 typedef struct MDNSKey{
-   char* name;
+   std::string name;
    uint16_t type;
    uint16_t _class;
+
+   MDNSKey() : name(NULL), type(0), _class(0) {}
 } mdns_key;
 
 // utility functions:
@@ -51,26 +58,26 @@ int isProbe(DNSPacket* p);
 int isAnnouncement(DNSPacket* p);
 int isQuery(DNSPacket* p);
 int isResponse(DNSPacket* p);
-int isGoodbye(DNSRecord* r);
+int isGoodbye(std::shared_ptr<DNSRecord> r);
 
-int compareMDNSKey(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2);
-int compareMDNSKeyANY(ODnsExtension::MDNSKey* key1, ODnsExtension::MDNSKey* key2);
-MDNSKey* mdns_key_new(char* name, int type, int _class);
-void mdns_key_free(MDNSKey* key);
+int compareMDNSKey(std::shared_ptr<ODnsExtension::MDNSKey> key1, std::shared_ptr<ODnsExtension::MDNSKey> key2);
+int compareMDNSKeyANY(std::shared_ptr<ODnsExtension::MDNSKey> key1, std::shared_ptr<ODnsExtension::MDNSKey> key2);
+std::shared_ptr<MDNSKey> mdns_key_new(std::string name, int type, int _class);
+void mdns_key_free(std::shared_ptr<MDNSKey> key);
 
 /**
  * @brief createQuestion
  *
  * Creates a dnsquestion from params
  */
-DNSQuestion* createQuestion(char* name, unsigned short type, unsigned short _class);
+std::shared_ptr<DNSQuestion> createQuestion(std::string name, unsigned short type, unsigned short _class);
 
 /**
  * @brief createQuestionFromKey
  *
  * Creates a dnsquestion from an MDNSKey
  */
-DNSQuestion* createQuestionFromKey(MDNSKey* key);
+std::shared_ptr<DNSQuestion> createQuestionFromKey(std::shared_ptr<MDNSKey> key);
 
 #define MAX_MDNS_PACKET_SIZE 8000 // leaving plenty of room for UDP + IP + ETHERNET, since max size is 9000
 #define MDNS_PORT 5353

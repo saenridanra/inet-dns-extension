@@ -19,8 +19,8 @@
  THE SOFTWARE.
  */
 
-#ifndef UTILS_H_
-#define UTILS_H_
+#ifndef OPP_DNS_EXTENSION_UTILS_H_
+#define OPP_DNS_EXTENSION_UTILS_H_
 
 #include <string>
 
@@ -36,4 +36,4 @@ namespace ODnsExtension {
 }
 
 
-#endif /* UTILS_H_ */
+#endif /* OPP_DNS_EXTENSION_UTILS_H_ */

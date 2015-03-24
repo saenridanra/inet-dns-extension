@@ -22,14 +22,17 @@
 #ifndef DNSTTLCACHE_H_
 #define DNSTTLCACHE_H_
 
+#include <omnetpp.h>
 #include <math.h>
 #include "DNSCache.h"
-#include <omnetpp.h>
+#include "utils/Utils.h"
+
+#include <string>
 
 namespace ODnsExtension {
 
 typedef struct DNSTimeRecord {
-    DNSRecord* record;
+    std::shared_ptr<DNSRecord> record;
     std::string hash;
     simtime_t rcv_time;
     simtime_t expiry;
@@ -50,8 +53,8 @@ public:
 
     }
 
-    bool operator()(ODnsExtension::DNSTimeRecord* t1,
-            ODnsExtension::DNSTimeRecord* t2) {
+    bool operator()(std::shared_ptr<ODnsExtension::DNSTimeRecord> t1,
+            std::shared_ptr<ODnsExtension::DNSTimeRecord> t2) {
         // t1 < t2,
         // meaning t1s time is up before t2s
 
@@ -71,7 +74,7 @@ public:
      *      1 if the value was stored
      *      0 if the value was not stored
      */
-    int put_into_cache(DNSRecord* record);
+    int put_into_cache(std::shared_ptr<DNSRecord> record);
 
     /**
      * @brief get_from_cache
@@ -80,7 +83,7 @@ public:
      * @return
      *      the desired dns records, returns null if there is no such record for the given hash.
      */
-    std::list<DNSRecord*> get_from_cache(std::string hash);
+    std::list<std::shared_ptr<DNSRecord>> get_from_cache(std::string hash);
 
     /**
      * @brief is_in_cache
@@ -97,7 +100,7 @@ public:
      *  returns whether the record has outlived half its lifetime.
      */
 
-    int halfTTL(DNSRecord* r);
+    int halfTTL(std::shared_ptr<DNSRecord> r);
 
     /**
      * @brief remove_from_cache
@@ -108,7 +111,7 @@ public:
      * @return
      *      returns the removed records.
      */
-    std::list<DNSRecord*> remove_from_cache(std::string hash);
+    std::list<std::shared_ptr<DNSRecord>> remove_from_cache(std::string hash);
 
     /**
      * @brief remove_from_cache
@@ -120,7 +123,7 @@ public:
      * @return
      *      returns the removed record.
      */
-    DNSRecord* remove_from_cache(std::string hash, DNSRecord* r);
+    std::shared_ptr<DNSRecord> remove_from_cache(std::string hash, std::shared_ptr<DNSRecord> r);
 
     /**
      * @brief cleanup
@@ -130,7 +133,7 @@ public:
      *      return removed records
      */
 
-    std::list<DNSRecord*> cleanup();
+    std::list<std::shared_ptr<DNSRecord>> cleanup();
 
     /**
      * @brief evict
@@ -139,7 +142,7 @@ public:
      * @return
      *      the evicted dns records.
      */
-    std::list<DNSRecord*> evict();
+    std::list<std::shared_ptr<DNSRecord>> evict();
 
     /**
      * @brief get_matching_hashes
@@ -162,16 +165,16 @@ public:
      * @return
      *      an unordered map containing hash/record pairs.
      */
-    std::unordered_map<std::string, std::list<DNSTimeRecord*>> get_cache_table() {
+    std::unordered_map<std::string, std::list<std::shared_ptr<DNSTimeRecord>>> get_cache_table() {
         return cache;
     }
 
 protected:
-    std::unordered_map<std::string, std::list<DNSTimeRecord*>> cache;
-    std::set<ODnsExtension::DNSTimeRecord*,
+    std::unordered_map<std::string, std::list<std::shared_ptr<DNSTimeRecord>>> cache;
+    std::set<std::shared_ptr<ODnsExtension::DNSTimeRecord>,
             ODnsExtension::DNSTimeRecordComparator> dnsRecordPriorityCache;
 
-    void remove_time_record(DNSTimeRecord* tr);
+    void remove_time_record(std::shared_ptr<DNSTimeRecord> tr);
 };
 
 } /* namespace ODnsExtension */

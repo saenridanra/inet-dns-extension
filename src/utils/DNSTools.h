@@ -33,6 +33,8 @@
 #include "../messages/DNSPacket_m.h"
 
 #include "../common/DNS.h"
+
+#include <memory>
 #include "string.h"
 
 
@@ -73,7 +75,7 @@ DNSPacket* createNQuery(std::string msg_name, unsigned short qdcount, unsigned s
  * @brief resolveQuery
  *      Extracts information in order to resolve a DNS query.
  */
-struct Query* resolveQuery(cPacket* query);
+struct std::shared_ptr<Query> resolveQuery(cPacket* query);
 
 /**
  * @brief createResponse
@@ -88,31 +90,31 @@ DNSPacket* createResponse(std::string msg_name, unsigned short qdcount, unsigned
  * @brief appendQuestion
  *      Appends a question to a previously generated DNS packet.
  */
-int appendQuestion(DNSPacket *p, DNSQuestion *q, int index);
+int appendQuestion(DNSPacket*p, std::shared_ptr<DNSQuestion> q, int index);
 
 /**
  * @brief appendAnswer
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAnswer(DNSPacket *p, DNSRecord *r, int index);
+int appendAnswer(DNSPacket* p, std::shared_ptr<DNSRecord> r, int index);
 
 /**
  * @brief appendAuthority
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAuthority(DNSPacket *p, DNSRecord *r, int index);
+int appendAuthority(DNSPacket* p, std::shared_ptr<DNSRecord> r, int index);
 
 /**
  * @brief appendAdditional
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAdditional(DNSPacket *p, DNSRecord *r, int index);
+int appendAdditional(DNSPacket* p, std::shared_ptr<DNSRecord> r, int index);
 
 /**
  * @brief resolveResponse
  *      Extracts information in order to resolve a DNS response.
  */
-struct Response* resolveResponse(cPacket *response);
+struct std::shared_ptr<Response> resolveResponse(cPacket* response);
 
 /**
  * @brief isDNSPacket
@@ -121,7 +123,7 @@ struct Response* resolveResponse(cPacket *response);
  * @return
  *      0 false, 1 true
  */
-int isDNSpacket(cPacket *p);
+int isDNSpacket(cPacket* p);
 
 /**
  * @brief isQueryOrResponse
@@ -130,7 +132,7 @@ int isDNSpacket(cPacket *p);
  * @return
  *      0 if Query, 1 if Response
  */
-int isQueryOrResponse(cPacket *p);
+int isQueryOrResponse(cPacket* p);
 
 /**
  * @brief getTypeArray
@@ -187,13 +189,13 @@ int estimateDnsPacketSize(DNSPacket* packet);
  * @brief printDNSRecord
  *      prints a dns record to stdout using g_printf
  */
-void printDNSRecord(DNSRecord* r);
+void printDNSRecord(std::shared_ptr<DNSRecord> r);
 
 /**
  * @brief printDNSQuestion
  *      prints a dns question to stdout using g_printf
  */
-void printDNSQuestion(DNSQuestion* q);
+void printDNSQuestion(std::shared_ptr<DNSQuestion> q);
 
 /**
  * @brief freeDnsQuestion
@@ -202,7 +204,7 @@ void printDNSQuestion(DNSQuestion* q);
  *      1 if successful
  *      0 otherwise
  */
-int freeDnsQuestion(DNSQuestion* q);
+int freeDnsQuestion(std::shared_ptr<DNSQuestion> q);
 
 /**
  * @brief freeDnsRecord
@@ -211,7 +213,7 @@ int freeDnsQuestion(DNSQuestion* q);
  *      1 if successful
  *      0 otherwise
  */
-int freeDnsRecord(DNSRecord* r);
+int freeDnsRecord(std::shared_ptr<DNSRecord> r);
 
 /**
  * @brief copyDnsRecord
@@ -220,7 +222,16 @@ int freeDnsRecord(DNSRecord* r);
  * @return
  *      the hard-copy created, not that this needs to be freed if not used anymore.
  */
-DNSRecord* copyDnsRecord(DNSRecord* r);
+std::shared_ptr<DNSRecord> copyDnsRecord(std::shared_ptr<DNSRecord> r);
+
+/**
+ * @brief copyDnsRecord
+ *  creates a hard-copy of a given dns record.
+ *
+ * @return
+ *      the hard-copy created, not that this needs to be freed if not used anymore.
+ */
+std::shared_ptr<DNSRecord> copyDnsRecord(DNSRecord* r);
 
 /**
  * @brief copyDnsQuestion
@@ -229,7 +240,16 @@ DNSRecord* copyDnsRecord(DNSRecord* r);
  * @return
  *      the hard-copy created, not that this needs to be freed if not used anymore.
  */
-DNSQuestion* copyDnsQuestion(DNSQuestion* q);
+std::shared_ptr<DNSQuestion> copyDnsQuestion(std::shared_ptr<DNSQuestion> q);
+
+/**
+ * @brief copyDnsQuestion
+ *  creates a hard-copy of a given dns question, given a shared pointer to the object.
+ *
+ * @return
+ *      the hard-copy created, not that this needs to be freed if not used anymore.
+ */
+std::shared_ptr<DNSQuestion> copyDnsQuestion(DNSQuestion* q);
 
 /**
  * @brief recordDataEqual
@@ -239,7 +259,16 @@ DNSQuestion* copyDnsQuestion(DNSQuestion* q);
  * @return
  *      true if the records are equal
  */
-int recordDataEqual(DNSRecord* r1, DNSRecord* r2);
+int recordDataEqual(std::shared_ptr<DNSRecord> r1, std::shared_ptr<DNSRecord> r2);
+
+/**
+ * @brief recordEqualNoData
+ * compares records without comparing their data
+ *
+ * @return
+ *      true if the records are equal (without data)
+ */
+int recordEqualNoData(std::shared_ptr<DNSRecord> r1, std::shared_ptr<DNSRecord> r2);
 
 }
 

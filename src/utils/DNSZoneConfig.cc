@@ -24,21 +24,19 @@
 DNSZoneConfig::DNSZoneConfig()
 {
     TTL = 0;
-    zone_soa = new soa();
+    zone_soa = std::shared_ptr<soa>(new soa());
     state = states::VARS;
 }
 
 DNSZoneConfig::~DNSZoneConfig()
 {
-    delete zone_soa;
-    delete zone_catalog;
 }
 
 void DNSZoneConfig::initialize(std::string config_file)
 {
     std::string line;
     std::string lastsuffix;
-    zone_entry* e;
+    std::shared_ptr<zone_entry> e;
     std::string namehash;
 
     std::fstream conf(config_file, std::ios::in);
@@ -46,16 +44,14 @@ void DNSZoneConfig::initialize(std::string config_file)
     {
 
 #ifdef DEBUG_ENABLED
-        printf("Processing:");
-        printf("%s", line.c_str());
-        printf("\n");
+        std::cout << "Processing:" << line << std::endl;
 #endif
 
         if (line.empty() || line[0] == ';')
         {
 
 #ifdef DEBUG_ENABLED
-            printf("Skipping\n");
+            std::cout << "Skipping" << std::endl;
 #endif
 
             continue;
@@ -70,14 +66,13 @@ void DNSZoneConfig::initialize(std::string config_file)
         }
 
 #ifdef DEBUG_ENABLED
-        printf("Number of tokens: %d \n", (int) tokens.size());
+        std::cout << "Number of tokens: " << tokens.size() << std::endl;
 
         for(uint32_t i = 0; i < tokens.size(); i++)
         {
-            printf("tokens[%d] = %s; ", i, tokens[i].c_str());
+            std::cout << "tokens[" << i << "] = " << tokens[i] << "; " << std::endl;
         }
 
-        printf("\n");
 #endif
 
         switch (state)
@@ -99,7 +94,7 @@ void DNSZoneConfig::initialize(std::string config_file)
                 {
                     state = states::SOA;
 #ifdef DEBUG_ENABLED
-                    printf("State set to \"SOA\"\n");
+                    std::cout << "State set to \"SOA\"\n";
 #endif
                     // init SOA first line
                     lastsuffix = std::string(tokens[0]);
@@ -150,7 +145,7 @@ void DNSZoneConfig::initialize(std::string config_file)
                 // REMARK: Ignoring TTL in entries, or more precise,
                 // not allowing it right now, so leave it out of the zone file
                 // we use the last known suffix
-                e = new zone_entry();
+                e = std::shared_ptr<zone_entry>(new zone_entry());
 
                 if (tokens[0] == "IN" || tokens[0] == "CS" || tokens[0] == "HS" || tokens[0] == "CH"
                         || tokens[0] == "*")
@@ -201,20 +196,21 @@ void DNSZoneConfig::initialize(std::string config_file)
                     namehash = e->domain + ":" + e->type + ":" + e->__class;
                 }
 
-                std::list<zone_entry*> list = zone_catalog.find(namehash);
-                if (list == NULL)
+                if(zone_catalog.find(namehash) != zone_catalog.end())
                 {
-                    std::list<zone_entry*> first_element;
-                    first_element.insert(e);
-                    zone_catalog.insert(namehash, first_element);
+                    std::list<std::shared_ptr<zone_entry>> list = zone_catalog[namehash];
+                    list.push_back(e);
+                    zone_catalog[namehash] = list;
                 }
                 else
                 {
-                    list = list.insert(e);
+                    std::list<std::shared_ptr<zone_entry>> first_element;
+                    first_element.push_back(e);
+                    zone_catalog[namehash] = first_element;
                 }
 
 #ifdef DEBUG_ENABLED
-                printf("Inserted %s into hashtable\n", namehash);
+                std::cout << "Inserted" << namehash << "into hashtable\n";
 #endif
 
                 break;
@@ -225,7 +221,7 @@ void DNSZoneConfig::initialize(std::string config_file)
     }
 
 #ifdef DEBUG_ENABLED
-    printf("Fully initialized zone configuration.");
+    std::cout << "Fully initialized zone configuration.\n";
 #endif
 }
 
@@ -234,24 +230,27 @@ int DNSZoneConfig::getTTL()
     return TTL;
 }
 
-struct soa* DNSZoneConfig::getSOA()
+std::shared_ptr<soa> DNSZoneConfig::getSOA()
 {
     return zone_soa;
 }
 
-std::list<zone_entry> DNSZoneConfig::getEntry(std::string hash)
+std::list<std::shared_ptr<zone_entry>> DNSZoneConfig::getEntry(std::string hash)
 {
-    return zone_catalog.find(hash);
+    if(hasEntry(hash))
+        return zone_catalog[hash];
+    else
+        return std::list<std::shared_ptr<zone_entry>>();
 }
 
 int DNSZoneConfig::hasEntry(std::string hash)
 {
-    return zone_catalog.find(hash) != NULL;
+    return zone_catalog.find(hash) != zone_catalog.end();
 }
 
-std::unordered_map<std::string, std::list<zone_entry*>>* DNSZoneConfig::getEntries()
+std::unordered_map<std::string, std::list<std::shared_ptr<zone_entry>>>* DNSZoneConfig::getEntries()
 {
-    return zone_catalog;
+    return &zone_catalog;
 }
 
 void DNSZoneConfig::finish()

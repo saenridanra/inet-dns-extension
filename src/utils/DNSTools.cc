@@ -34,7 +34,7 @@ const char* DNS_TYPE_ARRAY_ANY[13] = { "A", "NS", "CNAME", "SOA", "NULL", "PTR",
 DNSPacket* createQuery(std::string msg_name, std::string name,
         unsigned short dnsclass, unsigned short type, unsigned short id,
         unsigned short rd) {
-    DNSPacket *q = new DNSPacket(msg_name);
+    DNSPacket* q = new DNSPacket(msg_name.c_str());
 
     // Set id and options in header ..
     q->setId(id);
@@ -51,9 +51,8 @@ DNSPacket* createQuery(std::string msg_name, std::string name,
     // Setup question
 
     q->setNumQuestions(1);
-    DNSQuestion* question = new DNSQuestion(name, dnsclass, type);
-    q->setQuestions(0, question); // in this case we vary from standard implementations
-                                  // questions are appended as array in DNSPacket
+    q->setQuestions(0, DNSQuestion(name, dnsclass, type)); // in this case we vary from standard implementations
+    // questions are appended as array in DNSPacket
 
     q->setOptions(options);
 
@@ -68,7 +67,7 @@ DNSPacket* createQuery(std::string msg_name, std::string name,
 DNSPacket* createNQuery(std::string msg_name, unsigned short qdcount,
         unsigned short ancount, unsigned short nscount, unsigned short arcount,
         unsigned short id, unsigned short rd) {
-    DNSPacket *q = new DNSPacket(msg_name);
+    DNSPacket* q = new DNSPacket(msg_name.c_str());
 
     // Set id and options in header ..
     q->setId(id);
@@ -96,7 +95,7 @@ DNSPacket* createNQuery(std::string msg_name, unsigned short qdcount,
  * @brief resolveQuery
  *      Extracts information in order to resolve a DNS query.
  */
-struct Query resolveQuery(cPacket* query) {
+std::shared_ptr<Query> resolveQuery(cPacket* query) {
     DNSPacket* v = dynamic_cast<DNSPacket*>(query);
 
     if (v == 0) // Bad .. not a DNSPacket!
@@ -110,15 +109,14 @@ struct Query resolveQuery(cPacket* query) {
         ;
     }
 
-    DNSQuestion questions[q->qdcount];
-    for (short i = 0; i < q->qdcount; i++) {
+    DNSQuestion questions[v->getQdcount()];
+    for (short i = 0; i < v->getQdcount(); i++) {
         questions[i] = v->getQuestions(i);
     }
 
-    q->questions = questions;
-
-    struct Query* q = new Query(v->getId(), v->getOptions(), v->getQdcount(), 0,
-            0, 0, questions, NULL);
+    std::shared_ptr<Query> q(
+            new Query(v->getId(), v->getOptions(), v->getQdcount(), 0, 0, 0,
+                    questions, NULL));
 
     return q;
 }
@@ -131,7 +129,7 @@ DNSPacket* createResponse(std::string msg_name, unsigned short qdcount,
         unsigned short ancount, unsigned short nscount, unsigned short arcount,
         unsigned short id, unsigned short opcode, unsigned short AA,
         unsigned short rd, unsigned short ra, unsigned short rcode) {
-    DNSPacket *r = new DNSPacket(msg_name);
+    DNSPacket* r = new DNSPacket(msg_name.c_str());
     // Set id and options in header ..
     r->setId(id);
     r->setQdcount(qdcount);
@@ -166,7 +164,7 @@ DNSPacket* createResponse(std::string msg_name, unsigned short qdcount,
  * @brief appendQuestion
  *      Appends a question to a previously generated DNS packet.
  */
-int appendQuestion(DNSPacket *p, ODnsExtension::DNSQuestion *q, int index) {
+int appendQuestion(DNSPacket* p, std::shared_ptr<DNSQuestion> q, int index) {
     p->setQuestions(index, *q);
 
     return 1;
@@ -176,7 +174,7 @@ int appendQuestion(DNSPacket *p, ODnsExtension::DNSQuestion *q, int index) {
  * @brief appendAnswer
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAnswer(DNSPacket *p, ODnsExtension::DNSRecord *r, int index) {
+int appendAnswer(DNSPacket* p, std::shared_ptr<DNSRecord> r, int index) {
     p->setAnswers(index, *r);
 
     return 1;
@@ -186,7 +184,7 @@ int appendAnswer(DNSPacket *p, ODnsExtension::DNSRecord *r, int index) {
  * @brief appendAuthority
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAuthority(DNSPacket *p, ODnsExtension::DNSRecord *r, int index) {
+int appendAuthority(DNSPacket* p, std::shared_ptr<DNSRecord> r, int index) {
     p->setAuthorities(index, *r);
 
     return 1;
@@ -196,7 +194,7 @@ int appendAuthority(DNSPacket *p, ODnsExtension::DNSRecord *r, int index) {
  * @brief appendAdditional
  *      Appends an answer to a previously generated DNS packet.
  */
-int appendAdditional(DNSPacket *p, ODnsExtension::DNSRecord *r, int index) {
+int appendAdditional(DNSPacket* p, std::shared_ptr<DNSRecord> r, int index) {
     p->setAdditional(index, *r);
 
     return 1;
@@ -206,7 +204,7 @@ int appendAdditional(DNSPacket *p, ODnsExtension::DNSRecord *r, int index) {
  * @brief resolveResponse
  *      Extracts information in order to resolve a DNS response.
  */
-struct Response* resolveResponse(cPacket *response) {
+std::shared_ptr<Response> resolveResponse(cPacket* response) {
     DNSPacket* v = dynamic_cast<DNSPacket*>(response);
 
     if (v == 0) // Bad .. not a DNSPacket!
@@ -222,28 +220,25 @@ struct Response* resolveResponse(cPacket *response) {
 
     // Migrate Answers
     DNSRecord answers[v->getNumAnswers()];
-    for (short i = 0; i < r->ancount; i++) {
+    for (short i = 0; i < v->getAncount(); i++) {
         answers[i] = v->getAnswers(i);
     }
 
     // Migrate Authoritative Records
     DNSRecord authoritative[v->getNumAuthorities()];
-    for (short i = 0; i < r->nscount; i++) {
+    for (short i = 0; i < v->getNscount(); i++) {
         authoritative[i] = v->getAuthorities(i);
     }
 
     // Migrate Additional Records
     DNSRecord additional[v->getNumAdditional()];
-    for (short i = 0; i < r->arcount; i++) {
+    for (short i = 0; i < v->getArcount(); i++) {
         additional[i] = v->getAdditional(i);
     }
 
-    r->answers = answers;
-    r->authoritative = authoritative;
-    r->additional = additional;
-
-    struct Response* r = new Response(v->getId(), v->getOptions(),
-            v->getQdcount(), 0, 0, 0, answers, authoritative, additional);
+    std::shared_ptr<Response> r(
+            new Response(v->getId(), v->getOptions(), v->getQdcount(), 0, 0, 0,
+                    answers, authoritative, additional));
 
     return r;
 }
@@ -255,7 +250,7 @@ struct Response* resolveResponse(cPacket *response) {
  * @return
  *      0 false, 1 true
  */
-int isDNSpacket(cPacket *p) {
+int isDNSpacket(cPacket* p) {
     // If p can be casted in to the original definition
     // then all is well.
     DNSPacket* v = dynamic_cast<DNSPacket*>(p);
@@ -272,7 +267,7 @@ int isDNSpacket(cPacket *p) {
  * @return
  *     -1 if not a DNS packet, 0 if Query, 1 if Response
  */
-int isQueryOrResponse(cPacket *p) {
+int isQueryOrResponse(cPacket* p) {
     DNSPacket* v = dynamic_cast<DNSPacket*>(p);
     if (v != 0) {
         unsigned short o = v->getOptions();
@@ -406,13 +401,13 @@ std::string getClassStringForValue(int _class) {
     return std::string(__class);
 }
 
-void printDNSRecord(DNSRecord* r) {
+void printDNSRecord(std::shared_ptr<DNSRecord> r) {
     std::cout << r->rname << "\t\t" << getTypeStringForValue(r->rtype) << "\t"
             << getClassStringForValue(r->rclass) << "\t" << r->rdata
             << std::endl;
 }
 
-void printDNSQuestion(DNSQuestion* q) {
+void printDNSQuestion(std::shared_ptr<DNSQuestion> q) {
     std::cout << q->qname << "\t\t" << getTypeStringForValue(q->qtype) << "\t"
             << getClassStringForValue(q->qclass) << std::endl;
 }
@@ -482,18 +477,18 @@ std::string dnsPacketToString(DNSPacket* packet) {
 int estimateDnsPacketSize(DNSPacket* packet) {
     int size = 12; // initial header size
 
-    size += strlen(packet->getQuestions(0).qname) + 4; // name length + 4 bytes for type and class
+    size += packet->getQuestions(0).qname.length() + 4; // name length + 4 bytes for type and class
     for (int i = 0; i < packet->getAncount(); i++) {
-        size += 5 + strlen(packet->getAnswers(i).rname)
-                + strlen(packet->getAnswers(i).rdata);
+        size += 5 + packet->getAnswers(i).rname.length()
+                + packet->getAnswers(i).strdata.length();
     }
     for (int i = 0; i < packet->getNscount(); i++) {
-        size += 5 + strlen(packet->getAuthorities(i).rname)
-                + strlen(packet->getAuthorities(i).rdata);
+        size += 5 + packet->getAuthorities(i).rname.length()
+                + packet->getAuthorities(i).strdata.length();
     }
     for (int i = 0; i < packet->getArcount(); i++) {
-        size += 5 + strlen(packet->getAdditional(i).rname)
-                + strlen(packet->getAdditional(i).rdata);
+        size += 5 + packet->getAdditional(i).rname.length()
+                + packet->getAdditional(i).strdata.length();
     }
 
     return size;
@@ -506,12 +501,12 @@ int estimateDnsPacketSize(DNSPacket* packet) {
  *      1 if successful
  *      0 otherwise
  */
-int freeDnsQuestion(DNSQuestion* q) {
+int freeDnsQuestion(std::shared_ptr<DNSQuestion> q) {
     if (!q) {
         return 0;
     }
 
-    delete q;
+    q.reset();
 
     return 1;
 }
@@ -523,29 +518,32 @@ int freeDnsQuestion(DNSQuestion* q) {
  *      1 if successful
  *      0 otherwise
  */
-int freeDnsRecord(DNSRecord* r) {
+int freeDnsRecord(std::shared_ptr<DNSRecord> r) {
     if (!r) {
         return 0;
     }
 
-    delete r;
+    if (r->rtype == DNS_TYPE_VALUE_SRV)
+        delete ((SRVData*) r->rdata);
+    r.reset();
 
     return 1;
 }
 
 /**
  * @brief copyDnsRecord
- *  creates a hard-copy of a given dns record.
+ *  creates a hard-copy of a given dns record, referenced by a shared pointer.
  *
  * @return
  *      the hard-copy created, the struct should be deleted accordingly.
  */
-DNSRecord* copyDnsRecord(DNSRecord* r) {
+std::shared_ptr<DNSRecord> copyDnsRecord(std::shared_ptr<DNSRecord> r) {
     // hard-cpy void * data..
 
-    void* cpy_data;
+    void* cpy_data = NULL;
+    std::string strdata;
     switch (r->rtype) {
-    case DNS_TYPE_VALUE_SRV: // user the srv struct, containing service domain, name, port, weight, etc...
+    case DNS_TYPE_VALUE_SRV: { // user the srv struct, containing service domain, name, port, weight, etc...
         SRVData* srv_cpy = new SRVData();
         srv_cpy->service = ((SRVData*) r->rdata)->service;
         srv_cpy->name = ((SRVData*) r->rdata)->name;
@@ -555,14 +553,56 @@ DNSRecord* copyDnsRecord(DNSRecord* r) {
         srv_cpy->port = ((SRVData*) r->rdata)->port;
         srv_cpy->weight = ((SRVData*) r->rdata)->weight;
         srv_cpy->priority = ((SRVData*) r->rdata)->priority;
+
+        cpy_data = srv_cpy;
         break;
+    }
     default:
-        cpy_data = std::string((const char*) r->rdata); // consider data to be of type const char*
+        strdata = std::string(r->strdata); // consider data to be of type const char*
         break;
     }
 
-    DNSRecord* r_cpy = new DNSRecord(r->rname, r->rtype, r->rclass, r->ttl,
-            r->rdlength, cpy_data);
+    std::shared_ptr<DNSRecord> r_cpy(
+            new DNSRecord(r->rname, r->rtype, r->rclass, r->ttl, r->rdlength,
+                    cpy_data, strdata));
+    return r_cpy;
+}
+
+/**
+ * @brief copyDnsRecord
+ *  creates a hard-copy of a given dns record.
+ *
+ * @return
+ *      the hard-copy created, the struct should be deleted accordingly.
+ */
+std::shared_ptr<DNSRecord> copyDnsRecord(DNSRecord* r) {
+    // hard-cpy void * data..
+
+    void* cpy_data = NULL;
+    std::string strdata;
+    switch (r->rtype) {
+    case DNS_TYPE_VALUE_SRV: { // user the srv struct, containing service domain, name, port, weight, etc...
+        SRVData* srv_cpy = new SRVData();
+        srv_cpy->service = ((SRVData*) r->rdata)->service;
+        srv_cpy->name = ((SRVData*) r->rdata)->name;
+        srv_cpy->proto = ((SRVData*) r->rdata)->proto;
+        srv_cpy->target = ((SRVData*) r->rdata)->target;
+        srv_cpy->ttl = ((SRVData*) r->rdata)->ttl;
+        srv_cpy->port = ((SRVData*) r->rdata)->port;
+        srv_cpy->weight = ((SRVData*) r->rdata)->weight;
+        srv_cpy->priority = ((SRVData*) r->rdata)->priority;
+
+        cpy_data = srv_cpy;
+        break;
+    }
+    default:
+        strdata = std::string(r->strdata); // consider data to be of type const char*
+        break;
+    }
+
+    std::shared_ptr<DNSRecord> r_cpy(
+            new DNSRecord(r->rname, r->rtype, r->rclass, r->ttl, r->rdlength,
+                    cpy_data, strdata));
     return r_cpy;
 }
 
@@ -573,8 +613,22 @@ DNSRecord* copyDnsRecord(DNSRecord* r) {
  * @return
  *      the hard-copy created, not that this needs to be freed if not used anymore.
  */
-DNSQuestion* copyDnsQuestion(DNSQuestion* q) {
-    DNSQuestion* q_cpy = new DNSQuestion(q->qname, q->qtype, q->qclass);
+std::shared_ptr<DNSQuestion> copyDnsQuestion(std::shared_ptr<DNSQuestion> q) {
+    std::shared_ptr<DNSQuestion> q_cpy(
+            new DNSQuestion(q->qname, q->qtype, q->qclass));
+    return q_cpy;
+}
+
+/**
+ * @brief copyDnsQuestion
+ *  creates a hard-copy of a given dns question, given a shared pointer to the object.
+ *
+ * @return
+ *      the hard-copy created, not that this needs to be freed if not used anymore.
+ */
+std::shared_ptr<DNSQuestion> copyDnsQuestion(DNSQuestion* q) {
+    std::shared_ptr<DNSQuestion> q_cpy(
+            new DNSQuestion(q->qname, q->qtype, q->qclass));
     return q_cpy;
 }
 
@@ -586,12 +640,14 @@ DNSQuestion* copyDnsQuestion(DNSQuestion* q) {
  * @return
  *      true if the records are equal
  */
-int recordDataEqual(DNSRecord* r1, DNSRecord* r2) {
-    if (r1->rtype != r2->rtype || r1->rclass != r2->rclass)
+int recordDataEqual(std::shared_ptr<DNSRecord> r1,
+        std::shared_ptr<DNSRecord> r2) {
+    if (r1->rname != r2->rname
+            && (r1->rtype != r2->rtype || r1->rclass != r2->rclass))
         return 0;
 
     switch (r1->rtype) {
-    case DNS_TYPE_VALUE_SRV:
+    case DNS_TYPE_VALUE_SRV: {
         SRVData* s1 = (SRVData*) r1->rdata;
         SRVData* s2 = (SRVData*) r2->rdata;
 
@@ -601,12 +657,29 @@ int recordDataEqual(DNSRecord* r1, DNSRecord* r2) {
                 && s1->weight == s2->weight)
             return 1;
         break;
+    }
     default: // compare str value
         return r1->strdata == r2->strdata;
     }
 
     return 0;
 
+}
+
+/**
+ * @brief recordEqualNoData
+ * compares records without comparing their data
+ *
+ * @return
+ *      true if the records are equal (without data)
+ */
+int recordEqualNoData(std::shared_ptr<DNSRecord> r1,
+        std::shared_ptr<DNSRecord> r2) {
+    if (r1->rname != r2->rname
+            && (r1->rtype != r2->rtype || r1->rclass != r2->rclass))
+        return 0;
+
+    return 1;
 }
 
 /**

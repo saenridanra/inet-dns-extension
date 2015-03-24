@@ -38,12 +38,12 @@ void DNSLocalCache::handleMessage(cMessage *msg)
     DNSServerBase::handleMessage(msg);
 }
 
-DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
+DNSPacket* DNSLocalCache::handleQuery(std::shared_ptr<ODnsExtension::Query> query)
 {
     DNSPacket* response;
     ODnsExtension::DNSQuestion q;
     int id, opcode, rd, ra, an_records = 0,ns_records = 0, ar_records = 0, stop_cache_lookup = 0, rec_query_created = 0;
-    std::list<DNSRecord*> answer_list, ns_list, ar_list;
+    std::list<std::shared_ptr<DNSRecord>> answer_list, ns_list, ar_list;
     const char* __class;
     const char* type;
     std::string msg_name, namehash;
@@ -65,7 +65,7 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
     q = query->questions[0];
 
     // generate msg name
-    msg_name = std::string("dns_response#%d") + std::to_string(response_count++);
+    msg_name = std::string("dns_response#") + std::to_string(response_count++);
 
     // init class
     switch (q.qclass)
@@ -134,7 +134,7 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
             std::string tmp = *it;
             // check if there is and entry in the cache, if so
             // we should follow it before querying
-            std::list<DNSRecord*> records;
+            std::list<std::shared_ptr<DNSRecord>> records;
             while(responseCache->is_in_cache(tmp)){
                 // get the list of records from the cache
                 records = responseCache->get_from_cache(tmp);
@@ -159,7 +159,7 @@ DNSPacket* DNSLocalCache::handleQuery(ODnsExtension::Query *query)
             // if the flag is not set, we can use the record to perform our recursive query
             if(!stop_cache_lookup){
                 // the record is stored in *records
-                DNSRecord* end_of_chain_record = *(records.begin());
+                std::shared_ptr<DNSRecord> end_of_chain_record = *(records.begin());
                 // use the rdata in the record to create a recursive query
                 int id = DNSServerBase::getIdAndInc();
                 DNSServerBase::store_in_query_cache(id, query);

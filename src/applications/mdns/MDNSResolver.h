@@ -41,6 +41,10 @@
 
 #include <MDNS_Privacy.h>
 
+#include <vector>
+#include <list>
+#include <unordered_map>
+#include <memory>
 #include <iostream>
 #include <fstream>
 
@@ -65,16 +69,16 @@ class MDNSResolver : public cSimpleModule
     UDPSocket outSock;
     UDPSocket privacySock;
 
-    GList* services;
-    char* hostname;
+    std::vector<std::shared_ptr<ODnsExtension::MDNSService>> services;
+    std::string hostname;
     IPvXAddress hostaddress;
     cMessage* selfMessage;
 
-    GHashTable* private_service_table;
-    GHashTable* friend_data_table;
-    GHashTable* instance_name_table;
+    std::unordered_map<std::string, std::shared_ptr<ODnsExtension::PrivateMDNSService>> *private_service_table;
+    std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>> *friend_data_table;
+    std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>> *instance_name_table;
 
-    const char* own_instance_name;
+    std::string own_instance_name;
 
     bool hasPrivacy;
 
@@ -96,7 +100,7 @@ class MDNSResolver : public cSimpleModule
     virtual void scheduleSelfMessage(simtime_t tv);
 
     virtual void initializeServices();
-    virtual void initializeServiceFile(const char* file);
+    virtual void initializeServiceFile(std::string file);
 
     virtual void initializePrivateServices();
 };

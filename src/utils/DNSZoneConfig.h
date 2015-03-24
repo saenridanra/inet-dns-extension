@@ -29,8 +29,10 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "list"
-#include "unordered_map"
+#include <list>
+#include <unordered_map>
+#include <memory>
+#include <algorithm>
 #include <fstream>
 
 typedef struct soa{
@@ -77,9 +79,9 @@ protected:
      * Catalog definitions
      */
     std::string origin;
-    std::unordered_map<std::string, std::list<zone_entry*>> zone_catalog;
+    std::unordered_map<std::string, std::list<std::shared_ptr<zone_entry>>> zone_catalog;
 
-    soa* zone_soa;
+    std::shared_ptr<soa> zone_soa;
 
 
 public:
@@ -90,11 +92,11 @@ public:
     virtual void initialize(std::string config_file);
 
     virtual int getTTL();
-    struct soa* getSOA();
+    std::shared_ptr<soa> getSOA();
     virtual std::string getOrigin();
     int hasEntry(std::string hash);
-    std::list<zone_entry*> getEntry(std::string hash);
-    virtual std::unordered_map<std::string, std::list<zone_entry*>> getEntries();
+    std::list<std::shared_ptr<zone_entry>> getEntry(std::string hash);
+    virtual std::unordered_map<std::string, std::list<std::shared_ptr<zone_entry>>>* getEntries();
 
 };
 

@@ -19,9 +19,15 @@
  THE SOFTWARE.
  */
 
+#include "utils/Utils.h"
+
+namespace ODnsExtension {
+
 int stdstr_has_suffix(std::string base, std::string suffix){
     if(base.length() >= suffix.length())
         return !base.compare(base.length() - suffix.length(), suffix.length(), suffix);
     else
         return 0;
+}
+
 }

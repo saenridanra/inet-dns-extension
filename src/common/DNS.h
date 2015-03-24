@@ -22,6 +22,8 @@
 #ifndef DNS_H_
 #define DNS_H_
 
+#include <string>
+
 /**
  * @author Andreas Rain, Distributed Systems Group, University of Konstanz
  */
@@ -217,13 +219,13 @@ struct DNSRecord {
     std::string strdata;
 
     DNSRecord() :
-            rname(NULL), rtype(0), rclass(0), ttl(0), rdlength(0), rdata(NULL) {
+            rname(NULL), rtype(0), rclass(0), ttl(0), rdlength(0), rdata(NULL), strdata(NULL) {
     }
 
     DNSRecord(std::string _rname, unsigned short _rtype, unsigned short _rclass,
-            unsigned int _ttl, unsigned short _rdlength, void* _rdata) :
+            unsigned int _ttl, unsigned short _rdlength, void* _rdata, std::string _strdata) :
             rname(_rname), rtype(_rtype), rclass(_rclass), ttl(_ttl), rdlength(
-                    _rdlength), rdata(_rdata) {
+                    _rdlength), rdata(_rdata), strdata(_strdata) {
     }
 
     ~DNSRecord() {

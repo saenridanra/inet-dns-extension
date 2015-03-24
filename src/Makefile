@@ -252,7 +252,8 @@ $O/applications/dns/DNSClient.o: applications/dns/DNSClient.cc \
 	common/DNSCache.h \
 	common/DNSSimpleCache.h \
 	messages/DNSPacket_m.h \
-	utils/DNSTools.h
+	utils/DNSTools.h \
+	utils/Utils.h
 $O/applications/dns/DNSClientTraffGen.o: applications/dns/DNSClientTraffGen.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
@@ -267,7 +268,8 @@ $O/applications/dns/DNSClientTraffGen.o: applications/dns/DNSClientTraffGen.cc \
 	common/DNSCache.h \
 	common/DNSSimpleCache.h \
 	messages/DNSPacket_m.h \
-	utils/DNSTools.h
+	utils/DNSTools.h \
+	utils/Utils.h
 $O/applications/dns/DNSEchoServer.o: applications/dns/DNSEchoServer.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
@@ -298,7 +300,8 @@ $O/applications/dns/DNSLocalCache.o: applications/dns/DNSLocalCache.cc \
 	common/DNSSimpleCache.h \
 	common/DNSTTLCache.h \
 	messages/DNSPacket_m.h \
-	utils/DNSTools.h
+	utils/DNSTools.h \
+	utils/Utils.h
 $O/applications/dns/DNSServerBase.o: applications/dns/DNSServerBase.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
@@ -335,7 +338,8 @@ $O/applications/mdns/MDNSResolver.o: applications/mdns/MDNSResolver.cc \
 	common/mdns/MDNS_Privacy.h \
 	common/mdns/TimeEventSet.h \
 	messages/DNSPacket_m.h \
-	utils/DNSTools.h
+	utils/DNSTools.h \
+	utils/Utils.h
 $O/common/DNSCache.o: common/DNSCache.cc \
 	common/DNS.h \
 	common/DNSCache.h \
@@ -346,13 +350,15 @@ $O/common/DNSSimpleCache.o: common/DNSSimpleCache.cc \
 	common/DNSCache.h \
 	common/DNSSimpleCache.h \
 	messages/DNSPacket_m.h \
-	utils/DNSTools.h
+	utils/DNSTools.h \
+	utils/Utils.h
 $O/common/DNSTTLCache.o: common/DNSTTLCache.cc \
 	common/DNS.h \
 	common/DNSCache.h \
 	common/DNSTTLCache.h \
 	messages/DNSPacket_m.h \
-	utils/DNSTools.h
+	utils/DNSTools.h \
+	utils/Utils.h
 $O/common/MDNS.o: common/MDNS.cc \
 	common/DNS.h \
 	common/MDNS.h \
@@ -377,7 +383,8 @@ $O/common/mdns/MDNSAnnouncer.o: common/mdns/MDNSAnnouncer.cc \
 	common/mdns/MDNS_Privacy.h \
 	common/mdns/TimeEventSet.h \
 	messages/DNSPacket_m.h \
-	utils/DNSTools.h
+	utils/DNSTools.h \
+	utils/Utils.h
 $O/common/mdns/MDNSProbeScheduler.o: common/mdns/MDNSProbeScheduler.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
@@ -394,7 +401,8 @@ $O/common/mdns/MDNSProbeScheduler.o: common/mdns/MDNSProbeScheduler.cc \
 	common/mdns/MDNS_Privacy.h \
 	common/mdns/TimeEventSet.h \
 	messages/DNSPacket_m.h \
-	utils/DNSTools.h
+	utils/DNSTools.h \
+	utils/Utils.h
 $O/common/mdns/MDNSQueryScheduler.o: common/mdns/MDNSQueryScheduler.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
@@ -411,7 +419,8 @@ $O/common/mdns/MDNSQueryScheduler.o: common/mdns/MDNSQueryScheduler.cc \
 	common/mdns/MDNS_Privacy.h \
 	common/mdns/TimeEventSet.h \
 	messages/DNSPacket_m.h \
-	utils/DNSTools.h
+	utils/DNSTools.h \
+	utils/Utils.h
 $O/common/mdns/MDNSResponseScheduler.o: common/mdns/MDNSResponseScheduler.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
@@ -429,7 +438,8 @@ $O/common/mdns/MDNSResponseScheduler.o: common/mdns/MDNSResponseScheduler.cc \
 	common/mdns/MDNS_Privacy.h \
 	common/mdns/TimeEventSet.h \
 	messages/DNSPacket_m.h \
-	utils/DNSTools.h
+	utils/DNSTools.h \
+	utils/Utils.h
 $O/common/mdns/MDNS_Privacy.o: common/mdns/MDNS_Privacy.cc \
 	$(INET_PROJ)/src/base/Compat.h \
 	$(INET_PROJ)/src/base/INETDefs.h \
@@ -454,5 +464,6 @@ $O/utils/DNSTools.o: utils/DNSTools.cc \
 $O/utils/DNSZoneConfig.o: utils/DNSZoneConfig.cc \
 	utils/DNSZoneConfig.h \
 	utils/Utils.h
-$O/utils/Utils.o: utils/Utils.cc
+$O/utils/Utils.o: utils/Utils.cc \
+	utils/Utils.h
 

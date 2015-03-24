@@ -19,7 +19,6 @@
  THE SOFTWARE.
  */
 
-
 #ifndef MDNSRESPONSESCHEDULER_H_
 #define MDNSRESPONSESCHEDULER_H_
 
@@ -34,15 +33,17 @@
 #include <DNSTTLCache.h>
 #include <MDNS.h>
 #include <MDNS_Privacy.h>
-#include <glib.h>
-#include <glib/gprintf.h>
+
+#include <vector>
+#include <unordered_map>
+#include <memory>
 
 namespace ODnsExtension {
 
-typedef struct MDNSResponseJob{
+typedef struct MDNSResponseJob {
     unsigned int id;
-    ODnsExtension::TimeEvent* e;
-    ODnsExtension::DNSRecord* r;
+    TimeEvent* e;
+    std::shared_ptr<DNSRecord> r;
 
     IPvXAddress* querier;
 
@@ -52,73 +53,95 @@ typedef struct MDNSResponseJob{
 
     // when the job has to be performed.
     simtime_t delivery;
+
+    MDNSResponseJob() :
+            id(0), e(NULL), r(NULL), querier(NULL), done(0), suppressed(0), flush_cache(
+                    0) {
+    }
+    ;
+
 } mdns_response_job;
 
-class MDNSResponseScheduler
-{
-    protected:
-        void* resolver;
-        ODnsExtension::TimeEventSet* timeEventSet;
-        GList* jobs;
-        GList* history;
-        GList* suppressed;
+class MDNSResponseScheduler {
+protected:
+    void* resolver;
+    TimeEventSet* timeEventSet;
+    std::vector<std::shared_ptr<MDNSResponseJob>> jobs;
+    std::vector<std::shared_ptr<MDNSResponseJob>> history;
+    std::vector<std::shared_ptr<MDNSResponseJob>> suppressed;
 
-        UDPSocket* outSock; // socket on which to send the data via multicast...
-        UDPSocket* privacySock;
-        IPvXAddress multicast_address = IPvXAddressResolver().resolve("225.0.0.1");
+    UDPSocket* outSock; // socket on which to send the data via multicast...
+    UDPSocket* privacySock;
+    IPvXAddress multicast_address = IPvXAddressResolver().resolve("225.0.0.1");
 
-        GHashTable* private_service_table;
-        GHashTable* friend_data_table;
-        GHashTable* instance_name_table;
-        int hasPrivacy = 0;
+    std::unordered_map<std::string, std::shared_ptr<PrivateMDNSService>> *private_service_table;
+    std::unordered_map<std::string, std::shared_ptr<FriendData>> *friend_data_table;
+    std::unordered_map<std::string, std::shared_ptr<FriendData>> *instance_name_table;
+    int hasPrivacy = 0;
 
-        ODnsExtension::DNSTTLCache* auth_cache; // cached auth records for aux walks
+    DNSTTLCache* auth_cache; // cached auth records for aux walks
 
-        unsigned int id_count = 0;
+    unsigned int id_count = 0;
 
-        void (*callback) (void*, void*);
+    void (*callback)(void*, void*);
 
-        virtual ODnsExtension::MDNSResponseJob* new_job(ODnsExtension::DNSRecord* r, int done, int suppress);
-        virtual ODnsExtension::MDNSResponseJob* find_job(ODnsExtension::DNSRecord* r);
-        virtual ODnsExtension::MDNSResponseJob* find_history(ODnsExtension::DNSRecord* r);
-        virtual ODnsExtension::MDNSResponseJob* find_suppressed(ODnsExtension::DNSRecord* r, IPvXAddress* querier);
-        virtual void done(ODnsExtension::MDNSResponseJob* rj);
-        virtual void remove_job(ODnsExtension::MDNSResponseJob* rj);
-        virtual int appendTransitiveEntries(ODnsExtension::DNSRecord* r, GList** anlist, int* packetSize, int* ancount);
-        virtual int appendFromCache(char* hash, GList** anlist, int* packetSize, int* ancount);
-        virtual int appendRecord(ODnsExtension::DNSRecord* r, GList** anlist, int* packetSize, int* ancount);
-        virtual int preparePacketAndSend(GList* anlist, int ancount, int packetSize, int is_private);
-    public:
-        MDNSResponseScheduler(ODnsExtension::TimeEventSet* _timeEventSet, UDPSocket* _outSock, void* resolver);
-        virtual ~MDNSResponseScheduler();
+    virtual std::shared_ptr<MDNSResponseJob> new_job(std::shared_ptr<DNSRecord> r,
+            int done, int suppress);
+    virtual std::shared_ptr<MDNSResponseJob> find_job(
+            std::shared_ptr<DNSRecord> r);
+    virtual std::shared_ptr<MDNSResponseJob> find_history(
+            std::shared_ptr<DNSRecord> r);
+    virtual std::shared_ptr<MDNSResponseJob> find_suppressed(
+            std::shared_ptr<DNSRecord> r, IPvXAddress* querier);
+    virtual void done(std::shared_ptr<MDNSResponseJob> rj);
+    virtual void remove_job(std::shared_ptr<MDNSResponseJob> rj);
+    virtual int appendTransitiveEntries(std::shared_ptr<DNSRecord> r,
+            std::list<std::shared_ptr<DNSRecord>> *anlist, int* packetSize, int* ancount);
+    virtual int appendFromCache(std::string hash, std::list<std::shared_ptr<DNSRecord>> *anlist,
+            int* packetSize, int* ancount);
+    virtual int appendRecord(std::shared_ptr<DNSRecord> r, std::list<std::shared_ptr<DNSRecord>> *anlist,
+            int* packetSize, int* ancount);
+    virtual int preparePacketAndSend(std::list<std::shared_ptr<DNSRecord>> anlist, int ancount,
+            int packetSize, int is_private);
+public:
+    MDNSResponseScheduler(TimeEventSet* _timeEventSet,
+            UDPSocket* _outSock, void* resolver);
+    virtual ~MDNSResponseScheduler();
 
-        static void elapseCallback(ODnsExtension::TimeEvent* e, void* data, void* thispointer);
-        virtual void post(ODnsExtension::DNSRecord* r,  int flush_cache, IPvXAddress* querier, int immediately);
-        virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
-        virtual void check_dup(ODnsExtension::DNSRecord* r, int flush_cache);
-        virtual void suppress(ODnsExtension::DNSRecord* r, int flush_cache, IPvXAddress* querier, int immediately);
+    static void elapseCallback(TimeEvent* e, void* data,
+            void* thispointer);
+    virtual void post(std::shared_ptr<DNSRecord> r, int flush_cache,
+            IPvXAddress* querier, int immediately);
+    virtual void elapse(TimeEvent* e, void* data);
+    virtual void check_dup(std::shared_ptr<DNSRecord> r, int flush_cache);
+    virtual void suppress(std::shared_ptr<DNSRecord> r, int flush_cache,
+            IPvXAddress* querier, int immediately);
 
-        void setCallback(void (_callback) (void*, void*)){
-            callback = _callback;
-        }
+    void setCallback(void (_callback)(void*, void*)) {
+        callback = _callback;
+    }
 
-        virtual void setSocket(UDPSocket* sock){
-            outSock = sock;
-        }
-        virtual void setCache(ODnsExtension::DNSTTLCache* _cache){
-            auth_cache = _cache;
-        }
-        virtual void setAuthCache(ODnsExtension::DNSTTLCache* _cache){
-            auth_cache = _cache;
-        }
+    virtual void setSocket(UDPSocket* sock) {
+        outSock = sock;
+    }
+    virtual void setCache(DNSTTLCache* _cache) {
+        auth_cache = _cache;
+    }
+    virtual void setAuthCache(DNSTTLCache* _cache) {
+        auth_cache = _cache;
+    }
 
-        virtual void setPrivacyData(GHashTable* private_service_table, GHashTable* friend_data_table, GHashTable* instance_name_table, UDPSocket* privacySocket){
-            this->private_service_table = private_service_table;
-            this->friend_data_table = friend_data_table;
-            this->instance_name_table = instance_name_table;
-            this->privacySock = privacySocket;
-            hasPrivacy = 1;
-        }
+    virtual void setPrivacyData(
+            std::unordered_map<std::string, std::shared_ptr<PrivateMDNSService>>* private_service_table,
+            std::unordered_map<std::string, std::shared_ptr<FriendData>>* friend_data_table,
+            std::unordered_map<std::string, std::shared_ptr<FriendData>>* instance_name_table,
+            UDPSocket* privacySocket) {
+        this->private_service_table = private_service_table;
+        this->friend_data_table = friend_data_table;
+        this->instance_name_table = instance_name_table;
+        this->privacySock = privacySocket;
+        hasPrivacy = 1;
+    }
 };
 
 #define MDNS_RESPONSE_ON_PROBE 250 // for probes we only wait up to 250ms

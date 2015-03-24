@@ -28,10 +28,12 @@
 #include "IPvXAddressResolver.h"
 #include <vector>
 
-#include "../utils/DNSTools.h"
-#include "glib.h"
-#include "glib/gprintf.h"
+#include <iostream>
+#include <unordered_map>
+#include <string>
+#include <memory>
 
+#include "DNSTools.h"
 #include "DNSCache.h"
 #include "DNSSimpleCache.h"
 
@@ -48,9 +50,9 @@ class DNSClient : public cSimpleModule
   protected:
     // Address vectors for known DNS servers
     std::vector<IPvXAddress> dns_servers;
-    GHashTable *queries;
-    GHashTable *callbacks;
-    GHashTable *callback_handles;
+    std::unordered_map<int, DNSPacket*> queries;
+    std::unordered_map<int, void (*) (int, void*)> callbacks;
+    std::unordered_map<int, void*> callback_handles;
 
     ODnsExtension::DNSCache* cache;
 
@@ -64,8 +66,8 @@ class DNSClient : public cSimpleModule
     virtual void initialize(int stage);
     virtual int numInitStages() const { return 4; }
     virtual void handleMessage(cMessage *msg);
-    virtual IPvXAddress* getAddressFromCache(char* dns_name);
-    virtual int resolve(char* dns_name, int qtype, int primary, void (* callback) (int, void*), int id, void * handle);
+    virtual IPvXAddress* getAddressFromCache(std::string dns_name);
+    virtual int resolve(std::string dns_name, int qtype, int primary, void (* callback) (int, void*), int id, void * handle);
 
   public:
 

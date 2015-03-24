@@ -30,6 +30,7 @@
 #include <math.h>
 #include <list>
 #include <unordered_map>
+#include <memory>
 
 /**
  * @brief DNSAuthServer is a simple omnetpp module
@@ -62,7 +63,7 @@ class DNSAuthServer : public DNSServerBase
          * @return
          *      returns the ns_list after updating it.
          */
-        virtual std::list<ODnsExtension::DNSRecord*> appendAuthority(std::list<ODnsExtension::DNSRecord*> ns_list,
+        virtual std::list<std::shared_ptr<DNSRecord>> appendAuthority(std::list<std::shared_ptr<DNSRecord>> ns_list,
                 int *ns_records);
 
         /**
@@ -77,8 +78,8 @@ class DNSAuthServer : public DNSServerBase
          * @return
          *      returns the ar_list after updating it.
          */
-        virtual std::list<ODnsExtension::DNSRecord*> appendAdditionals(std::list<ODnsExtension::DNSRecord*> ns_list,
-                std::list<ODnsExtension::DNSRecord*> ar_list, int *ns_records);
+        virtual std::list<std::shared_ptr<DNSRecord>> appendAdditionals(std::list<std::shared_ptr<DNSRecord>> ns_list,
+                std::list<std::shared_ptr<DNSRecord>> ar_list, int *ns_records);
 
         /**
          * @brief appendEntries
@@ -93,8 +94,8 @@ class DNSAuthServer : public DNSServerBase
          * @return
          *      returns the updated list
          */
-        virtual std::list<ODnsExtension::DNSRecord*> appendEntries(std::string hash,
-                std::list<ODnsExtension::DNSRecord*> dstlist, int type, int *num_records);
+        virtual std::list<std::shared_ptr<DNSRecord>> appendEntries(std::string hash,
+                std::list<std::shared_ptr<DNSRecord>> dstlist, int type, int *num_records);
 
         /**
          * @brief appendTransitiveEntries
@@ -107,8 +108,8 @@ class DNSAuthServer : public DNSServerBase
          *      DNS_TYPE_VALUE - integer value of the dns type
          *      ar_records - pointer to a counter variable for the size of ar_list
          */
-        virtual std::list<ODnsExtension::DNSRecord*> appendTransitiveEntries(
-                std::list<ODnsExtension::DNSRecord*> srclist, std::list<ODnsExtension::DNSRecord*> dstlist,
+        virtual std::list<std::shared_ptr<DNSRecord>> appendTransitiveEntries(
+                std::list<std::shared_ptr<DNSRecord>> srclist, std::list<std::shared_ptr<DNSRecord>> dstlist,
                 const char* DNS_TYPE_STR, int DNS_TYPE_VALUE, int *ar_records);
 
         /**
@@ -122,7 +123,7 @@ class DNSAuthServer : public DNSServerBase
          * @return
          *       returns a DNSPacket if a response has been generated based on the query.
          */
-        DNSPacket* handleQuery(ODnsExtension::Query *query);
+        DNSPacket* handleQuery(std::shared_ptr<ODnsExtension::Query> query);
 };
 
 #endif

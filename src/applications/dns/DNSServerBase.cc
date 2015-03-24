@@ -44,7 +44,7 @@ void DNSServerBase::handleMessage(cMessage *msg)
 {
     int isDNS = 0;
     int isQR = 0;
-    ODnsExtension::Query* query;
+    std::shared_ptr<ODnsExtension::Query> query;
     DNSPacket* response;
 
     // Check if we received a query
@@ -70,8 +70,6 @@ void DNSServerBase::handleMessage(cMessage *msg)
                     return;
                 }
 
-                // free the query
-                delete query;
                 // and send the response to the source address
                 sendResponse(response, srcAddress);
             }
@@ -86,7 +84,7 @@ void DNSServerBase::handleMessage(cMessage *msg)
                     // this was the final answer, i.e.
                     // get the original packet and the src addr
                     int id = ((DNSPacket*) msg)->getId();
-                    CachedQuery* cq = (CachedQuery*) get_query_from_cache(id);
+                    std::shared_ptr<CachedQuery> cq = get_query_from_cache(id);
 
                     IPvXAddress addr = IPvXAddressResolver().resolve(cq->query->src_address.c_str());
 
@@ -118,8 +116,8 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
         return NULL; // we do not have a query that belongs to this key
     }
 
-    CachedQuery* cq = (CachedQuery*) queryCache[packet->getId()];
-    ODnsExtension::Query* original_query = cq->query;
+    std::shared_ptr<CachedQuery> cq = queryCache[packet->getId()];
+    std::shared_ptr<ODnsExtension::Query> original_query = cq->query;
 
     // first check, see if there are actually answers
 
@@ -149,7 +147,7 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
                         && packet->getAnswers(i).rtype != DNS_TYPE_VALUE_AAAA)
                 {
                     //create a copy and put it into the cache
-                    DNSRecord* r = ODnsExtension::copyDnsRecord(&(packet->getAnswers(i)));
+                    std::shared_ptr<ODnsExtension::DNSRecord> r = ODnsExtension::copyDnsRecord(&(packet->getAnswers(i)));
 
                     // put the record into the cache
                     bubble_popup.append("New cache entry:\n");
@@ -194,7 +192,7 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
             {
                 // use the hash to get the corresponding entry
                 std::string tmp = (std::string) *it;
-                std::list<DNSRecord*> records = responseCache->get_from_cache(tmp);
+                std::list<std::shared_ptr<DNSRecord>> records = responseCache->get_from_cache(tmp);
 
                 if (!records.empty())
                     break;
@@ -207,10 +205,10 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
                 }
 
                 // only one record, extract data into tmp
-                if (((DNSRecord*) *(records.begin()))->rtype == DNS_TYPE_VALUE_CNAME)
+                if ((*(records.begin()))->rtype == DNS_TYPE_VALUE_CNAME)
                 {
                     // append record to the section
-                    ODnsExtension::appendAnswer(response, ODnsExtension::copyDnsRecord(((DNSRecord*) *(records.begin()))),
+                    ODnsExtension::appendAnswer(response, ODnsExtension::copyDnsRecord(*(records.begin())),
                             pos);
                     pos++;
                 }
@@ -249,7 +247,7 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
         // pick one at random and delegate the question
 
         int p = intrand(packet->getNscount());
-        DNSRecord *r = &packet->getAdditional(p);
+        std::shared_ptr<DNSRecord> r(&packet->getAdditional(p));
 
         // query the name server for our original query
         std::string msg_name = "dns_query#" + std::to_string(cq->internal_id) + std::string("--recursive");
@@ -282,24 +280,23 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
     return NULL;
 }
 
-int DNSServerBase::remove_query_from_cache(int id, CachedQuery* cq)
+int DNSServerBase::remove_query_from_cache(int id, std::shared_ptr<CachedQuery> cq)
 {
-    queryCache.erase(id);
-    delete cq;
+    queryCache.erase(queryCache.find(id));
     return 1;
 }
 
-CachedQuery* DNSServerBase::get_query_from_cache(int id)
+std::shared_ptr<CachedQuery> DNSServerBase::get_query_from_cache(int id)
 {
-    CachedQuery* q = (CachedQuery*) queryCache[id];
+    std::shared_ptr<CachedQuery> q = queryCache[id];
     return q;
 }
 
-int DNSServerBase::store_in_query_cache(int id, ODnsExtension::Query* query)
+int DNSServerBase::store_in_query_cache(int id, std::shared_ptr<ODnsExtension::Query> query)
 {
     // store the query in the cache...
 
-    CachedQuery* q = new CachedQuery();
+    std::shared_ptr<CachedQuery> q(new CachedQuery());
     q->internal_id = id;
     q->query = query;
 
@@ -307,7 +304,7 @@ int DNSServerBase::store_in_query_cache(int id, ODnsExtension::Query* query)
     return 1;
 }
 
-DNSPacket* DNSServerBase::handleQuery(ODnsExtension::Query* query)
+DNSPacket* DNSServerBase::handleQuery(std::shared_ptr<ODnsExtension::Query> query)
 {
     return NULL;
 }
@@ -330,7 +327,7 @@ void DNSServerBase::sendResponse(DNSPacket *response, IPvXAddress returnAddress)
         std::cout << "Missing return address\n" << std::endl;
 }
 
-DNSPacket* DNSServerBase::unsupportedOperation(ODnsExtension::Query *q)
+DNSPacket* DNSServerBase::unsupportedOperation(std::shared_ptr<ODnsExtension::Query> q)
 {
     // TODO: return unsupported packet.
     return NULL;

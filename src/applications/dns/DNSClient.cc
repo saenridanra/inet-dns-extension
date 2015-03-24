@@ -31,10 +31,6 @@ void DNSClient::initialize(int stage) {
         out.bind(DNS_PORT);
         query_count = 0;
 
-        queries = g_hash_table_new(g_int_hash, g_int_equal);
-        callbacks = g_hash_table_new(g_int_hash, g_int_equal);
-        callback_handles = g_hash_table_new(g_int_hash, g_int_equal);
-
         // the cache for the records
         cache = new ODnsExtension::DNSSimpleCache();
 
@@ -57,7 +53,7 @@ void DNSClient::handleMessage(cMessage *msg) {
     void (*callback) (int, void*);
     void *callback_handle;
     IPvXAddress tmp;
-    ODnsExtension::Response* response;
+    std::shared_ptr<ODnsExtension::Response> response;
 
     if ((isDNS = ODnsExtension::isDNSpacket((cPacket*) msg)) && (isQR =
             ODnsExtension::isQueryOrResponse((cPacket*) msg))) {
@@ -89,23 +85,19 @@ void DNSClient::handleMessage(cMessage *msg) {
         // put records in the cache
         // this is simply choice, the cache chooses what stays and what doesn't.
 
-        uint32_t* key;
-        key=(uint32_t *)malloc(sizeof(uint32_t));
-        *key = response->id;
-
-
         std::string bubble_popup = "Resolved query: ";
-        g_print("**********************\nResolved query:\n\n;;Question Section:\n");
-        DNSPacket* q = (DNSPacket*) g_hash_table_lookup(queries, key);
-        ODnsExtension::printDNSQuestion(&q->getQuestions(0));
+        std::cout << "**********************\nResolved query:\n\n;;Question Section:\n";
+        DNSPacket* q = queries[response->id];
+        std::shared_ptr<DNSQuestion> question(&q->getQuestions(0));
+        ODnsExtension::printDNSQuestion(question);
         bubble_popup.append(q->getQuestions(0).qname);
         bubble_popup.append("\n");
         delete q;
 
         bubble_popup.append(";;Answer Section:\n");
-        g_print("\n;;Answer Section:\n");
+        std::cout << "\n;;Answer Section:\n";
         for(int i = 0; i < response->ancount; i++){
-            DNSRecord* r = &response->answers[i];
+            std::shared_ptr<DNSRecord> r (&response->answers[i]);
             ODnsExtension::printDNSRecord(r);
             bubble_popup.append(r->rname);
             bubble_popup.append(":");
@@ -113,31 +105,30 @@ void DNSClient::handleMessage(cMessage *msg) {
             bubble_popup.append(":");
             bubble_popup.append(ODnsExtension::getClassStringForValue(r->rclass));
             bubble_popup.append("\nData: ");
-            bubble_popup.append(r->rdata);
+            bubble_popup.append(r->strdata);
             bubble_popup.append("\n");
             cache->put_into_cache(r);
         }
 
         bubble_popup.append(";;Authority Section:\n");
-        g_print("\n;;Authority Section:\n");
+        std::cout << "\n;;Authority Section:\n";
         for(int i = 0; i < response->nscount; i++){
-            DNSRecord* r = &response->authoritative[i];
-            ODnsExtension::printDNSRecord(r);
+            std::shared_ptr<DNSRecord> r (&response->authoritative[i]);
             bubble_popup.append(r->rname);
             bubble_popup.append(":");
             bubble_popup.append(ODnsExtension::getTypeStringForValue(r->rtype));
             bubble_popup.append(":");
             bubble_popup.append(ODnsExtension::getClassStringForValue(r->rclass));
             bubble_popup.append("\nData: ");
-            bubble_popup.append(r->rdata);
+            bubble_popup.append(r->strdata);
             bubble_popup.append("\n");
             cache->put_into_cache(r);
         }
 
         bubble_popup.append(";;Additional Section:\n");
-        g_print("\n;;Additional Section:\n");
+        std::cout << "\n;;Additional Section:\n";
         for(int i = 0; i < response->arcount; i++){
-            DNSRecord* r = &response->additional[i];
+            std::shared_ptr<DNSRecord> r (&(response->additional[i]));
             ODnsExtension::printDNSRecord(r);
             bubble_popup.append(r->rname);
             bubble_popup.append(":");
@@ -145,23 +136,22 @@ void DNSClient::handleMessage(cMessage *msg) {
             bubble_popup.append(":");
             bubble_popup.append(ODnsExtension::getClassStringForValue(r->rclass));
             bubble_popup.append("\nData: ");
-            bubble_popup.append(r->rdata);
+            bubble_popup.append(r->strdata);
             bubble_popup.append("\n");
             cache->put_into_cache(r);
         }
 
         EV << bubble_popup.c_str();
         this->getParentModule()->bubble(bubble_popup.c_str());
-        g_print("**********************\n");
+        std::cout << "**********************\n";
 
-        g_hash_table_remove(queries, &response->id);
+        queries.erase(response->id);
 
         // call the callback and tell it that the query finished
         // the response is now in the cache and can be used..
-        callback = (void (*) (int, void*)) g_hash_table_lookup(callbacks, key);
-        callback_handle = (void *) g_hash_table_lookup(callback_handles, key);
-        callback(*key, callback_handle);
-        free(key);
+        callback = callbacks[response->id];
+        callback_handle = callback_handles[response->id];
+        callback(response->id, callback_handle);
 
     }
     // also check if internal message for resolving a dns name
@@ -172,7 +162,7 @@ void DNSClient::handleMessage(cMessage *msg) {
 
 }
 
-IPvXAddress * DNSClient::getAddressFromCache(char* dns_name){
+IPvXAddress * DNSClient::getAddressFromCache(std::string dns_name){
 
     // TODO: Rethink cache, IPvXAddress cache is not very useful..
 //    gboolean inTable = g_hash_table_contains(response_cache, dns_name);
@@ -186,36 +176,29 @@ IPvXAddress * DNSClient::getAddressFromCache(char* dns_name){
 
 }
 
-int DNSClient::resolve(char* dns_name, int qtype, int primary, void (*callback) (int, void*), int id, void * handle) {
+int DNSClient::resolve(std::string dns_name, int qtype, int primary, void (*callback) (int, void*), int id, void * handle) {
     //First check if we already resolved this.
     DNSPacket* query;
 
     // create query
-    char msg_name[20];
+    std::string msg_name;
 
     if(id == -1){
-        sprintf(msg_name, "dns_query#%d", query_count);
+        msg_name = std::string("dns_query#") + std::to_string(query_count);
     }
     else{
-        sprintf(msg_name, "dns_query#%d", id);
+        msg_name = std::string("dns_query#") + std::to_string(id);
     }
     query = ODnsExtension::createQuery(msg_name, dns_name, DNS_CLASS_IN, qtype, query_count, 1);
 
 
     // put it into the hash table for the given query_count number, so we can identify the query
-    uint32_t* key;
-    key= (uint32_t *) malloc(sizeof(uint32_t));
-    *key = query_count;
     // Put a copy into the cache, if we need to check it later again
     // this way the server can without a problem delete the msg.
     DNSPacket* query_dup = query->dup();
-    g_hash_table_insert(queries, key, (gpointer) query_dup);
-    key= (uint32_t *) malloc(sizeof(uint32_t));
-    *key = query_count;
-    g_hash_table_insert(callbacks, key, (gpointer) callback);
-    key= (uint32_t *) malloc(sizeof(uint32_t));
-    *key = query_count;
-    g_hash_table_insert(callback_handles, key, (gpointer) handle);
+    queries[query_count] = query_dup;
+    callbacks[query_count] = callback;
+    callback_handles[query_count] = handle;
 
     // Send this packet to the primary DNS server, if that fails, the secondary DNS server
 

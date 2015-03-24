@@ -29,35 +29,45 @@
 #include <DNS.h>
 #include <MDNS.h>
 
-#include <glib.h>
+#include <regex>
+#include <list>
+#include <memory>
 
 namespace ODnsExtension{
 
 typedef struct PrivateMDNSService{
-    char* service_type;
+    std::string service_type;
     int is_private;
-    GList* offered_to;
-    GList* offered_by;
+    std::list<std::string> offered_to;
+    std::list<std::string> offered_by;
+
+    PrivateMDNSService(): service_type(""), is_private(0) {};
+
 } private_mdns_service;
 
 typedef struct PairingData{
-    char* crypto_key;
-    char* friend_id;
-    char* privacy_service_instance_name;
+    std::string crypto_key;
+    std::string friend_id;
+    std::string privacy_service_instance_name;
+
+    PairingData() : crypto_key(""), friend_id(""), privacy_service_instance_name("") {};
 } pairing_data;
 
 typedef struct FriendData{
-    PairingData* pdata;
+    std::shared_ptr<PairingData> pdata;
     IPvXAddress address;
     int port;
     simtime_t last_informed;
     int online;
+
+    FriendData () : port(0), last_informed(0), online(0) {};
+
 } friend_data;
 
-char* extract_stype(char* label);
-PrivateMDNSService* private_service_new(char* service_type, int is_private);
-PairingData* pairing_data_new(char* crypto_key, char* friend_id, char* privacy_instance_name);
-FriendData* friend_data_new(PairingData* pdata, int port);
+std::string extract_stype(std::string label);
+std::shared_ptr<PrivateMDNSService> private_service_new(std::string service_type, int is_private);
+std::shared_ptr<PairingData> pairing_data_new(std::string crypto_key, std::string friend_id, std::string privacy_instance_name);
+std::shared_ptr<FriendData> friend_data_new(std::shared_ptr<PairingData> pdata, int port);
 
 #define DEFAULT_PRIVACY_SOCKET_PORT 9977
 

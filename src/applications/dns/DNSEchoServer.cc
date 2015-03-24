@@ -35,7 +35,7 @@ void DNSEchoServer::initialize(int stage) {
 void DNSEchoServer::handleMessage(cMessage *msg) {
     int isDNS = 0;
     int isQR = 0;
-    ODnsExtension::Query* query;
+    std::shared_ptr<ODnsExtension::Query> query;
     DNSPacket* response;
 
     // Check if we received a query
@@ -71,7 +71,7 @@ void DNSEchoServer::handleMessage(cMessage *msg) {
 
 }
 
-DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
+DNSPacket* DNSEchoServer::handleQuery(std::shared_ptr<ODnsExtension::Query> query) {
     int have_match = 0;
     std::string ip, method, alias, qbase, alias_domain, echo_domain, msg_name;
 
@@ -79,7 +79,7 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
     std::regex r_a_query ("(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\.(00)\\.(\\w+\\.\\w+\\.\\w+)");
 
     int num_an_records = 0, num_ns_records = 0, num_ar_records = 0, id, opcode, rd, ra;
-    std::list<DNSRecord*> an_records;
+    std::list<std::shared_ptr<DNSRecord>> an_records;
     DNSPacket* response;
 
     // create string obj. matcher
@@ -126,7 +126,7 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
     if (!have_match) {
         response = ODnsExtension::createResponse(msg_name, 1, num_an_records,
                 num_ns_records, num_ar_records, id, opcode, 1, rd, ra, 0);
-        appendQuestion(response, ODnsExtension::copyDnsQuestion(&query->questions[0]), 0);
+        ODnsExtension::appendQuestion(response, ODnsExtension::copyDnsQuestion(&query->questions[0]), 0);
         return response;
     }
 
@@ -136,7 +136,7 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
 
     // basic methods for the simulation
     if (method == "00") {
-        DNSRecord* r = new DNSRecord();
+        std::shared_ptr<DNSRecord> r(new DNSRecord());
         r->strdata = ip;
         r->rname = qname;
         r->rclass = (short) DNS_CLASS_IN;
@@ -148,7 +148,7 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
         an_records.push_back(r);
     } else if (method == "cca") {
         // first cname RR
-        DNSRecord* r = new DNSRecord();
+        std::shared_ptr<DNSRecord> r (new DNSRecord());
         r->rname = qname;
         r->strdata = alias_domain;
         r->rclass = (short) DNS_CLASS_IN;
@@ -160,7 +160,7 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
         an_records.push_back(r);
 
         // second cname RR
-        r = new DNSRecord();
+        r = std::shared_ptr<DNSRecord>(new DNSRecord());
         r->rname = alias_domain;
         r->strdata = echo_domain;
         r->rclass = (short) DNS_CLASS_IN;
@@ -172,7 +172,7 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
         an_records.push_back(r);
 
         // A RR
-        r = new DNSRecord();
+        r = std::shared_ptr<DNSRecord>(new DNSRecord());
         r->rname = echo_domain;
         r->strdata = ip;
         r->rclass = (short) DNS_CLASS_IN;
@@ -193,9 +193,9 @@ DNSPacket* DNSEchoServer::handleQuery(ODnsExtension::Query* query) {
 
     int index = 0;
 
-    for (auto it : an_records) {
+    for (auto it = an_records.begin(); it != an_records.end(); it++) {
         ODnsExtension::appendAnswer(response,
-                it, index++);
+               *it, index++);
     }
 
     // no auth or add records in this case, return the response
@@ -209,7 +209,7 @@ void DNSEchoServer::sendResponse(DNSPacket *response,
     out.sendTo(response, returnAddress, DNS_PORT);
 }
 
-DNSPacket* DNSEchoServer::unsupportedOperation(ODnsExtension::Query *q) {
+DNSPacket* DNSEchoServer::unsupportedOperation(std::shared_ptr<ODnsExtension::Query> q) {
     // TODO: return unsupported packet.
     return NULL;
 }

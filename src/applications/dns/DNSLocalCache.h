@@ -31,6 +31,7 @@
 #include <list>
 #include <unordered_map>
 #include <math.h>
+#include <memory>
 
 /**
  * @brief DNSLocalCache a simple DNS proxy implementation. Similar to the AuthServer
@@ -49,7 +50,7 @@ class DNSLocalCache : public DNSServerBase
   public:
         virtual void initialize(int stage);
         virtual void handleMessage(cMessage *msg);
-        DNSPacket* handleQuery(ODnsExtension::Query *query);
+        DNSPacket* handleQuery(std::shared_ptr<ODnsExtension::Query> query);
 };
 
 #endif

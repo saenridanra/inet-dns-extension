@@ -24,6 +24,8 @@
 
 #include <math.h>
 #include "DNSCache.h"
+#include <algorithm>
+#include "utils/Utils.h"
 
 namespace ODnsExtension {
 
@@ -47,7 +49,7 @@ public:
      *      1 if the value was stored
      *      0 if the value was not stored
      */
-    int put_into_cache(DNSRecord* record);
+    int put_into_cache(std::shared_ptr<DNSRecord> record);
 
     /**
      * @brief get_from_cache
@@ -56,7 +58,7 @@ public:
      * @return
      *      the desired dns records, returns null if there is no such record for the given hash.
      */
-    std::list<DNSRecord*> get_from_cache(std::string hash);
+    std::list<std::shared_ptr<DNSRecord>> get_from_cache(std::string hash);
 
     /**
      * @brief is_in_cache
@@ -77,7 +79,7 @@ public:
      * @return
      *      returns the removed records.
      */
-    std::list<DNSRecord*> remove_from_cache(std::string hash);
+    std::list<std::shared_ptr<DNSRecord>> remove_from_cache(std::string hash);
 
     /**
      * @brief remove_from_cache
@@ -89,7 +91,7 @@ public:
      * @return
      *      returns the removed record.
      */
-    DNSRecord* remove_from_cache(std::string hash, DNSRecord* r);
+    std::shared_ptr<DNSRecord> remove_from_cache(std::string hash, std::shared_ptr<DNSRecord> r);
 
     /**
      * @brief evict
@@ -98,7 +100,7 @@ public:
      * @return
      *      the evicted dns records.
      */
-    std::list<DNSRecord*> evict();
+    std::list<std::shared_ptr<DNSRecord>> evict();
 
     /**
      * @brief get_matching_hashes
@@ -115,7 +117,7 @@ public:
     std::list<std::string> get_matching_hashes(std::string hash);
 
 protected:
-    std::unordered_map<std::string, std::list<DNSRecord*>> cache;
+    std::unordered_map<std::string, std::list<std::shared_ptr<DNSRecord>>> cache;
 };
 
 } /* namespace ODnsExtension */

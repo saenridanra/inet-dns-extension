@@ -32,9 +32,11 @@ TimeEventSet::~TimeEventSet()
     // nothing to do, all values are on the stack
 
     std::set<ODnsExtension::TimeEvent*>::iterator iterator;
-    for(iterator = timeEventSet.begin(); iterator != timeEventSet.end(); iterator++){
-        delete *iterator;
+    for(auto it : timeEventSet){
+        delete it;
     }
+
+    timeEventSet.clear();
 
 }
 
@@ -43,9 +45,8 @@ void TimeEventSet::addTimeEvent(ODnsExtension::TimeEvent* t)
     // always add a small random delay to the timer,
     // so that we don't have "simultaneous" events .."
     int rand_delay = intrand(10); // delay of 10 ms
-    char* stime = g_strdup_printf("%dms", rand_delay);
-    t->setExpiry(t->getExpiry() + STR_SIMTIME(stime));
-    g_free(stime);
+    std::string stime = std::to_string(rand_delay) + std::string("ms");
+    t->setExpiry(t->getExpiry() + STR_SIMTIME(stime.c_str()));
 
     timeEventSet.insert(t);
 }
@@ -62,11 +63,9 @@ void TimeEventSet::updateTimeEvent(ODnsExtension::TimeEvent* t, simtime_t expiry
 
 void TimeEventSet::removeTimeEvent(ODnsExtension::TimeEvent* t)
 {
-    std::set<ODnsExtension::TimeEvent*, ODnsExtension::TimeEventComparator>::iterator it;
-
-    for(it = timeEventSet.begin(); it != timeEventSet.end(); it++){
+    for(auto it = timeEventSet.begin(); it != timeEventSet.end(); ++it){
         if(*it == t){
-            timeEventSet.erase(it++);
+            timeEventSet.erase(it);
             continue;
         }
     }

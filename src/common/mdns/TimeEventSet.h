@@ -23,7 +23,6 @@
 #define TIMEEVENTSET_H_
 
 #include <omnetpp.h>
-#include <glib.h>
 #include <iterator>
 #include <set>
 
