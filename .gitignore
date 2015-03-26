@@ -52,12 +52,15 @@ Makefile.in
 
 .settings
 
-work
-work/
-out/
-results/
+**/work
+**/work/
+**/out/
+**/results/
 
 *~
 
 .tkenv*
 /.last-copts
+
+**/Makefile
+**/valgrind*.sh
