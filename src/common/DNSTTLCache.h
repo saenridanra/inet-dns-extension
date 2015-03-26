@@ -38,7 +38,7 @@ typedef struct DNSTimeRecord {
     simtime_t expiry;
 
     DNSTimeRecord() :
-            record(NULL), hash(NULL), rcv_time(0), expiry(0) {
+            record(NULL), hash(""), rcv_time(0), expiry(0) {
     }
     ;
 

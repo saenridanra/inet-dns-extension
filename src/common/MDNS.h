@@ -50,7 +50,7 @@ typedef struct MDNSKey{
    uint16_t type;
    uint16_t _class;
 
-   MDNSKey() : name(NULL), type(0), _class(0) {}
+   MDNSKey() : name(""), type(0), _class(0) {}
 } mdns_key;
 
 // utility functions:

@@ -105,7 +105,7 @@ public:
     virtual int check_conflict(std::shared_ptr<DNSRecord> r);
     virtual void add_service(std::shared_ptr<MDNSService> service);
     virtual std::list<std::shared_ptr<DNSRecord>> get_announced_services();
-    virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
+    virtual void elapse(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data);
     virtual void withdraw(std::shared_ptr<Probe> p);
     virtual void goodbye(std::shared_ptr<Probe> p, int send_goodbye, int remove);
 
@@ -121,7 +121,7 @@ public:
         return auth_cache;
     }
 
-    static void elapseCallback(ODnsExtension::TimeEvent* e, void* data,
+    static void elapseCallback(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data,
             void* thispointer) {
         MDNSAnnouncer* self = static_cast<MDNSAnnouncer*>(thispointer);
         self->elapse(e, data);

@@ -101,13 +101,14 @@ DNSPacket* DNSAuthServer::handleQuery(
         if (!has_ns_reference) {
             // ok we did not find a reference directly, do a longest suffix match
             // to check if there is a suffix matching
-            std::unordered_map<std::string, std::list<std::shared_ptr<zone_entry>>>* zone =
-                    config->getEntries();
+            std::unordered_map<std::string,
+                    std::list<std::shared_ptr<zone_entry>>>* zone =
+            config->getEntries();
             unsigned int max_len = 0;
             std::string tmp_ref_hash = "";
             for (auto it = (*zone).begin(); it != (*zone).end(); ++it) {
                 if (ODnsExtension::stdstr_has_suffix(ns_reference_hash,
-                        it->first)) {
+                                it->first)) {
                     if (it->first.length() > max_len) {
                         max_len = it->first.length();
                         tmp_ref_hash = std::string(it->first);
@@ -124,7 +125,7 @@ DNSPacket* DNSAuthServer::handleQuery(
     }
 
     // generate msg name
-    std::string msg_name = std::string("dns_response#%d")
+    std::string msg_name = std::string("dns_response#")
             + std::to_string(response_count++);
 
     if (pos > 0 && config->getOrigin() != "." && !has_ns_reference) {
@@ -344,12 +345,12 @@ DNSPacket* DNSAuthServer::handleQuery(
         if (has_ns_reference) { // see if we know a nameserver on the prefix
             found_entry = true;
             ns_list = appendEntries(ns_reference_hash, ns_list,
-                    DNS_TYPE_VALUE_NS, &ns_records);
+            DNS_TYPE_VALUE_NS, &ns_records);
 
             ar_list = appendTransitiveEntries(ns_list, ar_list, DNS_TYPE_STR_A,
-                    DNS_TYPE_VALUE_A, &ar_records);
+            DNS_TYPE_VALUE_A, &ar_records);
             ar_list = appendTransitiveEntries(ns_list, ar_list,
-                    DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, &ar_records);
+            DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, &ar_records);
 
             // response with with no AA set
             response = ODnsExtension::createResponse(msg_name, 1, an_records,
@@ -367,9 +368,9 @@ DNSPacket* DNSAuthServer::handleQuery(
             if (ns_records != 0) {
 
                 ar_list = appendTransitiveEntries(ns_list, ar_list,
-                        DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, &ar_records);
+                DNS_TYPE_STR_A, DNS_TYPE_VALUE_A, &ar_records);
                 ar_list = appendTransitiveEntries(ns_list, ar_list,
-                        DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, &ar_records);
+                DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, &ar_records);
 
                 // response with with no AA set
                 response = ODnsExtension::createResponse(msg_name, 1,
@@ -380,13 +381,13 @@ DNSPacket* DNSAuthServer::handleQuery(
 
         if (!found_entry) {
 
-            if (recursion_available) {
+            if (recursion_available && rootServers.size() > 0) {
                 if (rd) {
                     // assign an id for the query cache
                     int id = DNSServerBase::getIdAndInc();
                     DNSServerBase::store_in_query_cache(id, query);
-                    msg_name = std::string("dns_query#%d--recursive")
-                            + std::to_string(id);
+                    msg_name = std::string("dns_query#") + std::to_string(id)
+                            + std::string("--recursive");
 
                     // do the initial query towards a root server
                     // pick at random
@@ -471,7 +472,7 @@ std::list<std::shared_ptr<DNSRecord>> DNSAuthServer::appendEntries(
     std::shared_ptr<ODnsExtension::DNSRecord> rr;
 
     for (auto entry : entries) {
-        rr = std::shared_ptr<ODnsExtension::DNSRecord>(new DNSRecord());
+        rr = std::shared_ptr < ODnsExtension::DNSRecord > (new DNSRecord());
         rr->rdata = NULL;
         rr->strdata = std::string(entry->data);
 
@@ -507,23 +508,28 @@ std::list<std::shared_ptr<DNSRecord>> DNSAuthServer::appendTransitiveEntries(
 
         // calculate hash from domain + type + class
         // first ar hash is for A records..
-        if (record->rtype == DNS_TYPE_VALUE_SRV)
-            hash = ((ODnsExtension::SRVData*) record->rdata)->target + std::string(":")
-                    + std::string(DNS_TYPE_STR) + std::string(":")
-                    + std::string(DNS_CLASS_STR_IN);
-        else
+        if (record->rtype == DNS_TYPE_VALUE_SRV) {
+            std::shared_ptr<ODnsExtension::SRVData> srv =
+                    std::static_pointer_cast < ODnsExtension::SRVData
+                            > (record->rdata);
+            hash = srv->target + std::string(":") + std::string(DNS_TYPE_STR)
+                    + std::string(":") + std::string(DNS_CLASS_STR_IN);
+        } else {
             hash = record->strdata + std::string(":")
                     + std::string(DNS_TYPE_STR) + std::string(":")
                     + std::string(DNS_CLASS_STR_IN);
+        }
 
-        std::list<std::shared_ptr<zone_entry>> transitive_entries = config->getEntry(hash);
+        std::list<std::shared_ptr<zone_entry>> transitive_entries =
+                config->getEntry(hash);
         std::shared_ptr<ODnsExtension::DNSRecord> dns_record;
 
         // go through
         for (auto it_2 = transitive_entries.begin();
                 it_2 != transitive_entries.end(); ++it_2) {
             auto entry = *it_2;
-            dns_record = std::shared_ptr<ODnsExtension::DNSRecord>(new DNSRecord());
+            dns_record = std::shared_ptr < ODnsExtension::DNSRecord
+                    > (new DNSRecord());
             dns_record->rdata = NULL;
             dns_record->strdata = std::string(entry->data);
 

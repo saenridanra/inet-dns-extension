@@ -103,8 +103,7 @@ std::shared_ptr<MDNSResponseJob> MDNSResponseScheduler::find_suppressed(
 
         // check if they are the same
         if (recordEqualNoData(r, rj->r)
-                && rj->querier->str().compare(
-                        querier->str()) == 0) {
+                && rj->querier->str().compare(querier->str()) == 0) {
             if ((simTime().inUnit(-3) - rj->delivery.inUnit(-3))
                     > MDNS_RESPONSE_WAIT) {
                 remove_job(rj);
@@ -124,11 +123,9 @@ void MDNSResponseScheduler::done(std::shared_ptr<MDNSResponseJob> rj) {
         remove_job(rj);
 
     rj->done = 1;
-    for (auto it = jobs.begin(); it != jobs.end(); ++it) {
-        if (*it == rj) {
-            jobs.erase(it);
-            break;
-        }
+    auto it = std::find(jobs.begin(), jobs.end(), rj);
+    if (it != jobs.end()) {
+        jobs.erase(it);
     }
     history.push_back(rj);
     simtime_t now = simTime();
@@ -146,35 +143,29 @@ void MDNSResponseScheduler::remove_job(std::shared_ptr<MDNSResponseJob> rj) {
     timeEventSet->removeTimeEvent(rj->e);
 
     if (rj->done) {
-        for (auto it = history.begin(); it != history.end(); ++it) {
-            if (*it == rj) {
-                jobs.erase(it);
-                freeDnsRecord(rj->r);
-                break;
-            }
+        auto it = std::find(history.begin(), history.end(), rj);
+        if (it != history.end()) {
+            it = history.erase(it);
+            freeDnsRecord(rj->r);
         }
         return;
     } else if (rj->suppressed) {
-        for (auto it = suppressed.begin(); it != suppressed.end(); ++it) {
-            if (*it == rj) {
-                jobs.erase(it);
-                freeDnsRecord(rj->r);
-                break;
-            }
+        auto it = std::find(suppressed.begin(), suppressed.end(), rj);
+        if (it != suppressed.end()) {
+            it = suppressed.erase(it);
+            freeDnsRecord(rj->r);
         }
         return;
     } else {
-        for (auto it = jobs.begin(); it != jobs.end(); ++it) {
-            if (*it == rj) {
-                jobs.erase(it);
-                freeDnsRecord(rj->r);
-                break;
-            }
+        auto it = std::find(jobs.begin(), jobs.end(), rj);
+        if (it != jobs.end()) {
+            it = jobs.erase(it);
+            freeDnsRecord(rj->r);
         }
         return;
     }
 
-    // no ref found? i.e. just delete ...
+// no ref found? i.e. just delete ...
     freeDnsRecord(rj->r);
     rj.reset();
 }
@@ -218,7 +209,7 @@ void MDNSResponseScheduler::suppress(std::shared_ptr<DNSRecord> r,
         tv = STR_SIMTIME(stime.c_str());
 
         TimeEvent* e = new TimeEvent(this);
-        e->setData(reinterpret_cast<void *>(&rj));
+        e->setData(rj);
         e->setExpiry(now + tv);
         e->setLastRun(0);
         e->setCallback(MDNSResponseScheduler::elapseCallback);
@@ -228,7 +219,7 @@ void MDNSResponseScheduler::suppress(std::shared_ptr<DNSRecord> r,
 int MDNSResponseScheduler::appendTransitiveEntries(std::shared_ptr<DNSRecord> r,
         std::list<std::shared_ptr<DNSRecord>> *anlist, int* packetSize,
         int* ancount) {
-    // here we check our auth cache for transitive answers..
+// here we check our auth cache for transitive answers..
     int success = 1;
     if (r->rclass == DNS_CLASS_IN) {
         std::string hash;
@@ -246,13 +237,16 @@ int MDNSResponseScheduler::appendTransitiveEntries(std::shared_ptr<DNSRecord> r,
             }
 
         } else if (r->rtype == DNS_TYPE_VALUE_SRV) {
-            hash = ((SRVData*) r->rdata)->target + std::string(":")
+            std::shared_ptr<ODnsExtension::SRVData> srv =
+                    std::static_pointer_cast < ODnsExtension::SRVData
+                            > (r->rdata);
+            hash = srv->target + std::string(":")
                     + std::string(DNS_TYPE_STR_A) + std::string(":")
                     + std::string(DNS_CLASS_STR_IN);
             success = appendFromCache(hash, anlist, packetSize, ancount);
 
             if (success) {
-                hash = ((SRVData*) r->rdata)->target + std::string(":")
+                hash = srv->target + std::string(":")
                         + std::string(DNS_TYPE_STR_AAAA) + std::string(":")
                         + std::string(DNS_CLASS_STR_IN);
                 success = appendFromCache(hash, anlist, packetSize, ancount);
@@ -306,11 +300,8 @@ int MDNSResponseScheduler::appendFromCache(std::string hash,
     cache_entries = auth_cache->get_from_cache(hash);
 
     // for each cache entry, call append record..
-    for (auto ce = cache_entries.begin(); ce != cache_entries.end(); ++ce) {
-        from_cache = *ce;
-
-        int size = 10 + sizeof(from_cache->rname)
-                + from_cache->rdlength;
+    for (auto from_cache : cache_entries) {
+        int size = 10 + sizeof(from_cache->rname) + from_cache->rdlength;
 
         if (from_cache->rtype == DNS_TYPE_VALUE_SRV)
             size += 6; // since we do not have WEIGHT, PRIO and PORT in the SRV
@@ -362,9 +353,9 @@ int MDNSResponseScheduler::preparePacketAndSend(
     DNSPacket* p = createResponse(msgname, 0, ancount, 0, 0, id_count, 0, 1, 0,
             0, 0);
 
-    // append answers if available
+// append answers if available
     int i = 0;
-    // append questions
+// append questions
     if (ancount > 0) {
         for (auto it = anlist.begin(); it != anlist.end(); ++it) {
             appendAnswer(p, *it, i);
@@ -381,11 +372,11 @@ int MDNSResponseScheduler::preparePacketAndSend(
         const char* dstr = "i=msg/packet,green";
         p->setDisplayString(dstr);
         std::string service_type = extract_stype(p->getAnswers(0).rname);
-        std::shared_ptr<PrivateMDNSService> psrv = (*private_service_table)[service_type];
+        std::shared_ptr<PrivateMDNSService> psrv =
+                (*private_service_table)[service_type];
         // go through the offered_to list
 
-        for (auto it = psrv->offered_to.begin(); it != psrv->offered_to.end(); ++it) {
-            std::string key = *it;
+        for (auto key : psrv->offered_to) {
             std::shared_ptr<FriendData> fdata = (*friend_data_table)[key];
             if (fdata && fdata->online) {
                 // send per TCP to the privacy socket on the given port
@@ -442,7 +433,7 @@ void MDNSResponseScheduler::post(std::shared_ptr<DNSRecord> r, int flush_cache,
         rj->flush_cache = flush_cache;
 
         TimeEvent* e = new TimeEvent(this);
-        e->setData(reinterpret_cast<void *>(&rj));
+        e->setData(rj);
         e->setExpiry(tv);
         e->setLastRun(0);
         e->setCallback(MDNSResponseScheduler::elapseCallback);
@@ -454,7 +445,9 @@ void MDNSResponseScheduler::post(std::shared_ptr<DNSRecord> r, int flush_cache,
         }
     }
 
-    callback(&tv, resolver);
+    std::shared_ptr<simtime_t> tv_ptr(new SimTime(tv));
+
+    callback(tv_ptr, resolver);
 
 }
 
@@ -496,7 +489,7 @@ void MDNSResponseScheduler::check_dup(std::shared_ptr<DNSRecord> r,
         tv = STR_SIMTIME(stime.c_str());
 
         TimeEvent* e = new TimeEvent(this);
-        e->setData(reinterpret_cast<void *>(&rj));
+        e->setData(rj);
         e->setExpiry(now + tv);
         e->setLastRun(0);
         e->setCallback(MDNSResponseScheduler::elapseCallback);
@@ -508,8 +501,9 @@ void MDNSResponseScheduler::check_dup(std::shared_ptr<DNSRecord> r,
     rj->flush_cache = flush_cache;
 }
 
-void MDNSResponseScheduler::elapse(TimeEvent* e, void* data) {
-    std::shared_ptr<MDNSResponseJob> rj = *(reinterpret_cast<std::shared_ptr<MDNSResponseJob>*> (data));
+void MDNSResponseScheduler::elapse(TimeEvent* e, std::shared_ptr<void> data) {
+    std::shared_ptr<MDNSResponseJob> rj = std::static_pointer_cast
+            < MDNSResponseJob > (data);
     int packetSize = 12; // initial header size
     int ancount = 0;
     std::list<std::shared_ptr<DNSRecord>> anlist;
@@ -526,7 +520,8 @@ void MDNSResponseScheduler::elapse(TimeEvent* e, void* data) {
         service_type = extract_stype(rj->r->rname);
         if (private_service_table->find(service_type)
                 != private_service_table->end()) {
-            std::shared_ptr<PrivateMDNSService> psrv = (*private_service_table)[service_type];
+            std::shared_ptr<PrivateMDNSService> psrv =
+                    (*private_service_table)[service_type];
             is_private = psrv->is_private;
         }
     }
@@ -534,9 +529,11 @@ void MDNSResponseScheduler::elapse(TimeEvent* e, void* data) {
     int success = appendRecord(rj->r, &anlist, &packetSize, &ancount);
     done(rj);
 
+    std::list<std::shared_ptr<MDNSResponseJob>> done_records;
+
     if (!is_private) {
-        for (auto it = jobs.begin(); it != jobs.end() && success; ++it) {
-            std::shared_ptr<MDNSResponseJob> job = *it;
+        for (auto job : jobs) {
+            if(!success) break;
 
             int _private_job = 0;
             service_type = extract_stype(job->r->rname);
@@ -545,7 +542,8 @@ void MDNSResponseScheduler::elapse(TimeEvent* e, void* data) {
             if (hasPrivacy
                     && private_service_table->find(service_type)
                             != private_service_table->end()) {
-                std::shared_ptr<PrivateMDNSService> psrv = (*private_service_table)[service_type];
+                std::shared_ptr<PrivateMDNSService> psrv =
+                        (*private_service_table)[service_type];
                 _private_job = psrv->is_private;
                 // reschedule
                 timeEventSet->updateTimeEvent(job->e,
@@ -557,13 +555,14 @@ void MDNSResponseScheduler::elapse(TimeEvent* e, void* data) {
             }
 
             if (success && !_private_job) {
-                done(job);
+                done_records.push_back(job);
             }
         }
     } else {
         // append records with matching service_type!
-        for (auto it = jobs.begin(); it != jobs.end() && success; ++it) {
-            std::shared_ptr<MDNSResponseJob> job = *it;
+        for (auto job : jobs) {
+            if(!success) break;
+
             std::string job_stype = extract_stype(job->r->rname);
             // append if it is not the same job
             int not_equal = service_type.compare(job_stype)
@@ -573,10 +572,12 @@ void MDNSResponseScheduler::elapse(TimeEvent* e, void* data) {
             }
 
             if (not_equal && success) {
-                done(job);
+                done_records.push_back(job);
             }
         }
     }
+
+    for(auto job : done_records) done(job);
 
     if (ancount == 0) {
         return;
@@ -588,8 +589,8 @@ void MDNSResponseScheduler::elapse(TimeEvent* e, void* data) {
 
 }
 
-void MDNSResponseScheduler::elapseCallback(TimeEvent* e, void* data,
-        void* thispointer) {
+void MDNSResponseScheduler::elapseCallback(TimeEvent* e,
+        std::shared_ptr<void> data, void* thispointer) {
     MDNSResponseScheduler * self =
             static_cast<MDNSResponseScheduler*>(thispointer);
     self->elapse(e, data);

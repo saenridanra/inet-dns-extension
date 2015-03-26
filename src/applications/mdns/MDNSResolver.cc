@@ -194,9 +194,10 @@ void MDNSResolver::elapsedTimeCheck() {
 
 }
 
-void MDNSResolver::callback(void* data, void* thispointer) {
+void MDNSResolver::callback(std::shared_ptr<void> data, void* thispointer) {
     MDNSResolver * self = static_cast<MDNSResolver*>(thispointer);
-    self->scheduleSelfMessage(*(simtime_t*) data);
+    std::shared_ptr<simtime_t> tv = std::static_pointer_cast<simtime_t>(data);
+    self->scheduleSelfMessage(*tv);
 }
 
 void MDNSResolver::scheduleSelfMessage(simtime_t tv) {
@@ -271,7 +272,7 @@ void MDNSResolver::handleQuery(DNSPacket* p) {
     IPvXAddress* querier = &(check_and_cast<UDPDataIndication *>(
             p->getControlInfo()))->getSrcAddr();
     for (int i = 0; i < p->getAncount(); i++) {
-        std::shared_ptr<DNSRecord> answer(&p->getAnswers(i));
+        std::shared_ptr<DNSRecord> answer = ODnsExtension::copyDnsRecord(&p->getAnswers(i));
         responseScheduler->suppress(answer, 0, querier, 0);
         // remove records that we may have appended to the list
         // since the records pointers are different we have to go through the list ..
@@ -286,7 +287,7 @@ void MDNSResolver::handleQuery(DNSPacket* p) {
 
     // now check probes and check whether they collide
     for (int i = 0; i < p->getNscount(); i++) {
-        std::shared_ptr<DNSRecord> ns_record(&p->getAuthorities(i));
+        std::shared_ptr<DNSRecord> ns_record = ODnsExtension::copyDnsRecord(&p->getAuthorities(i));
         announcer->check_conflict(ns_record); // check whether we have a problem
     }
 
@@ -302,7 +303,7 @@ void MDNSResolver::handleResponse(DNSPacket* p) {
     std::string bubble_popup = "";
     for (int i = 0; i < p->getAncount(); i++) {
         // check if the record conflicts, if not put it into the cache
-        std::shared_ptr<DNSRecord> r(&p->getAnswers(i));
+        std::shared_ptr<DNSRecord> r = ODnsExtension::copyDnsRecord(&p->getAnswers(i));
         std::string type = std::string(ODnsExtension::getTypeStringForValue(r->rtype));
         std::string _class = std::string(ODnsExtension::getClassStringForValue(r->rclass));
         // create hash:
@@ -351,7 +352,7 @@ void MDNSResolver::handleResponse(DNSPacket* p) {
                             record->rtype = DNS_TYPE_VALUE_SRV;
                             record->rclass = DNS_CLASS_IN;
 
-                            ODnsExtension::SRVData* srv = new ODnsExtension::SRVData();
+                            std::shared_ptr<ODnsExtension::SRVData> srv(new ODnsExtension::SRVData());
                             srv->name = record->rname;
                             srv->service = std::string("._privacy._tcp.local");
                             srv->target = hostname + std::string(".local");
@@ -442,6 +443,10 @@ void MDNSResolver::initializeServiceFile(std::string file) {
 }
 
 void MDNSResolver::initializePrivateServices() {
+    private_service_table = new std::unordered_map<std::string, std::shared_ptr<ODnsExtension::PrivateMDNSService>>();
+    friend_data_table = new std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>>();
+    instance_name_table = new std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>>();
+
     probeScheduler->setPrivacyData(private_service_table, friend_data_table,
             instance_name_table, &privacySock);
     queryScheduler->setPrivacyData(private_service_table, friend_data_table,

@@ -88,7 +88,7 @@ void DNSClient::handleMessage(cMessage *msg) {
         std::string bubble_popup = "Resolved query: ";
         std::cout << "**********************\nResolved query:\n\n;;Question Section:\n";
         DNSPacket* q = queries[response->id];
-        std::shared_ptr<DNSQuestion> question(&q->getQuestions(0));
+        std::shared_ptr<DNSQuestion> question = ODnsExtension::copyDnsQuestion(&q->getQuestions(0));
         ODnsExtension::printDNSQuestion(question);
         bubble_popup.append(q->getQuestions(0).qname);
         bubble_popup.append("\n");
@@ -97,7 +97,7 @@ void DNSClient::handleMessage(cMessage *msg) {
         bubble_popup.append(";;Answer Section:\n");
         std::cout << "\n;;Answer Section:\n";
         for(int i = 0; i < response->ancount; i++){
-            std::shared_ptr<DNSRecord> r (&response->answers[i]);
+            std::shared_ptr<DNSRecord> r = ODnsExtension::copyDnsRecord(&response->answers[i]);
             ODnsExtension::printDNSRecord(r);
             bubble_popup.append(r->rname);
             bubble_popup.append(":");
@@ -113,7 +113,7 @@ void DNSClient::handleMessage(cMessage *msg) {
         bubble_popup.append(";;Authority Section:\n");
         std::cout << "\n;;Authority Section:\n";
         for(int i = 0; i < response->nscount; i++){
-            std::shared_ptr<DNSRecord> r (&response->authoritative[i]);
+            std::shared_ptr<DNSRecord> r = ODnsExtension::copyDnsRecord(&response->authoritative[i]);
             bubble_popup.append(r->rname);
             bubble_popup.append(":");
             bubble_popup.append(ODnsExtension::getTypeStringForValue(r->rtype));
@@ -128,7 +128,7 @@ void DNSClient::handleMessage(cMessage *msg) {
         bubble_popup.append(";;Additional Section:\n");
         std::cout << "\n;;Additional Section:\n";
         for(int i = 0; i < response->arcount; i++){
-            std::shared_ptr<DNSRecord> r (&(response->additional[i]));
+            std::shared_ptr<DNSRecord> r = ODnsExtension::copyDnsRecord(&(response->additional[i]));
             ODnsExtension::printDNSRecord(r);
             bubble_popup.append(r->rname);
             bubble_popup.append(":");

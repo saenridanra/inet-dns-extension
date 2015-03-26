@@ -81,7 +81,7 @@ protected:
 
     unsigned int id_count = 0;
 
-    void (*callback)(void*, void*);
+    void (*callback)(std::shared_ptr<void>, void*);
 
     virtual std::shared_ptr<MDNSProbeJob> new_job(
             std::shared_ptr<DNSRecord> r);
@@ -105,13 +105,13 @@ public:
             UDPSocket* _outSock, void* resolver);
     virtual ~MDNSProbeScheduler();
 
-    static void elapseCallback(TimeEvent* e, void* data,
+    static void elapseCallback(TimeEvent* e, std::shared_ptr<void> data,
             void* thispointer);
     virtual void post(std::shared_ptr<DNSRecord> r,
             int immediately);
-    virtual void elapse(TimeEvent* e, void* data);
+    virtual void elapse(TimeEvent* e, std::shared_ptr<void> data);
 
-    void setCallback(void (_callback)(void*, void*)) {
+    void setCallback(void (_callback)(std::shared_ptr<void>, void*)) {
         callback = _callback;
     }
 

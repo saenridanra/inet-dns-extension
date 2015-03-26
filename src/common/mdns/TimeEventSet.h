@@ -25,6 +25,7 @@
 #include <omnetpp.h>
 #include <iterator>
 #include <set>
+#include <memory>
 
 namespace ODnsExtension {
 
@@ -34,11 +35,11 @@ class TimeEvent{
         simtime_t last_run;
 
         // Data, usually a job that has to be performed
-        void* data;
+        std::shared_ptr<void> data;
         // callback function, to call the correct scheduler
         // to perform the job.
         void* scheduler;
-        void (*callback) (ODnsExtension::TimeEvent*, void*, void*);
+        void (*callback) (ODnsExtension::TimeEvent*, std::shared_ptr<void>, void*);
 
 
     public:
@@ -50,11 +51,11 @@ class TimeEvent{
 
         }
 
-        void* getData(){
+        std::shared_ptr<void> getData(){
             return data;
         }
 
-        void setData(void* _data){
+        void setData(std::shared_ptr<void> _data){
             data = _data;
         }
 
@@ -62,7 +63,7 @@ class TimeEvent{
             callback(this, data, scheduler);
         }
 
-        void setCallback(void (_callback) (ODnsExtension::TimeEvent*, void*, void*)){
+        void setCallback(void (_callback) (ODnsExtension::TimeEvent*, std::shared_ptr<void>, void*)){
             callback = _callback;
         }
 

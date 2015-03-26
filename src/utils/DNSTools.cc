@@ -109,14 +109,13 @@ std::shared_ptr<Query> resolveQuery(cPacket* query) {
         ;
     }
 
-    DNSQuestion questions[v->getQdcount()];
-    for (short i = 0; i < v->getQdcount(); i++) {
-        questions[i] = v->getQuestions(i);
-    }
-
     std::shared_ptr<Query> q(
             new Query(v->getId(), v->getOptions(), v->getQdcount(), 0, 0, 0,
-                    questions, NULL));
+                    new DNSQuestion[v->getQdcount()], ""));
+
+    for (short i = 0; i < v->getQdcount(); i++) {
+        q->questions[i] = v->getQuestions(i);
+    }
 
     return q;
 }
@@ -522,9 +521,6 @@ int freeDnsRecord(std::shared_ptr<DNSRecord> r) {
     if (!r) {
         return 0;
     }
-
-    if (r->rtype == DNS_TYPE_VALUE_SRV)
-        delete ((SRVData*) r->rdata);
     r.reset();
 
     return 1;
@@ -540,21 +536,24 @@ int freeDnsRecord(std::shared_ptr<DNSRecord> r) {
 std::shared_ptr<DNSRecord> copyDnsRecord(std::shared_ptr<DNSRecord> r) {
     // hard-cpy void * data..
 
-    void* cpy_data = NULL;
+    std::shared_ptr<void> cpy_data;
     std::string strdata;
     switch (r->rtype) {
     case DNS_TYPE_VALUE_SRV: { // user the srv struct, containing service domain, name, port, weight, etc...
-        SRVData* srv_cpy = new SRVData();
-        srv_cpy->service = ((SRVData*) r->rdata)->service;
-        srv_cpy->name = ((SRVData*) r->rdata)->name;
-        srv_cpy->proto = ((SRVData*) r->rdata)->proto;
-        srv_cpy->target = ((SRVData*) r->rdata)->target;
-        srv_cpy->ttl = ((SRVData*) r->rdata)->ttl;
-        srv_cpy->port = ((SRVData*) r->rdata)->port;
-        srv_cpy->weight = ((SRVData*) r->rdata)->weight;
-        srv_cpy->priority = ((SRVData*) r->rdata)->priority;
+        std::shared_ptr<SRVData> srv_cpy(new SRVData());
+        std::shared_ptr<ODnsExtension::SRVData> srv =
+                std::static_pointer_cast < ODnsExtension::SRVData
+                        > (r->rdata);
+        srv_cpy->service = srv->service;
+        srv_cpy->name = srv->name;
+        srv_cpy->proto = srv->proto;
+        srv_cpy->target = srv->target;
+        srv_cpy->ttl = srv->ttl;
+        srv_cpy->port = srv->port;
+        srv_cpy->weight = srv->weight;
+        srv_cpy->priority = srv->priority;
 
-        cpy_data = srv_cpy;
+        cpy_data = std::static_pointer_cast<void>(srv_cpy);
         break;
     }
     default:
@@ -578,21 +577,25 @@ std::shared_ptr<DNSRecord> copyDnsRecord(std::shared_ptr<DNSRecord> r) {
 std::shared_ptr<DNSRecord> copyDnsRecord(DNSRecord* r) {
     // hard-cpy void * data..
 
-    void* cpy_data = NULL;
+    std::shared_ptr<void> cpy_data;
     std::string strdata;
     switch (r->rtype) {
     case DNS_TYPE_VALUE_SRV: { // user the srv struct, containing service domain, name, port, weight, etc...
-        SRVData* srv_cpy = new SRVData();
-        srv_cpy->service = ((SRVData*) r->rdata)->service;
-        srv_cpy->name = ((SRVData*) r->rdata)->name;
-        srv_cpy->proto = ((SRVData*) r->rdata)->proto;
-        srv_cpy->target = ((SRVData*) r->rdata)->target;
-        srv_cpy->ttl = ((SRVData*) r->rdata)->ttl;
-        srv_cpy->port = ((SRVData*) r->rdata)->port;
-        srv_cpy->weight = ((SRVData*) r->rdata)->weight;
-        srv_cpy->priority = ((SRVData*) r->rdata)->priority;
+        std::shared_ptr<SRVData> srv_cpy(new SRVData());
 
-        cpy_data = srv_cpy;
+        std::shared_ptr<ODnsExtension::SRVData> srv =
+                std::static_pointer_cast < ODnsExtension::SRVData
+                        > (r->rdata);
+        srv_cpy->service = srv->service;
+        srv_cpy->name = srv->name;
+        srv_cpy->proto = srv->proto;
+        srv_cpy->target = srv->target;
+        srv_cpy->ttl = srv->ttl;
+        srv_cpy->port = srv->port;
+        srv_cpy->weight = srv->weight;
+        srv_cpy->priority = srv->priority;
+
+        cpy_data = std::static_pointer_cast<void> (srv_cpy);
         break;
     }
     default:
@@ -648,8 +651,8 @@ int recordDataEqual(std::shared_ptr<DNSRecord> r1,
 
     switch (r1->rtype) {
     case DNS_TYPE_VALUE_SRV: {
-        SRVData* s1 = (SRVData*) r1->rdata;
-        SRVData* s2 = (SRVData*) r2->rdata;
+        std::shared_ptr<SRVData> s1 = std::static_pointer_cast<SRVData> (r1->rdata);
+        std::shared_ptr<SRVData> s2 = std::static_pointer_cast<SRVData> (r2->rdata);
 
         if (s1->name == s2->name && s1->port == s2->port
                 && s1->priority == s2->priority && s1->proto == s2->proto

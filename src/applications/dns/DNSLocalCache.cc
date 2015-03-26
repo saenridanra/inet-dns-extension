@@ -157,13 +157,13 @@ DNSPacket* DNSLocalCache::handleQuery(std::shared_ptr<ODnsExtension::Query> quer
             }
 
             // if the flag is not set, we can use the record to perform our recursive query
-            if(!stop_cache_lookup){
+            if(!stop_cache_lookup && rootServers.size() > 0){
                 // the record is stored in *records
                 std::shared_ptr<DNSRecord> end_of_chain_record = *(records.begin());
                 // use the rdata in the record to create a recursive query
                 int id = DNSServerBase::getIdAndInc();
                 DNSServerBase::store_in_query_cache(id, query);
-                msg_name = std::string("dns_query#--recursive") + std::to_string(id);
+                msg_name = std::string("dns_query#") + std::to_string(id) + std::string("--recursive");
 
                 int p = intrand(rootServers.size());
                 DNSPacket *root_q = ODnsExtension::createQuery(msg_name, end_of_chain_record->strdata, DNS_CLASS_IN,
@@ -181,13 +181,13 @@ DNSPacket* DNSLocalCache::handleQuery(std::shared_ptr<ODnsExtension::Query> quer
     }
 
     // if we get here, cache lookup was unsuccessful
-    if (recursion_available)
+    if (recursion_available && rootServers.size() > 0)
     {
         if (rd)
         {
             int id = DNSServerBase::getIdAndInc();
             DNSServerBase::store_in_query_cache(id, query);
-            msg_name = std::string("dns_query#--recursive") + std::to_string(id);
+            msg_name = std::string("dns_query#") + std::to_string(id) + std::string("--recursive");
 
             // do the initial query towards a root server
             // pick at random

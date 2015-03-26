@@ -23,6 +23,7 @@
 #define DNS_H_
 
 #include <string>
+#include <memory>
 
 /**
  * @author Andreas Rain, Distributed Systems Group, University of Konstanz
@@ -99,7 +100,7 @@ struct Query {
 
     Query() :
             id(0), options(0), qdcount(0), ancount(0), nscount(0), arcount(0), questions(
-                    NULL), src_address(NULL) {
+            NULL), src_address("") {
     }
 
     Query(unsigned short _id, unsigned short _options, unsigned short _qdcount,
@@ -128,7 +129,7 @@ struct DNSQuestion {
     unsigned short qclass;
 
     DNSQuestion() :
-            qname(NULL), qtype(0), qclass(0) {
+            qname(""), qtype(0), qclass(0) {
     }
 
     DNSQuestion(std::string _qname, unsigned short _qtype,
@@ -152,7 +153,7 @@ struct Response {
 
     Response() :
             id(0), options(0), qdcount(0), ancount(0), nscount(0), arcount(0), answers(
-                    NULL), authoritative(NULL), additional(NULL) {
+            NULL), authoritative(NULL), additional(NULL) {
     }
 
     Response(unsigned short _id, unsigned short _options,
@@ -180,8 +181,8 @@ struct SRVData {
     unsigned short port;
 
     SRVData() :
-            service(NULL), proto(NULL), name(NULL), target(NULL), ttl(0), weight(
-                    0), priority(0), port(0) {
+            service(""), proto(""), name(""), target(""), ttl(0), weight(0), priority(
+                    0), port(0) {
     }
     ;
 };
@@ -214,30 +215,23 @@ struct DNSRecord {
      * Variable length string. Format is according to rtype
      * and rclass of this record.
      */
-    void* rdata;
+    std::shared_ptr<void> rdata;
 
     std::string strdata;
 
     DNSRecord() :
-            rname(NULL), rtype(0), rclass(0), ttl(0), rdlength(0), rdata(NULL), strdata(NULL) {
+            rname(""), rtype(0), rclass(0), ttl(0), rdlength(0), rdata(NULL), strdata(
+                    "") {
     }
 
     DNSRecord(std::string _rname, unsigned short _rtype, unsigned short _rclass,
-            unsigned int _ttl, unsigned short _rdlength, void* _rdata, std::string _strdata) :
+            unsigned int _ttl, unsigned short _rdlength, std::shared_ptr<void> _rdata,
+            std::string _strdata) :
             rname(_rname), rtype(_rtype), rclass(_rclass), ttl(_ttl), rdlength(
                     _rdlength), rdata(_rdata), strdata(_strdata) {
     }
 
     ~DNSRecord() {
-        if (rdata != NULL) {
-            switch (rtype) { // TODO: Add cases if more complex data types arise
-            case DNS_TYPE_VALUE_SRV:
-                delete ((SRVData*) rdata);
-                break;
-            default:
-                break;
-            }
-        }
     }
     ;
 };

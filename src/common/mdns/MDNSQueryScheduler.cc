@@ -38,15 +38,16 @@ MDNSQueryScheduler::~MDNSQueryScheduler() {
     // free all lists ...
 }
 
-void MDNSQueryScheduler::elapseCallback(ODnsExtension::TimeEvent* e, void* data,
-        void* thispointer) {
+void MDNSQueryScheduler::elapseCallback(ODnsExtension::TimeEvent* e,
+        std::shared_ptr<void> data, void* thispointer) {
     MDNSQueryScheduler * self = static_cast<MDNSQueryScheduler*>(thispointer);
     self->elapse(e, data);
 }
 
-void MDNSQueryScheduler::elapse(ODnsExtension::TimeEvent* e, void* data) {
-    std::shared_ptr<ODnsExtension::MDNSQueryJob> qj = *(reinterpret_cast<
-            std::shared_ptr<ODnsExtension::MDNSQueryJob>*>(data));
+void MDNSQueryScheduler::elapse(ODnsExtension::TimeEvent* e,
+        std::shared_ptr<void> data) {
+    std::shared_ptr<ODnsExtension::MDNSQueryJob> qj = std::static_pointer_cast
+            < MDNSQueryJob > (data);
 
     if (qj->done) {
         remove_job(qj); // remove the job from history as it is done already
@@ -76,10 +77,12 @@ void MDNSQueryScheduler::elapse(ODnsExtension::TimeEvent* e, void* data) {
     done(qj);
 
     // now try to append more questions if we didn't already exceed the packet size.
+    std::list<std::shared_ptr<MDNSQueryJob>> done_records;
     if (!is_private) { // only if we don't have a private query job
-        for (auto it = jobs.begin(); it != jobs.end() && success; ++it) {
+        for (auto job : jobs) {
             // take another query job from the list..
-            std::shared_ptr<MDNSQueryJob> job = *it;
+            if(!success) break;
+
             int _private_job = 0;
             std::string service_type = ODnsExtension::extract_stype(
                     job->key->name);
@@ -101,9 +104,11 @@ void MDNSQueryScheduler::elapse(ODnsExtension::TimeEvent* e, void* data) {
                         &packetSize, &qdcount, &ancount, 0);
             }
             if (!_private_job) {
-                done(job);
+                done_records.push_back(job);
             }
         }
+
+        for(auto job : done_records) done(job);
     }
 
     if (preparePacketAndSend(qlist, anlist, nslist, arlist, qdcount, ancount,
@@ -183,7 +188,8 @@ int MDNSQueryScheduler::preparePacketAndSend(
         // go through the offered_to list
         for (auto it : psrv->offered_to) {
             std::string key = it;
-            std::shared_ptr<ODnsExtension::FriendData> fdata = (*friend_data_table)[key];
+            std::shared_ptr<ODnsExtension::FriendData> fdata =
+                    (*friend_data_table)[key];
             if (fdata && fdata->online) {
                 // send per TCP to the privacy socket on the given port
                 privacySock->sendTo(p->dup(), fdata->address, fdata->port);
@@ -249,7 +255,8 @@ std::list<std::shared_ptr<DNSRecord>> MDNSQueryScheduler::append_cache_entries(
     std::string hash = key->name + std::string(":")
             + std::string(getTypeStringForValue(key->type)) + std::string(":")
             + std::string(getClassStringForValue(key->_class));
-    std::list<std::shared_ptr<DNSRecord>> from_cache = cache->get_from_cache(hash);
+    std::list<std::shared_ptr<DNSRecord>> from_cache = cache->get_from_cache(
+            hash);
     std::shared_ptr<DNSRecord> record;
 
     for (auto it = from_cache.begin(); it != from_cache.end(); ++it) {
@@ -327,7 +334,7 @@ void MDNSQueryScheduler::post(std::shared_ptr<ODnsExtension::MDNSKey> key,
         qj->delivery = tv;
 
         ODnsExtension::TimeEvent* e = new ODnsExtension::TimeEvent(this);
-        e->setData(reinterpret_cast<void*>(&qj));
+        e->setData(qj);
         e->setExpiry(tv);
         e->setLastRun(0);
         e->setCallback(ODnsExtension::MDNSQueryScheduler::elapseCallback);
@@ -337,18 +344,18 @@ void MDNSQueryScheduler::post(std::shared_ptr<ODnsExtension::MDNSKey> key,
 
     }
 
-    callback(&tv, resolver);
+    std::shared_ptr<SimTime> tv_ptr(new SimTime(tv));
+
+    callback(tv_ptr, resolver);
 
 }
 
 void MDNSQueryScheduler::done(std::shared_ptr<ODnsExtension::MDNSQueryJob> qj) {
     qj->done = 1;
 
-    for (auto it = jobs.begin(); it != jobs.end(); ++it) {
-        if (*it == qj) {
-            jobs.erase(it);
-            break;
-        }
+    auto it = std::find(jobs.begin(), jobs.end(), qj);
+    if (it != jobs.end()) {
+        jobs.erase(it);
     }
     if (std::find(history.begin(), history.end(), qj) == history.end())
         return;
@@ -400,7 +407,7 @@ std::shared_ptr<ODnsExtension::MDNSQueryJob> MDNSQueryScheduler::new_job(
         std::shared_ptr<ODnsExtension::MDNSKey> key) {
     std::shared_ptr<MDNSQueryJob> qj(new MDNSQueryJob());
     qj->id = id_count++;
-    qj->key = std::shared_ptr<MDNSKey>(new MDNSKey());
+    qj->key = std::shared_ptr < MDNSKey > (new MDNSKey());
     qj->key->name = key->name;
     qj->key->type = key->type;
     qj->key->_class = key->_class;
@@ -417,20 +424,16 @@ void MDNSQueryScheduler::remove_job(
     timeEventSet->removeTimeEvent(qj->e);
 
     if (find_job(qj->key)) {
-        for (auto it = jobs.begin(); it != jobs.end(); ++it) {
-            if (qj == *it) {
-                jobs.erase(it);
-                break;
-            }
+        auto it = std::find(jobs.begin(), jobs.end(), qj);
+        if (it != jobs.end()) {
+            jobs.erase(it);
         }
 
         return;
     } else if (find_history(qj->key)) {
-        for (auto it = history.begin(); it != history.end(); ++it) {
-            if (qj == *it) {
-                jobs.erase(it);
-                break;
-            }
+        auto it = std::find(history.begin(), history.end(), qj);
+        if (it != history.end()) {
+            history.erase(it);
         }
 
         return;

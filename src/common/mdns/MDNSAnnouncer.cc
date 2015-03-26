@@ -35,7 +35,7 @@ void MDNSAnnouncer::initialize() {
         a_record->rname = target;
         a_record->rtype = DNS_TYPE_VALUE_A;
         a_record->rclass = DNS_CLASS_IN;
-        a_record->strdata = hostaddress->get4().str(); // actual host address
+        a_record->strdata = std::string(hostaddress->get4().str()); // actual host address
         a_record->rdlength = a_record->strdata.length();
         a_record->ttl = MDNS_HOST_TTL;
 
@@ -44,7 +44,7 @@ void MDNSAnnouncer::initialize() {
                 + std::string(".in-addr.arpa.");
         a_ptr_record->rtype = DNS_TYPE_VALUE_PTR;
         a_ptr_record->rclass = DNS_CLASS_IN;
-        a_ptr_record->strdata = target;
+        a_ptr_record->strdata = std::string(target);
         a_ptr_record->rdlength = a_ptr_record->strdata.length();
         a_ptr_record->ttl = MDNS_HOST_TTL;
 
@@ -64,7 +64,7 @@ void MDNSAnnouncer::initialize() {
         simtime_t tv = simTime() + STR_SIMTIME("20ms");
 
         ODnsExtension::TimeEvent* e = new ODnsExtension::TimeEvent(this);
-        e->setData(reinterpret_cast<void*>(&a));
+        e->setData(a);
         e->setExpiry(tv);
         e->setLastRun(0);
         e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
@@ -72,7 +72,7 @@ void MDNSAnnouncer::initialize() {
         a->e = e;
 
         e = new ODnsExtension::TimeEvent(this);
-        e->setData(reinterpret_cast<void*>(&a_ptr));
+        e->setData(a_ptr);
         e->setExpiry(tv);
         e->setLastRun(0);
         e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
@@ -86,7 +86,7 @@ void MDNSAnnouncer::initialize() {
             aaaa_record->rname = target;
             aaaa_record->rtype = DNS_TYPE_VALUE_AAAA;
             aaaa_record->rclass = DNS_CLASS_IN;
-            aaaa_record->strdata = hostaddress->get6().str(); // actual host address
+            aaaa_record->strdata = std::string(hostaddress->get6().str()); // actual host address
             aaaa_record->rdlength = aaaa_record->strdata.length();
             aaaa_record->ttl = MDNS_HOST_TTL;
 
@@ -94,7 +94,7 @@ void MDNSAnnouncer::initialize() {
                     + std::string(".ip6.arpa.");
             aaaa_ptr_record->rtype = DNS_TYPE_VALUE_PTR;
             aaaa_ptr_record->rclass = DNS_CLASS_IN;
-            aaaa_ptr_record->strdata = target;
+            aaaa_ptr_record->strdata = std::string(target);
             aaaa_ptr_record->rdlength = target.length();
             aaaa_ptr_record->ttl = MDNS_HOST_TTL;
 
@@ -109,7 +109,7 @@ void MDNSAnnouncer::initialize() {
             probing.push_back(aaaa_ptr);
 
             e = new ODnsExtension::TimeEvent(this);
-            e->setData(reinterpret_cast<void*>(&aaaa));
+            e->setData(aaaa);
             e->setExpiry(tv);
             e->setLastRun(0);
             e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
@@ -117,7 +117,7 @@ void MDNSAnnouncer::initialize() {
             aaaa->e = e;
 
             e = new ODnsExtension::TimeEvent(this);
-            e->setData(reinterpret_cast<void*>(&aaaa_ptr));
+            e->setData(aaaa_ptr);
             e->setExpiry(tv);
             e->setLastRun(0);
             e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
@@ -147,7 +147,7 @@ void MDNSAnnouncer::add_service(std::shared_ptr<MDNSService> service) {
     service_record->rclass = DNS_CLASS_IN;
     service_record->ttl = 60 * 75;
 
-    SRVData* srv = new SRVData();
+    std::shared_ptr<SRVData> srv(new SRVData());
     srv->name = label;
     srv->target = target;
     srv->service = service->service_type;
@@ -171,7 +171,7 @@ void MDNSAnnouncer::add_service(std::shared_ptr<MDNSService> service) {
     simtime_t tv = simTime() + STR_SIMTIME("20ms");
 
     ODnsExtension::TimeEvent* e = new ODnsExtension::TimeEvent(this);
-    e->setData(reinterpret_cast<void*>(&p));
+    e->setData(p);
     e->setExpiry(tv);
     e->setLastRun(0);
     e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
@@ -189,13 +189,13 @@ void MDNSAnnouncer::add_service(std::shared_ptr<MDNSService> service) {
             txtrecord->rdlength = it.length();
             txtrecord->ttl = MDNS_SERVICE_TTL;
 
-            p = std::shared_ptr<Probe>(new Probe());
+            p = std::shared_ptr < Probe > (new Probe());
             p->r = txtrecord;
             p->probe_id = id_internal++;
             p->ref_service = service;
 
             e = new ODnsExtension::TimeEvent(this);
-            e->setData(reinterpret_cast<void*>(&p));
+            e->setData(p);
             e->setExpiry(tv);
             e->setLastRun(0);
             e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
@@ -214,12 +214,12 @@ void MDNSAnnouncer::add_service(std::shared_ptr<MDNSService> service) {
         txtrecord->rdlength = 0;
         txtrecord->ttl = MDNS_SERVICE_TTL;
 
-        p = std::shared_ptr<Probe>(new Probe());
+        p = std::shared_ptr < Probe > (new Probe());
         p->r = txtrecord;
         p->probe_id = id_internal++;
 
         e = new ODnsExtension::TimeEvent(this);
-        e->setData(reinterpret_cast<void*>(&p));
+        e->setData(p);
         e->setExpiry(tv);
         e->setLastRun(0);
         e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
@@ -234,8 +234,8 @@ std::list<std::shared_ptr<DNSRecord>> MDNSAnnouncer::get_announced_services() {
 
     for (auto kv : probe_to_cache) {
         // use the hash in &value to get the record and append it to the list
-        std::list<std::shared_ptr<DNSRecord>> from_cache = auth_cache->get_from_cache(
-                kv.second);
+        std::list<std::shared_ptr<DNSRecord>> from_cache =
+                auth_cache->get_from_cache(kv.second);
         // append the list to our list
         announced_records.insert(announced_records.end(), from_cache.begin(),
                 from_cache.end());
@@ -276,18 +276,25 @@ int MDNSAnnouncer::check_conflict(std::shared_ptr<DNSRecord> r) {
 void MDNSAnnouncer::withdraw(std::shared_ptr<Probe> p) {
     // by withdrawing, the label is changed and the probing number reset
     p->n_iter = 0;
-    std::string label_new = p->ref_service->name + std::string("-")
-            + std::to_string(++p->collision_count) + std::string(".")
-            + p->ref_service->service_type;
+    std::string label_new = "";
+
+    if (p->ref_service) {
+        label_new = p->ref_service->name + std::string("-")
+                + std::to_string(++p->collision_count) + std::string(".")
+                + p->ref_service->service_type;
+    }
+
     // use the new label..
     p->s = ProbeState::PROBING;
     p->r->rname = label_new;
 }
 
-void MDNSAnnouncer::goodbye(std::shared_ptr<Probe> p, int send_goodbye, int remove) {
+void MDNSAnnouncer::goodbye(std::shared_ptr<Probe> p, int send_goodbye,
+        int remove) {
     if (send_goodbye) {
         if (p->s == ProbeState::ANNOUNCING) {
-            std::shared_ptr<DNSRecord> goodbye_record = ODnsExtension::copyDnsRecord(p->r);
+            std::shared_ptr<DNSRecord> goodbye_record =
+                    ODnsExtension::copyDnsRecord(p->r);
             goodbye_record->ttl = 0;
             response_scheduler->post(goodbye_record, 0, NULL, 0);
         }
@@ -302,8 +309,9 @@ void MDNSAnnouncer::goodbye(std::shared_ptr<Probe> p, int send_goodbye, int remo
     }
 }
 
-void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e, void* data) {
-    std::shared_ptr<Probe> p = *(reinterpret_cast<std::shared_ptr<Probe>*>(data));
+void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e,
+        std::shared_ptr<void> data) {
+    std::shared_ptr<Probe> p = std::static_pointer_cast < Probe > (data);
     simtime_t tv;
     // no probe has been sent out so far..
     if (p->s == ProbeState::STARTING) {
@@ -354,9 +362,10 @@ void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e, void* data) {
             // add record to cache..
 
             auth_cache->put_into_cache(p->r); // using the cache, we know when the record is up for eviction
-            std::string hash = p->r->rname + std::string(":") +
-                    std::string(getTypeStringForValue(p->r->rtype)) + std::string(":") +
-                    std::string(getClassStringForValue(p->r->rclass));
+            std::string hash = p->r->rname + std::string(":")
+                    + std::string(getTypeStringForValue(p->r->rtype))
+                    + std::string(":")
+                    + std::string(getClassStringForValue(p->r->rclass));
             probe_to_cache[p->probe_id] = hash;
 
             // add 2^(p->n_iter - 1) * 1s delay

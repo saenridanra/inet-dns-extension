@@ -74,35 +74,43 @@ protected:
 
     unsigned int id_count = 0;
 
-    void (*callback)(void*, void*);
+    void (*callback)(std::shared_ptr<void>, void*);
 
-    virtual std::shared_ptr<ODnsExtension::MDNSQueryJob> new_job(std::shared_ptr<ODnsExtension::MDNSKey> key);
-    virtual std::shared_ptr<ODnsExtension::MDNSQueryJob> find_job(std::shared_ptr<ODnsExtension::MDNSKey> key);
+    virtual std::shared_ptr<ODnsExtension::MDNSQueryJob> new_job(
+            std::shared_ptr<ODnsExtension::MDNSKey> key);
+    virtual std::shared_ptr<ODnsExtension::MDNSQueryJob> find_job(
+            std::shared_ptr<ODnsExtension::MDNSKey> key);
     virtual std::shared_ptr<ODnsExtension::MDNSQueryJob> find_history(
             std::shared_ptr<ODnsExtension::MDNSKey> key);
     virtual void done(std::shared_ptr<ODnsExtension::MDNSQueryJob> qj);
     virtual void remove_job(std::shared_ptr<ODnsExtension::MDNSQueryJob> qj);
-    virtual std::list<std::shared_ptr<DNSRecord>> append_cache_entries(std::shared_ptr<MDNSKey> key,
+    virtual std::list<std::shared_ptr<DNSRecord>> append_cache_entries(
+            std::shared_ptr<MDNSKey> key,
             std::list<std::shared_ptr<DNSRecord>> list);
-    virtual int append_question(std::shared_ptr<MDNSKey> key, std::list<std::shared_ptr<DNSQuestion>>* qlist,
-            std::list<std::shared_ptr<DNSRecord>>* anlist, int *packetSize, int* qdcount,
-            int* ancount, int is_private);
-    virtual int preparePacketAndSend(std::list<std::shared_ptr<DNSQuestion>> qlist,
-            std::list<std::shared_ptr<DNSRecord>> anlist, std::list<std::shared_ptr<DNSRecord>> nslist,
-            std::list<std::shared_ptr<DNSRecord>> arlist, int qdcount, int ancount, int nscount,
-            int arcount, int packetSize, int TC, int is_private);
+    virtual int append_question(std::shared_ptr<MDNSKey> key,
+            std::list<std::shared_ptr<DNSQuestion>>* qlist,
+            std::list<std::shared_ptr<DNSRecord>>* anlist, int *packetSize,
+            int* qdcount, int* ancount, int is_private);
+    virtual int preparePacketAndSend(
+            std::list<std::shared_ptr<DNSQuestion>> qlist,
+            std::list<std::shared_ptr<DNSRecord>> anlist,
+            std::list<std::shared_ptr<DNSRecord>> nslist,
+            std::list<std::shared_ptr<DNSRecord>> arlist, int qdcount,
+            int ancount, int nscount, int arcount, int packetSize, int TC,
+            int is_private);
 
 public:
     MDNSQueryScheduler(ODnsExtension::TimeEventSet* _timeEventSet,
             UDPSocket* _outSock, void* resolver);
     virtual ~MDNSQueryScheduler();
-    static void elapseCallback(ODnsExtension::TimeEvent* e, void* data,
+    static void elapseCallback(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data,
             void* thispointer);
-    virtual void post(std::shared_ptr<ODnsExtension::MDNSKey> key, int immediately);
+    virtual void post(std::shared_ptr<ODnsExtension::MDNSKey> key,
+            int immediately);
     virtual void check_dup(std::shared_ptr<ODnsExtension::MDNSKey> key);
-    virtual void elapse(ODnsExtension::TimeEvent* e, void* data);
+    virtual void elapse(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data);
 
-    void setCallback(void (_callback)(void*, void*)) {
+    void setCallback(void (_callback)(std::shared_ptr<void>, void*)) {
         callback = _callback;
     }
 

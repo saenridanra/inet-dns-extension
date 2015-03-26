@@ -44,7 +44,7 @@ typedef struct soa{
     int expire;
     int minimum;
 
-    soa() : mname(NULL), rname(NULL), serial(0), refresh(0), retry(0), expire(0), minimum(0) {}
+    soa() : mname(""), rname(""), serial(0), refresh(0), retry(0), expire(0), minimum(0) {}
 } soa;
 
 typedef struct zone_entry{
@@ -53,7 +53,7 @@ typedef struct zone_entry{
     std::string type;
     std::string data;
 
-    zone_entry() : domain(NULL), __class(NULL), type(NULL), data(NULL) {}
+    zone_entry() : domain(""), __class(""), type(""), data("") {}
 } zone_entry;
 
 enum states{

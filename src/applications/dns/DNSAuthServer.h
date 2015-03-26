@@ -41,7 +41,6 @@
 class DNSAuthServer : public DNSServerBase
 {
     public:
-
         std::string master_file;
         DNSZoneConfig* config;
 

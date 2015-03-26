@@ -33,8 +33,8 @@ DNSTTLCache::~DNSTTLCache() {
     while (cache.size() > 0) {
         // evict and free the record.
         std::list<std::shared_ptr<DNSRecord>> list = evict();
-        for (auto it = list.begin(); it != list.end(); ++it) {
-            freeDnsRecord(*it);
+        for (auto it : list) {
+            freeDnsRecord(it);
         }
         list.clear();
         setCacheSize(getCacheSize() - 1);
@@ -44,8 +44,8 @@ DNSTTLCache::~DNSTTLCache() {
 int DNSTTLCache::put_into_cache(std::shared_ptr<DNSRecord> record) {
     // calculate the hash, check if it's already in the cache.
 
-    if (!record->rdata) {
-        throw cRuntimeError("Retrieved invalid record to put into cache");
+    if (!record->rdata && record->rtype == DNS_TYPE_VALUE_SRV) {
+        throw cRuntimeError("Retrieved invalid record to put into cache, with empty data");
     }
 
     std::string type = std::string(getTypeStringForValue(record->rtype));

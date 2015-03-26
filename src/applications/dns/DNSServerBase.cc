@@ -247,7 +247,7 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
         // pick one at random and delegate the question
 
         int p = intrand(packet->getNscount());
-        std::shared_ptr<DNSRecord> r(&packet->getAdditional(p));
+        std::shared_ptr<DNSRecord> r = ODnsExtension::copyDnsRecord(&packet->getAdditional(p));
 
         // query the name server for our original query
         std::string msg_name = "dns_query#" + std::to_string(cq->internal_id) + std::string("--recursive");

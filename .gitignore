@@ -52,15 +52,14 @@ Makefile.in
 
 .settings
 
-**/work
-**/work/
-**/out/
-**/results/
+work
+work/
+out/
+results/
 
 *~
 
-**/.tkenv*
-**/.last-copts
-
-**/Makefile
-**/valgrind*.sh
+.tkenv*
+out/gcc-debug/src/.last-copts
+src/Makefile
+valgrind*.sh

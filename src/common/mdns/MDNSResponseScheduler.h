@@ -37,6 +37,7 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
+#include <algorithm>
 
 namespace ODnsExtension {
 
@@ -83,10 +84,10 @@ protected:
 
     unsigned int id_count = 0;
 
-    void (*callback)(void*, void*);
+    void (*callback)(std::shared_ptr<void>, void*);
 
-    virtual std::shared_ptr<MDNSResponseJob> new_job(std::shared_ptr<DNSRecord> r,
-            int done, int suppress);
+    virtual std::shared_ptr<MDNSResponseJob> new_job(
+            std::shared_ptr<DNSRecord> r, int done, int suppress);
     virtual std::shared_ptr<MDNSResponseJob> find_job(
             std::shared_ptr<DNSRecord> r);
     virtual std::shared_ptr<MDNSResponseJob> find_history(
@@ -96,28 +97,31 @@ protected:
     virtual void done(std::shared_ptr<MDNSResponseJob> rj);
     virtual void remove_job(std::shared_ptr<MDNSResponseJob> rj);
     virtual int appendTransitiveEntries(std::shared_ptr<DNSRecord> r,
-            std::list<std::shared_ptr<DNSRecord>> *anlist, int* packetSize, int* ancount);
-    virtual int appendFromCache(std::string hash, std::list<std::shared_ptr<DNSRecord>> *anlist,
-            int* packetSize, int* ancount);
-    virtual int appendRecord(std::shared_ptr<DNSRecord> r, std::list<std::shared_ptr<DNSRecord>> *anlist,
-            int* packetSize, int* ancount);
-    virtual int preparePacketAndSend(std::list<std::shared_ptr<DNSRecord>> anlist, int ancount,
+            std::list<std::shared_ptr<DNSRecord>> *anlist, int* packetSize,
+            int* ancount);
+    virtual int appendFromCache(std::string hash,
+            std::list<std::shared_ptr<DNSRecord>> *anlist, int* packetSize,
+            int* ancount);
+    virtual int appendRecord(std::shared_ptr<DNSRecord> r,
+            std::list<std::shared_ptr<DNSRecord>> *anlist, int* packetSize,
+            int* ancount);
+    virtual int preparePacketAndSend(
+            std::list<std::shared_ptr<DNSRecord>> anlist, int ancount,
             int packetSize, int is_private);
 public:
-    MDNSResponseScheduler(TimeEventSet* _timeEventSet,
-            UDPSocket* _outSock, void* resolver);
+    MDNSResponseScheduler(TimeEventSet* _timeEventSet, UDPSocket* _outSock,
+            void* resolver);
     virtual ~MDNSResponseScheduler();
 
-    static void elapseCallback(TimeEvent* e, void* data,
-            void* thispointer);
+    static void elapseCallback(TimeEvent* e, std::shared_ptr<void> data, void* thispointer);
     virtual void post(std::shared_ptr<DNSRecord> r, int flush_cache,
             IPvXAddress* querier, int immediately);
-    virtual void elapse(TimeEvent* e, void* data);
+    virtual void elapse(TimeEvent* e, std::shared_ptr<void> data);
     virtual void check_dup(std::shared_ptr<DNSRecord> r, int flush_cache);
     virtual void suppress(std::shared_ptr<DNSRecord> r, int flush_cache,
             IPvXAddress* querier, int immediately);
 
-    void setCallback(void (_callback)(void*, void*)) {
+    void setCallback(void (_callback)(std::shared_ptr<void>, void*)) {
         callback = _callback;
     }
 

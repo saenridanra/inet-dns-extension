@@ -91,7 +91,7 @@ class MDNSResolver : public cSimpleModule
     virtual void initialize(int stage);
     virtual int numInitStages() const { return 4; }
     virtual void handleMessage(cMessage *msg);
-    static void callback(void* data, void* thispointer);
+    static void callback(std::shared_ptr<void> data, void* thispointer);
 
   protected:
     virtual void elapsedTimeCheck();
