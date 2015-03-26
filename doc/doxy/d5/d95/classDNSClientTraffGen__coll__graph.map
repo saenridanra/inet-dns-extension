@@ -1,0 +1,14 @@
+<map id="DNSClientTraffGen" name="DNSClientTraffGen">
+<area shape="rect" id="node2" href="$d1/de5/classDNSClient.html" title="DNSClient provides dns functionality from a client point&#45;of&#45;view. " alt="" coords="128,652,213,679"/>
+<area shape="rect" id="node3" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcSimpleModule.html" title="cSimpleModule" alt="" coords="115,563,226,589"/>
+<area shape="rect" id="node4" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcModule.html" title="cModule" alt="" coords="155,487,226,513"/>
+<area shape="rect" id="node5" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcComponent.html" title="cComponent" alt="" coords="140,411,236,437"/>
+<area shape="rect" id="node6" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcDefaultList.html" title="cDefaultList" alt="" coords="141,335,233,361"/>
+<area shape="rect" id="node7" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcNoncopyableOwnedObject.html" title="cNoncopyableOwnedObject" alt="" coords="95,233,279,260"/>
+<area shape="rect" id="node8" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcOwnedObject.html" title="cOwnedObject" alt="" coords="6,157,114,184"/>
+<area shape="rect" id="node13" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcMessage.html" title="cMessage" alt="" coords="16,284,99,311"/>
+<area shape="rect" id="node9" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcNamedObject.html" title="cNamedObject" alt="" coords="5,81,115,108"/>
+<area shape="rect" id="node10" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcObject.html" title="cObject" alt="" coords="27,5,93,32"/>
+<area shape="rect" id="node11" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classnoncopyable.html" title="noncopyable" alt="" coords="139,157,234,184"/>
+<area shape="rect" id="node12" href="$d0/df2/classODnsExtension_1_1DNSCache.html" title="DNSCache is an interface providing methods to implement DNSCaches for records. " alt="" coords="251,563,440,589"/>
+</map>

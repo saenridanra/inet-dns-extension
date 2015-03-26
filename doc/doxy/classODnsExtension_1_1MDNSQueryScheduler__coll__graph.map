@@ -1,0 +1,5 @@
+<map id="ODnsExtension::MDNSQueryScheduler" name="ODnsExtension::MDNSQueryScheduler">
+<area shape="rect" id="node2" href="$classODnsExtension_1_1TimeEventSet.html" title="TimeEventQueue Encapsulates a priority queue handling time events scheduled for the future..." alt="" coords="5,81,211,108"/>
+<area shape="rect" id="node3" href="$classODnsExtension_1_1DNSTTLCache.html" title="ODnsExtension::DNSTTLCache" alt="" coords="235,81,447,108"/>
+<area shape="rect" id="node4" href="$classODnsExtension_1_1DNSCache.html" title="DNSCache is an interface providing methods to implement DNSCaches for records. " alt="" coords="247,5,436,32"/>
+</map>

@@ -25,17 +25,46 @@
 #include <omnetpp.h>
 #include <DNSClient.h>
 #include <fstream>
+#include <iostream>
 #include <vector>
 #include <string.h>
 
+/**
+ * @brief @ref DNSClientTraffGen randomly generates DNS traffic
+ *
+ * , based on query provided in a file called host_names,
+ * which needs to be provided as a parameter in the ned definition
+ * to the client node.
+ *
+ * @author Andreas Rain, Distributed Systems Group, University of Konstanz
+ * @date March 26, 2015
+ */
 class DNSClientTraffGen : public DNSClient {
 
 public:
+    /**
+     * @brief Running query counter.
+     */
     int qcount;
+
+    /**
+     * @brief Time between generated queries.
+     */
     simtime_t time_to_send;
+
+    /**
+     * @brief A self scheduled timeout message.
+     */
     cMessage* timeoutMsg;
 
+    /**
+     * @brief The hostnames which are used for random queries.
+     */
     std::vector<std::string> host_names;
+
+    /**
+     * @brief Additionally, the type (A, AAAA) can be specified.
+     */
     std::vector<std::string> types;
 
 protected:
@@ -45,8 +74,24 @@ protected:
     virtual void finish();
     virtual void handleTimer(cMessage *msg);
 
+    /**
+     * @brief Handles a response based on the id.
+     *
+     * @param id Reference id for the cache.
+     */
     virtual void handleResponse(int id);
+
+    /**
+     * @brief callback function, called when response is received.
+     *
+     * @param id Reference id for the query.
+     * @param this_pointer Pointer to the calling class.
+     */
     static void callback(int id, void * this_pointer);
+
+    /**
+     * @brief Initializes the hostnames and types for random traffic generation.
+     */
     virtual void init_hostnames();
 
 public:

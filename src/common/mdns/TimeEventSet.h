@@ -29,20 +29,47 @@
 
 namespace ODnsExtension {
 
+/**
+ * @brief Holds all information necessary for time event scheduling.
+ *
+ * @author Andreas Rain, Distributed Systems Group, University of Konstanz
+ * @date March 26, 2015
+ */
 class TimeEvent{
     protected:
+        /**
+         * @brief The time the event expires.
+         */
         simtime_t expiry;
+
+        /**
+         * @brief The time the callback was last performed.
+         */
         simtime_t last_run;
 
-        // Data, usually a job that has to be performed
+        /**
+         * @brief Data, usually a job that has to be performed
+         */
         std::shared_ptr<void> data;
-        // callback function, to call the correct scheduler
-        // to perform the job.
+
+        /**
+         * @brief Pointer to the object that scheduled this event.
+         */
         void* scheduler;
+
+        /**
+         * @brief callback function, to call the correct scheduler to perform the job.
+         */
         void (*callback) (ODnsExtension::TimeEvent*, std::shared_ptr<void>, void*);
 
 
     public:
+        /**
+         * @brief Constructor for time events.
+         *
+         * @param _scheduler The pointer to the object that scheduled
+         * the event and wants to perform some operation using the callback.
+         */
         TimeEvent(void* _scheduler){
             scheduler = _scheduler;
         }
@@ -51,38 +78,78 @@ class TimeEvent{
 
         }
 
+        /**
+         * @return Smart pointer to the data coming with this event.
+         */
         std::shared_ptr<void> getData(){
             return data;
         }
 
+        /**
+         * @param _data Smart pointer to the data coming with this event.
+         */
         void setData(std::shared_ptr<void> _data){
             data = _data;
         }
 
+        /**
+         * @brief performs the callback on the object that scheduled this event.
+         */
         void performCallback(){
             callback(this, data, scheduler);
         }
 
+        /**
+         * @brief Static callback reference
+         */
         void setCallback(void (_callback) (ODnsExtension::TimeEvent*, std::shared_ptr<void>, void*)){
             callback = _callback;
         }
 
+        /**
+         * @return the time this event was last run.
+         */
         simtime_t getLastRun(){
             return last_run;
         }
+
+        /**
+         * @param _last_run the time this event was last run.
+         */
         void setLastRun(simtime_t _last_run){
             last_run = _last_run;
         }
 
+        /**
+         * @return the time this event expires.
+         */
         simtime_t getExpiry(){
             return expiry;
         }
+
+        /**
+         * @param _expiry the time this event expires.
+         */
         void setExpiry(simtime_t _expiry){
             expiry = _expiry;
         }
 
 };
 
+/**
+ * @brief A comparator for time events.
+ *
+ * This comparator can be used within standard library containers.
+ * The @ref TimeEvent that has the earlier expiry is considered "smaller".
+ *
+ * If the expiries are equal, the event with the older last run
+ * is considered "greater".
+ *
+ * Otherwise they are equal.
+ *
+ * @author Andreas Rain, Distributed Systems Group, University of Konstanz
+ * @date March 26, 2015
+ */
 class TimeEventComparator{
     public:
         TimeEventComparator(){
@@ -107,23 +174,57 @@ class TimeEventComparator{
 };
 
 /**
- * @brief TimeEventQueue
- *  Encapsulates a priority queue handling time events scheduled for the future.
+ * @brief Encapsulates a standard library set.
+ *
+ * Since the set is ordered, the TimeEvents can be ordered
+ * by age.
+ *
+ * @author Andreas Rain, Distributed Systems Group, University of Konstanz
+ * @date March 26, 2015
  *
  */
 class TimeEventSet
 {
     protected:
+        /**
+         * @brief Set used for ordering time events.
+         */
         std::set<ODnsExtension::TimeEvent*, ODnsExtension::TimeEventComparator> timeEventSet;
 
     public:
         TimeEventSet();
         virtual ~TimeEventSet();
 
+        /**
+         * @brief Adds a time event to the set
+         *
+         * @param t The time event to be added.
+         */
         void addTimeEvent(ODnsExtension::TimeEvent* t);
+
+        /**
+         * @brief Updates a time event in the set
+         *
+         * @param t The time event to be updatet.
+         * @param expiry The new expiry of the time event.
+         */
         void updateTimeEvent(ODnsExtension::TimeEvent* t, simtime_t expiry);
+
+        /**
+         * @brief Removes a time event from the set
+         *
+         * @param t The time event to be removed.
+         */
         void removeTimeEvent(ODnsExtension::TimeEvent* t);
+
+        /**
+         * @return The next due time event, if expiry has passed.
+         */
         ODnsExtension::TimeEvent* getTimeEventIfDue();
+
+        /**
+         * @return The time event, with oldest age of expiry.
+         */
         ODnsExtension::TimeEvent* getTopElement();
 };
 

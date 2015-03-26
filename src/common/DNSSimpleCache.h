@@ -31,9 +31,12 @@ namespace ODnsExtension {
 
 /**
  * @brief DNSSimpleCache is a simple cache implementation
- * with random eviction.
+ * with random eviction. Once the maximum amount of records
+ * is reached, 10% of the lists of records are randomly
+ * evicted.
  *
  * @author Andreas Rain, Distributed Systems Group, University of Konstanz
+ * @date March 26, 2015
  */
 class DNSSimpleCache : public DNSCache {
 
@@ -41,82 +44,20 @@ public:
     DNSSimpleCache();
     virtual ~DNSSimpleCache();
 
-    /**
-     * @brief put_into_cache
-     * @params
-     *      record - the DNSRecord* that has to be stored in the cache
-     * @return
-     *      1 if the value was stored
-     *      0 if the value was not stored
-     */
     int put_into_cache(std::shared_ptr<DNSRecord> record);
-
-    /**
-     * @brief get_from_cache
-     * @params
-     *      hash - the hash value for the record, note it has the form <label:type:class>
-     * @return
-     *      the desired dns records, returns null if there is no such record for the given hash.
-     */
     std::list<std::shared_ptr<DNSRecord>> get_from_cache(std::string hash);
-
-    /**
-     * @brief is_in_cache
-     * @params
-     *      hash - the hash value for the record, note it has the form <label:type:class>
-     * @return
-     *      1 if there is an entry
-     *      0 otherwise
-     */
     int is_in_cache(std::string hash);
-
-    /**
-     * @brief remove_from_cache
-     * Removes the record from the cache and returns it.
-     *
-     * @params
-     *      hash - the hash value for the record, note it has the form <label:type:class>
-     * @return
-     *      returns the removed records.
-     */
     std::list<std::shared_ptr<DNSRecord>> remove_from_cache(std::string hash);
-
-    /**
-     * @brief remove_from_cache
-     * Removes the record from the cache and returns it.
-     *
-     * @params
-     *      hash - the hash value for the record, note it has the form <label:type:class>
-     *      r    - a specific record that has to be removed from the list for this hash
-     * @return
-     *      returns the removed record.
-     */
     std::shared_ptr<DNSRecord> remove_from_cache(std::string hash, std::shared_ptr<DNSRecord> r);
-
-    /**
-     * @brief evict
-     * Removes a random record from the cache.
-     *
-     * @return
-     *      the evicted dns records.
-     */
     std::list<std::shared_ptr<DNSRecord>> evict();
-
-    /**
-     * @brief get_matching_hashes
-     * Perform a cache walk on the hashes and check if
-     * we find substrings of @param hash
-     *
-     * @param
-     *  hash - hash that we want to match for
-     *
-     * @return
-     *      list of matching hashes in the cache
-     *
-     */
     std::list<std::string> get_matching_hashes(std::string hash);
 
 protected:
+    /**
+     * @brief Map from strings to lists of @ref DNSRecord
+     *
+     * used as the cache for dns records.
+     */
     std::unordered_map<std::string, std::list<std::shared_ptr<DNSRecord>>> cache;
 };
 

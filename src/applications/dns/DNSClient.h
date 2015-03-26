@@ -38,38 +38,87 @@
 #include "DNSSimpleCache.h"
 
 /**
- * @brief DNSClient provides dns functionality from a
- * client point-of-view. The app provides the possibility
- * to send DNS Queries to a DNS Name Server / Proxy or
- * DNS Cache.
+ * @brief @ref DNSClient provides dns functionality from a
+ * client point-of-view.
+ *
+ * The app provides the possibility to send DNS Queries to a
+ * DNS Name Server / Proxy or DNS Cache.
  *
  * @author Andreas Rain, Distributed Systems Group, University of Konstanz
+ * @date March 26, 2015
  */
-class DNSClient : public cSimpleModule
-{
-  protected:
-    // Address vectors for known DNS servers
+class DNSClient: public cSimpleModule {
+protected:
+    /**
+     * @brief @ref IPvXAddress vector for known DNS servers
+     */
     std::vector<IPvXAddress> dns_servers;
+
+    /**
+     * @brief This map manages queries currently waiting to be resolved
+     */
     std::unordered_map<int, DNSPacket*> queries;
-    std::unordered_map<int, void (*) (int, void*)> callbacks;
+    /**
+     * @brief This map maps callback functions to queries, so that
+     * operations can be performed, once resolved.
+     */
+    std::unordered_map<int, void (*)(int, void*)> callbacks;
+    /**
+     * @brief This map contains the callback handles on which the
+     * callback should be performed.
+     */
     std::unordered_map<int, void*> callback_handles;
 
+    /**
+     * @brief A @ref DNSCache that is used to store resolved queries.
+     */
     ODnsExtension::DNSCache* cache;
 
+    /**
+     * @brief The overall query_count used for statistics.
+     */
     int query_count;
 
-
-
-    // Socket over which DNS queries are sent/received
+    /**
+     * @brief Socket over which DNS queries are sent/received
+     */
     UDPSocket out;
 
     virtual void initialize(int stage);
-    virtual int numInitStages() const { return 4; }
+    virtual int numInitStages() const {
+        return 4;
+    }
     virtual void handleMessage(cMessage *msg);
-    virtual IPvXAddress* getAddressFromCache(std::string dns_name);
-    virtual int resolve(std::string dns_name, int qtype, int primary, void (* callback) (int, void*), int id, void * handle);
 
-  public:
+    /**
+     * @brief Get the @ref IPvXAddress related to the dns label from the cache.
+     *
+     * @param dns_name the record label as string
+     *
+     * @return
+     *      returns address that is mapped to the dns_name
+     */
+    virtual IPvXAddress* getAddressFromCache(std::string dns_name);
+
+    /**
+     * @brief This function is used to resolve a query using the
+     * primary or secondary dns server.
+     *
+     * Once resolved a callback is called which is used to perform some function
+     * on the response, for instance write statistics.
+     *
+     * @param dns_name the record label as string
+     * @param qtype the dns type value of the record
+     * @param primary whether it should be resolved using the primary dns server
+     * @param callback the callback that is later used to operate on the response
+     * @param id the unique id of the query, related to the query_count
+     * @param handle the handle on which the operation should be performed on
+     *
+     * @return
+     *      returns the query count, that is incremented if the method is successful.
+     */
+    virtual int resolve(std::string dns_name, int qtype, int primary,
+            void (*callback)(int, void*), int id, void * handle);
 
 };
 

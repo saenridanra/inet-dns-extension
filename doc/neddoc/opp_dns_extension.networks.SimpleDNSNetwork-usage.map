@@ -1,0 +1,6 @@
+<area shape="rect" id="node1" href="opp_dns_extension.networks.SimpleDNSNetwork.html" title="Network SimpleDNSNetwork" alt="" coords="257,5,397,31">
+<area shape="rect" id="node2" href="opp_dns_extension.applications.dns.DNSClientNode.html" title="Compound Module DNSClientNode" alt="" coords="5,79,121,104">
+<area shape="rect" id="node3" href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html" title="Compound Module Router" alt="" coords="146,79,218,104">
+<area shape="rect" id="node4" href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator.html" title="Simple Module IPv4NetworkConfigurator" alt="" coords="243,79,412,104">
+<area shape="rect" id="node5" href="../../../inet/doc/neddoc/inet.nodes.ethernet.Eth1G.html" title="Channel Eth1G" alt="" coords="437,79,509,104">
+<area shape="rect" id="node6" href="opp_dns_extension.applications.dns.DNSServerNode.html" title="Compound Module DNSServerNode" alt="" coords="533,79,653,104">

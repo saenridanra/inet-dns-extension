@@ -31,10 +31,34 @@
 
 namespace ODnsExtension {
 
+/**
+ * @brief Struct wrapping @ref DNSRecord with timing information.
+ *
+ * @author Andreas Rain, Distributed Systems Group, University of Konstanz
+ * @date March 26, 2015
+ */
 typedef struct DNSTimeRecord {
+    /**
+     * @brief The record for which time information needs to be stored.
+     */
     std::shared_ptr<DNSRecord> record;
+
+    /**
+     * @brief A helper string containing the hash.
+     */
     std::string hash;
+
+    /**
+     * @brief The receiving time of this record.
+     */
     simtime_t rcv_time;
+
+    /**
+     * @brief The time the record expires.
+     *
+     * It is calculated from the receive time added with the time to live
+     * of the record.
+     */
     simtime_t expiry;
 
     DNSTimeRecord() :
@@ -44,6 +68,15 @@ typedef struct DNSTimeRecord {
 
 } dns_time_record;
 
+/**
+ * @brief This class is used for comparing @ref DNSTimeRecord
+ *
+ * and provided to standard library containers that need comparators
+ * in order to sort their entries.
+ *
+ * @author Andreas Rain, Distributed Systems Group, University of Konstanz
+ * @date March 26, 2015
+ */
 class DNSTimeRecordComparator {
 public:
     DNSTimeRecordComparator() {
@@ -57,123 +90,80 @@ public:
             std::shared_ptr<ODnsExtension::DNSTimeRecord> t2) {
         // t1 < t2,
         // meaning t1s time is up before t2s
-
         return t1->expiry < t2->expiry;
     }
 };
 
+/**
+ * @brief DNSTTLCache is a TTL based cached.
+ *
+ * This means that once a record has outlived it's time to live,
+ * it is removed from the cache. If eviction is necessary due to
+ * a full cache, oldest entries are removed first, until 10%
+ * of the lists of records are removed.
+ *
+ * @author Andreas Rain, Distributed Systems Group, University of Konstanz
+ * @date March 26, 2015
+ */
 class DNSTTLCache: public DNSCache {
 public:
     DNSTTLCache();
-    virtual ~DNSTTLCache();/**
+    virtual ~DNSTTLCache();
 
-     * @brief put_into_cache
-     * @params
-     *      record - the DNSRecord* that has to be stored in the cache
-     * @return
-     *      1 if the value was stored
-     *      0 if the value was not stored
-     */
     int put_into_cache(std::shared_ptr<DNSRecord> record);
-
-    /**
-     * @brief get_from_cache
-     * @params
-     *      hash - the hash value for the record, note it has the form <label:type:class>
-     * @return
-     *      the desired dns records, returns null if there is no such record for the given hash.
-     */
     std::list<std::shared_ptr<DNSRecord>> get_from_cache(std::string hash);
-
-    /**
-     * @brief is_in_cache
-     * @params
-     *      hash - the hash value for the record, note it has the form <label:type:class>
-     * @return
-     *      1 if there is an entry
-     *      0 otherwise
-     */
     int is_in_cache(std::string hash);
-
-    /**
-     * @brief halfTTL
-     *  returns whether the record has outlived half its lifetime.
-     */
-
-    int halfTTL(std::shared_ptr<DNSRecord> r);
-
-    /**
-     * @brief remove_from_cache
-     * Removes the record from the cache and returns it.
-     *
-     * @params
-     *      hash - the hash value for the record, note it has the form <label:type:class>
-     * @return
-     *      returns the removed records.
-     */
     std::list<std::shared_ptr<DNSRecord>> remove_from_cache(std::string hash);
-
-    /**
-     * @brief remove_from_cache
-     * Removes the record from the cache and returns it.
-     *
-     * @params
-     *      hash - the hash value for the record, note it has the form <label:type:class>
-     *      r    - a specific record that has to be removed from the list for this hash
-     * @return
-     *      returns the removed record.
-     */
     std::shared_ptr<DNSRecord> remove_from_cache(std::string hash, std::shared_ptr<DNSRecord> r);
-
-    /**
-     * @brief cleanup
-     *  cleans records from the cache, which ttl expired
-     *
-     * @return
-     *      return removed records
-     */
-
-    std::list<std::shared_ptr<DNSRecord>> cleanup();
-
-    /**
-     * @brief evict
-     * Removes a random record from the cache.
-     *
-     * @return
-     *      the evicted dns records.
-     */
     std::list<std::shared_ptr<DNSRecord>> evict();
-
-    /**
-     * @brief get_matching_hashes
-     * Perform a cache walk on the hashes and check if
-     * we find substrings of @param hash
-     *
-     * @param
-     *  hash - hash that we want to match for
-     *
-     * @return
-     *      list of matching hashes in the cache
-     *
-     */
     std::list<std::string> get_matching_hashes(std::string hash);
 
     /**
-     * @brief
-     * Retrieve the cache table used for caching Records
+     * @brief Check whether the record has half its ttl reached.
      *
-     * @return
-     *      an unordered map containing hash/record pairs.
+     * @param r The @ref DNSRecord for which the ttl needs to be checked.
+     *
+     * @return 1 if half the ttl has passed, 0 otherwise.
+     */
+    int halfTTL(std::shared_ptr<DNSRecord> r);
+
+    /**
+     * @brief cleans records from the cache, which ttls expired
+     * @return return removed records
+     */
+    std::list<std::shared_ptr<DNSRecord>> cleanup();
+
+    /**
+     * @brief Retrieve the cache table used for caching Records
+     *
+     * @return an unordered map containing hash/list of @ref DNSTimeRecord pairs.
      */
     std::unordered_map<std::string, std::list<std::shared_ptr<DNSTimeRecord>>> get_cache_table() {
         return cache;
     }
 
 protected:
+    /**
+     * @brief Map from strings to lists of @ref DNSTimeRecord
+     *
+     * used as the cache for dns records.
+     */
     std::unordered_map<std::string, std::list<std::shared_ptr<DNSTimeRecord>>> cache;
+
+    /**
+     * @brief Ordered set containing the @ref DNSTimeRecord in the cache.
+     *
+     * Used to quickly find and store @ref DNSTimeRecord by their time
+     * of expiry.
+     */
     std::set<std::shared_ptr<ODnsExtension::DNSTimeRecord>,
             ODnsExtension::DNSTimeRecordComparator> dnsRecordPriorityCache;
 
+    /**
+     * @brief Remove a given @ref DNSTimeRecord from the cache.
+     *
+     * @param tr @ref DNSTimeRecord that needs to be removed.
+     */
     void remove_time_record(std::shared_ptr<DNSTimeRecord> tr);
 };
 

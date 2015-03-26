@@ -1,0 +1,5 @@
+<map id="ODnsExtension::MDNSQueryScheduler" name="ODnsExtension::MDNSQueryScheduler">
+<area shape="rect" id="node2" href="$db/d9f/classODnsExtension_1_1TimeEventSet.html" title="Encapsulates a standard library set. " alt="" coords="5,81,211,108"/>
+<area shape="rect" id="node3" href="$df/d6a/classODnsExtension_1_1DNSTTLCache.html" title="DNSTTLCache is a TTL based cached. " alt="" coords="235,81,447,108"/>
+<area shape="rect" id="node4" href="$d0/df2/classODnsExtension_1_1DNSCache.html" title="DNSCache is an interface providing methods to implement DNSCaches for records. " alt="" coords="247,5,436,32"/>
+</map>

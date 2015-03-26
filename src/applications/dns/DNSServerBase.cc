@@ -84,7 +84,7 @@ void DNSServerBase::handleMessage(cMessage *msg)
                     // this was the final answer, i.e.
                     // get the original packet and the src addr
                     int id = ((DNSPacket*) msg)->getId();
-                    std::shared_ptr<CachedQuery> cq = get_query_from_cache(id);
+                    std::shared_ptr<ODnsExtension::CachedQuery> cq = get_query_from_cache(id);
 
                     IPvXAddress addr = IPvXAddressResolver().resolve(cq->query->src_address.c_str());
 
@@ -116,7 +116,7 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
         return NULL; // we do not have a query that belongs to this key
     }
 
-    std::shared_ptr<CachedQuery> cq = queryCache[packet->getId()];
+    std::shared_ptr<ODnsExtension::CachedQuery> cq = queryCache[packet->getId()];
     std::shared_ptr<ODnsExtension::Query> original_query = cq->query;
 
     // first check, see if there are actually answers
@@ -280,15 +280,15 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
     return NULL;
 }
 
-int DNSServerBase::remove_query_from_cache(int id, std::shared_ptr<CachedQuery> cq)
+int DNSServerBase::remove_query_from_cache(int id, std::shared_ptr<ODnsExtension::CachedQuery> cq)
 {
     queryCache.erase(queryCache.find(id));
     return 1;
 }
 
-std::shared_ptr<CachedQuery> DNSServerBase::get_query_from_cache(int id)
+std::shared_ptr<ODnsExtension::CachedQuery> DNSServerBase::get_query_from_cache(int id)
 {
-    std::shared_ptr<CachedQuery> q = queryCache[id];
+    std::shared_ptr<ODnsExtension::CachedQuery> q = queryCache[id];
     return q;
 }
 
@@ -296,7 +296,7 @@ int DNSServerBase::store_in_query_cache(int id, std::shared_ptr<ODnsExtension::Q
 {
     // store the query in the cache...
 
-    std::shared_ptr<CachedQuery> q(new CachedQuery());
+    std::shared_ptr<ODnsExtension::CachedQuery> q(new ODnsExtension::CachedQuery());
     q->internal_id = id;
     q->query = query;
 

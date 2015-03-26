@@ -1,0 +1,28 @@
+var group__MacrosReg =
+[
+    [ "Define_Channel", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga07e252d0422dfc02058dfa801ea66deb", null ],
+    [ "Define_Function", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga093680bd8078c9b2874e4e6ae9bf2f43", null ],
+    [ "Define_Function2", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#gad4e71fac8998b5055de446895b3d2bea", null ],
+    [ "Define_Function3", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#gae19cf3c7c61ff62682213b373127a51a", null ],
+    [ "Define_Function4", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga3d2e14240a36aef146f66c7f3a22ed34", null ],
+    [ "Define_Module", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga109b3bf65513bbe25360c5f4c08cd2d1", null ],
+    [ "Define_NED_Function", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#gafa65854bb341b99eb44a29b8f6805589", null ],
+    [ "Define_NED_Function2", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#gac94af17dc21c6f86787d54f51e2eccef", null ],
+    [ "Define_NED_Math_Function", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga6443da94f0c425c2f6a4e2796ae0d930", null ],
+    [ "Define_NED_Math_Function2", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga32775e2c56ecc55d5a26c22cb8b14c21", null ],
+    [ "Define_NED_Math_Function3", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga17008e10fe2c26046a2dfb2372376e74", null ],
+    [ "Define_NED_Math_Function4", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#gafb4652c1aa744a704decd8bf8495badd", null ],
+    [ "Module_Class_Members", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga96dc1cfbc4574094cdd29d04c1a4d94a", null ],
+    [ "Register_Abstract_Class", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga18681258c0394e5167e4d282b44a4be4", null ],
+    [ "Register_Class", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#gadbca479a455e4ba1bb47e9cb699e8765", null ],
+    [ "Register_ClassDescriptor", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga380ca4378934e280a8b7d00294ed6ba7", null ],
+    [ "Register_GlobalConfigOption", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#gae02e9864add2a397723ab930d623adc0", null ],
+    [ "Register_GlobalConfigOptionU", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga1a2e531079c5d8a6ee323812d1ba717d", null ],
+    [ "Register_MessagePrinter", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga404cfee50d31b0a4ea475fc2302f04f6", null ],
+    [ "Register_PerObjectConfigOption", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#gaf1a96476aabfaf442a9bb421ba647717", null ],
+    [ "Register_PerObjectConfigOptionU", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga597fb33bbc90f9cd8f46fe628bee0203", null ],
+    [ "Register_PerRunConfigOption", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga932711ee76eb90de1f725deabf4d440f", null ],
+    [ "Register_PerRunConfigOptionU", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#gaa248a1484a581af34c8995b3cc42479c", null ],
+    [ "Register_ResultFilter", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga6f2d3c14629d4841a0e08a4f495a7f3a", null ],
+    [ "Register_ResultRecorder", "/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosReg.html#ga9afee497008788618fda74c8d6e782b4", null ]
+];

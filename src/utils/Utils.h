@@ -19,6 +19,16 @@
  THE SOFTWARE.
  */
 
+/**
+ * @file Utils.h
+ *
+ * Contains utility functions that are frequently needed,
+ * but not contained in the libraries used within this extension.
+ *
+ * @author Andreas Rain, Distributed Systems Group, University of Konstanz
+ * @date March 26, 2015
+ */
+
 #ifndef OPP_DNS_EXTENSION_UTILS_H_
 #define OPP_DNS_EXTENSION_UTILS_H_
 
@@ -27,9 +37,12 @@
 namespace ODnsExtension {
 
     /**
-     * STD STRING HELPER FUNCTIONS
+     * @brief Determines efficiently whether a string has a certain suffix
      *
-     * Some functions for convenient usage
+     * @param base Base string in which the suffix needs to be found
+     * @param suffix suffix that needs to be found
+     *
+     * @return 1 if true, 0 otherwise
      */
     int stdstr_has_suffix(std::string base, std::string suffix);
 

@@ -1,0 +1,91 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+      <link rel="stylesheet" type="text/css" href="style.css" />
+   </head>
+   <body onload="if (top.frames['componentsframe'] == undefined) { s = window.location.toString(); window.location = 'index.html?p=' + s.substring(s.lastIndexOf('/')+1); }">
+<h2 class="comptitle">Msg File <i>src/messages/DNSPacket.msg</i></h2>
+<table class="typestable">
+   <tr>
+      <th class="name">Name</th>
+      <th class="type">Type</th>
+      <th class="description">Description</th>
+   </tr>
+<tr>
+   <td>
+<a href="src-messages-DNSPacket.html">DNSPacket</a>
+   </td>
+   <td>
+<i>packet</i>
+   </td>
+   <td>
+
+<p><a href="src-messages-DNSPacket.html">DNSPacket</a> definition
+author: Andreas Rain, Distributed Systems Group, University of Konstanz</p>
+
+   </td>
+</tr>
+</table>
+<h3 class="subtitle">Source code:</h3>
+<pre class="src"><span style="color: #808080; font-style: italic; ">// Copyright (c) 2014-2015 Andreas Rain
+</span><span style="color: #000000; ">
+</span><span style="color: #808080; font-style: italic; ">// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the &quot;Software&quot;), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+</span><span style="color: #000000; ">
+</span><span style="color: #808080; font-style: italic; ">// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+</span><span style="color: #000000; ">
+</span><span style="color: #808080; font-style: italic; ">// THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+</span><span style="color: #000000; ">
+</span><span style="color: #800000; font-weight: bold; ">cplusplus</span><span style="color: #000000; "> {{
+#</span><span style="color: #000000; ">include</span><span style="color: #000000; "> </span><span style="color: #008000; ">&quot;../common/DNS.h&quot;</span><span style="color: #000000; ">
+#</span><span style="color: #000000; ">include</span><span style="color: #000000; "> &lt;</span><span style="color: #000000; ">memory</span><span style="color: #000000; ">&gt;
+
+</span><span style="color: #000000; ">typedef</span><span style="color: #000000; "> </span><span style="color: #800000; font-weight: bold; ">struct</span><span style="color: #000000; "> </span><span style="color: #000000; ">ODnsExtension</span><span style="color: #000000; ">::</span><span style="color: #000000; ">DNSQuestion</span><span style="color: #000000; "> </span><span style="color: #000000; ">DNSQuestion</span><span style="color: #000000; ">;
+</span><span style="color: #000000; ">typedef</span><span style="color: #000000; "> </span><span style="color: #800000; font-weight: bold; ">struct</span><span style="color: #000000; "> </span><span style="color: #000000; ">ODnsExtension</span><span style="color: #000000; ">::</span><span style="color: #000000; ">DNSRecord</span><span style="color: #000000; "> </span><span style="color: #000000; ">DNSRecord</span><span style="color: #000000; ">;
+}};
+
+</span><span style="color: #800000; font-weight: bold; ">struct</span><span style="color: #000000; "> </span><span style="color: #000000; ">DNSQuestion</span><span style="color: #000000; ">;
+</span><span style="color: #800000; font-weight: bold; ">struct</span><span style="color: #000000; "> </span><span style="color: #000000; ">DNSRecord</span><span style="color: #000000; ">;
+
+</span><span style="color: #808080; font-style: italic; ">// DNSPacket definition
+// author: Andreas Rain, Distributed Systems Group, University of Konstanz
+</span><span style="color: #800000; font-weight: bold; ">packet</span><span style="color: #000000; "> </span><span style="color: #000000; ">DNSPacket</span><span style="color: #000000; "> {
+    
+    </span><span style="color: #000080; font-weight: bold; ">string</span><span style="color: #000000; "> </span><span style="color: #000000; ">displayString</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;i=msg/packet,blue;b=60,15,blue,black,5&quot;</span><span style="color: #000000; ">;
+    </span><span style="color: #000080; font-weight: bold; ">unsigned</span><span style="color: #000000; "> </span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; "> </span><span style="color: #000000; ">id</span><span style="color: #000000; ">;
+    </span><span style="color: #000080; font-weight: bold; ">unsigned</span><span style="color: #000000; "> </span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; "> </span><span style="color: #000000; ">options</span><span style="color: #000000; ">; 
+    </span><span style="color: #000080; font-weight: bold; ">unsigned</span><span style="color: #000000; "> </span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; "> </span><span style="color: #000000; ">qdcount</span><span style="color: #000000; ">; 
+    </span><span style="color: #000080; font-weight: bold; ">unsigned</span><span style="color: #000000; "> </span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; "> </span><span style="color: #000000; ">ancount</span><span style="color: #000000; ">;
+    </span><span style="color: #000080; font-weight: bold; ">unsigned</span><span style="color: #000000; "> </span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; "> </span><span style="color: #000000; ">nscount</span><span style="color: #000000; ">;
+    </span><span style="color: #000080; font-weight: bold; ">unsigned</span><span style="color: #000000; "> </span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; "> </span><span style="color: #000000; ">arcount</span><span style="color: #000000; ">;
+    
+    </span><span style="color: #000000; ">DNSQuestion</span><span style="color: #000000; "> </span><span style="color: #000000; ">questions</span><span style="color: #000000; ">[]     </span><span style="color: #000000; font-weight: bold; ">@sizeGetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">getNumQuestions</span><span style="color: #000000; ">)
+                                </span><span style="color: #000000; font-weight: bold; ">@sizeSetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">setNumQuestions</span><span style="color: #000000; ">)
+                                </span><span style="color: #000000; font-weight: bold; ">@sizetype</span><span style="color: #000000; ">(</span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; ">);
+    
+    </span><span style="color: #000000; ">DNSRecord</span><span style="color: #000000; ">   </span><span style="color: #000000; ">answers</span><span style="color: #000000; ">[]       </span><span style="color: #000000; font-weight: bold; ">@sizeGetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">getNumAnswers</span><span style="color: #000000; ">)
+                                </span><span style="color: #000000; font-weight: bold; ">@sizeSetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">setNumAnswers</span><span style="color: #000000; ">)
+                                </span><span style="color: #000000; font-weight: bold; ">@sizetype</span><span style="color: #000000; ">(</span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; ">);
+    
+    </span><span style="color: #000000; ">DNSRecord</span><span style="color: #000000; ">   </span><span style="color: #000000; ">authorities</span><span style="color: #000000; ">[]   </span><span style="color: #000000; font-weight: bold; ">@sizeGetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">getNumAuthorities</span><span style="color: #000000; ">)
+                                </span><span style="color: #000000; font-weight: bold; ">@sizeSetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">setNumAuthorities</span><span style="color: #000000; ">)
+                                </span><span style="color: #000000; font-weight: bold; ">@sizetype</span><span style="color: #000000; ">(</span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; ">);
+    
+    </span><span style="color: #000000; ">DNSRecord</span><span style="color: #000000; ">   </span><span style="color: #000000; ">additional</span><span style="color: #000000; ">[]    </span><span style="color: #000000; font-weight: bold; ">@sizeGetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">getNumAdditional</span><span style="color: #000000; ">)
+                                </span><span style="color: #000000; font-weight: bold; ">@sizeSetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">setNumAdditional</span><span style="color: #000000; ">)
+                                </span><span style="color: #000000; font-weight: bold; ">@sizetype</span><span style="color: #000000; ">(</span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; ">);
+}</span></pre>
+   <hr><p class="footer"><a href="http://creativecommons.org/licenses/by-sa/3.0" target="_top"><img src="by-sa.png"></a> This documentation is released under the <a href="http://creativecommons.org/licenses/by-sa/3.0" target="_top">Creative Commons license</a></p>
+   </body>
+</html>

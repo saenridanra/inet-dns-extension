@@ -33,7 +33,7 @@ DNSClientTraffGen::~DNSClientTraffGen(){
 
 void DNSClientTraffGen::initialize(int stage) {
     DNSClient::initialize(stage);
-    printf("\nDNSClientTraffGen: Stage --> %d", stage);
+    std::cout << "\nDNSClientTraffGen: Stage --> " << stage << std::endl;
     if(stage == 0){
         time_to_send = par("time_to_send").doubleValue();
         qcount = 0;

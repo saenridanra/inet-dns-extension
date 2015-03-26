@@ -1,0 +1,19 @@
+<map id="MDNSResolver" name="MDNSResolver">
+<area shape="rect" id="node2" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcSimpleModule.html" title="cSimpleModule" alt="" coords="1782,483,1893,509"/>
+<area shape="rect" id="node3" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcModule.html" title="cModule" alt="" coords="1410,483,1481,509"/>
+<area shape="rect" id="node4" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcComponent.html" title="cComponent" alt="" coords="1049,455,1145,481"/>
+<area shape="rect" id="node5" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcDefaultList.html" title="cDefaultList" alt="" coords="801,409,893,436"/>
+<area shape="rect" id="node6" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcNoncopyableOwnedObject.html" title="cNoncopyableOwnedObject" alt="" coords="437,200,621,227"/>
+<area shape="rect" id="node7" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcOwnedObject.html" title="cOwnedObject" alt="" coords="280,129,388,156"/>
+<area shape="rect" id="node18" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcMessage.html" title="cMessage" alt="" coords="645,24,728,51"/>
+<area shape="rect" id="node8" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcNamedObject.html" title="cNamedObject" alt="" coords="121,129,231,156"/>
+<area shape="rect" id="node9" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcObject.html" title="cObject" alt="" coords="5,129,72,156"/>
+<area shape="rect" id="node10" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classnoncopyable.html" title="noncopyable" alt="" coords="287,200,381,227"/>
+<area shape="rect" id="node11" href="$classODnsExtension_1_1MDNSQueryScheduler.html" title="ODnsExtension::MDNSQuery\lScheduler" alt="" coords="1347,109,1544,150"/>
+<area shape="rect" id="node12" href="$classODnsExtension_1_1TimeEventSet.html" title="TimeEventQueue Encapsulates a priority queue handling time events scheduled for the future..." alt="" coords="994,137,1199,164"/>
+<area shape="rect" id="node15" href="$classODnsExtension_1_1MDNSResponseScheduler.html" title="ODnsExtension::MDNSResponse\lScheduler" alt="" coords="1335,303,1556,345"/>
+<area shape="rect" id="node16" href="$classODnsExtension_1_1MDNSAnnouncer.html" title="ODnsExtension::MDNSAnnouncer" alt="" coords="1725,272,1949,299"/>
+<area shape="rect" id="node17" href="$classODnsExtension_1_1MDNSProbeScheduler.html" title="ODnsExtension::MDNSProbe\lScheduler" alt="" coords="1347,238,1543,279"/>
+<area shape="rect" id="node13" href="$classODnsExtension_1_1DNSTTLCache.html" title="ODnsExtension::DNSTTLCache" alt="" coords="991,353,1203,380"/>
+<area shape="rect" id="node14" href="$classODnsExtension_1_1DNSCache.html" title="DNSCache is an interface providing methods to implement DNSCaches for records. " alt="" coords="752,353,941,380"/>
+</map>
