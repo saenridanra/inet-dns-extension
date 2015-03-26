@@ -59,8 +59,8 @@ Makefile.in
 
 *~
 
-.tkenv*
-/.last-copts
+**/.tkenv*
+**/.last-copts
 
 **/Makefile
 **/valgrind*.sh
