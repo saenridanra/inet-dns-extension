@@ -61,5 +61,9 @@ results/
 
 .tkenv*
 out/gcc-debug/src/.last-copts
+Makefile
 src/Makefile
+Makefile.vc
+makemakefiles
 valgrind*.sh
+*.swp
