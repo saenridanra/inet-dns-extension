@@ -1,0 +1,4 @@
+<map id="ODnsExtension::DNSCache" name="ODnsExtension::DNSCache">
+<area shape="rect" id="node2" href="$classODnsExtension_1_1DNSSimpleCache.html" title="DNSSimpleCache is a simple cache implementation with random eviction. " alt="" coords="5,80,196,121"/>
+<area shape="rect" id="node3" href="$classODnsExtension_1_1DNSTTLCache.html" title="ODnsExtension::DNSTTLCache" alt="" coords="220,87,432,114"/>
+</map>

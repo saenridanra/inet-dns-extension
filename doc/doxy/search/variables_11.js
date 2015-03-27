@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['r',['r',['../d9/dfb/structODnsExtension_1_1Probe.html#acd5f5e57acea83e6e3e2e81f6abbf40d',1,'ODnsExtension::Probe::r()'],['../de/df8/structODnsExtension_1_1MDNSProbeJob.html#aee49fa5545df8bf6f016814c967d8ee3',1,'ODnsExtension::MDNSProbeJob::r()'],['../d6/d11/structODnsExtension_1_1MDNSResponseJob.html#af41be0e09d22967ace9186b6c8deee6e',1,'ODnsExtension::MDNSResponseJob::r()']]],
+  ['rclass',['rclass',['../dc/de9/structODnsExtension_1_1DNSRecord.html#ab855995d26e7b2d0087d8a3f28efd53e',1,'ODnsExtension::DNSRecord']]],
+  ['rcv_5ftime',['rcv_time',['../db/dfe/structODnsExtension_1_1DNSTimeRecord.html#aaf62fcf22bf4de5b43977ca1222f4309',1,'ODnsExtension::DNSTimeRecord']]],
+  ['rdata',['rdata',['../dc/de9/structODnsExtension_1_1DNSRecord.html#acbb56eca3c24eeb9144cc6ea116ccbb0',1,'ODnsExtension::DNSRecord']]],
+  ['rdlength',['rdlength',['../dc/de9/structODnsExtension_1_1DNSRecord.html#a50e135def870d7ed778806ec97ebacf5',1,'ODnsExtension::DNSRecord']]],
+  ['receivedqueries',['receivedQueries',['../d7/ddb/classDNSEchoServer.html#a5e7dd42d6db1aca58bf6493cc308082d',1,'DNSEchoServer::receivedQueries()'],['../dd/df1/classDNSServerBase.html#ab83a993b93cd6e4d8a9747f37b4c6697',1,'DNSServerBase::receivedQueries()']]],
+  ['record',['record',['../db/dfe/structODnsExtension_1_1DNSTimeRecord.html#a31bed5ef5a2ded2e9c9c99ae947791bf',1,'ODnsExtension::DNSTimeRecord']]],
+  ['recordfunc',['RecordFunc',['/home/saen/Programme.local/omnetpp-4.6//doc/api/group__EnumsTypes.html#ga7d4cb9b40bf408088eee2d9b42fb9e73',1,]]],
+  ['recursion_5favailable',['recursion_available',['../d6/d41/classDNSAuthServer.html#a7cb37774c9512ded8acdf7afaeb6820d',1,'DNSAuthServer::recursion_available()'],['../d1/dd3/classDNSLocalCache.html#aa4a4e6ea1f1ea5b9d8ec06eb1719183e',1,'DNSLocalCache::recursion_available()']]],
+  ['ref_5fservice',['ref_service',['../d9/dfb/structODnsExtension_1_1Probe.html#abe12dec5b3e3307fef0a364837106733',1,'ODnsExtension::Probe']]],
+  ['refresh',['refresh',['../d2/dd0/structsoa.html#a7bcb46ed45ffe764a9fce7222de5199c',1,'soa']]],
+  ['reldepth',['reldepth',['/home/saen/Programme.local/omnetpp-4.6//doc/api/structcKSplit_1_1Grid.html#abd97f575d4cd9efedce90953173702b9',1,'cKSplit::Grid']]],
+  ['resolver',['resolver',['../d4/dd9/classODnsExtension_1_1MDNSProbeScheduler.html#ae70b1eb9d4ce1072b2eafb3de1983cfe',1,'ODnsExtension::MDNSProbeScheduler::resolver()'],['../d1/d12/classODnsExtension_1_1MDNSQueryScheduler.html#a746e9120bae21d50569b58fbe5d09a63',1,'ODnsExtension::MDNSQueryScheduler::resolver()'],['../d7/d24/classODnsExtension_1_1MDNSResponseScheduler.html#a4674df14361e4b27cee5c4f258f2b5a2',1,'ODnsExtension::MDNSResponseScheduler::resolver()']]],
+  ['response_5fcount',['response_count',['../d6/d41/classDNSAuthServer.html#a356592310091c2cadb1b10786ee8e592',1,'DNSAuthServer::response_count()'],['../d7/ddb/classDNSEchoServer.html#a846805ca51fd9990418b5d0c24b30024',1,'DNSEchoServer::response_count()'],['../d1/dd3/classDNSLocalCache.html#af2855a5c27cd16371514c54419d9ee0a',1,'DNSLocalCache::response_count()']]],
+  ['response_5fscheduler',['response_scheduler',['../d4/dcc/classODnsExtension_1_1MDNSAnnouncer.html#a2e65997fe3370748dcae890bf6d1674d',1,'ODnsExtension::MDNSAnnouncer']]],
+  ['responsecache',['responseCache',['../dd/df1/classDNSServerBase.html#a7f19fa80d8db63047724af7022bf8f0a',1,'DNSServerBase']]],
+  ['responsescheduler',['responseScheduler',['../dc/d51/classMDNSResolver.html#a1171f157d1517dc470b7d89f34a1b2e7',1,'MDNSResolver']]],
+  ['retry',['retry',['../d2/dd0/structsoa.html#aa4c4275a478746ee76f0d2c246a69e73',1,'soa']]],
+  ['rname',['rname',['../dc/de9/structODnsExtension_1_1DNSRecord.html#a5cc2381a849d757dea637b1f1f12f919',1,'ODnsExtension::DNSRecord::rname()'],['../d2/dd0/structsoa.html#ad6cf07c12ed82c2536dc37f339dac693',1,'soa::rname()']]],
+  ['rootservers',['rootServers',['../dd/df1/classDNSServerBase.html#a22b237f2db3605a2185ebd0c4f3ef5cc',1,'DNSServerBase']]],
+  ['rtype',['rtype',['../dc/de9/structODnsExtension_1_1DNSRecord.html#a6c9737efe9f54cd45878aa7f92e04c0f',1,'ODnsExtension::DNSRecord']]]
+];

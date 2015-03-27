@@ -1,0 +1,9 @@
+<area shape="rect" id="node1" href="opp_dns_extension.networks.complex_dns_network.subnets.UniKonstanz.html" title="Network UniKonstanz" alt="" coords="357,79,455,104">
+<area shape="rect" id="node2" href="opp_dns_extension.applications.dns.DNSClientNode.html" title="Compound Module DNSClientNode" alt="" coords="5,152,121,177">
+<area shape="rect" id="node3" href="../../../inet/doc/neddoc/inet.nodes.inet.StandardHost.html" title="Compound Module StandardHost" alt="" coords="145,152,248,177">
+<area shape="rect" id="node4" href="../../../inet/doc/neddoc/inet.nodes.ethernet.Eth100G.html" title="Channel Eth100G" alt="" coords="272,152,345,177">
+<area shape="rect" id="node5" href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html" title="Compound Module Router" alt="" coords="370,152,442,177">
+<area shape="rect" id="node6" href="../../../inet/doc/neddoc/inet.nodes.ethernet.Eth10G.html" title="Channel Eth10G" alt="" coords="466,152,538,177">
+<area shape="rect" id="node7" href="../../../inet/doc/neddoc/inet.nodes.ethernet.Eth1G.html" title="Channel Eth1G" alt="" coords="562,152,634,177">
+<area shape="rect" id="node8" href="opp_dns_extension.applications.dns.DNSServerNode.html" title="Compound Module DNSServerNode" alt="" coords="658,152,778,177">
+<area shape="rect" id="node9" href="opp_dns_extension.networks.complex_dns_network.ComplexDNSNetwork.html" title="Network ComplexDNSNetwork" alt="" coords="330,5,482,31">

@@ -1,0 +1,36 @@
+<area shape="rect" id="node1" href="opp_dns_extension.networks.stateless_network.subnets.CH.html" title="Compound Module CH" alt="" coords="341,79,413,104">
+<area shape="rect" id="node2" href="../../../inet/doc/neddoc/inet.nodes.ethernet.Eth100G.html" title="Channel Eth100G" alt="" coords="92,152,165,177">
+<area shape="rect" id="node3" href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html" title="Compound Module Router" alt="" coords="430,152,502,177">
+<area shape="rect" id="node4" href="../../../inet/doc/neddoc/inet.nodes.ethernet.Eth10G.html" title="Channel Eth10G" alt="" coords="334,152,406,177">
+<area shape="rect" id="node5" href="opp_dns_extension.applications.dns.DNSServerNode.html" title="Compound Module DNSServerNode" alt="" coords="190,152,310,177">
+<area shape="rect" id="node11" href="ned.IdealChannel.html" title="Channel IdealChannel" alt="" coords="845,225,943,251">
+<area shape="rect" id="node18" href="opp_dns_extension.applications.dns.DNSAuthServer.html" title="Simple Module DNSAuthServer" alt="" coords="192,225,308,251">
+<area shape="rect" id="node6" href="opp_dns_extension.networks.small_stateless_network.Small_stateless_example_network.html" title="Network Small_stateless_example_network" alt="" coords="389,5,613,31">
+<area shape="rect" id="node10" href="opp_dns_extension.networks.stateless_network.subnets.RootServers.html" title="Network RootServers" alt="" coords="29,79,124,104">
+<area shape="rect" id="node13" href="opp_dns_extension.networks.stateless_network.subnets.UniKonstanz.html" title="Network UniKonstanz" alt="" coords="685,79,783,104">
+<area shape="rect" id="node14" href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator.html" title="Simple Module IPv4NetworkConfigurator" alt="" coords="1357,152,1527,177">
+<area shape="rect" id="node15" href="opp_dns_extension.networks.stateless_network.subnets.DE.html" title="Compound Module DE" alt="" coords="245,79,317,104">
+<area shape="rect" id="node7" href="opp_dns_extension.networks.stateless_network.Stateless_example_network.html" title="Network Stateless_example_network" alt="" coords="637,5,823,31">
+<area shape="rect" id="node8" href="opp_dns_extension.networks.complex_dns_network.subnets.COM.html" title="Compound Module COM" alt="" coords="149,79,221,104">
+<area shape="rect" id="node9" href="opp_dns_extension.networks.complex_dns_network.ComplexDNSNetwork.html" title="Network ComplexDNSNetwork" alt="" coords="207,5,359,31">
+<area shape="rect" id="node12" href="opp_dns_extension.networks.complex_dns_network.subnets.Google.html" title="Network Google" alt="" coords="437,79,509,104">
+<area shape="rect" id="node28" href="../../../inet/doc/neddoc/inet.nodes.inet.StandardHost.html" title="Compound Module StandardHost" alt="" coords="1016,152,1119,177">
+<area shape="rect" id="node20" href="opp_dns_extension.applications.dns.DNSClientNode.html" title="Compound Module DNSClientNode" alt="" coords="876,152,992,177">
+<area shape="rect" id="node24" href="opp_dns_extension.applications.dns.DNSEchoServerNode.html" title="Compound Module DNSEchoServerNode" alt="" coords="527,152,677,177">
+<area shape="rect" id="node26" href="opp_dns_extension.applications.dns.DNSLocalCacheNode.html" title="Compound Module DNSLocalCacheNode" alt="" coords="701,152,852,177">
+<area shape="rect" id="node36" href="../../../inet/doc/neddoc/inet.nodes.ethernet.Eth1G.html" title="Channel Eth1G" alt="" coords="1143,152,1215,177">
+<area shape="rect" id="node16" href="ned.DatarateChannel.html" title="Channel DatarateChannel" alt="" coords="847,5,967,31">
+<area shape="rect" id="node17" href="ned.DelayChannel.html" title="Channel DelayChannel" alt="" coords="991,5,1095,31">
+<area shape="rect" id="node19" href="opp_dns_extension.applications.dns.DNSClient.html" title="Module Interface DNSClient" alt="" coords="1119,5,1205,31">
+<area shape="rect" id="node21" href="opp_dns_extension.applications.dns.DNSClientTraffGen.html" title="Simple Module DNSClientTraffGen" alt="" coords="967,225,1103,251">
+<area shape="rect" id="node22" href="opp_dns_extension.networks.SimpleDNSNetwork.html" title="Network SimpleDNSNetwork" alt="" coords="807,79,947,104">
+<area shape="rect" id="node23" href="opp_dns_extension.applications.dns.DNSEchoServer.html" title="Simple Module DNSEchoServer" alt="" coords="543,225,661,251">
+<area shape="rect" id="node25" href="opp_dns_extension.applications.dns.DNSLocalCache.html" title="Simple Module DNSLocalCache" alt="" coords="701,225,821,251">
+<area shape="rect" id="node27" href="opp_dns_extension.applications.dns.DNSServerBase.html" title="Module Interface DNSServerBase" alt="" coords="1229,5,1348,31">
+<area shape="rect" id="node29" href="ned.IBidirectionalChannel.html" title="Module Interface IBidirectionalChannel" alt="" coords="1372,5,1517,31">
+<area shape="rect" id="node30" href="opp_dns_extension.applications.mdns.MDNSNode.html" title="Compound Module MDNSNode" alt="" coords="1239,152,1333,177">
+<area shape="rect" id="node32" href="opp_dns_extension.applications.mdns.MDNSResolver.html" title="Simple Module MDNSResolver" alt="" coords="1229,225,1343,251">
+<area shape="rect" id="node31" href="ned.IUnidirectionalChannel.html" title="Module Interface IUnidirectionalChannel" alt="" coords="1541,5,1695,31">
+<area shape="rect" id="node33" href="opp_dns_extension.networks.simple_mdns_example.Simple_mdns_example.html" title="Network Simple_mdns_example" alt="" coords="1202,79,1359,104">
+<area shape="rect" id="node34" href="opp_dns_extension.networks.simple_mdns_privacy_example.Simple_mdns_privacy_example.html" title="Network Simple_mdns_privacy_example" alt="" coords="971,79,1177,104">
+<area shape="rect" id="node35" href="opp_dns_extension.networks.complex_dns_network.subnets.ORG.html" title="Compound Module ORG" alt="" coords="1719,5,1791,31">

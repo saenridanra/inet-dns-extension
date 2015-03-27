@@ -1,0 +1,7 @@
+<map id="ODnsExtension::MDNSAnnouncer" name="ODnsExtension::MDNSAnnouncer">
+<area shape="rect" id="node2" href="$classODnsExtension_1_1MDNSResponseScheduler.html" title="ODnsExtension::MDNSResponse\lScheduler" alt="" coords="588,50,809,91"/>
+<area shape="rect" id="node3" href="$classODnsExtension_1_1TimeEventSet.html" title="TimeEventQueue Encapsulates a priority queue handling time events scheduled for the future..." alt="" coords="247,12,453,39"/>
+<area shape="rect" id="node6" href="$classODnsExtension_1_1MDNSProbeScheduler.html" title="ODnsExtension::MDNSProbe\lScheduler" alt="" coords="601,115,797,157"/>
+<area shape="rect" id="node4" href="$classODnsExtension_1_1DNSTTLCache.html" title="ODnsExtension::DNSTTLCache" alt="" coords="244,148,456,175"/>
+<area shape="rect" id="node5" href="$classODnsExtension_1_1DNSCache.html" title="DNSCache is an interface providing methods to implement DNSCaches for records. " alt="" coords="5,148,195,175"/>
+</map>

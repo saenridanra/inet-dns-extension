@@ -1,0 +1,1932 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+      <link rel="stylesheet" type="text/css" href="style.css" />
+   </head>
+   <body onload="if (top.frames['componentsframe'] == undefined) { s = window.location.toString(); window.location = 'index.html?p=' + s.substring(s.lastIndexOf('/')+1); }">
+<h2 class="comptitle">Network <i>RootServers</i></h2>
+<b>Package:</b> opp_dns_extension.networks.small_stateless_network.subnets<br/><b>File: <a href="src-networks-small_stateless_network-subnets-RootServers.ned.html">src/networks/small_stateless_network/subnets/RootServers.ned</a></b><br/><p>(no description)</p><img src="opp_dns_extension.networks.small_stateless_network.subnets.RootServers-type.png" ismap="yes" usemap="#type-diagram"/><map name="type-diagram">
+<area shape="rect" href="opp_dns_extension.applications.dns.DNSServerNode.html" title="DNSServerNode" alt="DNSServerNode" coords="433,269,477,328">
+<area shape="rect" href="opp_dns_extension.applications.dns.DNSServerNode.html" title="DNSServerNode" alt="DNSServerNode" coords="552,269,596,328">
+<area shape="rect" href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html" title="Router" alt="Router" coords="468,488,554,539">
+<area shape="rect" href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html" title="Router" alt="Router" coords="418,371,488,422">
+<area shape="rect" href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html" title="Router" alt="Router" coords="535,371,609,422">
+</map>
+<h3 class="subtitle">Usage diagram:</h3>
+<p>The following diagram shows usage relationships between types.
+Unresolved types are missing from the diagram. Click <a href="full-ned-usage-diagram.html">here</a> to see the full picture.</p>
+<img src="opp_dns_extension.networks.small_stateless_network.subnets.RootServers-usage.png" ismap="yes" usemap="#usage-diagram"/><map name="usage-diagram"><area shape="rect" id="node1" href="opp_dns_extension.networks.small_stateless_network.subnets.RootServers.html" title="Network RootServers" alt="" coords="92,79,187,104">
+<area shape="rect" id="node2" href="../../../inet/doc/neddoc/inet.nodes.ethernet.Eth100G.html" title="Channel Eth100G" alt="" coords="5,152,79,177">
+<area shape="rect" id="node3" href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html" title="Compound Module Router" alt="" coords="103,152,175,177">
+<area shape="rect" id="node4" href="opp_dns_extension.applications.dns.DNSServerNode.html" title="Compound Module DNSServerNode" alt="" coords="199,152,319,177">
+<area shape="rect" id="node5" href="opp_dns_extension.networks.small_stateless_network.Small_stateless_example_network.html" title="Network Small_stateless_example_network" alt="" coords="27,5,251,31">
+</map>
+<h3 class="subtitle">Inheritance diagram:</h3>
+<p>The following diagram shows inheritance relationships for this type.
+Unresolved types are missing from the diagram. Click <a href="full-ned-inheritance-diagram.html">here</a> to see the full picture.</p>
+<img src="opp_dns_extension.networks.small_stateless_network.subnets.RootServers-inheritance.png" ismap="yes" usemap="#inheritance-diagram"/><map name="inheritance-diagram"><area shape="rect" id="node1" href="opp_dns_extension.networks.small_stateless_network.subnets.RootServers.html" title="Network RootServers" alt="" coords="5,5,100,31">
+</map>
+<h3 class="subtitle">Networks:</h3>
+<table class="typestable">
+   <tr>
+      <th class="name">Name</th>
+      <th class="type">Type</th>
+      <th class="description">Description</th>
+   </tr>
+<tr>
+   <td>
+<a href="opp_dns_extension.networks.small_stateless_network.Small_stateless_example_network.html">Small_stateless_example_network</a>
+   </td>
+   <td>
+<i>network</i>
+   </td>
+   <td>
+<i>(no description)</i>
+   </td>
+</tr>
+</table>
+<h3 class="subtitle">Properties:</h3>
+<table class="propertiestable">
+   <tr>
+      <th class="name">Name</th>
+      <th class="value">Value</th>
+      <th class="description">Description</th>
+   </tr>
+<tr>
+   <td>isNetwork</td>
+   <td><i></i></td>
+   <td></td>
+</tr>
+</table>
+<h3 class="subtitle">Gates:</h3>
+<table class="gatestable">
+   <tr>
+      <th class="name">Name</th>
+      <th class="type">Direction</th>
+      <th class="gatesize">Size</th>
+      <th class="description">Description</th>
+   </tr>
+<tr class="local">
+   <td>ethg</xsl:if></td>
+   <td><i>inout</i></td>
+   <td></td>   <td></td>
+</tr>
+</table>
+<h3 class="subtitle">Unassigned submodule parameters:</h3>
+<table class="deepparamstable">
+   <tr>
+      <th class="name">Name</th>
+      <th class="type">Type</th>
+      <th class="defaultvalue">Default value</th>
+      <th class="description">Description</th>
+   </tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.status.NodeStatus.html">status</a>.initialStatus</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"UP"</td>
+   <td>
+<p>TODO @signal, @statistic</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NodeConfigurator.html">configurator</a>.networkConfiguratorModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"configurator"</td>
+   <td>
+<p>the absolute path to the IPv4NetworkConfigurator; use "" if there is no configurator</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NodeConfigurator.html">configurator</a>.configureRoutingTable</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>add routing entries to routing table (uses the configurator module)</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.routingTableModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td></td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.procDelay</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>0s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.timeToLive</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>32</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.multicastTimeToLive</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>32</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.fragmentTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>60s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.forceBroadcast</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.routingTableModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td></td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.retryTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>1s</td>
+   <td>
+<p>number seconds ARP waits between retries to resolve an IPv4 address</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.retryCount</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>3</td>
+   <td>
+<p>number of times ARP will attempt to resolve an IPv4 address</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.cacheTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>120s</td>
+   <td>
+<p>number seconds unused entries in the cache will time out</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.globalARP</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.RoutingTable.html">routingTable</a>.routerId</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"auto"</td>
+   <td>
+<p>for routers, the router id using IPv4 address dotted
+notation; specify "auto" to select the highest
+interface address; should be left empty ("") for hosts</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.common.InterfaceTable.html">interfaceTable</a>.displayAddresses</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>whether to display IP addresses on links</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.verbose</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>
+<p>whether to log packets on the module output</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.pcapFile</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>""</td>
+   <td>
+<p>the PCAP file to be written</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.snaplen</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>65535</td>
+   <td>
+<p>maximum number of bytes to record per packet</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.dumpBadFrames</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>enable dump of frames with hasBitError</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.moduleNamePatterns</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"wlan[*] eth[*] ppp[*] ext[*]"</td>
+   <td>
+<p>space-separated list of sibling module names to listen on</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.sendingSignalNames</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"packetSentToLower"</td>
+   <td>
+<p>space-separated list of outbound packet signals to subscribe to</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.receivingSignalNames</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"packetReceivedFromLower"</td>
+   <td>
+<p>space-separated list of inbound packet signals to subscribe to</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="../../../inet/doc/neddoc/inet.linklayer.loopback.LoopbackInterface.html">lo0</a>.<a href="../../../inet/doc/neddoc/inet.linklayer.loopback.Loopback.html">lo</a>.mtu</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>4470B</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="opp_dns_extension.applications.dns.DNSAuthServer.html">auth</a>.recursion_available</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">i_root</a>.<a href="opp_dns_extension.applications.dns.DNSAuthServer.html">auth</a>.root_servers</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>""</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.status.NodeStatus.html">status</a>.initialStatus</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"UP"</td>
+   <td>
+<p>TODO @signal, @statistic</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NodeConfigurator.html">configurator</a>.networkConfiguratorModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"configurator"</td>
+   <td>
+<p>the absolute path to the IPv4NetworkConfigurator; use "" if there is no configurator</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NodeConfigurator.html">configurator</a>.configureRoutingTable</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>add routing entries to routing table (uses the configurator module)</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.routingTableModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td></td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.procDelay</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>0s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.timeToLive</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>32</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.multicastTimeToLive</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>32</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.fragmentTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>60s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.forceBroadcast</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.routingTableModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td></td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.retryTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>1s</td>
+   <td>
+<p>number seconds ARP waits between retries to resolve an IPv4 address</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.retryCount</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>3</td>
+   <td>
+<p>number of times ARP will attempt to resolve an IPv4 address</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.cacheTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>120s</td>
+   <td>
+<p>number seconds unused entries in the cache will time out</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.globalARP</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.RoutingTable.html">routingTable</a>.routerId</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"auto"</td>
+   <td>
+<p>for routers, the router id using IPv4 address dotted
+notation; specify "auto" to select the highest
+interface address; should be left empty ("") for hosts</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.common.InterfaceTable.html">interfaceTable</a>.displayAddresses</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>whether to display IP addresses on links</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.verbose</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>
+<p>whether to log packets on the module output</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.pcapFile</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>""</td>
+   <td>
+<p>the PCAP file to be written</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.snaplen</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>65535</td>
+   <td>
+<p>maximum number of bytes to record per packet</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.dumpBadFrames</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>enable dump of frames with hasBitError</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.moduleNamePatterns</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"wlan[*] eth[*] ppp[*] ext[*]"</td>
+   <td>
+<p>space-separated list of sibling module names to listen on</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.sendingSignalNames</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"packetSentToLower"</td>
+   <td>
+<p>space-separated list of outbound packet signals to subscribe to</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.receivingSignalNames</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"packetReceivedFromLower"</td>
+   <td>
+<p>space-separated list of inbound packet signals to subscribe to</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="../../../inet/doc/neddoc/inet.linklayer.loopback.LoopbackInterface.html">lo0</a>.<a href="../../../inet/doc/neddoc/inet.linklayer.loopback.Loopback.html">lo</a>.mtu</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>4470B</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="opp_dns_extension.applications.dns.DNSAuthServer.html">auth</a>.recursion_available</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="opp_dns_extension.applications.dns.DNSServerNode.html">b_root</a>.<a href="opp_dns_extension.applications.dns.DNSAuthServer.html">auth</a>.root_servers</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>""</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.status.NodeStatus.html">status</a>.initialStatus</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"UP"</td>
+   <td>
+<p>TODO @signal, @statistic</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NodeConfigurator.html">configurator</a>.networkConfiguratorModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"configurator"</td>
+   <td>
+<p>the absolute path to the IPv4NetworkConfigurator; use "" if there is no configurator</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NodeConfigurator.html">configurator</a>.configureRoutingTable</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>add routing entries to routing table (uses the configurator module)</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.routingTableModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td></td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.procDelay</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>0s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.timeToLive</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>32</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.multicastTimeToLive</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>32</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.fragmentTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>60s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.forceBroadcast</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.routingTableModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td></td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.retryTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>1s</td>
+   <td>
+<p>number seconds ARP waits between retries to resolve an IPv4 address</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.retryCount</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>3</td>
+   <td>
+<p>number of times ARP will attempt to resolve an IPv4 address</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.cacheTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>120s</td>
+   <td>
+<p>number seconds unused entries in the cache will time out</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.globalARP</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.RoutingTable.html">routingTable</a>.routerId</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"auto"</td>
+   <td>
+<p>for routers, the router id using IPv4 address dotted
+notation; specify "auto" to select the highest
+interface address; should be left empty ("") for hosts</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.common.InterfaceTable.html">interfaceTable</a>.displayAddresses</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>whether to display IP addresses on links</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.verbose</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>
+<p>whether to log packets on the module output</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.pcapFile</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>""</td>
+   <td>
+<p>the PCAP file to be written</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.snaplen</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>65535</td>
+   <td>
+<p>maximum number of bytes to record per packet</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.dumpBadFrames</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>enable dump of frames with hasBitError</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.moduleNamePatterns</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"wlan[*] eth[*] ppp[*] ext[*]"</td>
+   <td>
+<p>space-separated list of sibling module names to listen on</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.sendingSignalNames</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"packetSentToLower"</td>
+   <td>
+<p>space-separated list of outbound packet signals to subscribe to</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.receivingSignalNames</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"packetReceivedFromLower"</td>
+   <td>
+<p>space-separated list of inbound packet signals to subscribe to</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.linklayer.loopback.LoopbackInterface.html">lo0</a>.<a href="../../../inet/doc/neddoc/inet.linklayer.loopback.Loopback.html">lo</a>.mtu</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>4470B</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.ospfConfig</td>
+   <td>
+      <i>xml</i>
+   </td>
+   <td></td>
+   <td>
+<p>xml containing the full OSPF AS configuration</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.helloInterval</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>10s</td>
+   <td>
+<p>default values for attributes of interface xml entries:</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.pollInterval</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>120s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.routerDeadInterval</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>40s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.retransmissionInterval</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>5s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.interfaceOutputCost</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.interfaceTransmissionDelay</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.routerPriority</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.authenticationType</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"NullType"</td>
+   <td>
+<p>SimplePasswordType|CrytographicType|NullType</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.authenticationKey</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"0x00"</td>
+   <td>
+<p>0xnn..nn</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.linkCost</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.RFC1583Compatible</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.areaID</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>""</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.externalInterfaceOutputCost</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.externalInterfaceOutputType</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>""</td>
+   <td>
+<p>Type1|Type2</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.bgpv4.BGPRouting.html">bgp</a>.bgpConfig</td>
+   <td>
+      <i>xml</i>
+   </td>
+   <td></td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.bgpv4.BGPRouting.html">bgp</a>.dataTransferMode</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"bytecount"</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.mode</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"RIPv2"</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.routingTableModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"^.routingTable"</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.ripConfig</td>
+   <td>
+      <i>xml</i>
+   </td>
+   <td>xml("<config><interface metric='1'/></config>")</td>
+   <td>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.updateInterval</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>30s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.startupTime</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>uniform(0s,5s)</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.triggeredUpdateDelay</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>uniform(1s,5s)</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.routeExpiryTime</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>180s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.routePurgeTime</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>120s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">root_server_bgp</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.shutdownTime</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>1s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.status.NodeStatus.html">status</a>.initialStatus</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"UP"</td>
+   <td>
+<p>TODO @signal, @statistic</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NodeConfigurator.html">configurator</a>.networkConfiguratorModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"configurator"</td>
+   <td>
+<p>the absolute path to the IPv4NetworkConfigurator; use "" if there is no configurator</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NodeConfigurator.html">configurator</a>.configureRoutingTable</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>add routing entries to routing table (uses the configurator module)</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.routingTableModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td></td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.procDelay</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>0s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.timeToLive</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>32</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.multicastTimeToLive</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>32</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.fragmentTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>60s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.forceBroadcast</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.routingTableModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td></td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.retryTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>1s</td>
+   <td>
+<p>number seconds ARP waits between retries to resolve an IPv4 address</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.retryCount</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>3</td>
+   <td>
+<p>number of times ARP will attempt to resolve an IPv4 address</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.cacheTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>120s</td>
+   <td>
+<p>number seconds unused entries in the cache will time out</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.globalARP</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.RoutingTable.html">routingTable</a>.routerId</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"auto"</td>
+   <td>
+<p>for routers, the router id using IPv4 address dotted
+notation; specify "auto" to select the highest
+interface address; should be left empty ("") for hosts</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.common.InterfaceTable.html">interfaceTable</a>.displayAddresses</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>whether to display IP addresses on links</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.verbose</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>
+<p>whether to log packets on the module output</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.pcapFile</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>""</td>
+   <td>
+<p>the PCAP file to be written</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.snaplen</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>65535</td>
+   <td>
+<p>maximum number of bytes to record per packet</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.dumpBadFrames</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>enable dump of frames with hasBitError</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.moduleNamePatterns</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"wlan[*] eth[*] ppp[*] ext[*]"</td>
+   <td>
+<p>space-separated list of sibling module names to listen on</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.sendingSignalNames</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"packetSentToLower"</td>
+   <td>
+<p>space-separated list of outbound packet signals to subscribe to</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.receivingSignalNames</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"packetReceivedFromLower"</td>
+   <td>
+<p>space-separated list of inbound packet signals to subscribe to</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.linklayer.loopback.LoopbackInterface.html">lo0</a>.<a href="../../../inet/doc/neddoc/inet.linklayer.loopback.Loopback.html">lo</a>.mtu</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>4470B</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.ospfConfig</td>
+   <td>
+      <i>xml</i>
+   </td>
+   <td></td>
+   <td>
+<p>xml containing the full OSPF AS configuration</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.helloInterval</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>10s</td>
+   <td>
+<p>default values for attributes of interface xml entries:</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.pollInterval</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>120s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.routerDeadInterval</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>40s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.retransmissionInterval</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>5s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.interfaceOutputCost</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.interfaceTransmissionDelay</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.routerPriority</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.authenticationType</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"NullType"</td>
+   <td>
+<p>SimplePasswordType|CrytographicType|NullType</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.authenticationKey</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"0x00"</td>
+   <td>
+<p>0xnn..nn</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.linkCost</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.RFC1583Compatible</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.areaID</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>""</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.externalInterfaceOutputCost</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.externalInterfaceOutputType</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>""</td>
+   <td>
+<p>Type1|Type2</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.bgpv4.BGPRouting.html">bgp</a>.bgpConfig</td>
+   <td>
+      <i>xml</i>
+   </td>
+   <td></td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.bgpv4.BGPRouting.html">bgp</a>.dataTransferMode</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"bytecount"</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.mode</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"RIPv2"</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.routingTableModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"^.routingTable"</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.ripConfig</td>
+   <td>
+      <i>xml</i>
+   </td>
+   <td>xml("<config><interface metric='1'/></config>")</td>
+   <td>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.updateInterval</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>30s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.startupTime</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>uniform(0s,5s)</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.triggeredUpdateDelay</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>uniform(1s,5s)</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.routeExpiryTime</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>180s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.routePurgeTime</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>120s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">i_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.shutdownTime</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>1s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.status.NodeStatus.html">status</a>.initialStatus</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"UP"</td>
+   <td>
+<p>TODO @signal, @statistic</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NodeConfigurator.html">configurator</a>.networkConfiguratorModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"configurator"</td>
+   <td>
+<p>the absolute path to the IPv4NetworkConfigurator; use "" if there is no configurator</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NodeConfigurator.html">configurator</a>.configureRoutingTable</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>add routing entries to routing table (uses the configurator module)</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.routingTableModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td></td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.procDelay</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>0s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.timeToLive</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>32</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.multicastTimeToLive</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>32</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.fragmentTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>60s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.IPv4.html">ip</a>.forceBroadcast</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.routingTableModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td></td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.retryTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>1s</td>
+   <td>
+<p>number seconds ARP waits between retries to resolve an IPv4 address</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.retryCount</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>3</td>
+   <td>
+<p>number of times ARP will attempt to resolve an IPv4 address</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.cacheTimeout</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>120s</td>
+   <td>
+<p>number seconds unused entries in the cache will time out</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.nodes.inet.NetworkLayer.html">networkLayer</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.arp.ARP.html">arp</a>.globalARP</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ipv4.RoutingTable.html">routingTable</a>.routerId</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"auto"</td>
+   <td>
+<p>for routers, the router id using IPv4 address dotted
+notation; specify "auto" to select the highest
+interface address; should be left empty ("") for hosts</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.common.InterfaceTable.html">interfaceTable</a>.displayAddresses</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>whether to display IP addresses on links</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.verbose</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>
+<p>whether to log packets on the module output</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.pcapFile</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>""</td>
+   <td>
+<p>the PCAP file to be written</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.snaplen</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>65535</td>
+   <td>
+<p>maximum number of bytes to record per packet</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.dumpBadFrames</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>true</td>
+   <td>
+<p>enable dump of frames with hasBitError</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.moduleNamePatterns</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"wlan[*] eth[*] ppp[*] ext[*]"</td>
+   <td>
+<p>space-separated list of sibling module names to listen on</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.sendingSignalNames</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"packetSentToLower"</td>
+   <td>
+<p>space-separated list of outbound packet signals to subscribe to</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.util.PcapRecorder.html">pcapRecorder</a>.receivingSignalNames</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"packetReceivedFromLower"</td>
+   <td>
+<p>space-separated list of inbound packet signals to subscribe to</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.linklayer.loopback.LoopbackInterface.html">lo0</a>.<a href="../../../inet/doc/neddoc/inet.linklayer.loopback.Loopback.html">lo</a>.mtu</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>4470B</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.ospfConfig</td>
+   <td>
+      <i>xml</i>
+   </td>
+   <td></td>
+   <td>
+<p>xml containing the full OSPF AS configuration</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.helloInterval</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>10s</td>
+   <td>
+<p>default values for attributes of interface xml entries:</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.pollInterval</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>120s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.routerDeadInterval</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>40s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.retransmissionInterval</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>5s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.interfaceOutputCost</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.interfaceTransmissionDelay</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.routerPriority</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.authenticationType</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"NullType"</td>
+   <td>
+<p>SimplePasswordType|CrytographicType|NullType</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.authenticationKey</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"0x00"</td>
+   <td>
+<p>0xnn..nn</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.linkCost</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.RFC1583Compatible</td>
+   <td>
+      <i>bool</i>
+   </td>
+   <td>false</td>
+   <td>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.areaID</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>""</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.externalInterfaceOutputCost</td>
+   <td>
+      <i>int</i>
+   </td>
+   <td>1</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.ospfv2.OSPFRouting.html">ospf</a>.externalInterfaceOutputType</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>""</td>
+   <td>
+<p>Type1|Type2</p>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.bgpv4.BGPRouting.html">bgp</a>.bgpConfig</td>
+   <td>
+      <i>xml</i>
+   </td>
+   <td></td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.bgpv4.BGPRouting.html">bgp</a>.dataTransferMode</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"bytecount"</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.mode</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"RIPv2"</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.routingTableModule</td>
+   <td>
+      <i>string</i>
+   </td>
+   <td>"^.routingTable"</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.ripConfig</td>
+   <td>
+      <i>xml</i>
+   </td>
+   <td>xml("<config><interface metric='1'/></config>")</td>
+   <td>
+   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.updateInterval</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>30s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.startupTime</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>uniform(0s,5s)</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.triggeredUpdateDelay</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>uniform(1s,5s)</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.routeExpiryTime</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>180s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.routePurgeTime</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>120s</td>
+   <td>   </td>
+</tr>
+<tr>
+   <td><a href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html">b_root_router</a>.<a href="../../../inet/doc/neddoc/inet.networklayer.routing.rip.RIPRouting.html">rip</a>.shutdownTime</td>
+   <td>
+      <i>double</i>
+   </td>
+   <td>1s</td>
+   <td>   </td>
+</tr>
+</table>
+<h3 class="subtitle">Source code:</h3>
+<pre class="src"><span style="color: #800000; font-weight: bold; ">network</span><span style="color: #000000; "> </span><span style="color: #000000; ">RootServers</span><span style="color: #000000; ">
+{
+    </span><span style="color: #800000; font-weight: bold; ">gates</span><span style="color: #000000; ">:
+        </span><span style="color: #000080; font-weight: bold; ">inout</span><span style="color: #000000; "> </span><span style="color: #000000; ">ethg</span><span style="color: #000000; ">;
+    </span><span style="color: #800000; font-weight: bold; ">submodules</span><span style="color: #000000; ">:
+        </span><span style="color: #000000; ">i_root</span><span style="color: #000000; ">: </span><span style="color: #000000; ">DNSServerNode</span><span style="color: #000000; "> {
+            </span><span style="color: #800000; font-weight: bold; ">parameters</span><span style="color: #000000; ">:
+                </span><span style="color: #000000; ">auth</span><span style="color: #000000; ">.</span><span style="color: #000000; ">recursion_available</span><span style="color: #000000; "> = </span><span style="color: #008000; ">0</span><span style="color: #000000; ">;
+                </span><span style="color: #000000; ">m_file</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;subnets/i.root-servers.net.zone&quot;</span><span style="color: #000000; ">;
+                </span><span style="color: #000000; font-weight: bold; ">@display</span><span style="color: #000000; ">(</span><span style="color: #008000; ">&quot;p=451,249&quot;</span><span style="color: #000000; ">);
+        }
+        </span><span style="color: #000000; ">b_root</span><span style="color: #000000; ">: </span><span style="color: #000000; ">DNSServerNode</span><span style="color: #000000; "> {
+            </span><span style="color: #800000; font-weight: bold; ">parameters</span><span style="color: #000000; ">:
+                </span><span style="color: #000000; ">m_file</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;subnets/b.root-servers.net.zone&quot;</span><span style="color: #000000; ">;
+                </span><span style="color: #000000; font-weight: bold; ">@display</span><span style="color: #000000; ">(</span><span style="color: #008000; ">&quot;p=570,249&quot;</span><span style="color: #000000; ">);
+        }
+        </span><span style="color: #000000; ">root_server_bgp</span><span style="color: #000000; ">: </span><span style="color: #000000; ">Router</span><span style="color: #000000; "> {
+            </span><span style="color: #000000; font-weight: bold; ">@display</span><span style="color: #000000; ">(</span><span style="color: #008000; ">&quot;p=509,464&quot;</span><span style="color: #000000; ">);
+        }
+        </span><span style="color: #000000; ">i_root_router</span><span style="color: #000000; ">: </span><span style="color: #000000; ">Router</span><span style="color: #000000; "> {
+            </span><span style="color: #000000; font-weight: bold; ">@display</span><span style="color: #000000; ">(</span><span style="color: #008000; ">&quot;p=451,347&quot;</span><span style="color: #000000; ">);
+        }
+        </span><span style="color: #000000; ">b_root_router</span><span style="color: #000000; ">: </span><span style="color: #000000; ">Router</span><span style="color: #000000; "> {
+            </span><span style="color: #000000; font-weight: bold; ">@display</span><span style="color: #000000; ">(</span><span style="color: #008000; ">&quot;p=570,347&quot;</span><span style="color: #000000; ">);
+        }
+    </span><span style="color: #800000; font-weight: bold; ">connections</span><span style="color: #000000; ">:
+        </span><span style="color: #000000; ">i_root</span><span style="color: #000000; ">.</span><span style="color: #000000; ">ethg</span><span style="color: #000000; ">++ </span><span style="color: #800000; font-weight: bold; ">&lt;--&gt;</span><span style="color: #000000; "> </span><span style="color: #000000; ">Eth100G</span><span style="color: #000000; "> </span><span style="color: #800000; font-weight: bold; ">&lt;--&gt;</span><span style="color: #000000; "> </span><span style="color: #000000; ">i_root_router</span><span style="color: #000000; ">.</span><span style="color: #000000; ">ethg</span><span style="color: #000000; ">++;
+        </span><span style="color: #000000; ">b_root</span><span style="color: #000000; ">.</span><span style="color: #000000; ">ethg</span><span style="color: #000000; ">++ </span><span style="color: #800000; font-weight: bold; ">&lt;--&gt;</span><span style="color: #000000; "> </span><span style="color: #000000; ">Eth100G</span><span style="color: #000000; "> </span><span style="color: #800000; font-weight: bold; ">&lt;--&gt;</span><span style="color: #000000; "> </span><span style="color: #000000; ">b_root_router</span><span style="color: #000000; ">.</span><span style="color: #000000; ">ethg</span><span style="color: #000000; ">++;
+        </span><span style="color: #000000; ">i_root_router</span><span style="color: #000000; ">.</span><span style="color: #000000; ">ethg</span><span style="color: #000000; ">++ </span><span style="color: #800000; font-weight: bold; ">&lt;--&gt;</span><span style="color: #000000; "> </span><span style="color: #000000; ">Eth100G</span><span style="color: #000000; "> </span><span style="color: #800000; font-weight: bold; ">&lt;--&gt;</span><span style="color: #000000; "> </span><span style="color: #000000; ">root_server_bgp</span><span style="color: #000000; ">.</span><span style="color: #000000; ">ethg</span><span style="color: #000000; ">++;
+        </span><span style="color: #000000; ">b_root_router</span><span style="color: #000000; ">.</span><span style="color: #000000; ">ethg</span><span style="color: #000000; ">++ </span><span style="color: #800000; font-weight: bold; ">&lt;--&gt;</span><span style="color: #000000; "> </span><span style="color: #000000; ">Eth100G</span><span style="color: #000000; "> </span><span style="color: #800000; font-weight: bold; ">&lt;--&gt;</span><span style="color: #000000; "> </span><span style="color: #000000; ">root_server_bgp</span><span style="color: #000000; ">.</span><span style="color: #000000; ">ethg</span><span style="color: #000000; ">++;
+        </span><span style="color: #000000; ">root_server_bgp</span><span style="color: #000000; ">.</span><span style="color: #000000; ">ethg</span><span style="color: #000000; ">++ </span><span style="color: #800000; font-weight: bold; ">&lt;--&gt;</span><span style="color: #000000; "> </span><span style="color: #000000; ">Eth100G</span><span style="color: #000000; "> </span><span style="color: #800000; font-weight: bold; ">&lt;--&gt;</span><span style="color: #000000; "> </span><span style="color: #000000; ">ethg</span><span style="color: #000000; ">;
+}
+</span></pre>
+   <hr><p class="footer"><a href="http://creativecommons.org/licenses/by-sa/3.0" target="_top"><img src="by-sa.png"></a> This documentation is released under the <a href="http://creativecommons.org/licenses/by-sa/3.0" target="_top">Creative Commons license</a></p>
+   </body>
+</html>

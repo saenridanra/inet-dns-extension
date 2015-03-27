@@ -1,0 +1,28 @@
+<map id="Utils.h" name="Utils.h">
+<area shape="rect" id="node2" href="$DNSSimpleCache_8h.html" title="DNSSimpleCache.h" alt="" coords="437,80,577,107"/>
+<area shape="rect" id="node16" href="$DNSTTLCache_8h.html" title="DNSTTLCache.h" alt="" coords="970,80,1093,107"/>
+<area shape="rect" id="node22" href="$DNSZoneConfig_8h.html" title="DNSZoneConfig.h" alt="" coords="1449,80,1579,107"/>
+<area shape="rect" id="node27" href="$Utils_8cc.html" title="Utils.cc" alt="" coords="1603,80,1670,107"/>
+<area shape="rect" id="node3" href="$DNSClient_8h.html" title="DNSClient.h" alt="" coords="151,155,247,181"/>
+<area shape="rect" id="node7" href="$DNSLocalCache_8h.html" title="DNSLocalCache.h" alt="" coords="442,155,573,181"/>
+<area shape="rect" id="node9" href="$DNSSimpleCache_8cc.html" title="DNSSimpleCache.cc" alt="" coords="271,155,418,181"/>
+<area shape="rect" id="node10" href="$MDNSResponseScheduler_8h.html" title="MDNSResponseScheduler.h" alt="" coords="597,155,788,181"/>
+<area shape="rect" id="node4" href="$DNSClient_8cc.html" title="DNSClient.cc" alt="" coords="5,229,108,256"/>
+<area shape="rect" id="node5" href="$DNSClientTraffGen_8h.html" title="DNSClientTraffGen.h" alt="" coords="133,229,279,256"/>
+<area shape="rect" id="node6" href="$DNSClientTraffGen_8cc.html" title="DNSClientTraffGen.cc" alt="" coords="129,304,283,331"/>
+<area shape="rect" id="node8" href="$DNSLocalCache_8cc.html" title="DNSLocalCache.cc" alt="" coords="310,229,449,256"/>
+<area shape="rect" id="node11" href="$MDNSResolver_8h.html" title="MDNSResolver.h" alt="" coords="1051,304,1177,331"/>
+<area shape="rect" id="node13" href="$MDNSAnnouncer_8h.html" title="MDNSAnnouncer.h" alt="" coords="745,229,880,256"/>
+<area shape="rect" id="node15" href="$MDNSResponseScheduler_8cc.html" title="MDNSResponseScheduler.cc" alt="" coords="473,229,670,256"/>
+<area shape="rect" id="node12" href="$MDNSResolver_8cc.html" title="MDNSResolver.cc" alt="" coords="1048,379,1180,405"/>
+<area shape="rect" id="node14" href="$MDNSAnnouncer_8cc.html" title="MDNSAnnouncer.cc" alt="" coords="741,304,884,331"/>
+<area shape="rect" id="node17" href="$DNSTTLCache_8cc.html" title="DNSTTLCache.cc" alt="" coords="1053,155,1183,181"/>
+<area shape="rect" id="node18" href="$MDNSProbeScheduler_8h.html" title="MDNSProbeScheduler.h" alt="" coords="863,155,1029,181"/>
+<area shape="rect" id="node20" href="$MDNSQueryScheduler_8h.html" title="MDNSQueryScheduler.h" alt="" coords="1208,155,1375,181"/>
+<area shape="rect" id="node19" href="$MDNSProbeScheduler_8cc.html" title="MDNSProbeScheduler.cc" alt="" coords="904,229,1076,256"/>
+<area shape="rect" id="node21" href="$MDNSQueryScheduler_8cc.html" title="MDNSQueryScheduler.cc" alt="" coords="1151,229,1325,256"/>
+<area shape="rect" id="node23" href="$DNSAuthServer_8h.html" title="DNSAuthServer.h" alt="" coords="1451,155,1577,181"/>
+<area shape="rect" id="node25" href="$DNSZoneConfig_8cc.html" title="DNSZoneConfig.cc" alt="" coords="1602,155,1738,181"/>
+<area shape="rect" id="node26" href="$DNSZoneConfigTEST_2test_8cc.html" title="test.cc" alt="" coords="1763,155,1825,181"/>
+<area shape="rect" id="node24" href="$DNSAuthServer_8cc.html" title="DNSAuthServer.cc" alt="" coords="1451,229,1585,256"/>
+</map>

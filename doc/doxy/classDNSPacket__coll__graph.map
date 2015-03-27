@@ -1,0 +1,10 @@
+<map id="DNSPacket" name="DNSPacket">
+<area shape="rect" id="node2" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcPacket.html" title="cPacket" alt="" coords="25,309,95,336"/>
+<area shape="rect" id="node3" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcMessage.html" title="cMessage" alt="" coords="19,233,101,260"/>
+<area shape="rect" id="node4" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcOwnedObject.html" title="cOwnedObject" alt="" coords="6,157,114,184"/>
+<area shape="rect" id="node5" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcNamedObject.html" title="cNamedObject" alt="" coords="5,81,115,108"/>
+<area shape="rect" id="node6" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcObject.html" title="cObject" alt="" coords="27,5,93,32"/>
+<area shape="rect" id="node7" href="$structODnsExtension_1_1DNSQuestion.html" title="ODnsExtension::DNSQuestion" alt="" coords="120,309,323,336"/>
+<area shape="rect" id="node8" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classopp__string.html" title="opp_string" alt="" coords="347,309,429,336"/>
+<area shape="rect" id="node9" href="$structODnsExtension_1_1DNSRecord.html" title="ODnsExtension::DNSRecord" alt="" coords="454,309,647,336"/>
+</map>

@@ -1,0 +1,148 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+      <link rel="stylesheet" type="text/css" href="style.css" />
+   </head>
+   <body onload="if (top.frames['componentsframe'] == undefined) { s = window.location.toString(); window.location = 'index.html?p=' + s.substring(s.lastIndexOf('/')+1); }">
+<h2 class="comptitle">Packet <i>DNSPacket</i></h2>
+<b>File: <a href="src-messages-DNSPacket.msg.html">src/messages/DNSPacket.msg</a></b><br/><p><a href="../doxy/da/d67/classDNSPacket.html" target="mainframe"><b>C++ definition</b></a></p>
+
+<p><a href="src-messages-DNSPacket.html">DNSPacket</a> definition
+author: Andreas Rain, Distributed Systems Group, University of Konstanz</p>
+<h3 class="subtitle">Usage diagram:</h3>
+<p>The following diagram shows usage relationships between types.
+Unresolved types are missing from the diagram. Click <a href="full-msg-usage-diagram.html">here</a> to see the full picture.</p>
+<img src="src-messages-DNSPacket-usage.png" ismap="yes" usemap="#usage-diagram"/><map name="usage-diagram"><area shape="rect" id="node1" href="src-messages-DNSPacket.html" title="Packet DNSPacket" alt="" coords="5,5,97,31">
+</map>
+<h3 class="subtitle">Inheritance diagram:</h3>
+<p>The following diagram shows inheritance relationships for this type.
+Unresolved types are missing from the diagram. Click <a href="full-msg-inheritance-diagram.html">here</a> to see the full picture.</p>
+<img src="src-messages-DNSPacket-inheritance.png" ismap="yes" usemap="#inheritance-diagram"/><map name="inheritance-diagram"><area shape="rect" id="node1" href="src-messages-DNSPacket.html" title="Packet DNSPacket" alt="" coords="5,5,97,31">
+</map>
+<h3 class="subtitle">Fields:</h3>
+<table class="fieldstable">
+   <tr>
+      <th class="name">Name</th>
+      <th class="type">Type</th>
+      <th class="description">Description</th>
+   </tr>
+<tr class="local">
+   <td>displayString</td>
+   <td>
+      <i>
+string</i>
+   </td>
+   <td></td>
+</tr>
+<tr class="local">
+   <td>id</td>
+   <td>
+      <i>
+unsigned short</i>
+   </td>
+   <td></td>
+</tr>
+<tr class="local">
+   <td>options</td>
+   <td>
+      <i>
+unsigned short</i>
+   </td>
+   <td>
+</td>
+</tr>
+<tr class="local">
+   <td>qdcount</td>
+   <td>
+      <i>
+unsigned short</i>
+   </td>
+   <td>
+</td>
+</tr>
+<tr class="local">
+   <td>ancount</td>
+   <td>
+      <i>
+unsigned short</i>
+   </td>
+   <td></td>
+</tr>
+<tr class="local">
+   <td>nscount</td>
+   <td>
+      <i>
+unsigned short</i>
+   </td>
+   <td></td>
+</tr>
+<tr class="local">
+   <td>arcount</td>
+   <td>
+      <i>
+unsigned short</i>
+   </td>
+   <td>
+</td>
+</tr>
+<tr class="local">
+   <td>questions</td>
+   <td>
+      <i>
+DNSQuestion[]</i>
+   </td>
+   <td>
+</td>
+</tr>
+<tr class="local">
+   <td>answers</td>
+   <td>
+      <i>
+DNSRecord[]</i>
+   </td>
+   <td>
+</td>
+</tr>
+<tr class="local">
+   <td>authorities</td>
+   <td>
+      <i>
+DNSRecord[]</i>
+   </td>
+   <td>
+</td>
+</tr>
+<tr class="local">
+   <td>additional</td>
+   <td>
+      <i>
+DNSRecord[]</i>
+   </td>
+   <td></td>
+</tr>
+</table>
+<h3 class="subtitle">Source code:</h3>
+<pre class="src"><span style="color: #808080; font-style: italic; ">// DNSPacket definition
+// author: Andreas Rain, Distributed Systems Group, University of Konstanz
+</span><span style="color: #800000; font-weight: bold; ">packet</span><span style="color: #000000; "> </span><span style="color: #000000; ">DNSPacket</span><span style="color: #000000; ">
+{
+    </span><span style="color: #000080; font-weight: bold; ">string</span><span style="color: #000000; "> </span><span style="color: #000000; ">displayString</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;i=msg/packet,blue;b=60,15,blue,black,5&quot;</span><span style="color: #000000; ">;
+    </span><span style="color: #000080; font-weight: bold; ">unsigned</span><span style="color: #000000; "> </span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; "> </span><span style="color: #000000; ">id</span><span style="color: #000000; ">;
+    </span><span style="color: #000080; font-weight: bold; ">unsigned</span><span style="color: #000000; "> </span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; "> </span><span style="color: #000000; ">options</span><span style="color: #000000; ">;
+    </span><span style="color: #000080; font-weight: bold; ">unsigned</span><span style="color: #000000; "> </span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; "> </span><span style="color: #000000; ">qdcount</span><span style="color: #000000; ">;
+    </span><span style="color: #000080; font-weight: bold; ">unsigned</span><span style="color: #000000; "> </span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; "> </span><span style="color: #000000; ">ancount</span><span style="color: #000000; ">;
+    </span><span style="color: #000080; font-weight: bold; ">unsigned</span><span style="color: #000000; "> </span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; "> </span><span style="color: #000000; ">nscount</span><span style="color: #000000; ">;
+    </span><span style="color: #000080; font-weight: bold; ">unsigned</span><span style="color: #000000; "> </span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; "> </span><span style="color: #000000; ">arcount</span><span style="color: #000000; ">;
+
+    </span><span style="color: #000000; ">DNSQuestion</span><span style="color: #000000; "> </span><span style="color: #000000; ">questions</span><span style="color: #000000; ">[] </span><span style="color: #000000; font-weight: bold; ">@sizeGetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">getNumQuestions</span><span style="color: #000000; ">) </span><span style="color: #000000; font-weight: bold; ">@sizeSetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">setNumQuestions</span><span style="color: #000000; ">) </span><span style="color: #000000; font-weight: bold; ">@sizetype</span><span style="color: #000000; ">(</span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; ">);
+
+    </span><span style="color: #000000; ">DNSRecord</span><span style="color: #000000; "> </span><span style="color: #000000; ">answers</span><span style="color: #000000; ">[] </span><span style="color: #000000; font-weight: bold; ">@sizeGetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">getNumAnswers</span><span style="color: #000000; ">) </span><span style="color: #000000; font-weight: bold; ">@sizeSetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">setNumAnswers</span><span style="color: #000000; ">) </span><span style="color: #000000; font-weight: bold; ">@sizetype</span><span style="color: #000000; ">(</span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; ">);
+
+    </span><span style="color: #000000; ">DNSRecord</span><span style="color: #000000; "> </span><span style="color: #000000; ">authorities</span><span style="color: #000000; ">[] </span><span style="color: #000000; font-weight: bold; ">@sizeGetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">getNumAuthorities</span><span style="color: #000000; ">) </span><span style="color: #000000; font-weight: bold; ">@sizeSetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">setNumAuthorities</span><span style="color: #000000; ">) </span><span style="color: #000000; font-weight: bold; ">@sizetype</span><span style="color: #000000; ">(</span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; ">);
+
+    </span><span style="color: #000000; ">DNSRecord</span><span style="color: #000000; "> </span><span style="color: #000000; ">additional</span><span style="color: #000000; ">[] </span><span style="color: #000000; font-weight: bold; ">@sizeGetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">getNumAdditional</span><span style="color: #000000; ">) </span><span style="color: #000000; font-weight: bold; ">@sizeSetter</span><span style="color: #000000; ">(</span><span style="color: #000000; ">setNumAdditional</span><span style="color: #000000; ">) </span><span style="color: #000000; font-weight: bold; ">@sizetype</span><span style="color: #000000; ">(</span><span style="color: #000080; font-weight: bold; ">short</span><span style="color: #000000; ">);
+}
+</span></pre>
+   <hr><p class="footer"><a href="http://creativecommons.org/licenses/by-sa/3.0" target="_top"><img src="by-sa.png"></a> This documentation is released under the <a href="http://creativecommons.org/licenses/by-sa/3.0" target="_top">Creative Commons license</a></p>
+   </body>
+</html>
