@@ -1,4 +1,4 @@
-# Omnet++ DNS Extension
+# OMNeT++ DNS Extension
 
 This extensions provides classes and functions to simulate DNS and
 MDNS traffic.
@@ -46,7 +46,7 @@ extension.
 
 - Privacy extension according to the reference implementation done for the
 avahi-daemon
-- If the omnetpp code is edited, packets are visually distinguished. A tutorial
+- If the OMNeT++ code is edited, packets are visually distinguished. A tutorial
 on how to do this can be found in the wiki.
 
 ## Installation and Usage
@@ -56,9 +56,9 @@ on how to do this can be found in the wiki.
 ### Using the IDE
 
 1. Get the source code for this extension.
-2. Import the project into the Omnet++ IDE.
+2. Import the project into the OMNeT++ IDE.
 3. Import the INET framework into the IDE and build it.
-4. Goto Project Properties > Omnet++ > Makemake
+4. Goto Project Properties > OMNeT++ > Makemake
  - Select the src folder > Makemake > Options
  - Check shared library and
  - `Export this shared/static library for other projects`
@@ -74,10 +74,10 @@ on how to do this can be found in the wiki.
 3. Run `make makefiles` and provide the INET framework directory.
 4. Run `make`.
 5. To run examples you must run
-        opp_run -l absolute_path_to_project \
+        ```opp_run -l absolute_path_to_project \
         -l absolute_path_to_inet_library \
         -n absolute_path_to_project_src;absolute_path_to_inet_src" \
-        absolute_path_to_simulation_ini_file
+        absolute_path_to_simulation_ini_file```
 
 6. Enjoy
 
@@ -102,7 +102,7 @@ on how to do this can be found in the wiki.
 - Simulation network within a wireless area network
 - More sophisticated DNS caches
 - DNSSec extension
-- Better integration with the existing Omnet++ structure
+- Better integration with the existing OMNeT++ structure
 
 
 ## Contributors
@@ -117,9 +117,9 @@ Github: @saenridanra
 
 ## Requirements
 
-- working OMNeT++ (v4.4) installation. (Download from http://omnetpp.org)
-- working INET-Framework installation (v2.3). (Download from http://inet.omnetpp.org)
-- a compiler that supports c++11
+- working OMNeT++ installation. (Download from http://omnetpp.org)
+- working INET-Framework installation. (Download from http://inet.omnetpp.org)
+- a compiler that supports C++11
 
 Check whether the installations work using the examples provided in the INET
 framework.
