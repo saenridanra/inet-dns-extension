@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Omnetpp++ DNS Extension by saenridanra</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Omnetpp++ DNS Extension</h1>
+          <h2>This extensions provides classes and functions to simulate DNS and MDNS traffic.</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/saenridanra/omnetpp-dns-extension/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/saenridanra/omnetpp-dns-extension/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/saenridanra/omnetpp-dns-extension" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
+<a id="omnet-dns-extension" class="anchor" href="#omnet-dns-extension" aria-hidden="true"><span class="octicon octicon-link"></span></a>Omnet++ DNS Extension</h1>
+
+<p>This extensions provides classes and functions to simulate DNS and
+MDNS traffic.</p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<h3>
+<a id="dns" class="anchor" href="#dns" aria-hidden="true"><span class="octicon octicon-link"></span></a>DNS</h3>
+
+<ul>
+<li>Name servers with recursive resolving capabilities</li>
+<li>Authoritative servers with DNS zone configuration using master files</li>
+<li>Caching servers without zones, only recursively resolving</li>
+<li>DNS Cache base that can be extended
+
+<ul>
+<li>Caches based on different policies possible</li>
+</ul>
+</li>
+<li>DNS Client that can query a DNS server</li>
+</ul>
+
+<p>See RFC 1035 <a href="https://tools.ietf.org/html/rfc1035">https://tools.ietf.org/html/rfc1035</a> as a reference.</p>
+
+<h3>
+<a id="stateless-dns" class="anchor" href="#stateless-dns" aria-hidden="true"><span class="octicon octicon-link"></span></a>Stateless DNS</h3>
+
+<ul>
+<li>Stateless DNS simulation according to
+<a href="https://netfuture.ch/2014/12/stateless-dns/">https://netfuture.ch/2014/12/stateless-dns/</a>.</li>
+<li>
+<p>Echoserver impelementation currently supporting:</p>
+
+<ul>
+<li>
+<code>.00.</code> - reflects the address in the query to the alias</li>
+<li>
+<code>cca</code> - builds a cname chain, pointing to an address</li>
+</ul>
+
+<p>operations.</p>
+</li>
+</ul>
+
+<h3>
+<a id="mdns" class="anchor" href="#mdns" aria-hidden="true"><span class="octicon octicon-link"></span></a>MDNS</h3>
+
+<p>The avahi-daemon was used as a reference for designing MDNS resolvers in this
+extension.</p>
+
+<ul>
+<li>MDNS resolver with the capabilities of
+
+<ul>
+<li>Publishing services via multicast</li>
+<li>Revoking services via multicast</li>
+<li>Perform queries via multicast</li>
+<li>Known answer suppression</li>
+<li>Duplicate question suppression</li>
+<li>Duplicate answer suppression</li>
+<li>Maintaining time schedules according to the RFC 6762</li>
+</ul>
+</li>
+</ul>
+
+<p>See RFC 6762 <a href="http://tools.ietf.org/html/rfc6762">http://tools.ietf.org/html/rfc6762</a> for reference.</p>
+
+<h3>
+<a id="mdns-privacy" class="anchor" href="#mdns-privacy" aria-hidden="true"><span class="octicon octicon-link"></span></a>MDNS Privacy</h3>
+
+<p>In parallel to the extension of the avahi-daemon to enhance privacy (<a href="https://netfuture.ch/2014/12/a-multicast-avoiding-privacy-extension-for-the-avahi-zeroconf-daemon/">https://netfuture.ch/2014/12/a-multicast-avoiding-privacy-extension-for-the-avahi-zeroconf-daemon/</a>) we worked on a simulation that allows us to measure the effects of our
+extension.</p>
+
+<ul>
+<li>Privacy extension according to the reference implementation done for the
+avahi-daemon</li>
+<li>If the omnetpp code is edited, packets are visually distinguished. A tutorial
+on how to do this can be found in the wiki.</li>
+</ul>
+
+<h2>
+<a id="installation-and-usage" class="anchor" href="#installation-and-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation and Usage</h2>
+
+<p><strong>Make sure you fulfill the requirements stated below.</strong></p>
+
+<h3>
+<a id="using-the-ide" class="anchor" href="#using-the-ide" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using the IDE</h3>
+
+<ol>
+<li>Get the source code for this extension.</li>
+<li>Import the project into the Omnet++ IDE.</li>
+<li>Import the INET framework into the IDE and build it.</li>
+<li>Goto Project Properties &gt; Omnet++ &gt; Makemake
+
+<ul>
+<li>Select the src folder &gt; Makemake &gt; Options</li>
+<li>Check shared library and</li>
+<li><code>Export this shared/static library for other projects</code></li>
+<li>If you want debug output include in the tabs
+
+<ul>
+<li>Custom &gt; Makefrag <code>CFLAGS+= -DDEBUG_ENABLED CXXFLAGS+= -DDEBUG_ENABLED</code>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Include the compiled INET library object in the lib dir.</li>
+<li>Enjoy</li>
+</ol>
+
+<h3>
+<a id="using-the-command-line" class="anchor" href="#using-the-command-line" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using the command line</h3>
+
+<ol>
+<li>Get the source code for this extension.</li>
+<li>Change to the project directory.</li>
+<li>Run <code>make makefiles</code> and provide the INET framework directory.</li>
+<li>Run <code>make</code>.</li>
+<li><p>To run examples you must run
+    opp_run -l absolute_path_to_project \
+    -l absolute_path_to_inet_library \
+    -n absolute_path_to_project_src;absolute_path_to_inet_src" \
+    absolute_path_to_simulation_ini_file</p></li>
+<li><p>Enjoy</p></li>
+</ol>
+
+<h2>
+<a id="limitations" class="anchor" href="#limitations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Limitations</h2>
+
+<ul>
+<li>All applications in this extension need to be wrapped within a Standard Host.</li>
+<li>Currently no rules like bailiwick have been implemented.</li>
+<li>Network Randomization currently not implemented, i.e.
+
+<ul>
+<li>Master Files have to be provided manually.</li>
+<li>DNS Servers and network infrastucture has to be defined manually.</li>
+</ul>
+</li>
+<li>MDNS Resolvers have to be configured manually.
+
+<ul>
+<li>This includes all relevant services published from the start.</li>
+<li>This includes relevant information for the privacy extension.</li>
+</ul>
+</li>
+<li>No statistics are currently recorded</li>
+</ul>
+
+<h2>
+<a id="future-work" class="anchor" href="#future-work" aria-hidden="true"><span class="octicon octicon-link"></span></a>Future Work</h2>
+
+<ul>
+<li>Proper network randomization for all applications
+
+<ul>
+<li>For DNS Servers and Clients</li>
+<li>For MDNS Resolvers including the privacy extension</li>
+</ul>
+</li>
+<li>Proper recording of relevant metrics</li>
+<li>Simulation network within a wireless area network</li>
+<li>More sophisticated DNS caches</li>
+<li>DNSSec extension</li>
+<li>Better integration with the existing Omnet++ structure</li>
+</ul>
+
+<h2>
+<a id="contributors" class="anchor" href="#contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributors</h2>
+
+<p><strong>Project maintainer</strong>:</p>
+
+<ul>
+<li>Andreas Rain (andreas.rain(at){uni-konstanz.de , gmail.com}),
+Github: <a href="https://github.com/saenridanra" class="user-mention">@saenridanra</a>
+
+<ul>
+<li>Project created as part of my master project
+to measure the effects of multicast
+traffic on wireless networks.</li>
+</ul>
+</li>
+</ul>
+
+<h2>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h2>
+
+<ul>
+<li>working OMNeT++ (v4.4) installation. (Download from <a href="http://omnetpp.org">http://omnetpp.org</a>)</li>
+<li>working INET-Framework installation (v2.3). (Download from <a href="http://inet.omnetpp.org">http://inet.omnetpp.org</a>)</li>
+<li>a compiler that supports c++11</li>
+</ul>
+
+<p>Check whether the installations work using the examples provided in the INET
+framework.</p>
+
+<h2>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h2>
+
+<p>The projects code is fully documented using Doxygen and is placed
+in the <code>doc</code> folder, next to the source code.</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>This work is published under the MIT License <a href="http://opensource.org/licenses/MIT">http://opensource.org/licenses/MIT</a>.</p>
+        </section>
+
+        <footer>
+          Omnetpp++ DNS Extension is maintained by <a href="https://github.com/saenridanra">saenridanra</a><br>
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
