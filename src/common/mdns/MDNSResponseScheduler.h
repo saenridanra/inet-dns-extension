@@ -118,12 +118,12 @@ protected:
     /**
      * @brief A list of active jobs.
      */
-    std::vector<std::shared_ptr<MDNSQueryJob>> jobs;
+    std::vector<std::shared_ptr<MDNSResponseJob>> jobs;
 
     /**
      * @brief A list of jobs already finished.
      */
-    std::vector<std::shared_ptr<MDNSQueryJob>> history;
+    std::vector<std::shared_ptr<MDNSResponseJob>> history;
 
     /**
      * @brief A list of suppressed jobs.
@@ -133,12 +133,12 @@ protected:
     /**
      * @brief Socket over which DNS queries are sent/received.
      */
-    UDPSocket outSock;
+    UDPSocket* outSock;
 
     /**
      * @brief Socket over which private DNS queries are sent/received.
      */
-    UDPSocket privacySock;
+    UDPSocket* privacySock;
 
     /**
      * @brief Local multicast address in use.

@@ -91,7 +91,7 @@ void MDNSResolver::initialize(int stage) {
         queryScheduler->setCallback(MDNSResolver::callback);
         responseScheduler = new ODnsExtension::MDNSResponseScheduler(
                 timeEventSet, &outSock, this);
-        responseScheduler->setCache(cache);
+        responseScheduler->setAuthCache(cache);
         responseScheduler->setCallback(MDNSResolver::callback);
 
         hostname = par("hostname").stdstringValue();

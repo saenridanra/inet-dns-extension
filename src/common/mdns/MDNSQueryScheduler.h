@@ -109,12 +109,12 @@ protected:
     /**
      * @brief Socket over which DNS queries are sent/received.
      */
-    UDPSocket outSock;
+    UDPSocket* outSock;
 
     /**
      * @brief Socket over which private DNS queries are sent/received.
      */
-    UDPSocket privacySock;
+    UDPSocket* privacySock;
 
     /**
      * @brief Local multicast address in use.
