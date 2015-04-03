@@ -3,6 +3,8 @@
 This extensions provides classes and functions to simulate DNS and
 MDNS traffic.
 
+[![Build Status](http://saenridanra.de/jenkins/job/omnetpp-dns-extension/badge/icon)](http://saenridanra.de/jenkins/job/omnetpp-dns-extension/)
+
 ## Features
 
 ### DNS
