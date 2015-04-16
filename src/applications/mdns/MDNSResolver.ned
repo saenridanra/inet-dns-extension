@@ -26,6 +26,8 @@ simple MDNSResolver
         
         bool hasPrivacy = default(false);
         
+        bool static_configuration = default(true);
+        
     gates:
         input mdnsIn @labels(UDPControlInfo/down);
         output mdnsOut @labels(UDPControlInfo/down);

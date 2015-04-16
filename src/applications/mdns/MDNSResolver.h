@@ -43,6 +43,7 @@
 
 #include <vector>
 #include <list>
+#include <utility>
 #include <unordered_map>
 #include <memory>
 #include <iostream>
@@ -169,6 +170,28 @@ class MDNSResolver : public cSimpleModule
      */
     simtime_t elapseTime = STR_SIMTIME("1ms");
 
+    /**
+     * @brief Determine, whether the module will be configured statically or dynamically.
+     *
+     * If false, then an @ref MDNSNetworkConfigurator has to be provided in order
+     * to configure the resolver.
+     */
+    bool static_configuration;
+
+    /**
+     * @brief List of pairs containing the uptimes of this resolver.
+     *
+     * This is only used by the @ref MDNSNetworkConfigurator
+     * which controls when a node in the network should be
+     * online.
+     */
+    std::vector<std::pair<SimTime, SimTime>> uptimes;
+
+    /**
+     * @brief the position of the current uptime.
+     */
+    int current_uptime;
+
   public:
     MDNSResolver();
     ~MDNSResolver();
@@ -182,6 +205,59 @@ class MDNSResolver : public cSimpleModule
      * When the timeevent is due, this callback is called.
      */
     static void callback(std::shared_ptr<void> data, void* thispointer);
+
+    /**
+     * @brief Set params for the resolver dynamically.
+     *
+     * Used for dynamic configuration of a resolver.
+     *
+     * @param hostname String containing the hostname used to announce
+     * @param own_instance_name The instance name this resolver shall use for announcments.
+     * @param hasPrivacy Whether privacy capabilities are enabled.
+     */
+    void setDynamicParams(std::string hostname, std::string own_instance_name,  bool hasPrivacy){
+        this->hostname = hostname;
+        this->own_instance_name = own_instance_name;
+        this->hasPrivacy = hasPrivacy;
+    }
+
+    /**
+     * @brief Add a service this resolver needs to announce and resolve
+     *
+     * @param service Shared pointer to an @ref ODnsExtension::MDNSService that needs to be shared.
+     */
+    void addService(std::shared_ptr<ODnsExtension::MDNSService> service){
+        this->services.push_back(service);
+    }
+
+    /**
+     * @brief Add a privacy enabled service to this resolver
+     *
+     * @param pService Shared pointer to a private mdns service structure
+     */
+    void addPrivateService(std::shared_ptr<ODnsExtension::PrivateMDNSService> pService){
+        (*this->private_service_table)[pService->service_type] = pService;
+    }
+
+    /**
+     * @brief Add a trusted "friend" to the resolver.
+     *
+     * @param fdata Shared pointer to fully initialized @ref ODnsExtension::FriendData struct.
+     */
+    void addFriend(std::shared_ptr<ODnsExtension::FriendData> fdata){
+        // Map instance name to friend, as well as id
+        (*this->friend_data_table)[fdata->pdata->friend_id] = fdata;
+        (*this->instance_name_table)[fdata->pdata->privacy_service_instance_name] = fdata;
+    }
+
+    /**
+     * @brief Set the timing schedule of up/downtimes
+     *
+     * @param timingSchedule Vector containing of pairs of @ref SimTime
+     */
+    void setTimingSchedule(std::vector<std::pair<SimTime, SimTime>> timingSchedule){
+        uptimes = timingSchedule;
+    }
 
   protected:
 
