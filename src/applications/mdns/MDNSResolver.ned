@@ -18,6 +18,19 @@ package opp_dns_extension.applications.mdns;
 simple MDNSResolver
 {
     parameters:
+        @signal[mdnsQueryRcvd](type=cPacket);
+        @signal[mdnsQuerySent](type=cPacket);
+        @statistic[mdnsQuerySent](title="packets sent"; source=mdnsQuerySent; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        @statistic[mdnsQueryRcvd](title="packets received"; source=mdnsQueryRcvd; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        @signal[mdnsResponseRcvd](type=cPacket);
+        @signal[mdnsResponseSent](type=cPacket);
+        @statistic[mdnsResponseSent](title="packets sent"; source=mdnsResponseSent; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        @statistic[mdnsResponseRcvd](title="packets received"; source=mdnsResponseRcvd; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        @signal[mdnsProbeRcvd](type=cPacket);
+        @signal[mdnsProbeSent](type=cPacket);
+        @statistic[mdnsProbeSent](title="packets sent"; source=mdnsProbeSent; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        @statistic[mdnsProbeRcvd](title="packets received"; source=mdnsProbeRcvd; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        
         string hostname;
         string service_files;
         string privacy_service_files;

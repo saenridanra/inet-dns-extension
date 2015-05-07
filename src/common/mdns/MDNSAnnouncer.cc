@@ -326,6 +326,24 @@ void MDNSAnnouncer::goodbye(std::shared_ptr<Probe> p, int send_goodbye, int remo
     }
 }
 
+void MDNSAnnouncer::shutdown(){
+    for(auto p : probing){
+        if (p->s == ProbeState::ANNOUNCED)
+        {
+            std::shared_ptr<DNSRecord> goodbye_record = ODnsExtension::copyDnsRecord(p->r);
+            goodbye_record->ttl = 0;
+            response_scheduler->post(goodbye_record, 0, NULL, 1);
+        }
+        // delete the probe and related time events
+        timeEventSet->removeTimeEvent(p->e);
+        freeDnsRecord(p->r);
+        delete p->e;
+        p.reset();
+    }
+
+    probing.clear();
+}
+
 void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data)
 {
     std::shared_ptr<Probe> p = std::static_pointer_cast < Probe > (data);

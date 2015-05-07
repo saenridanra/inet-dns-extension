@@ -23,7 +23,7 @@
 
 namespace ODnsExtension {
 
-std::regex privacy_type_expr ("_.+\\._.+\\.local");
+std::regex privacy_type_expr ("(.*)(_.+\\._.+\\.local)");
 
 std::string extract_stype(std::string label)
 {
@@ -32,7 +32,7 @@ std::string extract_stype(std::string label)
     auto m = std::smatch{};
     if (std::regex_match(label, m, privacy_type_expr))
     {
-        match = m[1].str();
+        match = m[2].str();
     }
 
     return match;

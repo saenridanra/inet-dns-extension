@@ -23,6 +23,17 @@
 
 Define_Module(MDNSResolver);
 
+/**
+ * This section defines different omnet++ signals.
+ */
+
+simsignal_t MDNSResolver::mdnsQueryRcvd = registerSignal("mdnsQueryRcvd");
+simsignal_t MDNSResolver::mdnsQuerySent = registerSignal("mdnsQuerySent");
+simsignal_t MDNSResolver::mdnsResponseRcvd = registerSignal("mdnsResponseRcvd");
+simsignal_t MDNSResolver::mdnsResponseSent = registerSignal("mdnsResponseSent");
+simsignal_t MDNSResolver::mdnsProbeRcvd = registerSignal("mdnsProbeRcvd");
+simsignal_t MDNSResolver::mdnsProbeSent = registerSignal("mdnsProbeSent");
+
 MDNSResolver::MDNSResolver()
 {
 }
@@ -44,6 +55,7 @@ MDNSResolver::~MDNSResolver()
     << " ----------------\n";
     for (auto kv : *friend_data_table)
     {
+        if(! kv.second) continue;
         std::shared_ptr<ODnsExtension::FriendData> fdata = kv.second;
         std::cout << fdata->pdata->friend_id << " online: " << fdata->online
         << std::endl;
@@ -71,8 +83,15 @@ void MDNSResolver::initialize(int stage)
         // find out whether the module needs to be configured statically
         static_configuration = par("static_configuration").boolValue();
 
+        state = RUNNING;
+
+        private_service_table =
+                new std::unordered_map<std::string, std::shared_ptr<ODnsExtension::PrivateMDNSService>>();
+        friend_data_table = new std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>>();
+        instance_name_table = new std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>>();
+
     }
-    else if (stage == 3)
+    else if (stage == 4)
     {
         announcer_state = ODnsExtension::AnnouncerState::START;
         cDisplayString& dispStr = this->getParentModule()->getDisplayString();
@@ -124,7 +143,12 @@ void MDNSResolver::initialize(int stage)
             // all params have been initialized already
             // by the configurator, we only assign the first schedule based on the uptimes
 
-            scheduleAt(simTime() + uptimes[0].first, selfMessage);
+            probeScheduler->setPrivacyData(private_service_table, friend_data_table, instance_name_table, &privacySock);
+            queryScheduler->setPrivacyData(private_service_table, friend_data_table, instance_name_table, &privacySock);
+            responseScheduler->setPrivacyData(private_service_table, friend_data_table, instance_name_table,
+                    &privacySock);
+
+            scheduleAt(simTime() + uptimes[0]->first, selfMessage);
             current_uptime = 0;
         }
 
@@ -179,10 +203,12 @@ void MDNSResolver::handleMessage(cMessage *msg)
             {
                 if (ODnsExtension::isQuery(p))
                 {
+                    emit(MDNSResolver::mdnsQueryRcvd, p);
                     handleQuery(p);
                 }
                 else if (ODnsExtension::isResponse(p))
                 {
+                    emit(MDNSResolver::mdnsResponseRcvd, p);
                     handleResponse(p);
                 }
             }
@@ -204,41 +230,63 @@ void MDNSResolver::elapsedTimeCheck()
 
     // check if we have an event coming up now, i.e. check if we can get
     // an event from the timeEventSet
-    ODnsExtension::TimeEvent* event;
-    while ((event = timeEventSet->getTimeEventIfDue()))
+    if (state == RUNNING)
     {
-        // perform the timeEvent..
-        event->performCallback(); // the rest is handled in the callback
-    }
-
-    if (announcer_state != announcer->getState())
-    {
-        announcer_state = announcer->getState();
-
-        if (ODnsExtension::AnnouncerState::PROBE == announcer_state)
-        { // Setting a module's position, icon and status icon:
-            const char* hostname_announced = "HOSTNAME ANNOUNCED, START PROBING";
-            this->getParentModule()->bubble(hostname_announced);
-            cDisplayString& dispStr = this->getParentModule()->getDisplayString();
-            dispStr.parse("i=device/laptop,orange");
+        if (!static_configuration && uptimes[current_uptime]->second <= simTime())
+        {
+            state = SHUTDOWN;
+            // initiate shudown
+            // flush existing schedule
+            // goodbye all announced services
+            announcer->shutdown();
         }
-        else if (ODnsExtension::AnnouncerState::FINISHED == announcer_state)
-        { // Setting a module's position, icon and status icon:
-            const char* finished_probing = "FINISHED PROBING";
-            this->getParentModule()->bubble(finished_probing);
-            cDisplayString& dispStr = this->getParentModule()->getDisplayString();
-            dispStr.parse("i=device/laptop,#449544,100");
+
+        ODnsExtension::TimeEvent* event;
+        while ((event = timeEventSet->getTimeEventIfDue()))
+        {
+            // perform the timeEvent..
+            event->performCallback(); // the rest is handled in the callback
+        }
+
+        if (announcer_state != announcer->getState())
+        {
+            announcer_state = announcer->getState();
+
+            if (ODnsExtension::AnnouncerState::PROBE == announcer_state)
+            { // Setting a module's position, icon and status icon:
+                const char* hostname_announced = "HOSTNAME ANNOUNCED, START PROBING";
+                this->getParentModule()->bubble(hostname_announced);
+                cDisplayString& dispStr = this->getParentModule()->getDisplayString();
+                dispStr.parse("i=device/laptop,orange");
+            }
+            else if (ODnsExtension::AnnouncerState::FINISHED == announcer_state)
+            { // Setting a module's position, icon and status icon:
+                const char* finished_probing = "FINISHED PROBING";
+                this->getParentModule()->bubble(finished_probing);
+                cDisplayString& dispStr = this->getParentModule()->getDisplayString();
+                dispStr.parse("i=device/laptop,#449544,100");
+            }
+        }
+
+        event = timeEventSet->getTopElement();
+
+        // first, schedule new elapseTimeCheck
+        if (event)
+        {
+            scheduleAt(event->getExpiry(), selfMessage);
+            last_schedule = event->getExpiry();
         }
     }
-
-    event = timeEventSet->getTopElement();
-
-    // first, schedule new elapseTimeCheck
-
-    if (event)
+    else if (state == SHUTDOWN)
     {
-        scheduleAt(event->getExpiry(), selfMessage);
-        last_schedule = event->getExpiry();
+        if (current_uptime == uptimes.size() - 1)
+            return;
+        if (uptimes[current_uptime + 1]->first <= simTime())
+        {
+            // start announcing again
+            announcer->initialize();
+            state = RUNNING;
+        }
     }
 
 }
@@ -529,9 +577,6 @@ void MDNSResolver::initializeServiceFile(std::string file)
 
 void MDNSResolver::initializePrivateServices()
 {
-    private_service_table = new std::unordered_map<std::string, std::shared_ptr<ODnsExtension::PrivateMDNSService>>();
-    friend_data_table = new std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>>();
-    instance_name_table = new std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>>();
 
     probeScheduler->setPrivacyData(private_service_table, friend_data_table, instance_name_table, &privacySock);
     queryScheduler->setPrivacyData(private_service_table, friend_data_table, instance_name_table, &privacySock);

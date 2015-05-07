@@ -278,6 +278,11 @@ public:
     virtual void goodbye(std::shared_ptr<Probe> p, int send_goodbye, int remove);
 
     /**
+     * @brief Turns of the announcer and send goodbye records
+     */
+    virtual void shutdown();
+
+    /**
      * @brief Retrieve the amount of announced services
      *
      * @return amount of announced services
