@@ -31,6 +31,19 @@ simple MDNSResolver
         @statistic[mdnsProbeSent](title="packets sent"; source=mdnsProbeSent; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
         @statistic[mdnsProbeRcvd](title="packets received"; source=mdnsProbeRcvd; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
         
+        @signal[privateQueryRcvd](type=cPacket);
+        @signal[privateQuerySent](type=cPacket);
+        @statistic[privateQuerySent](title="packets sent"; source=privateQuerySent; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        @statistic[mdnsQueryRcvd](title="packets received"; source=privateQueryRcvd; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        @signal[privateResponseRcvd](type=cPacket);
+        @signal[privateResponseSent](type=cPacket);
+        @statistic[privateResponseSent](title="packets sent"; source=privateResponseSent; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        @statistic[privateResponseRcvd](title="packets received"; source=privateResponseRcvd; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        @signal[privateProbeRcvd](type=cPacket);
+        @signal[privateProbeSent](type=cPacket);
+        @statistic[privateProbeSent](title="packets sent"; source=privateProbeSent; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        @statistic[privateProbeRcvd](title="packets received"; source=privateProbeRcvd; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+        
         string hostname;
         string service_files;
         string privacy_service_files;

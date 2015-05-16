@@ -34,6 +34,13 @@ simsignal_t MDNSResolver::mdnsResponseSent = registerSignal("mdnsResponseSent");
 simsignal_t MDNSResolver::mdnsProbeRcvd = registerSignal("mdnsProbeRcvd");
 simsignal_t MDNSResolver::mdnsProbeSent = registerSignal("mdnsProbeSent");
 
+simsignal_t MDNSResolver::privateQueryRcvd = registerSignal("privateQueryRcvd");
+simsignal_t MDNSResolver::privateQuerySent = registerSignal("privateQuerySent");
+simsignal_t MDNSResolver::privateResponseRcvd = registerSignal("privateResponseRcvd");
+simsignal_t MDNSResolver::privateResponseSent = registerSignal("privateResponseSent");
+simsignal_t MDNSResolver::privateProbeRcvd = registerSignal("privateProbeRcvd");
+simsignal_t MDNSResolver::privateProbeSent = registerSignal("privateProbeSent");
+
 MDNSResolver::MDNSResolver()
 {
 }
@@ -203,12 +210,28 @@ void MDNSResolver::handleMessage(cMessage *msg)
             {
                 if (ODnsExtension::isQuery(p))
                 {
-                    emit(MDNSResolver::mdnsQueryRcvd, p);
+                    if(ODnsExtension::isProbe(p)){
+                        if(p->par("private"))
+                            emit(MDNSResolver::privateProbeRcvd, p);
+                        else
+                            emit(MDNSResolver::mdnsProbeRcvd, p);
+                    }
+                    else{
+                        if(p->par("private"))
+                            emit(MDNSResolver::privateQueryRcvd, p);
+                        else
+                            emit(MDNSResolver::mdnsQueryRcvd, p);
+                    }
+
                     handleQuery(p);
                 }
                 else if (ODnsExtension::isResponse(p))
                 {
-                    emit(MDNSResolver::mdnsResponseRcvd, p);
+                    if(p->par("private"))
+                        emit(MDNSResolver::privateResponseRcvd, p);
+                    else
+                        emit(MDNSResolver::mdnsResponseRcvd, p);
+
                     handleResponse(p);
                 }
             }

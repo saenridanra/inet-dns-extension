@@ -160,6 +160,8 @@ int MDNSProbeScheduler::preparePacketAndSend(std::list<std::shared_ptr<DNSQuesti
     if (!is_private) {
         const char* dstr = "i=msg/bcast,red";
         p->setDisplayString(dstr);
+        p->addPar("private");
+        p->par("private") = false;
         outSock->sendTo(p, multicast_address, MDNS_PORT);
     } else {
         const char* dstr = "i=msg/packet,green";
@@ -169,7 +171,8 @@ int MDNSProbeScheduler::preparePacketAndSend(std::list<std::shared_ptr<DNSQuesti
         std::shared_ptr<ODnsExtension::PrivateMDNSService> psrv =
                 (*private_service_table)[service_type];
         // go through the offered_to list
-
+        p->addPar("private");
+        p->par("private") = true;
         for (auto it : psrv->offered_to) {
             std::string key = it;
             std::shared_ptr<ODnsExtension::FriendData> fdata = (*friend_data_table)[key];

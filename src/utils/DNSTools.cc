@@ -247,7 +247,8 @@ std::shared_ptr<Response> resolveResponse(cPacket* response)
     }
 
     std::shared_ptr<Response> r(
-            new Response(v->getId(), v->getOptions(), v->getQdcount(), 0, 0, 0, answers, authoritative, additional));
+            new Response(v->getId(), v->getOptions(), v->getQdcount(), v->getAncount(), v->getNscount(),
+                    v->getArcount(), answers, authoritative, additional));
 
     return r;
 }
@@ -501,18 +502,40 @@ int estimateDnsPacketSize(DNSPacket* packet)
 {
     int size = 12; // initial header size
 
-    size += packet->getQuestions(0).qname.length() + 4; // name length + 4 bytes for type and class
+    for (int i = 0; i < packet->getQdcount(); i++)
+        size += packet->getQuestions(i).qname.length() + 4; // name length + 4 bytes for type and class
     for (int i = 0; i < packet->getAncount(); i++)
     {
-        size += 5 + packet->getAnswers(i).rname.length() + packet->getAnswers(i).strdata.length();
+        if (packet->getAnswers(i).rtype != DNS_TYPE_VALUE_SRV)
+            size += 10 + packet->getAnswers(i).rname.length() + packet->getAnswers(i).strdata.length();
+        else
+        {
+            std::shared_ptr<SRVData> s =
+                    std::static_pointer_cast<SRVData> (packet->getAnswers(i).rdata);
+            size += 16 + s->service.length() + s->proto.length() + s->name.length() + s->target.length();
+        }
     }
     for (int i = 0; i < packet->getNscount(); i++)
     {
-        size += 5 + packet->getAuthorities(i).rname.length() + packet->getAuthorities(i).strdata.length();
+        if (packet->getAuthorities(i).rtype != DNS_TYPE_VALUE_SRV)
+            size += 10 + packet->getAuthorities(i).rname.length() + packet->getAuthorities(i).strdata.length();
+        else
+        {
+            std::shared_ptr<SRVData> s =
+                    std::static_pointer_cast<SRVData> (packet->getAuthorities(i).rdata);
+            size += 16 + s->service.length() + s->proto.length() + s->name.length() + s->target.length();
+        }
     }
     for (int i = 0; i < packet->getArcount(); i++)
     {
-        size += 5 + packet->getAdditional(i).rname.length() + packet->getAdditional(i).strdata.length();
+        if (packet->getAdditional(i).rtype != DNS_TYPE_VALUE_SRV)
+            size += 10 + packet->getAdditional(i).rname.length() + packet->getAdditional(i).strdata.length();
+        else
+        {
+            std::shared_ptr<SRVData> s =
+                    std::static_pointer_cast<SRVData> (packet->getAdditional(i).rdata);
+            size += 16 + s->service.length() + s->proto.length() + s->name.length() + s->target.length();
+        }
     }
 
     return size;

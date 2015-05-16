@@ -367,6 +367,8 @@ int MDNSResponseScheduler::preparePacketAndSend(
     if (!is_private) {
         const char* dstr = "i=msg/bcast,red";
         p->setDisplayString(dstr);
+        p->addPar("private");
+        p->par("private") = false;
         outSock->sendTo(p, multicast_address, MDNS_PORT);
     } else {
         const char* dstr = "i=msg/packet,green";
@@ -376,6 +378,8 @@ int MDNSResponseScheduler::preparePacketAndSend(
                 (*private_service_table)[service_type];
         // go through the offered_to list
 
+        p->addPar("private");
+        p->par("private") = true;
         for (auto key : psrv->offered_to) {
             std::shared_ptr<FriendData> fdata = (*friend_data_table)[key];
             if (fdata && fdata->online) {

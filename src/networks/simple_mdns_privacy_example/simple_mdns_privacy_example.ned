@@ -83,18 +83,6 @@ network Simple_mdns_privacy_example
             @display("p=121,37");
         }
         
-        mdns_configurator : MDNSNetworkConfigurator{
-            num_resolvers = 4;
-            num_private = 4;
-            max_friends = 2;
-            min_friends = 1;
-            max_services = 10;
-            min_services = 2;
-            
-            private_service_ratio = 100.0;
-            
-        }
-        
         Start: StandardHost {
             @display("p=948,54;i=device/laptop,#080808;b=200,60,rect");
         }

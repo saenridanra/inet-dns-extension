@@ -211,6 +211,13 @@ class MDNSResolver : public cSimpleModule
         static simsignal_t mdnsProbeRcvd;
         static simsignal_t mdnsProbeSent;
 
+        static simsignal_t privateQueryRcvd;
+        static simsignal_t privateQuerySent;
+        static simsignal_t privateResponseRcvd;
+        static simsignal_t privateResponseSent;
+        static simsignal_t privateProbeRcvd;
+        static simsignal_t privateProbeSent;
+
 
     public:
         MDNSResolver();
