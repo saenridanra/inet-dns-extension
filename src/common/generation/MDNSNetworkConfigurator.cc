@@ -81,6 +81,8 @@ void MDNSNetworkConfigurator::pair(MDNSResolver * m1, MDNSResolver * m2,
     pdata = ODnsExtension::pairing_data_new("", device_name1, instance_name1);
     fdata = ODnsExtension::friend_data_new(pdata, 9977); // use default port
     m2->addFriend(fdata);
+
+    std::cout << "Paired " << device_name1 << " with " << device_name2 << std::endl;
 }
 
 void MDNSNetworkConfigurator::share(MDNSResolver * m1, MDNSResolver * m2,
@@ -228,7 +230,7 @@ bool MDNSNetworkConfigurator::computeMDNSNetwork()
                     continue;
 
                 // this resolver still has place to be matched
-                MDNSResolver * picked_resolver = device_map[device_name];
+                MDNSResolver * picked_resolver = device_map[picked_device_name];
 
                 pair(resolver, picked_resolver, device_name, picked_device_name, instance_name1, instance_name2);
                 // add links to the map, bidirectional
