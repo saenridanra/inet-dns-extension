@@ -30,7 +30,7 @@ network Dynamic_mdns_network
         int p_max_friends;
         int p_min_friends;
         int p_max_services = default(10);
-        int p_min_services = default(2);
+        int p_min_services = default(10);
         
         double p_private_service_ratio = default(100.0);
     

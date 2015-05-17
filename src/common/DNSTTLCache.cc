@@ -221,16 +221,7 @@ std::shared_ptr<DNSRecord> DNSTTLCache::remove_from_cache(std::string hash,
 }
 
 void DNSTTLCache::remove_time_record(std::shared_ptr<DNSTimeRecord> tr) {
-    std::set<std::shared_ptr<DNSTimeRecord>,
-            ODnsExtension::DNSTimeRecordComparator>::iterator it;
-
-    for (auto it = dnsRecordPriorityCache.begin();
-            it != dnsRecordPriorityCache.end(); it++) {
-        if (*it == tr) {
-            dnsRecordPriorityCache.erase(it++);
-            continue;
-        }
-    }
+    dnsRecordPriorityCache.erase(dnsRecordPriorityCache.find(tr));
 }
 
 std::list<std::shared_ptr<DNSRecord>> DNSTTLCache::evict() {
