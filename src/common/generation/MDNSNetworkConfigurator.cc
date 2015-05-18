@@ -267,16 +267,16 @@ bool MDNSNetworkConfigurator::computeMDNSNetwork()
             // make random choice whether this service should be used
             // choice is based on the probability of a service to be used
             // and uniformly distributed
-            int use = intuniform(0, 100);
+            /*int use = intuniform(0, 100);
             if (use > service->probability)
             {
                 if (service->is_private) // remove the service if it was added before..
                     resolver->removePrivateService(service->service);
                 continue;
-            }
+            }*/
 
             // make a choice, whether the service should be announced privately
-            int use_private = intuniform(0, 100);
+            int use_private = 0;
             if (service->is_private)
             {
                 use_private = 1;
@@ -285,7 +285,6 @@ bool MDNSNetworkConfigurator::computeMDNSNetwork()
             {
                 if (service->is_private) // remove the service if it was added before
                     resolver->removePrivateService(service->service);
-                use_private = 0;
             }
 
             if (use_private)

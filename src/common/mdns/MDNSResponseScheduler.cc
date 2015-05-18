@@ -363,12 +363,18 @@ int MDNSResponseScheduler::preparePacketAndSend(
         }
     }
 
+    std::unordered_map<std::string, int> signalPars;
+    signalPars["signal_type"] = 2;
+
     p->setByteLength(packetSize);
     if (!is_private) {
         const char* dstr = "i=msg/bcast,red";
         p->setDisplayString(dstr);
         p->addPar("private");
         p->par("private") = false;
+        signalPars["privacy"] = 0;
+        signalReceiver->receiveSignal(signalPars, p);
+
         outSock->sendTo(p, multicast_address, MDNS_PORT);
     } else {
         const char* dstr = "i=msg/packet,green";
@@ -380,6 +386,9 @@ int MDNSResponseScheduler::preparePacketAndSend(
 
         p->addPar("private");
         p->par("private") = true;
+        signalPars["privacy"] = 1;
+        signalReceiver->receiveSignal(signalPars, p);
+
         for (auto key : psrv->offered_to) {
             std::shared_ptr<FriendData> fdata = (*friend_data_table)[key];
             if (fdata && fdata->online) {

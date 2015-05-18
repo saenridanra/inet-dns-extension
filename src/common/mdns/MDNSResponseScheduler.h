@@ -33,6 +33,7 @@
 #include <DNSTTLCache.h>
 #include <MDNS.h>
 #include <MDNS_Privacy.h>
+#include <SignalReceiver.h>
 
 #include <vector>
 #include <unordered_map>
@@ -109,6 +110,11 @@ protected:
      * @brief Pointer to the resolver.
      */
     void* resolver;
+
+    /**
+     * @brief Reference to a signal receiver, we emit sending packets to
+     */
+    SignalReceiver* signalReceiver;
 
     /**
      * @brief The time event set that performs elapsed events.
@@ -394,6 +400,15 @@ public:
         this->instance_name_table = instance_name_table;
         this->privacySock = privacySocket;
         hasPrivacy = 1;
+    }
+
+    /**
+     * @brief Set the signal receiver
+     *
+     * @param pSignalReceiver receiver this class uses to emit signals to
+     */
+    virtual void setSignalReceiver(SignalReceiver *pSignalReceiver){
+        signalReceiver = pSignalReceiver;
     }
 };
 

@@ -122,6 +122,11 @@ void MDNSResolver::initialize(int stage)
         responseScheduler->setAuthCache(cache);
         responseScheduler->setCallback(MDNSResolver::callback);
 
+        // Set the receivers
+        probeScheduler->setSignalReceiver(this);
+        queryScheduler->setSignalReceiver(this);
+        responseScheduler->setSignalReceiver(this);
+
         // With static configuration, parameters should have
         // been set in stage 2
         if (static_configuration)
@@ -730,4 +735,35 @@ void MDNSResolver::initializePrivateServices()
 
     }
 
+}
+
+void MDNSResolver::receiveSignal(std::unordered_map<std::string, int> parMap, void* additionalPayload){
+    if(parMap.find("signal_type") == parMap.end() || parMap.find("privacy") == parMap.end())
+        throw cRuntimeError("One or more arguments are missing.");
+
+    int type = parMap["signal_type"];
+    int privacy = parMap["privacy"];
+    cPacket* payload = (cPacket*) additionalPayload;
+
+    switch(type){
+        case 0:
+            if(privacy)
+                emit(MDNSResolver::privateProbeSent, payload);
+            else
+                emit(MDNSResolver::mdnsProbeSent, payload);
+            break;
+        case 1:
+            if(privacy)
+                emit(MDNSResolver::privateQuerySent, payload);
+            else
+                emit(MDNSResolver::mdnsQuerySent, payload);
+            break;
+        case 2:
+            if(privacy)
+                emit(MDNSResolver::privateResponseSent, payload);
+            else
+                emit(MDNSResolver::mdnsResponseSent, payload);
+            break;
+        default: throw cRuntimeError("Signal Type unkown.");
+    }
 }

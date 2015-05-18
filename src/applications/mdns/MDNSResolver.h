@@ -37,6 +37,7 @@
 #include <MDNSResponseScheduler.h>
 #include <MDNSQueryScheduler.h>
 #include <MDNSAnnouncer.h>
+#include <SignalReceiver.h>
 
 #include <MDNS_Privacy.h>
 
@@ -63,7 +64,7 @@
  * @author Andreas Rain, Distributed Systems Group, University of Konstanz
  * @date March 26, 2015
  */
-class MDNSResolver : public cSimpleModule
+class MDNSResolver : public cSimpleModule, public SignalReceiver
 {
     protected:
         enum MDNSResolverState
@@ -338,6 +339,18 @@ class MDNSResolver : public cSimpleModule
         {
             return hasPrivacy;
         }
+
+        /**
+         * @brief Pass a signal with parameters to the receiver
+         *
+         * In this case the resolver takes 2 parameters:
+         *  - signal_type : {0 Probe sent, 1 Query sent, 2 Response sent}
+         *  - privacy : {0 false, 1 true}
+         *
+         * @param parMap Map of flags
+         * @param additionalPayload in this case the cPacket is passed
+         */
+        virtual void receiveSignal(std::unordered_map<std::string, int> parMap, void* additionalPayload);
 
     protected:
 
