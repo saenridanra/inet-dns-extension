@@ -50,7 +50,7 @@ def main(argv):
     global NUM_PROCESSES
 
     try:
-      opts, args = getopt.getopt(argv, ["help", "PROJECT_PATH=","INET_PATH=","SIMULATION_DIR=","CONFIG=","INET_PATH=","RUN_LOW=","RUN_HIGH=","NUM_PROCESSES="])
+      opts, args = getopt.getopt(argv, "", ["help", "PROJECT_PATH=","INET_PATH=","SIMULATION_DIR=","CONFIG=","INET_PATH=","RUN_LOW=","RUN_HIGH=","NUM_PROCESSES="])
     except getopt.GetoptError:
       print 'batch.py --PROJECT_PATH=<PROJECT_PATH> --INET_PATH=<INET_PATH> --SIMULATION_DIR=<SIMULATION_DIR> --CONFIG=<CONFIG> --RUN_LOW=<RUN_LOW> --RUN_HIGH=<RUN_HIGH> --NUM_PROCESSES=<NUM_PROCESSES>'
       sys.exit(2)

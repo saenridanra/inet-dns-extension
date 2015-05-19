@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
+  <inputs>
+    <inputs name="/opp_dns_extension/src/networks/dynamic_mdns_network/results/Batch25*.sca"/>
+    <inputs name="/opp_dns_extension/src/networks/dynamic_mdns_network/results/Batch25*.vec"/>
+  </inputs>
+  <datasets>
+    <datasets name="MDNSProbeRcvd Count">
+      <items xsi:type="scave:Add" filterPattern="module(Dynamic_mdns_network.mdns_host[*].resolver) AND name(mdnsProbeRcvd:count)"/>
+      <items xsi:type="scave:Add" filterPattern="module(Dynamic_mdns_network.mdns_host[*].resolver) AND name(privateProbeRcvd:count)"/>
+      <items xsi:type="scave:BarChart" name="MDNSProbe Count">
+        <properties name="Graph.Title" value="MDNSProbe Count"/>
+        <properties name="Y.Axis.Title" value="Num # Packets"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Border" value="true"/>
+        <properties name="Legend.Anchoring" value="East"/>
+        <properties name="X.Label.RotateBy" value="90.0"/>
+        <groupByFields>measurement</groupByFields>
+        <groupByFields>experiment</groupByFields>
+        <averagedFields>module</averagedFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="MDNSProbeRcvd Sum">
+      <items xsi:type="scave:Add" filterPattern="module(Dynamic_mdns_network.mdns_host[*].resolver) AND name(&quot;mdnsProbeRcvd:sum(packetBytes)&quot;)"/>
+      <items xsi:type="scave:Add" filterPattern="module(Dynamic_mdns_network.mdns_host[*].resolver) AND name(&quot;privateProbeRcvd:sum(packetBytes)&quot;)"/>
+      <items xsi:type="scave:BarChart" name="MDNSProbe Sum">
+        <properties name="Graph.Title" value="MDNSProbe Sum"/>
+        <properties name="Y.Axis.Title" value="Sum Packet bytes"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Border" value="true"/>
+        <properties name="Legend.Anchoring" value="East"/>
+        <groupByFields>measurement</groupByFields>
+        <groupByFields>experiment</groupByFields>
+        <averagedFields>module</averagedFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="MDNSResponseRcvd Count">
+      <items xsi:type="scave:Add" filterPattern="module(Dynamic_mdns_network.mdns_host[*].resolver) AND name(mdnsResponseRcvd:count)"/>
+      <items xsi:type="scave:Add" filterPattern="module(Dynamic_mdns_network.mdns_host[*].resolver) AND name(privateResponseRcvd:count)"/>
+      <items xsi:type="scave:BarChart" name="MDNSResponse Count">
+        <properties name="Graph.Title" value="MDNSResponse Count"/>
+        <properties name="Y.Axis.Title" value="Num # Packets"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Border" value="true"/>
+        <properties name="Legend.Anchoring" value="East"/>
+        <groupByFields>measurement</groupByFields>
+        <groupByFields>experiment</groupByFields>
+        <averagedFields>module</averagedFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="MDNSResponseRcvd Sum">
+      <items xsi:type="scave:Add" filterPattern="module(Dynamic_mdns_network.mdns_host[*].resolver) AND name(&quot;mdnsResponseRcvd:sum(packetBytes)&quot;)"/>
+      <items xsi:type="scave:Add" filterPattern="module(Dynamic_mdns_network.mdns_host[*].resolver) AND name(&quot;privateResponseRcvd:sum(packetBytes)&quot;)"/>
+      <items xsi:type="scave:BarChart" name="MDNSResponse Sum">
+        <properties name="Graph.Title" value="MDNSResponse Sum"/>
+        <properties name="Y.Axis.Title" value="Sum Packet bytes"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Border" value="true"/>
+        <properties name="Legend.Anchoring" value="East"/>
+        <groupByFields>measurement</groupByFields>
+        <groupByFields>experiment</groupByFields>
+        <averagedFields>module</averagedFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+  </datasets>
+  <chartSheets/>
+</scave:Analysis>
