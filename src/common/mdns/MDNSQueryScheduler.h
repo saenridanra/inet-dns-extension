@@ -30,6 +30,7 @@
 #include <DNS.h>
 #include <DNSCache.h>
 #include <DNSTTLCache.h>
+#include <DNSTools.h>
 #include <MDNS.h>
 #include <MDNS_Privacy.h>
 #include <vector>

@@ -159,7 +159,8 @@ int MDNSProbeScheduler::preparePacketAndSend(std::list<std::shared_ptr<DNSQuesti
     signalPars["signal_type"] = 0;
 
     // packet fully initialized, send it via multicast
-    p->setByteLength(packetSize);
+
+    p->setByteLength(ODnsExtension::estimateDnsPacketSize(p));
     if (!is_private) {
         const char* dstr = "i=msg/bcast,red";
         p->setDisplayString(dstr);
@@ -279,6 +280,8 @@ void MDNSProbeScheduler::post(std::shared_ptr<ODnsExtension::DNSRecord> r, int i
 
     if (!immediately) {
         int defer = MDNS_PROBE_WAIT;
+        // add random delay..
+        defer += intrand(50);
         // create simtime value from random deferral value
         std::string stime = std::to_string(defer) + std::string("ms");
         tv = simTime() + STR_SIMTIME(stime.c_str());

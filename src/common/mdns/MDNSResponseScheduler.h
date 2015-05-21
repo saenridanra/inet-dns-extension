@@ -31,6 +31,7 @@
 #include <DNSCache.h>
 #include <DNSSimpleCache.h>
 #include <DNSTTLCache.h>
+#include <DNSTools.h>
 #include <MDNS.h>
 #include <MDNS_Privacy.h>
 #include <SignalReceiver.h>

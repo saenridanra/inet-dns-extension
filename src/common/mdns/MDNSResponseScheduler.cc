@@ -366,7 +366,7 @@ int MDNSResponseScheduler::preparePacketAndSend(
     std::unordered_map<std::string, int> signalPars;
     signalPars["signal_type"] = 2;
 
-    p->setByteLength(packetSize);
+    p->setByteLength(ODnsExtension::estimateDnsPacketSize(p));
     if (!is_private) {
         const char* dstr = "i=msg/bcast,red";
         p->setDisplayString(dstr);
@@ -406,7 +406,7 @@ void MDNSResponseScheduler::post(std::shared_ptr<DNSRecord> r, int flush_cache,
         IPvXAddress* querier, int immediately) {
     std::shared_ptr<MDNSResponseJob> rj;
     simtime_t tv;
-    std::string stime = std::to_string(MDNS_RESPONSE_WAIT) + std::string("ms");
+    std::string stime = std::to_string(MDNS_RESPONSE_WAIT + intrand(50)) + std::string("ms"); // add random delay.
 
     if ((rj = find_suppressed(r, querier)) && rj->r->ttl >= r->ttl / 2
             && isGoodbye(r) == isGoodbye(rj->r)) {
