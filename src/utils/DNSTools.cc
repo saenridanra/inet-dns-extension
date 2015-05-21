@@ -492,51 +492,142 @@ std::string dnsPacketToString(DNSPacket* packet)
 }
 
 /**
+ * Helper method to tokenize a label string by "." and
+ * check the size.
+ */
+int tokenizeAndGetSize(std::string s, std::unordered_map<std::string, bool> * ncm){
+    int size = 0;
+    std::vector<std::string> tokens = cStringTokenizer(s.c_str(), ".").asVector();
+    // check if a token is in the hash map, otherwise put it there. only count characters
+    // that are not in the map, the others only need the 2 offset bytes
+    for (auto t : tokens)
+    {
+        if ((*ncm).find(t) != (*ncm).end())
+            size += 2; // 2 bytes for the offset
+        else
+        {
+            (*ncm)[t] = true; // add the bytes for the string
+            size += t.length();
+            if (tokens[tokens.size() - 1] != t)
+                size++; // not the last token, add +1 for the dot
+        }
+    }
+
+    return size;
+}
+
+/**
  * @brief estimateDnsPacketSize
  *
  * @return
  *      The size of the DNSPacket
  */
-
 int estimateDnsPacketSize(DNSPacket* packet)
 {
     int size = 12; // initial header size
 
+    // map for name compression
+    std::unordered_map<std::string, bool> ncm;
     for (int i = 0; i < packet->getQdcount(); i++)
-        size += packet->getQuestions(i).qname.length() + 4; // name length + 4 bytes for type and class
+    {
+        size += tokenizeAndGetSize(packet->getQuestions(i).qname, &ncm);
+        size += 4; // + 4 bytes for type and class
+    }
     for (int i = 0; i < packet->getAncount(); i++)
     {
         if (packet->getAnswers(i).rtype != DNS_TYPE_VALUE_SRV)
-            size += 10 + packet->getAnswers(i).rname.length() + packet->getAnswers(i).strdata.length();
+        {
+            size += tokenizeAndGetSize(packet->getAnswers(i).rname, &ncm);
+            size += 10 + packet->getAnswers(i).strdata.length(); // no name compression for data
+        }
         else
         {
-            std::shared_ptr<SRVData> s =
-                    std::static_pointer_cast<SRVData> (packet->getAnswers(i).rdata);
-            size += 16 + s->service.length() + s->proto.length() + s->name.length() + s->target.length();
+            std::shared_ptr<SRVData> s = std::static_pointer_cast < SRVData > (packet->getAnswers(i).rdata);
+
+            if (ncm.find(s->service) != ncm.end())
+                size += 2;
+            else
+            {
+                ncm[s->service] = true;
+                size += s->service.length();
+            }
+
+            if (ncm.find(s->proto) != ncm.end())
+                size += 2;
+            else
+            {
+                ncm[s->proto] = true;
+                size += s->proto.length();
+            }
+
+            size += tokenizeAndGetSize(s->name, &ncm);
+            size += 16 + s->target.length();
         }
     }
     for (int i = 0; i < packet->getNscount(); i++)
     {
         if (packet->getAuthorities(i).rtype != DNS_TYPE_VALUE_SRV)
-            size += 10 + packet->getAuthorities(i).rname.length() + packet->getAuthorities(i).strdata.length();
+        {
+            size += tokenizeAndGetSize(packet->getAuthorities(i).rname, &ncm);
+            size += 10 + packet->getAuthorities(i).strdata.length();
+        }
         else
         {
-            std::shared_ptr<SRVData> s =
-                    std::static_pointer_cast<SRVData> (packet->getAuthorities(i).rdata);
-            size += 16 + s->service.length() + s->proto.length() + s->name.length() + s->target.length();
+            std::shared_ptr<SRVData> s = std::static_pointer_cast < SRVData > (packet->getAuthorities(i).rdata);
+
+            if (ncm.find(s->service) != ncm.end())
+                size += 2;
+            else
+            {
+                ncm[s->service] = true;
+                size += s->service.length();
+            }
+
+            if (ncm.find(s->proto) != ncm.end())
+                size += 2;
+            else
+            {
+                ncm[s->proto] = true;
+                size += s->proto.length();
+            }
+
+            size += tokenizeAndGetSize(s->name, &ncm);
+            size += 16 + s->target.length();
         }
     }
     for (int i = 0; i < packet->getArcount(); i++)
     {
         if (packet->getAdditional(i).rtype != DNS_TYPE_VALUE_SRV)
-            size += 10 + packet->getAdditional(i).rname.length() + packet->getAdditional(i).strdata.length();
+        {
+            size += tokenizeAndGetSize(packet->getAdditional(i).rname, &ncm);
+            size += 10 + packet->getAdditional(i).strdata.length();
+        }
         else
         {
-            std::shared_ptr<SRVData> s =
-                    std::static_pointer_cast<SRVData> (packet->getAdditional(i).rdata);
-            size += 16 + s->service.length() + s->proto.length() + s->name.length() + s->target.length();
+            std::shared_ptr<SRVData> s = std::static_pointer_cast < SRVData > (packet->getAdditional(i).rdata);
+
+            if (ncm.find(s->service) != ncm.end())
+                size += 2;
+            else
+            {
+                ncm[s->service] = true;
+                size += s->service.length();
+            }
+
+            if (ncm.find(s->proto) != ncm.end())
+                size += 2;
+            else
+            {
+                ncm[s->proto] = true;
+                size += s->proto.length();
+            }
+
+            size += tokenizeAndGetSize(s->name, &ncm);
+            size += 16 + s->target.length();
         }
     }
+
+    ncm.clear();
 
     return size;
 }

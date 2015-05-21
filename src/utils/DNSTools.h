@@ -38,6 +38,7 @@
 #include "../common/DNS.h"
 
 #include <memory>
+#include <unordered_map>
 #include "string.h"
 
 namespace ODnsExtension {
