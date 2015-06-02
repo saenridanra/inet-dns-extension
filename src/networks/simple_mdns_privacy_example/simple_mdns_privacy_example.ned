@@ -38,6 +38,7 @@ network Simple_mdns_privacy_example
             privacy_sfile = "privacy_services/alice.ssh.service privacy_services/alice.presence.service";
             pdata = "bob,bob._privacy._tcp.local,dummykey;carol,carol._privacy._tcp.local,dummykey";
             own_instance = "alice";
+            querying = true;
             @display("p=287,499;i=device/laptop");
         }
         bob: MDNSNode {
@@ -47,6 +48,7 @@ network Simple_mdns_privacy_example
             privacy_sfile = "privacy_services/bob.ssh.service privacy_services/bob.presence.service";
             pdata = "alice,alice._privacy._tcp.local,dummykey;carol,carol._privacy._tcp.local,dummykey";
             own_instance = "bob";
+            querying = true;
             @display("p=509,499;i=device/laptop");
         }
         carol: MDNSNode {
@@ -56,6 +58,7 @@ network Simple_mdns_privacy_example
             privacy_sfile = "privacy_services/carol.presence.service";
             pdata = "alice,alice._privacy._tcp.local,dummykey;bob,bob._privacy._tcp.local,dummykey;dave,dave._privacy._tcp.local,dummykey";
             own_instance = "carol";
+            querying = true;
             @display("p=607,217;i=device/laptop");
         }
         dave: MDNSNode {
@@ -65,6 +68,7 @@ network Simple_mdns_privacy_example
             privacy_sfile = "privacy_services/dave.presence.service";
             pdata = "carol,carol._privacy._tcp.local,dummykey";
             own_instance = "dave";
+            querying = true;
             @display("p=399,112;i=device/laptop");
         }
         eve: StandardHost {

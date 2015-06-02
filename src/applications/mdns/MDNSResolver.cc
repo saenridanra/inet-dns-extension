@@ -133,6 +133,7 @@ void MDNSResolver::initialize(int stage)
         {
             hostname = par("hostname").stdstringValue();
             hasPrivacy = par("hasPrivacy").boolValue();
+            isQuerying = par("isQuerying").boolValue();
             if (hasPrivacy)
                 own_instance_name = par("own_instance_name").stdstringValue();
 
@@ -162,6 +163,16 @@ void MDNSResolver::initialize(int stage)
 
             scheduleAt(simTime() + uptimes[0]->first, selfMessage);
             current_uptime = 0;
+        }
+
+        std::vector<std::string> serviceList;
+        for(auto service : services){
+            serviceList.push_back(service->name + service->service_type);
+        }
+        mdnsTrafficGenerator = new ODnsExtension::MDNSTrafficGenerator(probeScheduler, queryScheduler, responseScheduler, timeEventSet, &outSock, serviceList);
+
+        if(hasPrivacy){
+            mdnsTrafficGenerator->setPrivacyData(private_service_table, friend_data_table, instance_name_table, &privacySock);
         }
 
         hostaddress = IPvXAddressResolver().addressOf(this->getParentModule());
@@ -267,6 +278,7 @@ void MDNSResolver::elapsedTimeCheck()
             // flush existing schedule
             // goodbye all announced services
             announcer->shutdown();
+            mdnsTrafficGenerator->stopQuerying();
         }
 
         ODnsExtension::TimeEvent* event;
@@ -293,6 +305,8 @@ void MDNSResolver::elapsedTimeCheck()
                 this->getParentModule()->bubble(finished_probing);
                 cDisplayString& dispStr = this->getParentModule()->getDisplayString();
                 dispStr.parse("i=device/laptop,#449544,100");
+
+                mdnsTrafficGenerator->startQuerying();
             }
         }
 
@@ -507,7 +521,7 @@ void MDNSResolver::handleResponse(DNSPacket* p)
                             record->rdlength = 6 + srv->name.length() + srv->service.length() + srv->target.length();
 
                             std::cout << "[" << hostname << "]: Friend " << fdata->pdata->friend_id << " came online\n";
-                            responseScheduler->post(record, 0, NULL, 0); // post our own response into the scheduler
+                            //responseScheduler->post(record, 0, NULL, 0); // post our own response into the scheduler
                             // it will be checked and sent via the privacy socket
                         }
                         else if (ODnsExtension::isGoodbye(r))

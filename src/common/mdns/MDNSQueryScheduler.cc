@@ -177,6 +177,8 @@ int MDNSQueryScheduler::preparePacketAndSend(
 
     // packet fully initialized, send it via multicast
     p->setByteLength(ODnsExtension::estimateDnsPacketSize(p));
+    p->addPar("prettyContent");
+    p->par("prettyContent") = ODnsExtension::dnsPacketToString(p).c_str();
     if (!is_private) {
         const char* dstr = "i=msg/bcast,red";
         p->setDisplayString(dstr);

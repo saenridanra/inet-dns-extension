@@ -37,6 +37,7 @@
 #include <MDNSResponseScheduler.h>
 #include <MDNSQueryScheduler.h>
 #include <MDNSAnnouncer.h>
+#include <MDNSTrafficGenerator.h>
 #include <SignalReceiver.h>
 
 #include <MDNS_Privacy.h>
@@ -96,6 +97,11 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver
          * @brief @ref ODnsExtension::MDNSAnnouncer used for announcing services.
          */
         ODnsExtension::MDNSAnnouncer* announcer;
+
+        /**
+         * @brief This class performs queries and simulates dynamic mdns traffic.
+         */
+        ODnsExtension::MDNSTrafficGenerator* mdnsTrafficGenerator;
 
         /**
          * @brief @ref ODnsExtension::AnnouncerState , the state in which the announcer currently is.
@@ -161,6 +167,11 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver
          * @brief Whether privacy functionality is activated or not.
          */
         bool hasPrivacy;
+
+        /**
+         * @brief Whether this resolver has a traffic generator that queries for services.
+         */
+        bool isQuerying;
 
         /**
          * @brief The time of the last scheduled self message.
@@ -246,11 +257,12 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver
          * @param own_instance_name The instance name this resolver shall use for announcments.
          * @param hasPrivacy Whether privacy capabilities are enabled.
          */
-        void setDynamicParams(std::string hostname, std::string own_instance_name, bool hasPrivacy)
+        void setDynamicParams(std::string hostname, std::string own_instance_name, bool hasPrivacy, bool isQuerying)
         {
             this->hostname = hostname;
             this->own_instance_name = own_instance_name;
             this->hasPrivacy = hasPrivacy;
+            this->isQuerying = isQuerying;
         }
 
         /**

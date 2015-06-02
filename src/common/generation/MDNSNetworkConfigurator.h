@@ -127,6 +127,11 @@ class MDNSNetworkConfigurator : public cSimpleModule {
         Topology topology;
 
         /**
+         * @brief Whether the resolvers can query or not
+         */
+        bool querying_enabled;
+
+        /**
          * @brief Maps device names to modules, set on the resolvers
          */
         std::unordered_map<std::string, MDNSResolver *> device_map;

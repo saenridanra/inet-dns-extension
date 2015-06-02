@@ -51,6 +51,7 @@ simple MDNSResolver
         string own_instance_name;
         
         bool hasPrivacy = default(false);
+        bool isQuerying = default(false);
         
         bool static_configuration = default(true);
         

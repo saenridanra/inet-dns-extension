@@ -31,6 +31,7 @@ module MDNSNode extends StandardHost
         string own_instance = default("");
 		
 		bool private = default(false);
+		bool querying = default(false);
 		
     submodules:
         resolver: MDNSResolver {
@@ -41,6 +42,8 @@ module MDNSNode extends StandardHost
                 service_files = sfile;
                 privacy_service_files = privacy_sfile;
                 pairing_data = pdata;
+                isQuerying = querying;
+                
                 @display("p=437,93");
         }
     connections:

@@ -448,14 +448,17 @@ std::string dnsPacketToString(DNSPacket* packet)
     std::string dns_string = "";
 
     dns_string.append(";;Question Section:\n");
-    dns_string.append(packet->getQuestions(0).qname);
-    dns_string.append(":");
-    dns_string.append(getClassStringForValue(packet->getQuestions(0).qclass));
-    dns_string.append(":");
-    dns_string.append(getTypeStringForValue(packet->getQuestions(0).qtype));
-    dns_string.append("\n");
+    for (int i = 0; i < packet->getQdcount(); i++)
+    {
+        dns_string.append(packet->getQuestions(i).qname);
+        dns_string.append(":");
+        dns_string.append(getClassStringForValue(packet->getQuestions(i).qclass));
+        dns_string.append(":");
+        dns_string.append(getTypeStringForValue(packet->getQuestions(i).qtype));
+        dns_string.append("\n");
+    }
 
-    dns_string.append("\n;;Answer Section:\n");
+    dns_string.append(";;Answer Section:\n");
     for (int i = 0; i < packet->getAncount(); i++)
     {
         dns_string.append(packet->getAnswers(i).rname);
@@ -466,7 +469,7 @@ std::string dnsPacketToString(DNSPacket* packet)
         dns_string.append("\n");
     }
 
-    dns_string.append("\n;;Authority Section:\n");
+    dns_string.append(";;Authority Section:\n");
     for (int i = 0; i < packet->getNscount(); i++)
     {
         dns_string.append(packet->getAuthorities(i).rname);
@@ -477,7 +480,7 @@ std::string dnsPacketToString(DNSPacket* packet)
         dns_string.append("\n");
     }
 
-    dns_string.append("\n;;Additional Section:\n");
+    dns_string.append(";;Additional Section:\n");
     for (int i = 0; i < packet->getArcount(); i++)
     {
         dns_string.append(packet->getAdditional(i).rname);
