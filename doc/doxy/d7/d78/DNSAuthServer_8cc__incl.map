@@ -1,10 +1,10 @@
 <map id="DNSAuthServer.cc" name="DNSAuthServer.cc">
-<area shape="rect" id="node2" href="$da/d6f/DNSAuthServer_8h.html" title="DNSAuthServer.h" alt="" coords="1123,80,1250,107"/>
-<area shape="rect" id="node4" href="$dc/db7/DNSServerBase_8h.html" title="DNSServerBase.h" alt="" coords="665,155,796,181"/>
-<area shape="rect" id="node10" href="$df/d90/DNS_8h.html" title="Contains useful definitions of structs and makros needed for a dns library. " alt="" coords="793,453,855,480"/>
-<area shape="rect" id="node19" href="$da/dc0/DNSZoneConfig_8h.html" title="DNSZoneConfig.h" alt="" coords="1326,229,1455,256"/>
-<area shape="rect" id="node9" href="$dd/d72/DNSCache_8h.html" title="DNSCache.h" alt="" coords="593,229,693,256"/>
-<area shape="rect" id="node13" href="$d9/dd7/DNSTools_8h.html" title="Contains utility functions to handle records, questions, queries and responses. " alt="" coords="507,304,602,331"/>
-<area shape="rect" id="node14" href="$de/d08/DNSPacket__m_8h.html" title="../messages/DNSPacket_m.h" alt="" coords="488,379,685,405"/>
-<area shape="rect" id="node20" href="$d9/ded/Utils_8h.html" title="Contains utility functions that are frequently needed, but not contained in the libraries used within..." alt="" coords="1583,379,1671,405"/>
+<area shape="rect" id="node2" href="$da/d6f/DNSAuthServer_8h.html" title="DNSAuthServer.h" alt="" coords="1137,80,1264,107"/>
+<area shape="rect" id="node4" href="$dc/db7/DNSServerBase_8h.html" title="DNSServerBase.h" alt="" coords="521,155,651,181"/>
+<area shape="rect" id="node10" href="$df/d90/DNS_8h.html" title="Contains useful definitions of structs and makros needed for a dns library. " alt="" coords="759,453,821,480"/>
+<area shape="rect" id="node19" href="$da/dc0/DNSZoneConfig_8h.html" title="DNSZoneConfig.h" alt="" coords="1239,229,1368,256"/>
+<area shape="rect" id="node9" href="$dd/d72/DNSCache_8h.html" title="DNSCache.h" alt="" coords="448,229,548,256"/>
+<area shape="rect" id="node13" href="$d9/dd7/DNSTools_8h.html" title="Contains utility functions to handle records, questions, queries and responses. " alt="" coords="227,304,321,331"/>
+<area shape="rect" id="node14" href="$de/d08/DNSPacket__m_8h.html" title="../messages/DNSPacket_m.h" alt="" coords="210,379,407,405"/>
+<area shape="rect" id="node20" href="$d9/ded/Utils_8h.html" title="Contains utility functions that are frequently needed, but not contained in the libraries used within..." alt="" coords="1482,453,1570,480"/>
 </map>

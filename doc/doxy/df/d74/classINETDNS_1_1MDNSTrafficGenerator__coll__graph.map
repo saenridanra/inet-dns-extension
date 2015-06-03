@@ -1,0 +1,10 @@
+<map id="INETDNS::MDNSTrafficGenerator" name="INETDNS::MDNSTrafficGenerator">
+<area shape="rect" id="node2" href="$d7/d91/classINETDNS_1_1TimeEventSet.html" title="Encapsulates a standard library set. " alt="" coords="215,28,389,55"/>
+<area shape="rect" id="node3" href="$d8/d3f/classINETDNS_1_1MDNSResponseScheduler.html" title="This class schedules responses. " alt="" coords="531,307,777,333"/>
+<area shape="rect" id="node7" href="$d3/db2/classINETDNS_1_1MDNSProbeScheduler.html" title="This class schedules probes. " alt="" coords="543,177,765,204"/>
+<area shape="rect" id="node9" href="$da/d51/classINETDNS_1_1MDNSQueryScheduler.html" title="This class schedules queries. " alt="" coords="543,119,765,145"/>
+<area shape="rect" id="node4" href="$d0/d5e/classSignalReceiver.html" title="This interface class provides a generic way for a module to receive signals from none OMNeT++ modules..." alt="" coords="247,280,357,307"/>
+<area shape="rect" id="node5" href="$d7/d9b/classINETDNS_1_1DNSTTLCache.html" title="DNSTTLCache is a TTL based cached. " alt="" coords="212,229,392,256"/>
+<area shape="rect" id="node6" href="$d1/d57/classINETDNS_1_1DNSCache.html" title="DNSCache is an interface providing methods to implement DNSCaches for records. " alt="" coords="5,229,163,256"/>
+<area shape="rect" id="node8" href="$d8/deb/classINETDNS_1_1TimeEvent.html" title="Holds all information necessary for time event scheduling. " alt="" coords="577,228,731,255"/>
+</map>

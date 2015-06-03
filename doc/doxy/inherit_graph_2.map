@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$de/da6/structODnsExtension_1_1CachedQuery.html" title="CachedQuery structure " alt="" coords="5,5,208,32"/>
+<area shape="rect" id="node1" href="$d1/d57/classINETDNS_1_1DNSCache.html" title="DNSCache is an interface providing methods to implement DNSCaches for records. " alt="" coords="5,31,163,57"/>
+<area shape="rect" id="node2" href="$d7/d76/classINETDNS_1_1DNSSimpleCache.html" title="DNSSimpleCache is a simple cache implementation with random eviction. " alt="" coords="211,5,408,32"/>
+<area shape="rect" id="node3" href="$d7/d9b/classINETDNS_1_1DNSTTLCache.html" title="DNSTTLCache is a TTL based cached. " alt="" coords="219,56,399,83"/>
 </map>

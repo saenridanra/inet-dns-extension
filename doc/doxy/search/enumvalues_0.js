@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['announced',['ANNOUNCED',['../d8/d72/namespaceODnsExtension.html#ac856fde5254fd7a23c3eb8d62333d559a1fc3ccc9e790f8abd1e0cede5d14c665',1,'ODnsExtension']]],
-  ['announcing',['ANNOUNCING',['../d8/d72/namespaceODnsExtension.html#ac856fde5254fd7a23c3eb8d62333d559aaacc6c94d3d47bd9b6756ca916571cd1',1,'ODnsExtension']]]
+  ['announced',['ANNOUNCED',['../d3/da4/namespaceINETDNS.html#a3a61cbbde60e6820b0e2e8781f02062aa5c191300a6251b24195fc876f77c6576',1,'INETDNS']]],
+  ['announcing',['ANNOUNCING',['../d3/da4/namespaceINETDNS.html#a3a61cbbde60e6820b0e2e8781f02062aa98db415957a9bdb4cc08745f7172bb8c',1,'INETDNS']]]
 ];

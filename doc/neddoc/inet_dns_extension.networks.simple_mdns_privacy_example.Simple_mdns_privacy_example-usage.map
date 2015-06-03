@@ -1,0 +1,6 @@
+<area shape="rect" id="node1" href="inet_dns_extension.networks.simple_mdns_privacy_example.Simple_mdns_privacy_example.html" title="Network Simple_mdns_privacy_example" alt="" coords="210,5,417,31">
+<area shape="rect" id="node2" href="../../../inet/doc/neddoc/inet.nodes.ethernet.Eth1G.html" title="Channel Eth1G" alt="" coords="5,79,77,104">
+<area shape="rect" id="node3" href="../../../inet/doc/neddoc/inet.nodes.inet.StandardHost.html" title="Compound Module StandardHost" alt="" coords="102,79,205,104">
+<area shape="rect" id="node4" href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator.html" title="Simple Module IPv4NetworkConfigurator" alt="" coords="229,79,398,104">
+<area shape="rect" id="node5" href="inet_dns_extension.applications.mdns.MDNSNode.html" title="Compound Module MDNSNode" alt="" coords="423,79,516,104">
+<area shape="rect" id="node6" href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html" title="Compound Module Router" alt="" coords="540,79,612,104">

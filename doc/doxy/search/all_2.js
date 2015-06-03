@@ -1,6 +1,8 @@
 var searchData=
 [
   ['back',['back',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcPacketQueue.html#af126a4bf65a45c148d5b97b00ad25e8c',1,'cPacketQueue::back()'],['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcQueue.html#ad7c47b11e0a1af8c86fcecb75b30caba',1,'cQueue::back()']]],
+  ['batch',['batch',['../dd/db3/namespacebatch.html',1,'']]],
+  ['batch_2epy',['batch.py',['../da/d19/batch_8py.html',1,'']]],
   ['beforechange',['beforeChange',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcMsgPar.html#a22eb9d066ed07e0c5f716cda36e97ff6',1,'cMsgPar']]],
   ['beginsend',['beginSend',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcEnvir.html#ae51dd633f9b11395f035ceadfa688a32',1,'cEnvir::beginSend()'],['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcNullEnvir.html#ae9eebe743b054d294427ee693a6a3a38',1,'cNullEnvir::beginSend()']]],
   ['bernoulli',['bernoulli',['/home/saen/Programme.local/omnetpp-4.6//doc/api/group__RandomNumbersDiscr.html#gadc74bbd9ad42c4ae6c66759c9eb38e4e',1,]]],
@@ -10,5 +12,6 @@ var searchData=
   ['broadcast',['broadcast',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcParsimCommunications.html#a6630d2bafff499c03071c7224b63865f',1,'cParsimCommunications']]],
   ['bubble',['bubble',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcComponent.html#a8b1160aa2bb4f94af176df5da5075afb',1,'cComponent::bubble()'],['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcEnvir.html#af9c68fbf1eb86bacbf61662473a51f0d',1,'cEnvir::bubble()'],['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcNullEnvir.html#ade3331fe0db936bfd470e582eb3ed161',1,'cNullEnvir::bubble()']]],
   ['buffer',['buffer',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classopp__string.html#a89166d50fffc29d2eb89f5f20d084f07',1,'opp_string']]],
-  ['buildinside',['buildInside',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcModule.html#a086c439380f400dc6254b5b2d5f1d408',1,'cModule::buildInside()'],['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcModuleType.html#a6c69d0347eed6d145dc74ca7779ed189',1,'cModuleType::buildInside()']]]
+  ['buildinside',['buildInside',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcModule.html#a086c439380f400dc6254b5b2d5f1d408',1,'cModule::buildInside()'],['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcModuleType.html#a6c69d0347eed6d145dc74ca7779ed189',1,'cModuleType::buildInside()']]],
+  ['burst',['BURST',['../d8/db1/classMDNSNetworkConfigurator.html#ad16cf7531b29f7a3f4399172032d8435a33461a13f75e9ec641c2fd91b2401f0a',1,'MDNSNetworkConfigurator']]]
 ];

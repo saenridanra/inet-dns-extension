@@ -3,7 +3,7 @@ var searchData=
   ['cabstractlinefigure',['cAbstractLineFigure',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcAbstractLineFigure.html',1,'']]],
   ['cabstractshapefigure',['cAbstractShapeFigure',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcAbstractShapeFigure.html',1,'']]],
   ['caccuracydetection',['cAccuracyDetection',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcAccuracyDetection.html',1,'']]],
-  ['cachedquery',['CachedQuery',['../de/da6/structODnsExtension_1_1CachedQuery.html',1,'ODnsExtension']]],
+  ['cachedquery',['CachedQuery',['../dc/d8e/structINETDNS_1_1CachedQuery.html',1,'INETDNS']]],
   ['cadbystddev',['cADByStddev',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcADByStddev.html',1,'']]],
   ['carcfigure',['cArcFigure',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcArcFigure.html',1,'']]],
   ['carray',['cArray',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcArray.html',1,'']]],

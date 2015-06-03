@@ -1,0 +1,20 @@
+<map id="MDNSNetworkConfigurator.cc" name="MDNSNetworkConfigurator.cc">
+<area shape="rect" id="node2" href="$d9/def/MDNSNetworkConfigurator_8h.html" title="MDNSNetworkConfigurator.h" alt="" coords="3310,80,3503,107"/>
+<area shape="rect" id="node5" href="$db/d75/MDNSResolver_8h.html" title="MDNSResolver.h" alt="" coords="2195,155,2320,181"/>
+<area shape="rect" id="node26" href="$dd/d86/MDNS_8h.html" title="Contains useful structs, makros and functions which are generally needed for a MDNS library..." alt="" coords="2482,453,2555,480"/>
+<area shape="rect" id="node27" href="$de/dcf/MDNS__Privacy_8h.html" title="Contains functions and structures needed for the functionalities provided by the mdns privacy extensi..." alt="" coords="3166,379,3290,405"/>
+<area shape="rect" id="node6" href="$dd/d68/TimeEventSet_8h.html" title="TimeEventSet.h" alt="" coords="1065,379,1181,405"/>
+<area shape="rect" id="node13" href="$dd/d72/DNSCache_8h.html" title="DNSCache.h" alt="" coords="882,453,982,480"/>
+<area shape="rect" id="node14" href="$df/d90/DNS_8h.html" title="Contains useful definitions of structs and makros needed for a dns library. " alt="" coords="1935,677,1998,704"/>
+<area shape="rect" id="node16" href="$d9/dd7/DNSTools_8h.html" title="Contains utility functions to handle records, questions, queries and responses. " alt="" coords="1919,528,2014,555"/>
+<area shape="rect" id="node21" href="$da/d34/DNSTTLCache_8h.html" title="DNSTTLCache.h" alt="" coords="600,379,723,405"/>
+<area shape="rect" id="node24" href="$d9/daa/MDNSProbeScheduler_8h.html" title="MDNSProbeScheduler.h" alt="" coords="2296,304,2461,331"/>
+<area shape="rect" id="node29" href="$d5/dda/SignalReceiver_8h.html" title="SignalReceiver.h" alt="" coords="1999,379,2121,405"/>
+<area shape="rect" id="node32" href="$dc/d80/MDNSResponseScheduler_8h.html" title="MDNSResponseScheduler.h" alt="" coords="1199,304,1390,331"/>
+<area shape="rect" id="node34" href="$d4/d17/MDNSQueryScheduler_8h.html" title="MDNSQueryScheduler.h" alt="" coords="1693,304,1859,331"/>
+<area shape="rect" id="node35" href="$d5/dd0/MDNSAnnouncer_8h.html" title="MDNSAnnouncer.h" alt="" coords="1055,229,1190,256"/>
+<area shape="rect" id="node37" href="$d3/d91/MDNSTrafficGenerator_8h.html" title="MDNSTrafficGenerator.h" alt="" coords="2587,229,2754,256"/>
+<area shape="rect" id="node17" href="$de/d08/DNSPacket__m_8h.html" title="../messages/DNSPacket_m.h" alt="" coords="2292,603,2489,629"/>
+<area shape="rect" id="node23" href="$d9/ded/Utils_8h.html" title="Contains utility functions that are frequently needed, but not contained in the libraries used within..." alt="" coords="600,453,688,480"/>
+<area shape="rect" id="node33" href="$d3/db7/DNSSimpleCache_8h.html" title="DNSSimpleCache.h" alt="" coords="798,379,938,405"/>
+</map>

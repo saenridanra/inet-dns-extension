@@ -1,10 +1,10 @@
 var DNS_8h =
 [
-    [ "Query", "dc/d23/structODnsExtension_1_1Query.html", "dc/d23/structODnsExtension_1_1Query" ],
-    [ "DNSQuestion", "dc/d1b/structODnsExtension_1_1DNSQuestion.html", "dc/d1b/structODnsExtension_1_1DNSQuestion" ],
-    [ "Response", "d2/d0f/structODnsExtension_1_1Response.html", "d2/d0f/structODnsExtension_1_1Response" ],
-    [ "SRVData", "d3/daf/structODnsExtension_1_1SRVData.html", "d3/daf/structODnsExtension_1_1SRVData" ],
-    [ "DNSRecord", "dc/de9/structODnsExtension_1_1DNSRecord.html", "dc/de9/structODnsExtension_1_1DNSRecord" ],
+    [ "Query", "d9/dd9/structINETDNS_1_1Query.html", "d9/dd9/structINETDNS_1_1Query" ],
+    [ "DNSQuestion", "d1/d51/structINETDNS_1_1DNSQuestion.html", "d1/d51/structINETDNS_1_1DNSQuestion" ],
+    [ "Response", "d9/d4a/structINETDNS_1_1Response.html", "d9/d4a/structINETDNS_1_1Response" ],
+    [ "SRVData", "d4/d70/structINETDNS_1_1SRVData.html", "d4/d70/structINETDNS_1_1SRVData" ],
+    [ "DNSRecord", "d0/db3/structINETDNS_1_1DNSRecord.html", "d0/db3/structINETDNS_1_1DNSRecord" ],
     [ "DNS_CLASS_ANY", "df/d90/DNS_8h.html#a5559ce92af93f2440518dcec488986e7", null ],
     [ "DNS_CLASS_CH", "df/d90/DNS_8h.html#aa3eb5221ee3ac4ac83cd88b74553e15a", null ],
     [ "DNS_CLASS_CS", "df/d90/DNS_8h.html#afe503bec10b85f53a869bae9178c7f12", null ],

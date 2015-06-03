@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['zone_5fcatalog',['zone_catalog',['../df/ddd/classDNSZoneConfig.html#aab21d42ac269110d313dd059621a6fb1',1,'DNSZoneConfig']]],
-  ['zone_5fsoa',['zone_soa',['../df/ddd/classDNSZoneConfig.html#a3dd55bef926db4c3d0cebedc919166d8',1,'DNSZoneConfig']]]
+  ['weight',['weight',['../d4/d70/structINETDNS_1_1SRVData.html#a0c4905678ad9ed21736f9711b636b99f',1,'INETDNS::SRVData']]]
 ];

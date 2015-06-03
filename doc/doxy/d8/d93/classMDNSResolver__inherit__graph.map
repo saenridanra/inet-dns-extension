@@ -8,4 +8,6 @@
 <area shape="rect" id="node8" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcNamedObject.html" title="cNamedObject" alt="" coords="5,80,115,107"/>
 <area shape="rect" id="node9" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcObject.html" title="cObject" alt="" coords="27,5,93,32"/>
 <area shape="rect" id="node10" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classnoncopyable.html" title="noncopyable" alt="" coords="138,155,233,181"/>
+<area shape="rect" id="node11" href="$d0/d5e/classSignalReceiver.html" title="This interface class provides a generic way for a module to receive signals from none OMNeT++ modules..." alt="" coords="202,528,313,555"/>
+<area shape="rect" id="node12" href="$d9/d91/classINETDNS_1_1TimeEventSetObserver.html" title="Observer interface for timeevents. " alt="" coords="337,528,564,555"/>
 </map>

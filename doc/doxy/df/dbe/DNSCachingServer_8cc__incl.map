@@ -1,0 +1,11 @@
+<map id="DNSCachingServer.cc" name="DNSCachingServer.cc">
+<area shape="rect" id="node2" href="$d6/d1d/DNSCachingServer_8h.html" title="DNSCachingServer.h" alt="" coords="1095,80,1243,107"/>
+<area shape="rect" id="node4" href="$dc/db7/DNSServerBase_8h.html" title="DNSServerBase.h" alt="" coords="759,155,889,181"/>
+<area shape="rect" id="node10" href="$df/d90/DNS_8h.html" title="Contains useful definitions of structs and makros needed for a dns library. " alt="" coords="1047,453,1110,480"/>
+<area shape="rect" id="node19" href="$da/d34/DNSTTLCache_8h.html" title="DNSTTLCache.h" alt="" coords="1408,155,1531,181"/>
+<area shape="rect" id="node22" href="$d3/db7/DNSSimpleCache_8h.html" title="DNSSimpleCache.h" alt="" coords="1555,155,1695,181"/>
+<area shape="rect" id="node9" href="$dd/d72/DNSCache_8h.html" title="DNSCache.h" alt="" coords="1233,229,1333,256"/>
+<area shape="rect" id="node13" href="$d9/dd7/DNSTools_8h.html" title="Contains utility functions to handle records, questions, queries and responses. " alt="" coords="810,304,905,331"/>
+<area shape="rect" id="node14" href="$de/d08/DNSPacket__m_8h.html" title="../messages/DNSPacket_m.h" alt="" coords="793,379,991,405"/>
+<area shape="rect" id="node21" href="$d9/ded/Utils_8h.html" title="Contains utility functions that are frequently needed, but not contained in the libraries used within..." alt="" coords="1509,229,1597,256"/>
+</map>

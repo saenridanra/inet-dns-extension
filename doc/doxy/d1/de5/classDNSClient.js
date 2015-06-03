@@ -5,7 +5,7 @@ var classDNSClient =
     [ "initialize", "d1/de5/classDNSClient.html#a75897ddfee3cb2d23415a3e51fbd4e2f", null ],
     [ "numInitStages", "d1/de5/classDNSClient.html#a11eebe1c8cd56eaaf1f5b564c2b3147c", null ],
     [ "resolve", "d1/de5/classDNSClient.html#a30d6b3c4fd232de2ba1d9ea0838b4905", null ],
-    [ "cache", "d1/de5/classDNSClient.html#aefbaca997946e8b0c168a5be3c9e898c", null ],
+    [ "cache", "d1/de5/classDNSClient.html#a4a716b0fc419908377c0e796ec17deef", null ],
     [ "callback_handles", "d1/de5/classDNSClient.html#a5aa538828ece2d7c468a76630ab703c8", null ],
     [ "callbacks", "d1/de5/classDNSClient.html#a2c0e578b9157b68ec8bb667c750216c4", null ],
     [ "dns_servers", "d1/de5/classDNSClient.html#a6ce1eb51e790a31947789e1c06364e36", null ],

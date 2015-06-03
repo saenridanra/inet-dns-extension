@@ -1,0 +1,16 @@
+<map id="MDNSTrafficGenerator.h" name="MDNSTrafficGenerator.h">
+<area shape="rect" id="node6" href="$df/d90/DNS_8h.html" title="Contains useful definitions of structs and makros needed for a dns library. " alt="" coords="1657,453,1719,480"/>
+<area shape="rect" id="node9" href="$d9/dd7/DNSTools_8h.html" title="Contains utility functions to handle records, questions, queries and responses. " alt="" coords="881,304,975,331"/>
+<area shape="rect" id="node13" href="$dd/d86/MDNS_8h.html" title="Contains useful structs, makros and functions which are generally needed for a MDNS library..." alt="" coords="195,229,269,256"/>
+<area shape="rect" id="node15" href="$de/dcf/MDNS__Privacy_8h.html" title="Contains functions and structures needed for the functionalities provided by the mdns privacy extensi..." alt="" coords="473,155,597,181"/>
+<area shape="rect" id="node17" href="$d9/daa/MDNSProbeScheduler_8h.html" title="MDNSProbeScheduler.h" alt="" coords="1067,80,1232,107"/>
+<area shape="rect" id="node28" href="$d4/d17/MDNSQueryScheduler_8h.html" title="MDNSQueryScheduler.h" alt="" coords="1275,80,1442,107"/>
+<area shape="rect" id="node29" href="$dc/d80/MDNSResponseScheduler_8h.html" title="MDNSResponseScheduler.h" alt="" coords="1811,80,2002,107"/>
+<area shape="rect" id="node10" href="$de/d08/DNSPacket__m_8h.html" title="../messages/DNSPacket_m.h" alt="" coords="744,379,941,405"/>
+<area shape="rect" id="node18" href="$dd/d68/TimeEventSet_8h.html" title="TimeEventSet.h" alt="" coords="977,155,1093,181"/>
+<area shape="rect" id="node21" href="$dd/d72/DNSCache_8h.html" title="DNSCache.h" alt="" coords="1530,229,1630,256"/>
+<area shape="rect" id="node22" href="$da/d34/DNSTTLCache_8h.html" title="DNSTTLCache.h" alt="" coords="2020,155,2143,181"/>
+<area shape="rect" id="node25" href="$d5/dda/SignalReceiver_8h.html" title="SignalReceiver.h" alt="" coords="1223,304,1345,331"/>
+<area shape="rect" id="node24" href="$d9/ded/Utils_8h.html" title="Contains utility functions that are frequently needed, but not contained in the libraries used within..." alt="" coords="2093,229,2181,256"/>
+<area shape="rect" id="node30" href="$d3/db7/DNSSimpleCache_8h.html" title="DNSSimpleCache.h" alt="" coords="2167,155,2307,181"/>
+</map>

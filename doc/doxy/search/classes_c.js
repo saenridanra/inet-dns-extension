@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['query',['Query',['../dc/d23/structODnsExtension_1_1Query.html',1,'ODnsExtension']]]
+  ['query',['Query',['../d9/dd9/structINETDNS_1_1Query.html',1,'INETDNS']]]
 ];

@@ -1,9 +1,9 @@
 <map id="DNSClient.cc" name="DNSClient.cc">
 <area shape="rect" id="node2" href="$d8/dd8/DNSClient_8h.html" title="DNSClient.h" alt="" coords="503,80,599,107"/>
-<area shape="rect" id="node11" href="$d9/dd7/DNSTools_8h.html" title="Contains utility functions to handle records, questions, queries and responses. " alt="" coords="661,304,755,331"/>
-<area shape="rect" id="node15" href="$dd/d72/DNSCache_8h.html" title="DNSCache.h" alt="" coords="779,229,879,256"/>
-<area shape="rect" id="node17" href="$d3/db7/DNSSimpleCache_8h.html" title="DNSSimpleCache.h" alt="" coords="994,155,1134,181"/>
-<area shape="rect" id="node12" href="$de/d08/DNSPacket__m_8h.html" title="../messages/DNSPacket_m.h" alt="" coords="453,379,651,405"/>
-<area shape="rect" id="node13" href="$df/d90/DNS_8h.html" title="Contains useful definitions of structs and makros needed for a dns library. " alt="" coords="664,453,792,480"/>
-<area shape="rect" id="node20" href="$d9/ded/Utils_8h.html" title="Contains utility functions that are frequently needed, but not contained in the libraries used within..." alt="" coords="1091,379,1179,405"/>
+<area shape="rect" id="node11" href="$d9/dd7/DNSTools_8h.html" title="Contains utility functions to handle records, questions, queries and responses. " alt="" coords="533,304,627,331"/>
+<area shape="rect" id="node15" href="$dd/d72/DNSCache_8h.html" title="DNSCache.h" alt="" coords="738,229,838,256"/>
+<area shape="rect" id="node17" href="$d3/db7/DNSSimpleCache_8h.html" title="DNSSimpleCache.h" alt="" coords="953,155,1093,181"/>
+<area shape="rect" id="node12" href="$de/d08/DNSPacket__m_8h.html" title="../messages/DNSPacket_m.h" alt="" coords="319,379,516,405"/>
+<area shape="rect" id="node13" href="$df/d90/DNS_8h.html" title="Contains useful definitions of structs and makros needed for a dns library. " alt="" coords="788,453,916,480"/>
+<area shape="rect" id="node20" href="$d9/ded/Utils_8h.html" title="Contains utility functions that are frequently needed, but not contained in the libraries used within..." alt="" coords="1049,304,1137,331"/>
 </map>

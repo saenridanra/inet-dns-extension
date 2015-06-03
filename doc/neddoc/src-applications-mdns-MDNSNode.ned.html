@@ -13,7 +13,7 @@
    </tr>
 <tr>
    <td>
-<a href="opp_dns_extension.applications.mdns.MDNSNode.html">MDNSNode</a>
+<a href="inet_dns_extension.applications.mdns.MDNSNode.html">MDNSNode</a>
    </td>
    <td>
 <i>compound&nbsp;module</i>
@@ -39,10 +39,10 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 </span><span style="color: #000000; ">
-</span><span style="color: #800000; font-weight: bold; ">package</span><span style="color: #000000; "> </span><span style="color: #000000; ">opp_dns_extension</span><span style="color: #000000; ">.</span><span style="color: #000000; ">applications</span><span style="color: #000000; ">.</span><span style="color: #000000; ">mdns</span><span style="color: #000000; ">;
+</span><span style="color: #800000; font-weight: bold; ">package</span><span style="color: #000000; "> </span><span style="color: #000000; ">inet_dns_extension</span><span style="color: #000000; ">.</span><span style="color: #000000; ">applications</span><span style="color: #000000; ">.</span><span style="color: #000000; ">mdns</span><span style="color: #000000; ">;
 
 </span><span style="color: #800000; font-weight: bold; ">import</span><span style="color: #000000; "> </span><span style="color: #000000; ">inet</span><span style="color: #000000; ">.</span><span style="color: #000000; ">nodes</span><span style="color: #000000; ">.</span><span style="color: #000000; ">inet</span><span style="color: #000000; ">.</span><span style="color: #000000; ">StandardHost</span><span style="color: #000000; ">;
-</span><span style="color: #800000; font-weight: bold; ">import</span><span style="color: #000000; "> </span><span style="color: #000000; ">opp_dns_extension</span><span style="color: #000000; ">.</span><span style="color: #000000; ">applications</span><span style="color: #000000; ">.</span><span style="color: #000000; ">mdns</span><span style="color: #000000; ">.</span><span style="color: #000000; ">MDNSResolver</span><span style="color: #000000; ">;
+</span><span style="color: #800000; font-weight: bold; ">import</span><span style="color: #000000; "> </span><span style="color: #000000; ">inet_dns_extension</span><span style="color: #000000; ">.</span><span style="color: #000000; ">applications</span><span style="color: #000000; ">.</span><span style="color: #000000; ">mdns</span><span style="color: #000000; ">.</span><span style="color: #000000; ">MDNSResolver</span><span style="color: #000000; ">;
 </span><span style="color: #800000; font-weight: bold; ">import</span><span style="color: #000000; "> </span><span style="color: #000000; ">inet</span><span style="color: #000000; ">.</span><span style="color: #000000; ">transport</span><span style="color: #000000; ">.</span><span style="color: #000000; ">IUDP</span><span style="color: #000000; ">;
 
 </span><span style="color: #800000; font-weight: bold; ">module</span><span style="color: #000000; "> </span><span style="color: #000000; ">MDNSNode</span><span style="color: #000000; "> </span><span style="color: #800000; font-weight: bold; ">extends</span><span style="color: #000000; "> </span><span style="color: #000000; ">StandardHost</span><span style="color: #000000; ">
@@ -57,6 +57,7 @@
         </span><span style="color: #000080; font-weight: bold; ">string</span><span style="color: #000000; "> </span><span style="color: #000000; ">own_instance</span><span style="color: #000000; "> = </span><span style="color: #800000; font-weight: bold; ">default</span><span style="color: #000000; ">(</span><span style="color: #008000; ">&quot;&quot;</span><span style="color: #000000; ">);
 		
 		</span><span style="color: #000080; font-weight: bold; ">bool</span><span style="color: #000000; "> </span><span style="color: #000000; ">private</span><span style="color: #000000; "> = </span><span style="color: #800000; font-weight: bold; ">default</span><span style="color: #000000; ">(</span><span style="color: #008000; ">false</span><span style="color: #000000; ">);
+		</span><span style="color: #000080; font-weight: bold; ">bool</span><span style="color: #000000; "> </span><span style="color: #000000; ">querying</span><span style="color: #000000; "> = </span><span style="color: #800000; font-weight: bold; ">default</span><span style="color: #000000; ">(</span><span style="color: #008000; ">false</span><span style="color: #000000; ">);
 		
     </span><span style="color: #800000; font-weight: bold; ">submodules</span><span style="color: #000000; ">:
         </span><span style="color: #000000; ">resolver</span><span style="color: #000000; ">: </span><span style="color: #000000; ">MDNSResolver</span><span style="color: #000000; "> {
@@ -67,6 +68,8 @@
                 </span><span style="color: #000000; ">service_files</span><span style="color: #000000; "> = </span><span style="color: #000000; ">sfile</span><span style="color: #000000; ">;
                 </span><span style="color: #000000; ">privacy_service_files</span><span style="color: #000000; "> = </span><span style="color: #000000; ">privacy_sfile</span><span style="color: #000000; ">;
                 </span><span style="color: #000000; ">pairing_data</span><span style="color: #000000; "> = </span><span style="color: #000000; ">pdata</span><span style="color: #000000; ">;
+                </span><span style="color: #000000; ">isQuerying</span><span style="color: #000000; "> = </span><span style="color: #000000; ">querying</span><span style="color: #000000; ">;
+                
                 </span><span style="color: #000000; font-weight: bold; ">@display</span><span style="color: #000000; ">(</span><span style="color: #008000; ">&quot;p=437,93&quot;</span><span style="color: #000000; ">);
         }
     </span><span style="color: #800000; font-weight: bold; ">connections</span><span style="color: #000000; ">:

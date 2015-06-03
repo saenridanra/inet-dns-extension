@@ -4,7 +4,7 @@
 <area shape="rect" id="node4" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcOwnedObject.html" title="cOwnedObject" alt="" coords="6,157,114,184"/>
 <area shape="rect" id="node5" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcNamedObject.html" title="cNamedObject" alt="" coords="5,81,115,108"/>
 <area shape="rect" id="node6" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcObject.html" title="cObject" alt="" coords="27,5,93,32"/>
-<area shape="rect" id="node7" href="$dc/d1b/structODnsExtension_1_1DNSQuestion.html" title="Question as defined in RFC 1035 http://tools.ietf.org/html/rfc1035.txt " alt="" coords="120,309,323,336"/>
-<area shape="rect" id="node8" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classopp__string.html" title="opp_string" alt="" coords="347,309,429,336"/>
-<area shape="rect" id="node9" href="$dc/de9/structODnsExtension_1_1DNSRecord.html" title="Struct holding RR Data. " alt="" coords="454,309,647,336"/>
+<area shape="rect" id="node7" href="$d1/d51/structINETDNS_1_1DNSQuestion.html" title="Question as defined in RFC 1035 http://tools.ietf.org/html/rfc1035.txt " alt="" coords="120,309,291,336"/>
+<area shape="rect" id="node8" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classopp__string.html" title="opp_string" alt="" coords="315,309,397,336"/>
+<area shape="rect" id="node9" href="$d0/db3/structINETDNS_1_1DNSRecord.html" title="Struct holding RR Data. " alt="" coords="421,309,582,336"/>
 </map>

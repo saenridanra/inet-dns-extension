@@ -13,7 +13,7 @@
    </tr>
 <tr>
    <td>
-<a href="opp_dns_extension.networks.simple_mdns_privacy_example.Simple_mdns_privacy_example.html">Simple_mdns_privacy_example</a>
+<a href="inet_dns_extension.networks.simple_mdns_privacy_example.Simple_mdns_privacy_example.html">Simple_mdns_privacy_example</a>
    </td>
    <td>
 <i>network</i>
@@ -39,13 +39,14 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 </span><span style="color: #000000; ">
-</span><span style="color: #800000; font-weight: bold; ">package</span><span style="color: #000000; "> </span><span style="color: #000000; ">opp_dns_extension</span><span style="color: #000000; ">.</span><span style="color: #000000; ">networks</span><span style="color: #000000; ">.</span><span style="color: #000000; ">simple_mdns_privacy_example</span><span style="color: #000000; ">;
+</span><span style="color: #800000; font-weight: bold; ">package</span><span style="color: #000000; "> </span><span style="color: #000000; ">inet_dns_extension</span><span style="color: #000000; ">.</span><span style="color: #000000; ">networks</span><span style="color: #000000; ">.</span><span style="color: #000000; ">simple_mdns_privacy_example</span><span style="color: #000000; ">;
 
 </span><span style="color: #800000; font-weight: bold; ">import</span><span style="color: #000000; "> </span><span style="color: #000000; ">inet</span><span style="color: #000000; ">.</span><span style="color: #000000; ">nodes</span><span style="color: #000000; ">.</span><span style="color: #000000; ">inet</span><span style="color: #000000; ">.</span><span style="color: #000000; ">Router</span><span style="color: #000000; ">;
 </span><span style="color: #800000; font-weight: bold; ">import</span><span style="color: #000000; "> </span><span style="color: #000000; ">inet</span><span style="color: #000000; ">.</span><span style="color: #000000; ">nodes</span><span style="color: #000000; ">.</span><span style="color: #000000; ">inet</span><span style="color: #000000; ">.</span><span style="color: #000000; ">StandardHost</span><span style="color: #000000; ">;
-</span><span style="color: #800000; font-weight: bold; ">import</span><span style="color: #000000; "> </span><span style="color: #000000; ">opp_dns_extension</span><span style="color: #000000; ">.</span><span style="color: #000000; ">applications</span><span style="color: #000000; ">.</span><span style="color: #000000; ">mdns</span><span style="color: #000000; ">.</span><span style="color: #000000; ">MDNSNode</span><span style="color: #000000; ">;
+</span><span style="color: #800000; font-weight: bold; ">import</span><span style="color: #000000; "> </span><span style="color: #000000; ">inet_dns_extension</span><span style="color: #000000; ">.</span><span style="color: #000000; ">applications</span><span style="color: #000000; ">.</span><span style="color: #000000; ">mdns</span><span style="color: #000000; ">.</span><span style="color: #000000; ">MDNSNode</span><span style="color: #000000; ">;
 </span><span style="color: #800000; font-weight: bold; ">import</span><span style="color: #000000; "> </span><span style="color: #000000; ">inet</span><span style="color: #000000; ">.</span><span style="color: #000000; ">networklayer</span><span style="color: #000000; ">.</span><span style="color: #000000; ">autorouting</span><span style="color: #000000; ">.</span><span style="color: #000000; ">ipv4</span><span style="color: #000000; ">.</span><span style="color: #000000; ">IPv4NetworkConfigurator</span><span style="color: #000000; ">;
 </span><span style="color: #800000; font-weight: bold; ">import</span><span style="color: #000000; "> </span><span style="color: #000000; ">inet</span><span style="color: #000000; ">.</span><span style="color: #000000; ">nodes</span><span style="color: #000000; ">.</span><span style="color: #000000; ">ethernet</span><span style="color: #000000; ">.</span><span style="color: #000000; ">Eth1G</span><span style="color: #000000; ">;
+</span><span style="color: #800000; font-weight: bold; ">import</span><span style="color: #000000; "> </span><span style="color: #000000; ">inet_dns_extension</span><span style="color: #000000; ">.</span><span style="color: #000000; ">common</span><span style="color: #000000; ">.</span><span style="color: #000000; ">generation</span><span style="color: #000000; ">.</span><span style="color: #000000; ">MDNSNetworkConfigurator</span><span style="color: #000000; ">;
 
 </span><span style="color: #800000; font-weight: bold; ">network</span><span style="color: #000000; "> </span><span style="color: #000000; ">Simple_mdns_privacy_example</span><span style="color: #000000; ">
 {
@@ -63,6 +64,7 @@
             </span><span style="color: #000000; ">privacy_sfile</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;privacy_services/alice.ssh.service privacy_services/alice.presence.service&quot;</span><span style="color: #000000; ">;
             </span><span style="color: #000000; ">pdata</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;bob,bob._privacy._tcp.local,dummykey;carol,carol._privacy._tcp.local,dummykey&quot;</span><span style="color: #000000; ">;
             </span><span style="color: #000000; ">own_instance</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;alice&quot;</span><span style="color: #000000; ">;
+            </span><span style="color: #000000; ">querying</span><span style="color: #000000; "> = </span><span style="color: #008000; ">true</span><span style="color: #000000; ">;
             </span><span style="color: #000000; font-weight: bold; ">@display</span><span style="color: #000000; ">(</span><span style="color: #008000; ">&quot;p=287,499;i=device/laptop&quot;</span><span style="color: #000000; ">);
         }
         </span><span style="color: #000000; ">bob</span><span style="color: #000000; ">: </span><span style="color: #000000; ">MDNSNode</span><span style="color: #000000; "> {
@@ -72,6 +74,7 @@
             </span><span style="color: #000000; ">privacy_sfile</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;privacy_services/bob.ssh.service privacy_services/bob.presence.service&quot;</span><span style="color: #000000; ">;
             </span><span style="color: #000000; ">pdata</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;alice,alice._privacy._tcp.local,dummykey;carol,carol._privacy._tcp.local,dummykey&quot;</span><span style="color: #000000; ">;
             </span><span style="color: #000000; ">own_instance</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;bob&quot;</span><span style="color: #000000; ">;
+            </span><span style="color: #000000; ">querying</span><span style="color: #000000; "> = </span><span style="color: #008000; ">true</span><span style="color: #000000; ">;
             </span><span style="color: #000000; font-weight: bold; ">@display</span><span style="color: #000000; ">(</span><span style="color: #008000; ">&quot;p=509,499;i=device/laptop&quot;</span><span style="color: #000000; ">);
         }
         </span><span style="color: #000000; ">carol</span><span style="color: #000000; ">: </span><span style="color: #000000; ">MDNSNode</span><span style="color: #000000; "> {
@@ -81,6 +84,7 @@
             </span><span style="color: #000000; ">privacy_sfile</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;privacy_services/carol.presence.service&quot;</span><span style="color: #000000; ">;
             </span><span style="color: #000000; ">pdata</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;alice,alice._privacy._tcp.local,dummykey;bob,bob._privacy._tcp.local,dummykey;dave,dave._privacy._tcp.local,dummykey&quot;</span><span style="color: #000000; ">;
             </span><span style="color: #000000; ">own_instance</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;carol&quot;</span><span style="color: #000000; ">;
+            </span><span style="color: #000000; ">querying</span><span style="color: #000000; "> = </span><span style="color: #008000; ">true</span><span style="color: #000000; ">;
             </span><span style="color: #000000; font-weight: bold; ">@display</span><span style="color: #000000; ">(</span><span style="color: #008000; ">&quot;p=607,217;i=device/laptop&quot;</span><span style="color: #000000; ">);
         }
         </span><span style="color: #000000; ">dave</span><span style="color: #000000; ">: </span><span style="color: #000000; ">MDNSNode</span><span style="color: #000000; "> {
@@ -90,6 +94,7 @@
             </span><span style="color: #000000; ">privacy_sfile</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;privacy_services/dave.presence.service&quot;</span><span style="color: #000000; ">;
             </span><span style="color: #000000; ">pdata</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;carol,carol._privacy._tcp.local,dummykey&quot;</span><span style="color: #000000; ">;
             </span><span style="color: #000000; ">own_instance</span><span style="color: #000000; "> = </span><span style="color: #008000; ">&quot;dave&quot;</span><span style="color: #000000; ">;
+            </span><span style="color: #000000; ">querying</span><span style="color: #000000; "> = </span><span style="color: #008000; ">true</span><span style="color: #000000; ">;
             </span><span style="color: #000000; font-weight: bold; ">@display</span><span style="color: #000000; ">(</span><span style="color: #008000; ">&quot;p=399,112;i=device/laptop&quot;</span><span style="color: #000000; ">);
         }
         </span><span style="color: #000000; ">eve</span><span style="color: #000000; ">: </span><span style="color: #000000; ">StandardHost</span><span style="color: #000000; "> {
@@ -107,6 +112,7 @@
             </span><span style="color: #000000; ">config</span><span style="color: #000000; "> = </span><span style="color: #800080; font-weight: bold; ">xmldoc</span><span style="color: #000000; ">(</span><span style="color: #008000; ">&quot;config.xml&quot;</span><span style="color: #000000; ">);
             </span><span style="color: #000000; font-weight: bold; ">@display</span><span style="color: #000000; ">(</span><span style="color: #008000; ">&quot;p=121,37&quot;</span><span style="color: #000000; ">);
         }
+        
         </span><span style="color: #000000; ">Start</span><span style="color: #000000; ">: </span><span style="color: #000000; ">StandardHost</span><span style="color: #000000; "> {
             </span><span style="color: #000000; font-weight: bold; ">@display</span><span style="color: #000000; ">(</span><span style="color: #008000; ">&quot;p=948,54;i=device/laptop,#080808;b=200,60,rect&quot;</span><span style="color: #000000; ">);
         }

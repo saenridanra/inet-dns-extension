@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['friend_5fdata',['friend_data',['../d8/d72/namespaceODnsExtension.html#ad96b62dcc4ef391d4aa1338095d0e330',1,'ODnsExtension']]]
+  ['friend_5fdata',['friend_data',['../d3/da4/namespaceINETDNS.html#a45d13189bf54fd4f0685f975edca0042',1,'INETDNS']]]
 ];

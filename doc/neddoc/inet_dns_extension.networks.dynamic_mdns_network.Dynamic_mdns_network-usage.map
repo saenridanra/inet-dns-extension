@@ -1,0 +1,5 @@
+<area shape="rect" id="node1" href="inet_dns_extension.networks.dynamic_mdns_network.Dynamic_mdns_network.html" title="Network Dynamic_mdns_network" alt="" coords="244,5,411,31">
+<area shape="rect" id="node2" href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator.html" title="Simple Module IPv4NetworkConfigurator" alt="" coords="5,79,175,104">
+<area shape="rect" id="node3" href="inet_dns_extension.applications.mdns.MDNSNode.html" title="Compound Module MDNSNode" alt="" coords="199,79,293,104">
+<area shape="rect" id="node4" href="inet_dns_extension.common.generation.MDNSNetworkConfigurator.html" title="Simple Module MDNSNetworkConfigurator" alt="" coords="317,79,500,104">
+<area shape="rect" id="node5" href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html" title="Compound Module Router" alt="" coords="525,79,597,104">

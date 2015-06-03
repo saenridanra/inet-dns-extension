@@ -1,4 +1,5 @@
 var namespaces =
 [
-    [ "ODnsExtension", "d8/d72/namespaceODnsExtension.html", null ]
+    [ "batch", "dd/db3/namespacebatch.html", null ],
+    [ "INETDNS", "d3/da4/namespaceINETDNS.html", null ]
 ];
