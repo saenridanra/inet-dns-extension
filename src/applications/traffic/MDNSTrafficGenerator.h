@@ -36,7 +36,7 @@
 
 #include <vector>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 /**
  * @brief This class generates services dynamically, while a resolver is running.
@@ -59,27 +59,27 @@ class MDNSTrafficGenerator
         /**
          * @brief @ref TimeEventSet used for managing events/callbacks.
          */
-        ODnsExtension::TimeEventSet* timeEventSet;
+        INETDNS::TimeEventSet* timeEventSet;
 
         /**
          * @brief Remember the event that was scheduled latest.
          */
-        ODnsExtension::TimeEvent* latestScheduledEvent;
+        INETDNS::TimeEvent* latestScheduledEvent;
 
         /**
          * @brief @ref ODnsExtension::MDNSProbeScheduler used for sending probes.
          */
-        ODnsExtension::MDNSProbeScheduler* probeScheduler;
+        INETDNS::MDNSProbeScheduler* probeScheduler;
 
         /**
          * @brief @ref ODnsExtension::MDNSResponseScheduler used for sending responses.
          */
-        ODnsExtension::MDNSResponseScheduler* responseScheduler;
+        INETDNS::MDNSResponseScheduler* responseScheduler;
 
         /**
          * @brief @ref ODnsExtension::MDNSQueryScheduler used for sending queries.
          */
-        ODnsExtension::MDNSQueryScheduler* queryScheduler;
+        INETDNS::MDNSQueryScheduler* queryScheduler;
 
         /**
          * @brief Socket over which DNS queries are sent/received.
@@ -99,17 +99,17 @@ class MDNSTrafficGenerator
         /**
          * @brief A map from strings (service types) to @ref ODnsExtension::PrivateMDNSService .
          */
-        std::unordered_map<std::string, std::shared_ptr<ODnsExtension::PrivateMDNSService>> *private_service_table;
+        std::unordered_map<std::string, std::shared_ptr<INETDNS::PrivateMDNSService>> *private_service_table;
 
         /**
          * @brief A map from strings (friend ids) to @ref ODnsExtension::FriendData .
          */
-        std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>> *friend_data_table;
+        std::unordered_map<std::string, std::shared_ptr<INETDNS::FriendData>> *friend_data_table;
 
         /**
          * @brief A map from strings (instance names) to @ref ODnsExtension::FriendData .
          */
-        std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>> *instance_name_table;
+        std::unordered_map<std::string, std::shared_ptr<INETDNS::FriendData>> *instance_name_table;
 
         /**
          * @brief Whether privacy extenstion is active.
@@ -117,9 +117,9 @@ class MDNSTrafficGenerator
         int hasPrivacy = 0;
 
     public:
-        MDNSTrafficGenerator(ODnsExtension::MDNSProbeScheduler* probeScheduler,
-                ODnsExtension::MDNSQueryScheduler* queryScheduler,
-                ODnsExtension::MDNSResponseScheduler* responseScheduler, ODnsExtension::TimeEventSet* timeEventSet,
+        MDNSTrafficGenerator(INETDNS::MDNSProbeScheduler* probeScheduler,
+                INETDNS::MDNSQueryScheduler* queryScheduler,
+                INETDNS::MDNSResponseScheduler* responseScheduler, INETDNS::TimeEventSet* timeEventSet,
                 UDPSocket* outSock, std::vector<std::string> serviceList)
         {
             this->probeScheduler = probeScheduler;
@@ -159,7 +159,7 @@ class MDNSTrafficGenerator
          * @param data Smart pointer to void data, in this case @ref Probe
          * @param thispointer A reference to the handle that created the event.
          */
-        static void elapseCallback(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data, void* thispointer)
+        static void elapseCallback(INETDNS::TimeEvent* e, std::shared_ptr<void> data, void* thispointer)
         {
             MDNSTrafficGenerator* self = static_cast<MDNSTrafficGenerator*>(thispointer);
             self->elapse(e, data);
@@ -182,7 +182,7 @@ class MDNSTrafficGenerator
          * @param e Event that triggered the elapse
          * @param data smart pointer to void data, in this case always @ref Probe
          */
-        virtual void elapse(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data);
+        virtual void elapse(INETDNS::TimeEvent* e, std::shared_ptr<void> data);
 
 };
 

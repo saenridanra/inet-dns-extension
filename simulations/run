@@ -1,4 +1,4 @@
 #!/bin/sh
 cd `dirname $0`
-../src/opp_dns_extension -n .:../src $*
-# for shared lib, use: opp_run -l ../src/opp_dns_extension -n .:../src $*
+../src/inet_dns_extension -n .:../src $*
+# for shared lib, use: opp_run -l ../src/inet_dns_extension -n .:../src $*

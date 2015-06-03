@@ -33,7 +33,9 @@ DNSClientTraffGen::~DNSClientTraffGen(){
 
 void DNSClientTraffGen::initialize(int stage) {
     DNSClient::initialize(stage);
+#ifdef DEBUG_ENABLED
     std::cout << "\nDNSClientTraffGen: Stage --> " << stage << std::endl;
+#endif
     if(stage == 0){
         time_to_send = par("time_to_send").doubleValue();
         qcount = 0;
@@ -64,7 +66,7 @@ void DNSClientTraffGen::handleTimer(cMessage *msg){
     // choose the dns name, resolve using DNSClient
     std::string host_name = host_names[p];
     std::string type = types[p];
-    int _type = ODnsExtension::getTypeValueForString(type);
+    int _type = INETDNS::getTypeValueForString(type);
     if(_type == -1){
         cRuntimeError("Malformated hostname_file with unknown type.");
     }

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['odnsextension',['ODnsExtension',['../d8/d72/namespaceODnsExtension.html',1,'']]]
+  ['inetdns',['INETDNS',['../d3/da4/namespaceINETDNS.html',1,'']]]
 ];

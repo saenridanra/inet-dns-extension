@@ -19,8 +19,8 @@
  THE SOFTWARE.
  */
 
-#ifndef __OPP_DNS_EXTENSION_DNSCLIENT_H_
-#define __OPP_DNS_EXTENSION_DNSCLIENT_H_
+#ifndef __INETDNS_DNSCLIENT_H_
+#define __INETDNS_DNSCLIENT_H_
 
 #include <omnetpp.h>
 
@@ -72,7 +72,7 @@ protected:
     /**
      * @brief A @ref DNSCache that is used to store resolved queries.
      */
-    ODnsExtension::DNSCache* cache;
+    INETDNS::DNSCache* cache;
 
     /**
      * @brief The overall query_count used for statistics.

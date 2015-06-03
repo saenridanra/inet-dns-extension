@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['rangemode',['RangeMode',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcDensityEstBase.html#ab8f2a313481c3f2a71e2b6a5c378ad15',1,'cDensityEstBase']]]
+  ['objectkind',['ObjectKind',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcConfigOption.html#a1aec918182175c547aabb03a9583ab25',1,'cConfigOption']]],
+  ['optype',['OpType',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcDynamicExpression.html#a9c0e48b0297bf6501285584666679235',1,'cDynamicExpression']]]
 ];

@@ -20,14 +20,14 @@
  */
 #include <MDNSTrafficGenerator.h>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
-void MDNSTrafficGenerator::elapse(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data)
+void MDNSTrafficGenerator::elapse(INETDNS::TimeEvent* e, std::shared_ptr<void> data)
 {
     // post query
     int servicePick = intrand(serviceList.size() - 1);
     // create query
-    std::shared_ptr<ODnsExtension::MDNSKey> key = ODnsExtension::mdns_key_new(serviceList[servicePick],
+    std::shared_ptr<INETDNS::MDNSKey> key = INETDNS::mdns_key_new(serviceList[servicePick],
             DNS_TYPE_VALUE_ANY, DNS_CLASS_IN);
     queryScheduler->post(key, 0);
 
@@ -40,18 +40,19 @@ void MDNSTrafficGenerator::elapse(ODnsExtension::TimeEvent* e, std::shared_ptr<v
         // pick time of query from a normal distribution (but only positive values are considered)
         // stddev is 300, which makes it likely that within 5 minutes
         // a query is generated.
-        int defer = (int) abs(normal(0, 300));
+        int defer = (int) abs(normal(0, 120));
         // create simtime value from random deferral value
         std::string stime = std::to_string(defer) + std::string("s");
         tv = simTime() + STR_SIMTIME(stime.c_str());
 
-        ODnsExtension::TimeEvent* e = new ODnsExtension::TimeEvent(this);
+        INETDNS::TimeEvent* e = new INETDNS::TimeEvent(this);
         std::shared_ptr<void> void_pointer = std::shared_ptr<void>(new int(0));
         e->setData(void_pointer);
         e->setExpiry(tv);
         e->setLastRun(0);
-        e->setCallback(ODnsExtension::MDNSTrafficGenerator::elapseCallback);
+        e->setCallback(INETDNS::MDNSTrafficGenerator::elapseCallback);
 
+        timeEventSet->addTimeEvent(e);
         this->latestScheduledEvent = e;
     }
 }
@@ -62,19 +63,19 @@ void MDNSTrafficGenerator::startQuerying()
     // set the first schedule for a query
     simtime_t tv;
     // pick time of query from a normal distribution (but only positive values are considered)
-    // stddev is 300, which makes it likely that within 5 minutes
+    // stddev is 120, which makes it likely that within 2 minutes
     // is sent...
-    int defer = (int) abs(normal(0, 300));
+    int defer = (int) abs(normal(0, 120));
     // create simtime value from random deferral value
     std::string stime = std::to_string(defer) + std::string("s");
     tv = simTime() + STR_SIMTIME(stime.c_str());
 
-    ODnsExtension::TimeEvent* e = new ODnsExtension::TimeEvent(this);
+    INETDNS::TimeEvent* e = new INETDNS::TimeEvent(this);
     std::shared_ptr<void> void_pointer = std::shared_ptr<void>(new int(0));
     e->setData(void_pointer);
     e->setExpiry(tv);
     e->setLastRun(0);
-    e->setCallback(ODnsExtension::MDNSTrafficGenerator::elapseCallback);
+    e->setCallback(INETDNS::MDNSTrafficGenerator::elapseCallback);
 
     this->latestScheduledEvent = e;
 

@@ -20,7 +20,7 @@
  */
 #include <MDNSResponseScheduler.h>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 MDNSResponseScheduler::MDNSResponseScheduler(TimeEventSet* _timeEventSet,
         UDPSocket* _outSock, void* resolver) {
@@ -237,8 +237,8 @@ int MDNSResponseScheduler::appendTransitiveEntries(std::shared_ptr<DNSRecord> r,
             }
 
         } else if (r->rtype == DNS_TYPE_VALUE_SRV) {
-            std::shared_ptr<ODnsExtension::SRVData> srv =
-                    std::static_pointer_cast < ODnsExtension::SRVData
+            std::shared_ptr<INETDNS::SRVData> srv =
+                    std::static_pointer_cast < INETDNS::SRVData
                             > (r->rdata);
             hash = srv->target + std::string(":")
                     + std::string(DNS_TYPE_STR_A) + std::string(":")
@@ -366,9 +366,11 @@ int MDNSResponseScheduler::preparePacketAndSend(
     std::unordered_map<std::string, int> signalPars;
     signalPars["signal_type"] = 2;
 
-    p->setByteLength(ODnsExtension::estimateDnsPacketSize(p));
+    p->setByteLength(INETDNS::estimateDnsPacketSize(p));
+#ifdef DEBUG_ENABLED
     p->addPar("prettyContent");
-    p->par("prettyContent") = ODnsExtension::dnsPacketToString(p).c_str();
+    p->par("prettyContent") = INETDNS::dnsPacketToString(p).c_str();
+#endif
     if (!is_private) {
         const char* dstr = "i=msg/bcast,red";
         p->setDisplayString(dstr);

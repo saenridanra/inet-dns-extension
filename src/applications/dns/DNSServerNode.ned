@@ -13,10 +13,10 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package opp_dns_extension.applications.dns;
+package inet_dns_extension.applications.dns;
 
 import inet.nodes.inet.StandardHost;
-import opp_dns_extension.applications.dns.DNSAuthServer;
+import inet_dns_extension.applications.dns.DNSAuthServer;
 import inet.transport.IUDP;
 
 module DNSServerNode extends StandardHost

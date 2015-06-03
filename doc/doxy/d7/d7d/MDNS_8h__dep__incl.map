@@ -1,15 +1,19 @@
 <map id="MDNS.h" name="MDNS.h">
-<area shape="rect" id="node2" href="$de/dcf/MDNS__Privacy_8h.html" title="Contains functions and structures needed for the functionalities provided by the mdns privacy extensi..." alt="" coords="369,80,493,107"/>
-<area shape="rect" id="node6" href="$d9/daa/MDNSProbeScheduler_8h.html" title="MDNSProbeScheduler.h" alt="" coords="126,155,291,181"/>
-<area shape="rect" id="node7" href="$d5/dd0/MDNSAnnouncer_8h.html" title="MDNSAnnouncer.h" alt="" coords="9,229,144,256"/>
-<area shape="rect" id="node10" href="$d4/d17/MDNSQueryScheduler_8h.html" title="MDNSQueryScheduler.h" alt="" coords="736,155,903,181"/>
-<area shape="rect" id="node12" href="$dc/d80/MDNSResponseScheduler_8h.html" title="MDNSResponseScheduler.h" alt="" coords="521,155,712,181"/>
-<area shape="rect" id="node14" href="$d9/d94/MDNS_8cc.html" title="MDNS.cc" alt="" coords="619,80,699,107"/>
-<area shape="rect" id="node3" href="$db/d75/MDNSResolver_8h.html" title="MDNSResolver.h" alt="" coords="367,304,493,331"/>
-<area shape="rect" id="node5" href="$d8/dc7/MDNS__Privacy_8cc.html" title="MDNS_Privacy.cc" alt="" coords="366,155,497,181"/>
-<area shape="rect" id="node4" href="$df/d13/MDNSResolver_8cc.html" title="MDNSResolver.cc" alt="" coords="364,379,496,405"/>
-<area shape="rect" id="node9" href="$da/d57/MDNSProbeScheduler_8cc.html" title="MDNSProbeScheduler.cc" alt="" coords="220,229,392,256"/>
-<area shape="rect" id="node8" href="$da/dcb/MDNSAnnouncer_8cc.html" title="MDNSAnnouncer.cc" alt="" coords="5,304,148,331"/>
-<area shape="rect" id="node11" href="$d6/d05/MDNSQueryScheduler_8cc.html" title="MDNSQueryScheduler.cc" alt="" coords="790,229,963,256"/>
-<area shape="rect" id="node13" href="$d9/d65/MDNSResponseScheduler_8cc.html" title="MDNSResponseScheduler.cc" alt="" coords="518,229,715,256"/>
+<area shape="rect" id="node2" href="$d3/d91/MDNSTrafficGenerator_8h.html" title="MDNSTrafficGenerator.h" alt="" coords="195,229,362,256"/>
+<area shape="rect" id="node5" href="$d9/def/MDNSNetworkConfigurator_8h.html" title="MDNSNetworkConfigurator.h" alt="" coords="10,379,203,405"/>
+<area shape="rect" id="node8" href="$de/dcf/MDNS__Privacy_8h.html" title="Contains functions and structures needed for the functionalities provided by the mdns privacy extensi..." alt="" coords="319,80,443,107"/>
+<area shape="rect" id="node10" href="$d9/daa/MDNSProbeScheduler_8h.html" title="MDNSProbeScheduler.h" alt="" coords="400,155,565,181"/>
+<area shape="rect" id="node11" href="$d5/dd0/MDNSAnnouncer_8h.html" title="MDNSAnnouncer.h" alt="" coords="933,229,1067,256"/>
+<area shape="rect" id="node14" href="$d4/d17/MDNSQueryScheduler_8h.html" title="MDNSQueryScheduler.h" alt="" coords="590,155,757,181"/>
+<area shape="rect" id="node16" href="$dc/d80/MDNSResponseScheduler_8h.html" title="MDNSResponseScheduler.h" alt="" coords="781,155,971,181"/>
+<area shape="rect" id="node18" href="$d9/d94/MDNS_8cc.html" title="MDNS.cc" alt="" coords="1047,80,1127,107"/>
+<area shape="rect" id="node3" href="$db/d75/MDNSResolver_8h.html" title="MDNSResolver.h" alt="" coords="533,304,659,331"/>
+<area shape="rect" id="node7" href="$df/d86/MDNSTrafficGenerator_8cc.html" title="MDNSTrafficGenerator.cc" alt="" coords="191,304,366,331"/>
+<area shape="rect" id="node4" href="$df/d13/MDNSResolver_8cc.html" title="MDNSResolver.cc" alt="" coords="530,379,662,405"/>
+<area shape="rect" id="node6" href="$d9/dd7/MDNSNetworkConfigurator_8cc.html" title="MDNSNetworkConfigurator.cc" alt="" coords="7,453,207,480"/>
+<area shape="rect" id="node9" href="$d8/dc7/MDNS__Privacy_8cc.html" title="MDNS_Privacy.cc" alt="" coords="245,155,376,181"/>
+<area shape="rect" id="node13" href="$da/d57/MDNSProbeScheduler_8cc.html" title="MDNSProbeScheduler.cc" alt="" coords="386,229,558,256"/>
+<area shape="rect" id="node12" href="$da/dcb/MDNSAnnouncer_8cc.html" title="MDNSAnnouncer.cc" alt="" coords="929,304,1071,331"/>
+<area shape="rect" id="node15" href="$d6/d05/MDNSQueryScheduler_8cc.html" title="MDNSQueryScheduler.cc" alt="" coords="633,229,807,256"/>
+<area shape="rect" id="node17" href="$d9/d65/MDNSResponseScheduler_8cc.html" title="MDNSResponseScheduler.cc" alt="" coords="1092,229,1289,256"/>
 </map>

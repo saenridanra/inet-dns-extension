@@ -29,12 +29,12 @@
  * @date March 26, 2015
  */
 
-#ifndef OPP_DNS_EXTENSION_UTILS_H_
-#define OPP_DNS_EXTENSION_UTILS_H_
+#ifndef INETDNS_UTILS_H_
+#define INETDNS_UTILS_H_
 
 #include <string>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
     /**
      * @brief Determines efficiently whether a string has a certain suffix
@@ -49,4 +49,4 @@ namespace ODnsExtension {
 }
 
 
-#endif /* OPP_DNS_EXTENSION_UTILS_H_ */
+#endif /* INETDNS_UTILS_H_ */

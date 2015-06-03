@@ -20,7 +20,7 @@
  */
 #include <DNSTTLCache.h>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 DNSTTLCache::DNSTTLCache() {
     // we don't need to destroy  the record in the hashfunc, since the evction
@@ -85,7 +85,7 @@ int DNSTTLCache::put_into_cache(std::shared_ptr<DNSRecord> record) {
         for (auto it = from_cache.begin(); it != from_cache.end(); ++it) {
             std::shared_ptr<DNSTimeRecord> record_from_cache = *it;
 
-            if (ODnsExtension::recordDataEqual(record,
+            if (INETDNS::recordDataEqual(record,
                     record_from_cache->record)) {
                 is_already_in_cache = 1;
                 // update expiry by new data
@@ -134,7 +134,7 @@ int DNSTTLCache::is_in_cache(std::string hash) {
     return cache.find(hash) != cache.end();
 }
 
-int DNSTTLCache::halfTTL(std::shared_ptr<ODnsExtension::DNSRecord> r) {
+int DNSTTLCache::halfTTL(std::shared_ptr<INETDNS::DNSRecord> r) {
     // get the time record list for the hash from the cache
     std::string type = std::string(getTypeStringForValue(r->rtype));
     std::string _class = std::string(getClassStringForValue(r->rclass));
@@ -147,7 +147,7 @@ int DNSTTLCache::halfTTL(std::shared_ptr<ODnsExtension::DNSRecord> r) {
         std::shared_ptr<DNSTimeRecord> tr = *it;
         std::shared_ptr<DNSRecord> record = tr->record;
 
-        if (ODnsExtension::recordDataEqual(r, record)) {
+        if (INETDNS::recordDataEqual(r, record)) {
             std::string stime = std::to_string(r->ttl) + std::string("s");
             simtime_t ttl_to_sim = STR_SIMTIME(stime.c_str());
             simtime_t curr = simTime();
@@ -204,7 +204,7 @@ std::shared_ptr<DNSRecord> DNSTTLCache::remove_from_cache(std::string hash,
     for (auto it = from_cache.begin(); it != from_cache.end(); ++it) {
         std::shared_ptr<DNSTimeRecord> tr = *it;
 
-        if (ODnsExtension::recordDataEqual(tr->record, r)) {
+        if (INETDNS::recordDataEqual(tr->record, r)) {
             // we have the record
             from_cache.erase(it);
             // replace the list in the table
@@ -241,7 +241,7 @@ std::list<std::shared_ptr<DNSRecord>> DNSTTLCache::evict() {
 std::list<std::string> DNSTTLCache::get_matching_hashes(std::string hash) {
     std::list<std::string> hashes;
     for (auto kv : cache) {
-        if (ODnsExtension::stdstr_has_suffix(hash, kv.first)) {
+        if (INETDNS::stdstr_has_suffix(hash, kv.first)) {
             // we have a match, append it to the return list
             std::string hash_cpy = std::string(kv.first);
             hashes.push_back(hash_cpy);

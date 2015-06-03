@@ -29,7 +29,7 @@
 
 #include <string>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 /**
  * @brief Struct wrapping @ref DNSRecord with timing information.
@@ -86,8 +86,8 @@ public:
 
     }
 
-    bool operator()(std::shared_ptr<ODnsExtension::DNSTimeRecord> t1,
-            std::shared_ptr<ODnsExtension::DNSTimeRecord> t2) {
+    bool operator()(std::shared_ptr<INETDNS::DNSTimeRecord> t1,
+            std::shared_ptr<INETDNS::DNSTimeRecord> t2) {
         // t1 < t2,
         // meaning t1s time is up before t2s
         return t1->expiry < t2->expiry;
@@ -156,8 +156,8 @@ protected:
      * Used to quickly find and store @ref DNSTimeRecord by their time
      * of expiry.
      */
-    std::set<std::shared_ptr<ODnsExtension::DNSTimeRecord>,
-            ODnsExtension::DNSTimeRecordComparator> dnsRecordPriorityCache;
+    std::set<std::shared_ptr<INETDNS::DNSTimeRecord>,
+            INETDNS::DNSTimeRecordComparator> dnsRecordPriorityCache;
 
     /**
      * @brief Remove a given @ref DNSTimeRecord from the cache.

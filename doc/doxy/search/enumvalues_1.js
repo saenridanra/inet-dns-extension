@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['entry',['ENTRY',['../da/dc0/DNSZoneConfig_8h.html#aa19be6305a5a4485e1e70de70ed7d677af1ca16f85c38f6843da477ec1aa176a6',1,'DNSZoneConfig.h']]]
+  ['burst',['BURST',['../d8/db1/classMDNSNetworkConfigurator.html#ad16cf7531b29f7a3f4399172032d8435a33461a13f75e9ec641c2fd91b2401f0a',1,'MDNSNetworkConfigurator']]]
 ];

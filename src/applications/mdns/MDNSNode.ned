@@ -13,10 +13,10 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package opp_dns_extension.applications.mdns;
+package inet_dns_extension.applications.mdns;
 
 import inet.nodes.inet.StandardHost;
-import opp_dns_extension.applications.mdns.MDNSResolver;
+import inet_dns_extension.applications.mdns.MDNSResolver;
 import inet.transport.IUDP;
 
 module MDNSNode extends StandardHost

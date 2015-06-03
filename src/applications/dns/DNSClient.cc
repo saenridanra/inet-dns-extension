@@ -32,7 +32,7 @@ void DNSClient::initialize(int stage) {
         query_count = 0;
 
         // the cache for the records
-        cache = new ODnsExtension::DNSSimpleCache();
+        cache = new INETDNS::DNSSimpleCache();
 
     }
     else if(stage == 3){
@@ -53,13 +53,13 @@ void DNSClient::handleMessage(cMessage *msg) {
     void (*callback) (int, void*);
     void *callback_handle;
     IPvXAddress tmp;
-    std::shared_ptr<ODnsExtension::Response> response;
+    std::shared_ptr<INETDNS::Response> response;
 
-    if ((isDNS = ODnsExtension::isDNSpacket((cPacket*) msg)) && (isQR =
-            ODnsExtension::isQueryOrResponse((cPacket*) msg))) {
+    if ((isDNS = INETDNS::isDNSpacket((cPacket*) msg)) && (isQR =
+            INETDNS::isQueryOrResponse((cPacket*) msg))) {
         // Handle response, see if it belongs to a query that we've send previously...
 
-        response = ODnsExtension::resolveResponse((cPacket*) msg);
+        response = INETDNS::resolveResponse((cPacket*) msg);
         // So if the RCODE is not 0, according to RFC1035
         // something went wrong
         int rcode = DNS_HEADER_RCODE(response->options);
@@ -84,66 +84,79 @@ void DNSClient::handleMessage(cMessage *msg) {
 
         // put records in the cache
         // this is simply choice, the cache chooses what stays and what doesn't.
-
+#ifdef DEBUG_ENABLED
         std::string bubble_popup = "Resolved query: ";
         std::cout << "**********************\nResolved query:\n\n;;Question Section:\n";
         DNSPacket* q = queries[response->id];
-        std::shared_ptr<DNSQuestion> question = ODnsExtension::copyDnsQuestion(&q->getQuestions(0));
-        ODnsExtension::printDNSQuestion(question);
+        std::shared_ptr<DNSQuestion> question = INETDNS::copyDnsQuestion(&q->getQuestions(0));
+        INETDNS::printDNSQuestion(question);
         bubble_popup.append(q->getQuestions(0).qname);
         bubble_popup.append("\n");
         delete q;
 
         bubble_popup.append(";;Answer Section:\n");
         std::cout << "\n;;Answer Section:\n";
+#endif
         for(int i = 0; i < response->ancount; i++){
-            std::shared_ptr<DNSRecord> r = ODnsExtension::copyDnsRecord(&response->answers[i]);
-            ODnsExtension::printDNSRecord(r);
+            std::shared_ptr<DNSRecord> r = INETDNS::copyDnsRecord(&response->answers[i]);
+#ifdef DEBUG_ENABLED
+            INETDNS::printDNSRecord(r);
             bubble_popup.append(r->rname);
             bubble_popup.append(":");
-            bubble_popup.append(ODnsExtension::getTypeStringForValue(r->rtype));
+            bubble_popup.append(INETDNS::getTypeStringForValue(r->rtype));
             bubble_popup.append(":");
-            bubble_popup.append(ODnsExtension::getClassStringForValue(r->rclass));
+            bubble_popup.append(INETDNS::getClassStringForValue(r->rclass));
             bubble_popup.append("\nData: ");
             bubble_popup.append(r->strdata);
             bubble_popup.append("\n");
+#endif
             cache->put_into_cache(r);
         }
 
+#ifdef DEBUG_ENABLED
         bubble_popup.append(";;Authority Section:\n");
         std::cout << "\n;;Authority Section:\n";
+#endif
         for(int i = 0; i < response->nscount; i++){
-            std::shared_ptr<DNSRecord> r = ODnsExtension::copyDnsRecord(&response->authoritative[i]);
+            std::shared_ptr<DNSRecord> r = INETDNS::copyDnsRecord(&response->authoritative[i]);
+#ifdef DEBUG_ENABLED
             bubble_popup.append(r->rname);
             bubble_popup.append(":");
-            bubble_popup.append(ODnsExtension::getTypeStringForValue(r->rtype));
+            bubble_popup.append(INETDNS::getTypeStringForValue(r->rtype));
             bubble_popup.append(":");
-            bubble_popup.append(ODnsExtension::getClassStringForValue(r->rclass));
+            bubble_popup.append(INETDNS::getClassStringForValue(r->rclass));
             bubble_popup.append("\nData: ");
             bubble_popup.append(r->strdata);
             bubble_popup.append("\n");
+#endif
             cache->put_into_cache(r);
         }
 
+#ifdef DEBUG_ENABLED
         bubble_popup.append(";;Additional Section:\n");
         std::cout << "\n;;Additional Section:\n";
+#endif
         for(int i = 0; i < response->arcount; i++){
-            std::shared_ptr<DNSRecord> r = ODnsExtension::copyDnsRecord(&(response->additional[i]));
-            ODnsExtension::printDNSRecord(r);
+            std::shared_ptr<DNSRecord> r = INETDNS::copyDnsRecord(&(response->additional[i]));
+#ifdef DEBUG_ENABLED
+            INETDNS::printDNSRecord(r);
             bubble_popup.append(r->rname);
             bubble_popup.append(":");
-            bubble_popup.append(ODnsExtension::getTypeStringForValue(r->rtype));
+            bubble_popup.append(INETDNS::getTypeStringForValue(r->rtype));
             bubble_popup.append(":");
-            bubble_popup.append(ODnsExtension::getClassStringForValue(r->rclass));
+            bubble_popup.append(INETDNS::getClassStringForValue(r->rclass));
             bubble_popup.append("\nData: ");
             bubble_popup.append(r->strdata);
             bubble_popup.append("\n");
+#endif
             cache->put_into_cache(r);
         }
 
+#ifdef DEBUG_ENABLED
         EV << bubble_popup.c_str();
         this->getParentModule()->bubble(bubble_popup.c_str());
         std::cout << "**********************\n";
+#endif
 
         queries.erase(response->id);
 
@@ -189,7 +202,7 @@ int DNSClient::resolve(std::string dns_name, int qtype, int primary, void (*call
     else{
         msg_name = std::string("dns_query#") + std::to_string(id);
     }
-    query = ODnsExtension::createQuery(msg_name, dns_name, DNS_CLASS_IN, qtype, query_count, 1);
+    query = INETDNS::createQuery(msg_name, dns_name, DNS_CLASS_IN, qtype, query_count, 1);
 
 
     // put it into the hash table for the given query_count number, so we can identify the query
@@ -202,7 +215,7 @@ int DNSClient::resolve(std::string dns_name, int qtype, int primary, void (*call
 
     // Send this packet to the primary DNS server, if that fails, the secondary DNS server
 
-    query->setByteLength(ODnsExtension::estimateDnsPacketSize(query));
+    query->setByteLength(INETDNS::estimateDnsPacketSize(query));
     if(primary){
         out.sendTo(query, dns_servers[0], DNS_PORT);
     }

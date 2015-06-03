@@ -1,6 +1,6 @@
 <map id="MDNS.cc" name="MDNS.cc">
-<area shape="rect" id="node2" href="$dd/d86/MDNS_8h.html" title="Contains useful structs, makros and functions which are generally needed for a MDNS library..." alt="" coords="411,80,484,107"/>
-<area shape="rect" id="node4" href="$df/d90/DNS_8h.html" title="Contains useful definitions of structs and makros needed for a dns library. " alt="" coords="5,304,68,331"/>
-<area shape="rect" id="node7" href="$d9/dd7/DNSTools_8h.html" title="Contains utility functions to handle records, questions, queries and responses. " alt="" coords="187,155,281,181"/>
-<area shape="rect" id="node8" href="$de/d08/DNSPacket__m_8h.html" title="../messages/DNSPacket_m.h" alt="" coords="234,229,431,256"/>
+<area shape="rect" id="node2" href="$dd/d86/MDNS_8h.html" title="Contains useful structs, makros and functions which are generally needed for a MDNS library..." alt="" coords="276,80,349,107"/>
+<area shape="rect" id="node4" href="$df/d90/DNS_8h.html" title="Contains useful definitions of structs and makros needed for a dns library. " alt="" coords="9,304,72,331"/>
+<area shape="rect" id="node7" href="$d9/dd7/DNSTools_8h.html" title="Contains utility functions to handle records, questions, queries and responses. " alt="" coords="308,155,403,181"/>
+<area shape="rect" id="node8" href="$de/d08/DNSPacket__m_8h.html" title="../messages/DNSPacket_m.h" alt="" coords="35,229,233,256"/>
 </map>

@@ -1,0 +1,11 @@
+<map id="GenericTraffGen" name="GenericTraffGen">
+<area shape="rect" id="node2" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcSimpleModule.html" title="cSimpleModule" alt="" coords="67,528,178,555"/>
+<area shape="rect" id="node3" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcModule.html" title="cModule" alt="" coords="87,453,158,480"/>
+<area shape="rect" id="node4" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcComponent.html" title="cComponent" alt="" coords="75,379,171,405"/>
+<area shape="rect" id="node5" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcDefaultList.html" title="cDefaultList" alt="" coords="77,304,169,331"/>
+<area shape="rect" id="node6" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcNoncopyableOwnedObject.html" title="cNoncopyableOwnedObject" alt="" coords="31,229,215,256"/>
+<area shape="rect" id="node7" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcOwnedObject.html" title="cOwnedObject" alt="" coords="6,155,114,181"/>
+<area shape="rect" id="node8" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcNamedObject.html" title="cNamedObject" alt="" coords="5,80,115,107"/>
+<area shape="rect" id="node9" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classcObject.html" title="cObject" alt="" coords="27,5,93,32"/>
+<area shape="rect" id="node10" href="/home/saen/Programme.local/omnetpp-4.6/doc/api/opptags.xml$classnoncopyable.html" title="noncopyable" alt="" coords="138,155,233,181"/>
+</map>

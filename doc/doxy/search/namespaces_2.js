@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['odnsextension',['ODnsExtension',['../namespaceODnsExtension.html',1,'']]]
+  ['nedsupport',['NEDSupport',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classNEDSupport_1_1ParameterRef.html',1,'']]]
 ];

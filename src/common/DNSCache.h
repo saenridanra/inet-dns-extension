@@ -28,7 +28,7 @@
 #include <unordered_map>
 #include <memory>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 /**
  * @brief @ref DNSCache is an interface providing methods
@@ -69,7 +69,7 @@ public:
      * @param hash String valued hash for the given record.
      * @return removed @ref DNSRecord
      */
-    virtual std::shared_ptr<ODnsExtension::DNSRecord> remove_from_cache(std::string hash, std::shared_ptr<ODnsExtension::DNSRecord> r) = 0;
+    virtual std::shared_ptr<INETDNS::DNSRecord> remove_from_cache(std::string hash, std::shared_ptr<INETDNS::DNSRecord> r) = 0;
 
     /**
      * @brief Check whether records exist for a given hash.

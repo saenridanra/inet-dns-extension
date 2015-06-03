@@ -21,7 +21,7 @@
 
 #include "MDNS.h"
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 int isProbe(DNSPacket* p){
     return isQuery(p) && p->getNscount() > 0;
@@ -33,11 +33,11 @@ int isAnnouncement(DNSPacket* p){
 }
 
 int isQuery(DNSPacket* p){
-    return !ODnsExtension::isQueryOrResponse(p);
+    return !INETDNS::isQueryOrResponse(p);
 }
 
 int isResponse(DNSPacket* p){
-    return ODnsExtension::isQueryOrResponse(p);
+    return INETDNS::isQueryOrResponse(p);
 }
 
 int isGoodbye(std::shared_ptr<DNSRecord> r){
@@ -57,7 +57,7 @@ void mdns_key_free(std::shared_ptr<MDNSKey> key){
     key.reset();
 }
 
-int compareMDNSKey(std::shared_ptr<ODnsExtension::MDNSKey> key1, std::shared_ptr<ODnsExtension::MDNSKey> key2){
+int compareMDNSKey(std::shared_ptr<INETDNS::MDNSKey> key1, std::shared_ptr<INETDNS::MDNSKey> key2){
     if(key1 == key2) return 0;
 
     int comp = key1->name.compare(key2->name);
@@ -71,7 +71,7 @@ int compareMDNSKey(std::shared_ptr<ODnsExtension::MDNSKey> key1, std::shared_ptr
     return 0;
 }
 
-int compareMDNSKeyANY(std::shared_ptr<ODnsExtension::MDNSKey> key1, std::shared_ptr<ODnsExtension::MDNSKey> key2){
+int compareMDNSKeyANY(std::shared_ptr<INETDNS::MDNSKey> key1, std::shared_ptr<INETDNS::MDNSKey> key2){
     if(key1 == key2) return 0;
 
     int comp = key1->name.compare(key2->name);
@@ -83,8 +83,8 @@ int compareMDNSKeyANY(std::shared_ptr<ODnsExtension::MDNSKey> key1, std::shared_
     return 0;
 }
 
-std::shared_ptr<ODnsExtension::DNSQuestion> createQuestion(std::string name, unsigned short type, unsigned short _class){
-    std::shared_ptr<ODnsExtension::DNSQuestion> q(new DNSQuestion());
+std::shared_ptr<INETDNS::DNSQuestion> createQuestion(std::string name, unsigned short type, unsigned short _class){
+    std::shared_ptr<INETDNS::DNSQuestion> q(new DNSQuestion());
     q->qname = name;
     q->qtype = type;
     q->qclass = _class;
@@ -93,8 +93,8 @@ std::shared_ptr<ODnsExtension::DNSQuestion> createQuestion(std::string name, uns
 
 }
 
-std::shared_ptr<ODnsExtension::DNSQuestion> createQuestionFromKey(std::shared_ptr<ODnsExtension::MDNSKey> key){
-    std::shared_ptr<ODnsExtension::DNSQuestion> q(new DNSQuestion());
+std::shared_ptr<INETDNS::DNSQuestion> createQuestionFromKey(std::shared_ptr<INETDNS::MDNSKey> key){
+    std::shared_ptr<INETDNS::DNSQuestion> q(new DNSQuestion());
     q->qname = key->name;
     q->qtype = key->type;
     q->qclass = key->_class;

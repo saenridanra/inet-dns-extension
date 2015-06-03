@@ -30,8 +30,8 @@
  */
 
 
-#ifndef OPP_DNS_EXTENSION_MDNS_H_
-#define OPP_DNS_EXTENSION_MDNS_H_
+#ifndef INETDNS_MDNS_H_
+#define INETDNS_MDNS_H_
 
 #include <omnetpp.h>
 #include <DNS.h>
@@ -40,7 +40,7 @@
 #include <list>
 #include <memory>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 /** @brief Structure holding information for services
  *
@@ -146,7 +146,7 @@ int isGoodbye(std::shared_ptr<DNSRecord> r);
  * @param key2 @ref MDNSKey second key to check
  * @return -1 if key2 > key 1, 0 if key1 == key2 and 1 if key1 > key2.
  */
-int compareMDNSKey(std::shared_ptr<ODnsExtension::MDNSKey> key1, std::shared_ptr<ODnsExtension::MDNSKey> key2);
+int compareMDNSKey(std::shared_ptr<INETDNS::MDNSKey> key1, std::shared_ptr<INETDNS::MDNSKey> key2);
 
 /**
  * @brief Compare two mdns keys
@@ -157,7 +157,7 @@ int compareMDNSKey(std::shared_ptr<ODnsExtension::MDNSKey> key1, std::shared_ptr
  * @param key2 @ref MDNSKey second key to check
  * @return -1 if key2 > key 1, 0 if key1 == key2 and 1 if key1 > key2.
  */
-int compareMDNSKeyANY(std::shared_ptr<ODnsExtension::MDNSKey> key1, std::shared_ptr<ODnsExtension::MDNSKey> key2);
+int compareMDNSKeyANY(std::shared_ptr<INETDNS::MDNSKey> key1, std::shared_ptr<INETDNS::MDNSKey> key2);
 
 /**
  * @brief Create a new @ref MDNSKey

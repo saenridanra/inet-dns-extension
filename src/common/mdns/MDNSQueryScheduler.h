@@ -38,7 +38,7 @@
 #include <algorithm>
 #include <SignalReceiver.h>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 /**
  * @brief Structure holding information for response jobs.
@@ -56,12 +56,12 @@ typedef struct MDNSQueryJob {
     /**
      * @brief The time event for this probe job.
      */
-    ODnsExtension::TimeEvent* e;
+    INETDNS::TimeEvent* e;
 
     /**
      * @brief The key that needs to be queried
      */
-    std::shared_ptr<ODnsExtension::MDNSKey> key;
+    std::shared_ptr<INETDNS::MDNSKey> key;
 
     /**
      * @brief Whether the probe job is done or not.
@@ -101,7 +101,7 @@ protected:
     /**
      * @brief The time event set that performs elapsed events.
      */
-    ODnsExtension::TimeEventSet* timeEventSet;
+    INETDNS::TimeEventSet* timeEventSet;
 
     /**
      * @brief A list of active jobs.
@@ -132,17 +132,17 @@ protected:
     /**
      * @brief A map from strings (service types) to @ref ODnsExtension::PrivateMDNSService .
      */
-    std::unordered_map<std::string, std::shared_ptr<ODnsExtension::PrivateMDNSService>> *private_service_table;
+    std::unordered_map<std::string, std::shared_ptr<INETDNS::PrivateMDNSService>> *private_service_table;
 
     /**
      * @brief A map from strings (friend ids) to @ref ODnsExtension::FriendData .
      */
-    std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>> *friend_data_table;
+    std::unordered_map<std::string, std::shared_ptr<INETDNS::FriendData>> *friend_data_table;
 
     /**
      * @brief A map from strings (instance names) to @ref ODnsExtension::FriendData .
      */
-    std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>> *instance_name_table;
+    std::unordered_map<std::string, std::shared_ptr<INETDNS::FriendData>> *instance_name_table;
 
     /**
      * @brief Whether privacy extenstion is active.
@@ -169,36 +169,36 @@ protected:
      * @param key Key for which a job should be created.
      * @return Smart pointer to newly created probe job.
      */
-    virtual std::shared_ptr<ODnsExtension::MDNSQueryJob> new_job(
-            std::shared_ptr<ODnsExtension::MDNSKey> key);
+    virtual std::shared_ptr<INETDNS::MDNSQueryJob> new_job(
+            std::shared_ptr<INETDNS::MDNSKey> key);
 
     /**
      * @brief Finds a job in the active list
      * @param key Key which needs to be found
      * @return Smart pointer to the job.
      */
-    virtual std::shared_ptr<ODnsExtension::MDNSQueryJob> find_job(
-            std::shared_ptr<ODnsExtension::MDNSKey> key);
+    virtual std::shared_ptr<INETDNS::MDNSQueryJob> find_job(
+            std::shared_ptr<INETDNS::MDNSKey> key);
 
     /**
      * @brief Finds a job in the history list
      * @param key Key which needs to be found
      * @return Smart pointer to the job.
      */
-    virtual std::shared_ptr<ODnsExtension::MDNSQueryJob> find_history(
-            std::shared_ptr<ODnsExtension::MDNSKey> key);
+    virtual std::shared_ptr<INETDNS::MDNSQueryJob> find_history(
+            std::shared_ptr<INETDNS::MDNSKey> key);
 
     /**
      * @brief Marks a job as done and moves it to the history list.
      * @param qj Job that needs to be marked.
      */
-    virtual void done(std::shared_ptr<ODnsExtension::MDNSQueryJob> qj);
+    virtual void done(std::shared_ptr<INETDNS::MDNSQueryJob> qj);
 
     /**
      * @brief Removes a job completely.
      * @param qj Job that needs to be removed.
      */
-    virtual void remove_job(std::shared_ptr<ODnsExtension::MDNSQueryJob> qj);
+    virtual void remove_job(std::shared_ptr<INETDNS::MDNSQueryJob> qj);
 
     /**
      * @brief Appends cached entried to a list.
@@ -264,7 +264,7 @@ public:
      * @param _outSock Pointer to the socket the resolver uses.
      * @param resolver Pointer to the resolver itself.
      */
-    MDNSQueryScheduler(ODnsExtension::TimeEventSet* _timeEventSet,
+    MDNSQueryScheduler(INETDNS::TimeEventSet* _timeEventSet,
             UDPSocket* _outSock, void* resolver);
     virtual ~MDNSQueryScheduler();
 
@@ -275,7 +275,7 @@ public:
      * @param data Smart pointer to void data, in this case @ref Probe
      * @param thispointer A reference to the handle that created the event.
      */
-    static void elapseCallback(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data,
+    static void elapseCallback(INETDNS::TimeEvent* e, std::shared_ptr<void> data,
             void* thispointer);
 
     /**
@@ -284,7 +284,7 @@ public:
      * @param key Key for which a query is generated.
      * @param immediately Whether the query needs to be sent immediately.
      */
-    virtual void post(std::shared_ptr<ODnsExtension::MDNSKey> key,
+    virtual void post(std::shared_ptr<INETDNS::MDNSKey> key,
             int immediately);
 
     /**
@@ -295,7 +295,7 @@ public:
      *
      * @param key Key to check duplicates for.
      */
-    virtual void check_dup(std::shared_ptr<ODnsExtension::MDNSKey> key);
+    virtual void check_dup(std::shared_ptr<INETDNS::MDNSKey> key);
 
     /**
      * @brief Elapse method, when the next scheduled event is due.
@@ -303,7 +303,7 @@ public:
      * @param e Event that triggered the elapse
      * @param data smart pointer to void data, in this case always @ref MDNSQueryJob
      */
-    virtual void elapse(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data);
+    virtual void elapse(INETDNS::TimeEvent* e, std::shared_ptr<void> data);
 
     /**
      * @brief Set the callback method for this scheduler
@@ -328,7 +328,7 @@ public:
      *
      * @param _cache A pointer to the cache
      */
-    virtual void setCache(ODnsExtension::DNSTTLCache* _cache) {
+    virtual void setCache(INETDNS::DNSTTLCache* _cache) {
         cache = _cache;
     }
 

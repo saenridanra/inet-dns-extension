@@ -1,9 +1,9 @@
-# OMNeT++ DNS Extension
+# DNS and mDNS models for INET
 
 This extensions provides classes and functions to simulate DNS and
 MDNS traffic.
 
-[![Build Status](http://saenridanra.de/jenkins/job/omnetpp-dns-extension/badge/icon)](http://saenridanra.de/jenkins/job/omnetpp-dns-extension/)
+[![Build Status](http://saenatwork.org/jenkins/job/inet-dns-extension/badge/icon)](http://saenridanra.de/jenkins/job/inet-dns-extension/)
 
 ## Features
 

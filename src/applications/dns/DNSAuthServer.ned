@@ -18,9 +18,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package opp_dns_extension.applications.dns;
+package inet_dns_extension.applications.dns;
 
-import opp_dns_extension.applications.dns.DNSServerBase;
+import inet_dns_extension.applications.dns.DNSServerBase;
 
 //
 // TODO auto-generated module

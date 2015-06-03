@@ -22,8 +22,8 @@ cplusplus {{
 #include "../common/DNS.h"
 #include <memory>
 
-typedef struct ODnsExtension::DNSQuestion DNSQuestion;
-typedef struct ODnsExtension::DNSRecord DNSRecord;
+typedef struct INETDNS::DNSQuestion DNSQuestion;
+typedef struct INETDNS::DNSRecord DNSRecord;
 }};
 
 struct DNSQuestion;

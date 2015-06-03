@@ -20,14 +20,14 @@
  */
 #include <MDNSAnnouncer.h>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 void MDNSAnnouncer::initialize()
 {
     // add host probes, i.e. hostname.local A, AAAA record
     if (s == AnnouncerState::START || s == AnnouncerState::RESTART)
     {
-        auth_cache = new ODnsExtension::DNSTTLCache();
+        auth_cache = new INETDNS::DNSTTLCache();
 
         std::shared_ptr<DNSRecord> a_record(new DNSRecord());
         std::shared_ptr<DNSRecord> a_ptr_record(new DNSRecord());
@@ -49,10 +49,13 @@ void MDNSAnnouncer::initialize()
         a_ptr_record->rdlength = a_ptr_record->strdata.length();
         a_ptr_record->ttl = MDNS_HOST_TTL;
 
+#ifdef DEBUG_ENABLED
         std::cout << "Creating announcing records for " << hostname << ":" << hostaddress->get4().str() << ":"
                 << std::endl;
-        ODnsExtension::printDNSRecord(a_record);
-        ODnsExtension::printDNSRecord(a_ptr_record);
+#endif
+
+        INETDNS::printDNSRecord(a_record);
+        INETDNS::printDNSRecord(a_ptr_record);
 
         // now add records to the list, create a time out, that is soon scheduled
         std::shared_ptr<Probe> a(new Probe());
@@ -68,19 +71,19 @@ void MDNSAnnouncer::initialize()
 
         simtime_t tv = simTime() + STR_SIMTIME("20ms");
 
-        ODnsExtension::TimeEvent* e = new ODnsExtension::TimeEvent(this);
+        INETDNS::TimeEvent* e = new INETDNS::TimeEvent(this);
         e->setData(a);
         e->setExpiry(tv);
         e->setLastRun(0);
-        e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
+        e->setCallback(INETDNS::MDNSAnnouncer::elapseCallback);
         timeEventSet->addTimeEvent(e);
         a->e = e;
 
-        e = new ODnsExtension::TimeEvent(this);
+        e = new INETDNS::TimeEvent(this);
         e->setData(a_ptr);
         e->setExpiry(tv);
         e->setLastRun(0);
-        e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
+        e->setCallback(INETDNS::MDNSAnnouncer::elapseCallback);
         timeEventSet->addTimeEvent(e);
         a_ptr->e = e;
 
@@ -113,19 +116,19 @@ void MDNSAnnouncer::initialize()
             probing.push_back(aaaa);
             probing.push_back(aaaa_ptr);
 
-            e = new ODnsExtension::TimeEvent(this);
+            e = new INETDNS::TimeEvent(this);
             e->setData(aaaa);
             e->setExpiry(tv);
             e->setLastRun(0);
-            e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
+            e->setCallback(INETDNS::MDNSAnnouncer::elapseCallback);
             timeEventSet->addTimeEvent(e);
             aaaa->e = e;
 
-            e = new ODnsExtension::TimeEvent(this);
+            e = new INETDNS::TimeEvent(this);
             e->setData(aaaa_ptr);
             e->setExpiry(tv);
             e->setLastRun(0);
-            e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
+            e->setCallback(INETDNS::MDNSAnnouncer::elapseCallback);
             timeEventSet->addTimeEvent(e);
             aaaa_ptr->e = e;
         }
@@ -177,11 +180,11 @@ void MDNSAnnouncer::add_service(std::shared_ptr<MDNSService> service)
 
     simtime_t tv = simTime() + STR_SIMTIME("20ms");
 
-    ODnsExtension::TimeEvent* e = new ODnsExtension::TimeEvent(this);
+    INETDNS::TimeEvent* e = new INETDNS::TimeEvent(this);
     e->setData(p);
     e->setExpiry(tv);
     e->setLastRun(0);
-    e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
+    e->setCallback(INETDNS::MDNSAnnouncer::elapseCallback);
     p->e = e;
     timeEventSet->addTimeEvent(e);
 
@@ -203,11 +206,11 @@ void MDNSAnnouncer::add_service(std::shared_ptr<MDNSService> service)
             p->probe_id = id_internal++;
             p->ref_service = service;
 
-            e = new ODnsExtension::TimeEvent(this);
+            e = new INETDNS::TimeEvent(this);
             e->setData(p);
             e->setExpiry(tv);
             e->setLastRun(0);
-            e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
+            e->setCallback(INETDNS::MDNSAnnouncer::elapseCallback);
             timeEventSet->addTimeEvent(e);
 
             p->e = e;
@@ -229,11 +232,11 @@ void MDNSAnnouncer::add_service(std::shared_ptr<MDNSService> service)
         p->r = txtrecord;
         p->probe_id = id_internal++;
 
-        e = new ODnsExtension::TimeEvent(this);
+        e = new INETDNS::TimeEvent(this);
         e->setData(p);
         e->setExpiry(tv);
         e->setLastRun(0);
-        e->setCallback(ODnsExtension::MDNSAnnouncer::elapseCallback);
+        e->setCallback(INETDNS::MDNSAnnouncer::elapseCallback);
         timeEventSet->addTimeEvent(e);
 
         p->e = e;
@@ -262,12 +265,12 @@ int MDNSAnnouncer::check_conflict(std::shared_ptr<DNSRecord> r)
 
     for (auto p : probing)
     {
-        if (ODnsExtension::recordDataEqual(r, p->r))
+        if (INETDNS::recordDataEqual(r, p->r))
         {
             conflict = 1;
             break; // the other host announces the exact same record, we're finished here
         }
-        else if (ODnsExtension::recordEqualNoData(r, p->r) && p->s == ProbeState::PROBING)
+        else if (INETDNS::recordEqualNoData(r, p->r) && p->s == ProbeState::PROBING)
         {
             // we have a conflict, remove the probe, and try with another label
             // since there may be more probes matching this label, we withdraw all of them
@@ -310,7 +313,7 @@ void MDNSAnnouncer::goodbye(std::shared_ptr<Probe> p, int send_goodbye, int remo
     {
         if (p->s == ProbeState::ANNOUNCING)
         {
-            std::shared_ptr<DNSRecord> goodbye_record = ODnsExtension::copyDnsRecord(p->r);
+            std::shared_ptr<DNSRecord> goodbye_record = INETDNS::copyDnsRecord(p->r);
             goodbye_record->ttl = 0;
             response_scheduler->post(goodbye_record, 0, NULL, 0);
         }
@@ -330,7 +333,7 @@ void MDNSAnnouncer::shutdown(){
     for(auto p : probing){
         if (p->s == ProbeState::ANNOUNCED)
         {
-            std::shared_ptr<DNSRecord> goodbye_record = ODnsExtension::copyDnsRecord(p->r);
+            std::shared_ptr<DNSRecord> goodbye_record = INETDNS::copyDnsRecord(p->r);
             goodbye_record->ttl = 0;
             response_scheduler->post(goodbye_record, 0, NULL, 1);
         }
@@ -344,7 +347,7 @@ void MDNSAnnouncer::shutdown(){
     probing.clear();
 }
 
-void MDNSAnnouncer::elapse(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data)
+void MDNSAnnouncer::elapse(INETDNS::TimeEvent* e, std::shared_ptr<void> data)
 {
     std::shared_ptr<Probe> p = std::static_pointer_cast < Probe > (data);
     simtime_t tv;

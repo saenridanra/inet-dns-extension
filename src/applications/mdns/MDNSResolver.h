@@ -19,8 +19,8 @@
  THE SOFTWARE.
  */
 
-#ifndef __OPP_DNS_EXTENSION_MDNSRESOLVER_H_
-#define __OPP_DNS_EXTENSION_MDNSRESOLVER_H_
+#ifndef __INETDNS_MDNSRESOLVER_H_
+#define __INETDNS_MDNSRESOLVER_H_
 
 #include <omnetpp.h>
 #include <TimeEventSet.h>
@@ -65,7 +65,7 @@
  * @author Andreas Rain, Distributed Systems Group, University of Konstanz
  * @date March 26, 2015
  */
-class MDNSResolver : public cSimpleModule, public SignalReceiver
+class MDNSResolver : public cSimpleModule, public SignalReceiver, public INETDNS::TimeEventSetObserver
 {
     protected:
         enum MDNSResolverState
@@ -76,42 +76,42 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver
         /**
          * @brief @ref TimeEventSet used for managing events/callbacks.
          */
-        ODnsExtension::TimeEventSet* timeEventSet;
+        INETDNS::TimeEventSet* timeEventSet;
 
         /**
          * @brief @ref ODnsExtension::MDNSProbeScheduler used for sending probes.
          */
-        ODnsExtension::MDNSProbeScheduler* probeScheduler;
+        INETDNS::MDNSProbeScheduler* probeScheduler;
 
         /**
          * @brief @ref ODnsExtension::MDNSResponseScheduler used for sending responses.
          */
-        ODnsExtension::MDNSResponseScheduler* responseScheduler;
+        INETDNS::MDNSResponseScheduler* responseScheduler;
 
         /**
          * @brief @ref ODnsExtension::MDNSQueryScheduler used for sending queries.
          */
-        ODnsExtension::MDNSQueryScheduler* queryScheduler;
+        INETDNS::MDNSQueryScheduler* queryScheduler;
 
         /**
          * @brief @ref ODnsExtension::MDNSAnnouncer used for announcing services.
          */
-        ODnsExtension::MDNSAnnouncer* announcer;
+        INETDNS::MDNSAnnouncer* announcer;
 
         /**
          * @brief This class performs queries and simulates dynamic mdns traffic.
          */
-        ODnsExtension::MDNSTrafficGenerator* mdnsTrafficGenerator;
+        INETDNS::MDNSTrafficGenerator* mdnsTrafficGenerator;
 
         /**
          * @brief @ref ODnsExtension::AnnouncerState , the state in which the announcer currently is.
          */
-        ODnsExtension::AnnouncerState announcer_state;
+        INETDNS::AnnouncerState announcer_state;
 
         /**
          * @brief A ttl based cache used for storing responses from other resolvers.
          */
-        ODnsExtension::DNSTTLCache* cache;
+        INETDNS::DNSTTLCache* cache;
 
         /**
          * @brief Socket over which DNS queries are sent/received.
@@ -126,7 +126,7 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver
         /**
          * @brief Vector of @ref MDNSService , that need to be published.
          */
-        std::vector<std::shared_ptr<ODnsExtension::MDNSService>> services;
+        std::vector<std::shared_ptr<INETDNS::MDNSService>> services;
 
         /**
          * @brief The resolvers hostname as a string.
@@ -146,17 +146,17 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver
         /**
          * @brief A map from strings (service types) to @ref ODnsExtension::PrivateMDNSService .
          */
-        std::unordered_map<std::string, std::shared_ptr<ODnsExtension::PrivateMDNSService>> *private_service_table;
+        std::unordered_map<std::string, std::shared_ptr<INETDNS::PrivateMDNSService>> *private_service_table;
 
         /**
          * @brief A map from strings (friend ids) to @ref ODnsExtension::FriendData .
          */
-        std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>> *friend_data_table;
+        std::unordered_map<std::string, std::shared_ptr<INETDNS::FriendData>> *friend_data_table;
 
         /**
          * @brief A map from strings (instance names) to @ref ODnsExtension::FriendData .
          */
-        std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>> *instance_name_table;
+        std::unordered_map<std::string, std::shared_ptr<INETDNS::FriendData>> *instance_name_table;
 
         /**
          * @brief The own instance name as a string.
@@ -270,7 +270,7 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver
          *
          * @param service Shared pointer to an @ref ODnsExtension::MDNSService that needs to be shared.
          */
-        void addService(std::shared_ptr<ODnsExtension::MDNSService> service)
+        void addService(std::shared_ptr<INETDNS::MDNSService> service)
         {
             this->services.push_back(service);
         }
@@ -280,7 +280,7 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver
          *
          * @param pService Shared pointer to a private mdns service structure
          */
-        void addPrivateService(std::shared_ptr<ODnsExtension::PrivateMDNSService> pService)
+        void addPrivateService(std::shared_ptr<INETDNS::PrivateMDNSService> pService)
         {
             std::cout << "Adding private service " << pService->service_type << std::endl;
             (*this->private_service_table)[pService->service_type] = pService;
@@ -297,12 +297,12 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver
                 (*this->private_service_table).erase((*this->private_service_table).find(service_type));
         }
 
-        void addOfferedTo(std::shared_ptr<ODnsExtension::PrivateMDNSService> pService, std::string offered_to)
+        void addOfferedTo(std::shared_ptr<INETDNS::PrivateMDNSService> pService, std::string offered_to)
         {
             (*this->private_service_table)[pService->service_type]->offered_to.push_back(offered_to);
         }
 
-        void addOfferedBy(std::shared_ptr<ODnsExtension::PrivateMDNSService> pService, std::string offered_by)
+        void addOfferedBy(std::shared_ptr<INETDNS::PrivateMDNSService> pService, std::string offered_by)
         {
             if (private_service_table->find(pService->service_type) != private_service_table->end())
             {
@@ -311,7 +311,7 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver
             else
             {
                 // add hull
-                std::shared_ptr<ODnsExtension::PrivateMDNSService> cpService(new ODnsExtension::PrivateMDNSService);
+                std::shared_ptr<INETDNS::PrivateMDNSService> cpService(new INETDNS::PrivateMDNSService);
                 cpService->service_type = pService->service_type;
                 cpService->is_private = pService->is_private;
                 // ignore txtrecord
@@ -325,7 +325,7 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver
          *
          * @param fdata Shared pointer to fully initialized @ref ODnsExtension::FriendData struct.
          */
-        void addFriend(std::shared_ptr<ODnsExtension::FriendData> fdata)
+        void addFriend(std::shared_ptr<INETDNS::FriendData> fdata)
         {
             // Map instance name to friend, as well as id
             (*friend_data_table)[fdata->pdata->friend_id] = fdata;
@@ -363,6 +363,8 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver
          * @param additionalPayload in this case the cPacket is passed
          */
         virtual void receiveSignal(std::unordered_map<std::string, int> parMap, void* additionalPayload);
+
+        virtual void notify();
 
     protected:
 

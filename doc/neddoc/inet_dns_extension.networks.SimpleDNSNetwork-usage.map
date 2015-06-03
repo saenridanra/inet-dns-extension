@@ -1,0 +1,6 @@
+<area shape="rect" id="node1" href="inet_dns_extension.networks.SimpleDNSNetwork.html" title="Network SimpleDNSNetwork" alt="" coords="261,5,401,31">
+<area shape="rect" id="node2" href="inet_dns_extension.applications.dns.DNSServerNode.html" title="Compound Module DNSServerNode" alt="" coords="5,79,125,104">
+<area shape="rect" id="node3" href="../../../inet/doc/neddoc/inet.nodes.ethernet.Eth1G.html" title="Channel Eth1G" alt="" coords="149,79,221,104">
+<area shape="rect" id="node4" href="../../../inet/doc/neddoc/inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator.html" title="Simple Module IPv4NetworkConfigurator" alt="" coords="246,79,415,104">
+<area shape="rect" id="node5" href="inet_dns_extension.applications.dns.DNSClientNode.html" title="Compound Module DNSClientNode" alt="" coords="439,79,555,104">
+<area shape="rect" id="node6" href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html" title="Compound Module Router" alt="" coords="580,79,652,104">

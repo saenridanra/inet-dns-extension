@@ -1,0 +1,6 @@
+<area shape="rect" id="node1" href="inet_dns_extension.networks.complex_dns_network.subnets.COM.html" title="Compound Module COM" alt="" coords="199,79,271,104">
+<area shape="rect" id="node2" href="inet_dns_extension.applications.dns.DNSServerNode.html" title="Compound Module DNSServerNode" alt="" coords="5,152,125,177">
+<area shape="rect" id="node3" href="../../../inet/doc/neddoc/inet.nodes.ethernet.Eth100G.html" title="Channel Eth100G" alt="" coords="150,152,223,177">
+<area shape="rect" id="node4" href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html" title="Compound Module Router" alt="" coords="248,152,320,177">
+<area shape="rect" id="node5" href="../../../inet/doc/neddoc/inet.nodes.ethernet.Eth10G.html" title="Channel Eth10G" alt="" coords="344,152,416,177">
+<area shape="rect" id="node6" href="inet_dns_extension.networks.complex_dns_network.ComplexDNSNetwork.html" title="Network ComplexDNSNetwork" alt="" coords="159,5,311,31">

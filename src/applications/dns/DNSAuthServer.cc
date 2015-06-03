@@ -43,7 +43,7 @@ void DNSAuthServer::handleMessage(cMessage *msg) {
 }
 
 DNSPacket* DNSAuthServer::handleQuery(
-        std::shared_ptr<ODnsExtension::Query> query) {
+        std::shared_ptr<INETDNS::Query> query) {
 
     DNSPacket* response;
     if (query->qdcount > 1) {
@@ -51,7 +51,7 @@ DNSPacket* DNSAuthServer::handleQuery(
         return response;
     }
 
-    ODnsExtension::DNSQuestion q;
+    INETDNS::DNSQuestion q;
 
     int id, opcode, rd, ra;
     int an_records = 0, ns_records = 0, ar_records = 0;
@@ -73,7 +73,7 @@ DNSPacket* DNSAuthServer::handleQuery(
     q = query->questions[0];
 
     int is_authoritative = 0;
-    int pos = ODnsExtension::stdstr_has_suffix(q.qname, config->getOrigin());
+    int pos = INETDNS::stdstr_has_suffix(q.qname, config->getOrigin());
 
     // check here if there are direct NS references to this record
     // then this server is not an authority and should instead
@@ -88,7 +88,7 @@ DNSPacket* DNSAuthServer::handleQuery(
     if (config->getOrigin() != q.qname
             && config->getOrigin() != trailing_qname) {
         ns_reference_hash = q.qname;
-        if (ODnsExtension::stdstr_has_suffix(q.qname, std::string(".")))
+        if (INETDNS::stdstr_has_suffix(q.qname, std::string(".")))
             ns_reference_hash = ns_reference_hash + std::string(":");
         else
             ns_reference_hash = ns_reference_hash + std::string(".:");
@@ -107,7 +107,7 @@ DNSPacket* DNSAuthServer::handleQuery(
             unsigned int max_len = 0;
             std::string tmp_ref_hash = "";
             for (auto it = (*zone).begin(); it != (*zone).end(); ++it) {
-                if (ODnsExtension::stdstr_has_suffix(ns_reference_hash,
+                if (INETDNS::stdstr_has_suffix(ns_reference_hash,
                                 it->first)) {
                     if (it->first.length() > max_len) {
                         max_len = it->first.length();
@@ -196,11 +196,11 @@ DNSPacket* DNSAuthServer::handleQuery(
     if (is_authoritative) {
         if (q.qtype == DNS_TYPE_VALUE_ANY) {
             // or the type..
-            const char** type_array = ODnsExtension::getTypeArray();
+            const char** type_array = INETDNS::getTypeArray();
             for (uint32_t i = 0; i < sizeof(type_array); i++) {
                 std::string type_str = std::string(type_array[i]);
                 namehash = q.qname;
-                if (ODnsExtension::stdstr_has_suffix(q.qname, std::string(".")))
+                if (INETDNS::stdstr_has_suffix(q.qname, std::string(".")))
                     namehash = namehash + std::string(":");
                 else
                     namehash = namehash + std::string(".:");
@@ -210,14 +210,14 @@ DNSPacket* DNSAuthServer::handleQuery(
                 // we basically just have to append every record that matches
                 // the hash to the answer section
                 answer_list = appendEntries(namehash, answer_list,
-                        ODnsExtension::getTypeValueForString(type_str),
+                        INETDNS::getTypeValueForString(type_str),
                         &an_records);
             }
 
         } else {
             // we have a specific record, so lets look it up in the hash table
             namehash = q.qname;
-            if (ODnsExtension::stdstr_has_suffix(q.qname, std::string(".")))
+            if (INETDNS::stdstr_has_suffix(q.qname, std::string(".")))
                 namehash = namehash + std::string(":");
             else
                 namehash = namehash + std::string(".:");
@@ -246,7 +246,7 @@ DNSPacket* DNSAuthServer::handleQuery(
                 if (q.qtype != DNS_TYPE_VALUE_CNAME) {
                     // get NS records
                     cnhash = q.qname;
-                    if (ODnsExtension::stdstr_has_suffix(q.qname,
+                    if (INETDNS::stdstr_has_suffix(q.qname,
                             std::string(".")))
                         cnhash = q.qname + std::string(":");
                     else
@@ -280,7 +280,7 @@ DNSPacket* DNSAuthServer::handleQuery(
                 if (q.qtype != DNS_TYPE_VALUE_CNAME) {
                     // get NS records
                     cnhash = q.qname;
-                    if (ODnsExtension::stdstr_has_suffix(q.qname,
+                    if (INETDNS::stdstr_has_suffix(q.qname,
                             std::string(".")))
                         cnhash = q.qname + std::string(":");
                     else
@@ -313,7 +313,7 @@ DNSPacket* DNSAuthServer::handleQuery(
 
         if (an_records == 0) {   // no entry found, although authoritative
                                  // append SOA
-            response = ODnsExtension::createResponse(msg_name, 1, 0, 0, 0, id,
+            response = INETDNS::createResponse(msg_name, 1, 0, 0, 0, id,
                     opcode, 1, rd, ra, 3);
         } else {
             // append authority
@@ -322,12 +322,12 @@ DNSPacket* DNSAuthServer::handleQuery(
                 ar_list = appendAdditionals(ns_list, ar_list, &ar_records);
             }
 
-            response = ODnsExtension::createResponse(msg_name, 1, an_records,
+            response = INETDNS::createResponse(msg_name, 1, an_records,
                     ns_records, ar_records, id, opcode, 1, rd, ra, 0);
         }
 
-        ODnsExtension::appendQuestion(response,
-                ODnsExtension::copyDnsQuestion(&q), 0);
+        INETDNS::appendQuestion(response,
+                INETDNS::copyDnsQuestion(&q), 0);
     } else {
         // we're not authoritative, but maybe we have an entry that points
         // to an NS that is authoritative for a suffix of the query
@@ -353,12 +353,12 @@ DNSPacket* DNSAuthServer::handleQuery(
             DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, &ar_records);
 
             // response with with no AA set
-            response = ODnsExtension::createResponse(msg_name, 1, an_records,
+            response = INETDNS::createResponse(msg_name, 1, an_records,
                     ns_records, ar_records, id, opcode, 0, rd, ra, 0);
 
             // set question
-            ODnsExtension::appendQuestion(response,
-                    ODnsExtension::copyDnsQuestion(&q), 0);
+            INETDNS::appendQuestion(response,
+                    INETDNS::copyDnsQuestion(&q), 0);
 
         } else if (config->hasEntry(reference_hash)) {
             found_entry = true;
@@ -373,7 +373,7 @@ DNSPacket* DNSAuthServer::handleQuery(
                 DNS_TYPE_STR_AAAA, DNS_TYPE_VALUE_AAAA, &ar_records);
 
                 // response with with no AA set
-                response = ODnsExtension::createResponse(msg_name, 1,
+                response = INETDNS::createResponse(msg_name, 1,
                         an_records, ns_records, ar_records, id, opcode, 0, rd,
                         ra, 0);
             }
@@ -392,7 +392,7 @@ DNSPacket* DNSAuthServer::handleQuery(
                     // do the initial query towards a root server
                     // pick at random
                     int p = intrand(rootServers.size());
-                    DNSPacket *root_q = ODnsExtension::createQuery(msg_name,
+                    DNSPacket *root_q = INETDNS::createQuery(msg_name,
                             query->questions[0].qname, DNS_CLASS_IN,
                             query->questions[0].qtype, id, 1);
 
@@ -402,14 +402,14 @@ DNSPacket* DNSAuthServer::handleQuery(
 
                 } else {
                     // response with not found err
-                    response = ODnsExtension::createResponse(msg_name, 1,
+                    response = INETDNS::createResponse(msg_name, 1,
                             an_records, ns_records, ar_records, id, opcode, 0,
                             rd, ra, 0);
                 }
 
                 // set question
-                ODnsExtension::appendQuestion(response,
-                        ODnsExtension::copyDnsQuestion(&q), 0);
+                INETDNS::appendQuestion(response,
+                        INETDNS::copyDnsQuestion(&q), 0);
             } else {
                 //TODO; Iterative answer.
                 response = DNSServerBase::unsupportedOperation(query);
@@ -422,19 +422,19 @@ DNSPacket* DNSAuthServer::handleQuery(
     int index = 0;
     if (an_records > 0) {
         for (auto it = answer_list.begin(); it != answer_list.end(); ++it) {
-            ODnsExtension::appendAnswer(response, *it, index++);
+            INETDNS::appendAnswer(response, *it, index++);
         }
     }
     if (ns_records > 0) {
         index = 0;
         for (auto it = ns_list.begin(); it != ns_list.end(); ++it) {
-            ODnsExtension::appendAuthority(response, *it, index++);
+            INETDNS::appendAuthority(response, *it, index++);
         }
     }
     if (ar_records > 0) {
         index = 0;
         for (auto it = ar_list.begin(); it != ar_list.end(); ++it) {
-            ODnsExtension::appendAdditional(response, *it, index++);
+            INETDNS::appendAdditional(response, *it, index++);
         }
     }
     if (an_records == 0 && ns_records == 0 && ar_records == 0) {
@@ -469,14 +469,14 @@ std::list<std::shared_ptr<DNSRecord>> DNSAuthServer::appendEntries(
         std::string hash, std::list<std::shared_ptr<DNSRecord>> dstlist,
         int type, int *num_records) {
     std::list<std::shared_ptr<zone_entry>> entries = config->getEntry(hash);
-    std::shared_ptr<ODnsExtension::DNSRecord> rr;
+    std::shared_ptr<INETDNS::DNSRecord> rr;
 
     for (auto entry : entries) {
-        rr = std::shared_ptr < ODnsExtension::DNSRecord > (new DNSRecord());
+        rr = std::shared_ptr < INETDNS::DNSRecord > (new DNSRecord());
         rr->rdata = NULL;
         rr->strdata = std::string(entry->data);
 
-        if (ODnsExtension::stdstr_has_suffix(entry->domain,
+        if (INETDNS::stdstr_has_suffix(entry->domain,
                 config->getOrigin())) {
             rr->rname = std::string(entry->domain);
         } else {
@@ -509,8 +509,8 @@ std::list<std::shared_ptr<DNSRecord>> DNSAuthServer::appendTransitiveEntries(
         // calculate hash from domain + type + class
         // first ar hash is for A records..
         if (record->rtype == DNS_TYPE_VALUE_SRV) {
-            std::shared_ptr<ODnsExtension::SRVData> srv =
-                    std::static_pointer_cast < ODnsExtension::SRVData
+            std::shared_ptr<INETDNS::SRVData> srv =
+                    std::static_pointer_cast < INETDNS::SRVData
                             > (record->rdata);
             hash = srv->target + std::string(":") + std::string(DNS_TYPE_STR)
                     + std::string(":") + std::string(DNS_CLASS_STR_IN);
@@ -522,18 +522,18 @@ std::list<std::shared_ptr<DNSRecord>> DNSAuthServer::appendTransitiveEntries(
 
         std::list<std::shared_ptr<zone_entry>> transitive_entries =
                 config->getEntry(hash);
-        std::shared_ptr<ODnsExtension::DNSRecord> dns_record;
+        std::shared_ptr<INETDNS::DNSRecord> dns_record;
 
         // go through
         for (auto it_2 = transitive_entries.begin();
                 it_2 != transitive_entries.end(); ++it_2) {
             auto entry = *it_2;
-            dns_record = std::shared_ptr < ODnsExtension::DNSRecord
+            dns_record = std::shared_ptr < INETDNS::DNSRecord
                     > (new DNSRecord());
             dns_record->rdata = NULL;
             dns_record->strdata = std::string(entry->data);
 
-            if (ODnsExtension::stdstr_has_suffix(entry->domain,
+            if (INETDNS::stdstr_has_suffix(entry->domain,
                     config->getOrigin())) {
                 dns_record->rname = std::string(entry->domain);
             } else {

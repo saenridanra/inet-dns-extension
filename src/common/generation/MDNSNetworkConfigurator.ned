@@ -13,7 +13,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package opp_dns_extension.common.generation;
+package inet_dns_extension.common.generation;
 
 simple MDNSNetworkConfigurator{
     parameters:

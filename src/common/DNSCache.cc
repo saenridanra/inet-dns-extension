@@ -21,7 +21,7 @@
 
 #include <DNSCache.h>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 DNSCache::DNSCache() {
 }

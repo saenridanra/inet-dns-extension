@@ -16,7 +16,7 @@ var searchData=
   ['watch_5fset',['WATCH_SET',['/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosWatch.html#ga4a79ddd0849547eef079bc04ed0bc0f6',1,]]],
   ['watch_5fvector',['WATCH_VECTOR',['/home/saen/Programme.local/omnetpp-4.6//doc/api/group__MacrosWatch.html#gab149d308c85e2b71912bea91fed06efb',1,]]],
   ['weibull',['weibull',['/home/saen/Programme.local/omnetpp-4.6//doc/api/group__RandomNumbersCont.html#gacd8b973129e9dbf2936d3aed65eb00d3',1,]]],
-  ['weight',['weight',['../d3/daf/structODnsExtension_1_1SRVData.html#a36e536914cfa01ddbe0a0e11266831f4',1,'ODnsExtension::SRVData']]],
+  ['weight',['weight',['../d4/d70/structINETDNS_1_1SRVData.html#a0c4905678ad9ed21736f9711b636b99f',1,'INETDNS::SRVData']]],
   ['what',['what',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcException.html#aec27fc122c18bc5432fb798188bb0af7',1,'cException']]],
-  ['withdraw',['withdraw',['../d4/dcc/classODnsExtension_1_1MDNSAnnouncer.html#a704afbe0ada6568a8ccb9c0da0893052',1,'ODnsExtension::MDNSAnnouncer']]]
+  ['withdraw',['withdraw',['../d4/dd9/classINETDNS_1_1MDNSAnnouncer.html#a46f7357fa5314621c9f391fd8e77b8e8',1,'INETDNS::MDNSAnnouncer']]]
 ];

@@ -13,11 +13,11 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package opp_dns_extension.networks.simple_mdns_example;
+package inet_dns_extension.networks.simple_mdns_example;
 
 import inet.nodes.inet.Router;
 import inet.nodes.inet.StandardHost;
-import opp_dns_extension.applications.mdns.MDNSNode;
+import inet_dns_extension.applications.mdns.MDNSNode;
 import inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator;
 import inet.nodes.ethernet.Eth1G;
 

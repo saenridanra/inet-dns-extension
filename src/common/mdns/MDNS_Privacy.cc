@@ -21,7 +21,7 @@
 
 #include <MDNS_Privacy.h>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 std::regex privacy_type_expr ("(.*)(_.+\\._.+\\.local)");
 
@@ -38,17 +38,17 @@ std::string extract_stype(std::string label)
     return match;
 }
 
-std::shared_ptr<ODnsExtension::PrivateMDNSService> private_service_new(std::string service_type, int is_private)
+std::shared_ptr<INETDNS::PrivateMDNSService> private_service_new(std::string service_type, int is_private)
 {
-    std::shared_ptr<ODnsExtension::PrivateMDNSService> service(new ODnsExtension::PrivateMDNSService);
+    std::shared_ptr<INETDNS::PrivateMDNSService> service(new INETDNS::PrivateMDNSService);
     service->service_type = service_type;
     service->is_private = is_private;
     return service;
 }
 
-std::shared_ptr<ODnsExtension::PairingData> pairing_data_new(std::string crypto_key, std::string friend_id, std::string privacy_instance_name)
+std::shared_ptr<INETDNS::PairingData> pairing_data_new(std::string crypto_key, std::string friend_id, std::string privacy_instance_name)
 {
-    std::shared_ptr<ODnsExtension::PairingData> pdata(new ODnsExtension::PairingData);
+    std::shared_ptr<INETDNS::PairingData> pdata(new INETDNS::PairingData);
     pdata->crypto_key = crypto_key;
     pdata->friend_id = friend_id;
     pdata->privacy_service_instance_name = privacy_instance_name;
@@ -56,9 +56,9 @@ std::shared_ptr<ODnsExtension::PairingData> pairing_data_new(std::string crypto_
     return pdata;
 }
 
-std::shared_ptr<ODnsExtension::FriendData> friend_data_new(std::shared_ptr<ODnsExtension::PairingData> pdata, int port)
+std::shared_ptr<INETDNS::FriendData> friend_data_new(std::shared_ptr<INETDNS::PairingData> pdata, int port)
 {
-    std::shared_ptr<ODnsExtension::FriendData> fdata(new ODnsExtension::FriendData);
+    std::shared_ptr<INETDNS::FriendData> fdata(new INETDNS::FriendData);
     fdata->pdata = pdata;
     fdata->port = port;
     fdata->online = 0;

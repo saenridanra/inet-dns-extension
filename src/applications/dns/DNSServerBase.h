@@ -19,8 +19,8 @@
  THE SOFTWARE.
  */
 
-#ifndef __OPP_DNS_EXTENSION_DNSSERVERBASE_H_
-#define __OPP_DNS_EXTENSION_DNSSERVERBASE_H_
+#ifndef __INETDNS_DNSSERVERBASE_H_
+#define __INETDNS_DNSSERVERBASE_H_
 
 #include <omnetpp.h>
 
@@ -38,7 +38,7 @@
 #include "unordered_map"
 
 
-namespace ODnsExtension{
+namespace INETDNS{
 /**
  * @brief @ref CachedQuery structure
  *
@@ -57,7 +57,7 @@ typedef struct CachedQuery{
     /**
      * @brief Smart Pointer to the actual query.
      */
-    std::shared_ptr<ODnsExtension::Query> query;
+    std::shared_ptr<INETDNS::Query> query;
 
     CachedQuery(): internal_id(0) {};
 } cached_query;
@@ -89,14 +89,14 @@ class DNSServerBase : public cSimpleModule
      *
      * , so that they can be resolved recursively.
      */
-    std::unordered_map<int, std::shared_ptr<ODnsExtension::CachedQuery>> queryCache;
+    std::unordered_map<int, std::shared_ptr<INETDNS::CachedQuery>> queryCache;
 
     /**
      * @brief Cached responses from other name servers
      *
      * , s.t. the server does not need to query recursively if a valid record is still available.
      */
-    ODnsExtension::DNSCache* responseCache;
+    INETDNS::DNSCache* responseCache;
 
     /**
      * The @ref IPvXAddresses of the rootServers within the network.
@@ -121,7 +121,7 @@ class DNSServerBase : public cSimpleModule
      * @return
      *      newly created unsupported operation packet
      */
-    virtual DNSPacket* unsupportedOperation(std::shared_ptr<ODnsExtension::Query> q);
+    virtual DNSPacket* unsupportedOperation(std::shared_ptr<INETDNS::Query> q);
 
     /**
      * @brief This method sends a previously generated @ref DNSPacket to a receiver.
@@ -136,7 +136,7 @@ class DNSServerBase : public cSimpleModule
      * @return A @ref DNSPacket that is sent by this server to the querier. When NULL the @ref DNSServerBase
      * assumes recursive resolving has been intiated and caches the query for further processing.
      */
-    virtual DNSPacket* handleQuery(std::shared_ptr<ODnsExtension::Query> query);
+    virtual DNSPacket* handleQuery(std::shared_ptr<INETDNS::Query> query);
 
     /**
      * @brief When receiving a response this method is called
@@ -161,7 +161,7 @@ class DNSServerBase : public cSimpleModule
      *
      * @return 1 if successful, 0 otherwise.
      */
-    int store_in_query_cache(int id, std::shared_ptr<ODnsExtension::Query> query);
+    int store_in_query_cache(int id, std::shared_ptr<INETDNS::Query> query);
 
     /**
      * @brief Creates a unique id for recursive resolving.
@@ -177,7 +177,7 @@ class DNSServerBase : public cSimpleModule
      * @param id unique id, identifying the query.
      * @param cq the @ref CachedQuery that needs to be removed
      */
-    int remove_query_from_cache(int id, std::shared_ptr<ODnsExtension::CachedQuery> cq);
+    int remove_query_from_cache(int id, std::shared_ptr<INETDNS::CachedQuery> cq);
 
     /**
      * @brief Retrieve a @ref CachedQuery from the cache.
@@ -186,7 +186,7 @@ class DNSServerBase : public cSimpleModule
      *
      * @return Smart pointer to the @ref CachedQuery
      */
-    std::shared_ptr<ODnsExtension::CachedQuery> get_query_from_cache(int id);
+    std::shared_ptr<INETDNS::CachedQuery> get_query_from_cache(int id);
 
 };
 

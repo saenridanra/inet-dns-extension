@@ -41,7 +41,7 @@
 #include <memory>
 #include <algorithm>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 #define MDNS_PROBE_WAIT 250 // wait 250ms, if no response, go to next state
 
@@ -138,17 +138,17 @@ protected:
     /**
      * @brief A map from strings (service types) to @ref ODnsExtension::PrivateMDNSService .
      */
-    std::unordered_map<std::string, std::shared_ptr<ODnsExtension::PrivateMDNSService>> *private_service_table;
+    std::unordered_map<std::string, std::shared_ptr<INETDNS::PrivateMDNSService>> *private_service_table;
 
     /**
      * @brief A map from strings (friend ids) to @ref ODnsExtension::FriendData .
      */
-    std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>> *friend_data_table;
+    std::unordered_map<std::string, std::shared_ptr<INETDNS::FriendData>> *friend_data_table;
 
     /**
      * @brief A map from strings (instance names) to @ref ODnsExtension::FriendData .
      */
-    std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>> *instance_name_table;
+    std::unordered_map<std::string, std::shared_ptr<INETDNS::FriendData>> *instance_name_table;
 
     /**
      * @brief Whether privacy extenstion is active.

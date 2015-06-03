@@ -35,7 +35,7 @@
 #include <string>
 #include <memory>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 /**
  * Defining type values according to the RFC

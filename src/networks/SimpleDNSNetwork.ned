@@ -18,17 +18,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package opp_dns_extension.networks;
+package inet_dns_extension.networks;
 
-import opp_dns_extension.applications.dns.DNSAuthServer;
+import inet_dns_extension.applications.dns.DNSAuthServer;
 import inet.nodes.ethernet.Eth1G;
 import inet.nodes.inet.Router;
 import inet.nodes.inet.StandardHost;
-import opp_dns_extension.applications.dns.DNSServerNode;
-import opp_dns_extension.applications.dns.DNSClientNode;
+import inet_dns_extension.applications.dns.DNSServerNode;
+import inet_dns_extension.applications.dns.DNSClientNode;
 import inet.transport.IUDP;
 import inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator;
-import opp_dns_extension.applications.dns.DNSClientTraffGen;
+import inet_dns_extension.applications.dns.DNSClientTraffGen;
 
 network SimpleDNSNetwork
 {

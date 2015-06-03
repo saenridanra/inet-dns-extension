@@ -1,7 +1,7 @@
 var DNSTTLCache_8h =
 [
-    [ "DNSTimeRecord", "db/dfe/structODnsExtension_1_1DNSTimeRecord.html", "db/dfe/structODnsExtension_1_1DNSTimeRecord" ],
-    [ "DNSTimeRecordComparator", "d0/d5c/classODnsExtension_1_1DNSTimeRecordComparator.html", "d0/d5c/classODnsExtension_1_1DNSTimeRecordComparator" ],
-    [ "DNSTTLCache", "df/d6a/classODnsExtension_1_1DNSTTLCache.html", "df/d6a/classODnsExtension_1_1DNSTTLCache" ],
-    [ "dns_time_record", "da/d34/DNSTTLCache_8h.html#a16bf38c869208dfbd8d61da57f716691", null ]
+    [ "DNSTimeRecord", "d8/db7/structINETDNS_1_1DNSTimeRecord.html", "d8/db7/structINETDNS_1_1DNSTimeRecord" ],
+    [ "DNSTimeRecordComparator", "da/dd3/classINETDNS_1_1DNSTimeRecordComparator.html", "da/dd3/classINETDNS_1_1DNSTimeRecordComparator" ],
+    [ "DNSTTLCache", "d7/d9b/classINETDNS_1_1DNSTTLCache.html", "d7/d9b/classINETDNS_1_1DNSTTLCache" ],
+    [ "dns_time_record", "da/d34/DNSTTLCache_8h.html#abefe782e12afe55e2e1fb547c1cfa8c0", null ]
 ];

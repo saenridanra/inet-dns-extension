@@ -41,7 +41,7 @@
 #include <unordered_map>
 #include "string.h"
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 // The packet was not a DNS Packet
 #define E_NOT_A_DNSPACKET 1;

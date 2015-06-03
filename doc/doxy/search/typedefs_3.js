@@ -5,7 +5,7 @@ var searchData=
   ['mathfunc3args',['MathFunc3Args',['/home/saen/Programme.local/omnetpp-4.6//doc/api/group__EnumsTypes.html#ga17b34e3481c3b3109f62e0be61987b8e',1,]]],
   ['mathfunc4args',['MathFunc4Args',['/home/saen/Programme.local/omnetpp-4.6//doc/api/group__EnumsTypes.html#gad3926f4c5f03adcd8711aba50ebf92e3',1,]]],
   ['mathfuncnoarg',['MathFuncNoArg',['/home/saen/Programme.local/omnetpp-4.6//doc/api/group__EnumsTypes.html#ga34fb283ee632e346870a8baca410c7dc',1,]]],
-  ['mdns_5fkey',['mdns_key',['../d8/d72/namespaceODnsExtension.html#a4e2fdc48303511e3f99d2b2335cb5aff',1,'ODnsExtension']]],
-  ['mdns_5fresponse_5fjob',['mdns_response_job',['../d8/d72/namespaceODnsExtension.html#aab73a7b83559bbb5d2ddd3f1c920b610',1,'ODnsExtension']]],
-  ['mdns_5fservice',['mdns_service',['../d8/d72/namespaceODnsExtension.html#a629ca88667a58ca975910cd07d6214a6',1,'ODnsExtension']]]
+  ['mdns_5fkey',['mdns_key',['../d3/da4/namespaceINETDNS.html#ae85f52eebd20a635cb4cd7e25657f72a',1,'INETDNS']]],
+  ['mdns_5fresponse_5fjob',['mdns_response_job',['../d3/da4/namespaceINETDNS.html#a27348ae33bf2c2448126d2917726e6ba',1,'INETDNS']]],
+  ['mdns_5fservice',['mdns_service',['../d3/da4/namespaceINETDNS.html#ac0108268e00e05106db7fb71edc63c5a',1,'INETDNS']]]
 ];

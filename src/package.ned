@@ -1,3 +1,3 @@
-package opp_dns_extension;
+package inet_dns_extension;
 
 @license(LGPL);

@@ -13,12 +13,12 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package opp_dns_extension.networks.stateless_network.subnets;
+package inet_dns_extension.networks.stateless_network.subnets;
 
 import inet.nodes.ethernet.Eth100G;
 import inet.nodes.ethernet.Eth10G;
 import inet.nodes.inet.Router;
-import opp_dns_extension.applications.dns.DNSServerNode;
+import inet_dns_extension.applications.dns.DNSServerNode;
 
 
 module DE

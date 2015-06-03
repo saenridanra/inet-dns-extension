@@ -1,0 +1,6 @@
+<area shape="rect" id="node1" href="inet_dns_extension.applications.mdns.MDNSNode.html" title="Compound Module MDNSNode" alt="" coords="229,79,322,104">
+<area shape="rect" id="node2" href="inet_dns_extension.applications.mdns.MDNSResolver.html" title="Simple Module MDNSResolver" alt="" coords="153,152,267,177">
+<area shape="rect" id="node3" href="ned.IdealChannel.html" title="Channel IdealChannel" alt="" coords="291,152,390,177">
+<area shape="rect" id="node4" href="inet_dns_extension.networks.dynamic_mdns_network.Dynamic_mdns_network.html" title="Network Dynamic_mdns_network" alt="" coords="5,5,172,31">
+<area shape="rect" id="node5" href="inet_dns_extension.networks.simple_mdns_example.Simple_mdns_example.html" title="Network Simple_mdns_example" alt="" coords="197,5,354,31">
+<area shape="rect" id="node6" href="inet_dns_extension.networks.simple_mdns_privacy_example.Simple_mdns_privacy_example.html" title="Network Simple_mdns_privacy_example" alt="" coords="379,5,585,31">

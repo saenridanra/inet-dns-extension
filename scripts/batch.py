@@ -14,7 +14,7 @@ from multiprocessing import Process
 
     usage example:
 
-    ./batch.py --PROJECT_PATH=/path/to/opp_dns_extension \
+    ./batch.py --PROJECT_PATH=/path/to/inet_dns_extensionn \
                --INET_PATH=/path/to/inet \
                --SIMULATION_DIR=src/networks/dynamic_mdns_network \
                --CONFIG=Batch10Resolvers --RUN_LOW=0 --RUN_HIGH=825 \
@@ -34,10 +34,14 @@ def performRun(low, high):
     global NUM_PROCESSES
 
     while low < high and low < RUN_HIGH:
+    	s = time.time()
         # create command with current from value
         print "Starting RUN: %s" % low
-        cmd = 'cd {0}/{2} && opp_run -l {0}/src/opp_dns_extension -l {0}/lib/inet -n "{0}/src;{1}/src" {0}/{2}/omnetpp.ini -u Cmdenv -c {3} -r {4} > /dev/null'.format(PROJECT_PATH, INET_PATH, SIMULATION_DIR, CONFIG, low)
+        cmd = 'cd {0}/{2} && opp_run -l {0}/srcinet_dns_extensionon -l {0}/lib/inet -n "{0}/src;{1}/src" {0}/{2}/omnetpp.ini -u Cmdenv -c {3} -r {4} > /dev/null'.format(PROJECT_PATH, INET_PATH, SIMULATION_DIR, CONFIG, low)
         run_command(cmd)
+        e = time.time()
+        w =  e - s
+        print "Run took: " + str(w) + "s"
         low += 1
 
 def main(argv):

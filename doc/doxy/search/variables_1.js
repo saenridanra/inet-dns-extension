@@ -1,20 +1,21 @@
 var searchData=
 [
-  ['additional',['additional',['../d2/d0f/structODnsExtension_1_1Response.html#a762bf363a4e6ef333353ca1c9e719251',1,'ODnsExtension::Response']]],
+  ['additional',['additional',['../d9/d4a/structINETDNS_1_1Response.html#a7ef05fa7c03a642493ff4ec8ed8cd582',1,'INETDNS::Response']]],
   ['additional_5farraysize',['additional_arraysize',['../da/d67/classDNSPacket.html#a95156797943ba7ad16257102e7dd71d9',1,'DNSPacket']]],
   ['additional_5fvar',['additional_var',['../da/d67/classDNSPacket.html#a94479d1f7c5b60cf54abbe03988a0e18',1,'DNSPacket']]],
-  ['address',['address',['../de/d64/structODnsExtension_1_1FriendData.html#a733ed97efb89d5f90625998bb185618e',1,'ODnsExtension::FriendData']]],
-  ['ancount',['ancount',['../dc/d23/structODnsExtension_1_1Query.html#a47c4ce4347cd30c8803bc25eb27e5f4e',1,'ODnsExtension::Query::ancount()'],['../d2/d0f/structODnsExtension_1_1Response.html#a115a2db2ceff47e50f79535a8e88839f',1,'ODnsExtension::Response::ancount()']]],
+  ['address',['address',['../d7/d7e/structINETDNS_1_1FriendData.html#a0db7cd044a0520ddf22328d0d63bd00d',1,'INETDNS::FriendData']]],
+  ['ancount',['ancount',['../d9/dd9/structINETDNS_1_1Query.html#ace7ac04f685a8ac32e1a046884e21947',1,'INETDNS::Query::ancount()'],['../d9/d4a/structINETDNS_1_1Response.html#aecd1f36db3be977708fb02d0ac9bc352',1,'INETDNS::Response::ancount()']]],
   ['ancount_5fvar',['ancount_var',['../da/d67/classDNSPacket.html#a749e8d1174cb0ed75dfb2e87a95f3910',1,'DNSPacket']]],
-  ['announcer',['announcer',['../dc/d51/classMDNSResolver.html#a37beb38d854f2b2736c75e64e9df8a0e',1,'MDNSResolver']]],
-  ['announcer_5fstate',['announcer_state',['../dc/d51/classMDNSResolver.html#aad0cda7253646d8c002ca02adc44708e',1,'MDNSResolver']]],
-  ['answers',['answers',['../d2/d0f/structODnsExtension_1_1Response.html#acc530c7480945c71ca9786defcc46c0f',1,'ODnsExtension::Response']]],
+  ['announcer',['announcer',['../dc/d51/classMDNSResolver.html#aad7e9edea948cc7719076ff89c3eddb7',1,'MDNSResolver']]],
+  ['announcer_5fstate',['announcer_state',['../dc/d51/classMDNSResolver.html#a8ec9199ab56a70e4ad18ba6b1c6ad1c1',1,'MDNSResolver']]],
+  ['answers',['answers',['../d9/d4a/structINETDNS_1_1Response.html#a85b4e10942e44cfd324a8ed52d4b428d',1,'INETDNS::Response']]],
   ['answers_5farraysize',['answers_arraysize',['../da/d67/classDNSPacket.html#a8a36d1f14885ca46ecd4ac9b67f24906',1,'DNSPacket']]],
   ['answers_5fvar',['answers_var',['../da/d67/classDNSPacket.html#a5f66e7e399673188ed288d7fa870fa12',1,'DNSPacket']]],
-  ['arcount',['arcount',['../dc/d23/structODnsExtension_1_1Query.html#adff65d8727be0be35a715dd1bba11b91',1,'ODnsExtension::Query::arcount()'],['../d2/d0f/structODnsExtension_1_1Response.html#a216e3f30406e241bc66ccb6ce42b88ea',1,'ODnsExtension::Response::arcount()']]],
+  ['arcount',['arcount',['../d9/dd9/structINETDNS_1_1Query.html#afc9efe94a7ae48a23ec49e18fcfdf296',1,'INETDNS::Query::arcount()'],['../d9/d4a/structINETDNS_1_1Response.html#a9882cee20c1e765c448edfdf62171645',1,'INETDNS::Response::arcount()']]],
   ['arcount_5fvar',['arcount_var',['../da/d67/classDNSPacket.html#a897ac097af39677bfb8efd87254abdde',1,'DNSPacket']]],
-  ['auth_5fcache',['auth_cache',['../d4/dcc/classODnsExtension_1_1MDNSAnnouncer.html#a88efd0b0703544a792ae1fe999aeb4b3',1,'ODnsExtension::MDNSAnnouncer::auth_cache()'],['../d7/d24/classODnsExtension_1_1MDNSResponseScheduler.html#aab8afa9fa9b570f8e1812d3d89c7a101',1,'ODnsExtension::MDNSResponseScheduler::auth_cache()']]],
-  ['authoritative',['authoritative',['../d2/d0f/structODnsExtension_1_1Response.html#a547e19ee95a382daffe4ab86f4434430',1,'ODnsExtension::Response']]],
+  ['auth_5fcache',['auth_cache',['../d4/dd9/classINETDNS_1_1MDNSAnnouncer.html#a63ef013cde7c4a93a868d3753fe2db47',1,'INETDNS::MDNSAnnouncer::auth_cache()'],['../d8/d3f/classINETDNS_1_1MDNSResponseScheduler.html#ac29c1d33a9809141a624f57eed516d95',1,'INETDNS::MDNSResponseScheduler::auth_cache()']]],
+  ['authoritative',['authoritative',['../d9/d4a/structINETDNS_1_1Response.html#a1274c496c11d33b99e88e26fcac1167b',1,'INETDNS::Response']]],
   ['authorities_5farraysize',['authorities_arraysize',['../da/d67/classDNSPacket.html#a7633d32159e770a6e103e63ded58c027',1,'DNSPacket']]],
-  ['authorities_5fvar',['authorities_var',['../da/d67/classDNSPacket.html#ad37ac4eed10930e117865d66df7311a2',1,'DNSPacket']]]
+  ['authorities_5fvar',['authorities_var',['../da/d67/classDNSPacket.html#ad37ac4eed10930e117865d66df7311a2',1,'DNSPacket']]],
+  ['average_5fuptime',['average_uptime',['../d8/db1/classMDNSNetworkConfigurator.html#abad98a956304fec18aed49b17e8139f6',1,'MDNSNetworkConfigurator']]]
 ];

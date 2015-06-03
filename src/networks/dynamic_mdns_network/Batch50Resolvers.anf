@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
   <inputs>
-    <inputs name="/opp_dns_extension/src/networks/dynamic_mdns_network/results/Batch50*.sca"/>
-    <inputs name="/opp_dns_extension/src/networks/dynamic_mdns_network/results/Batch50*.vec"/>
+    <inputs name="/inet_dns_extension/src/networks/dynamic_mdns_network/results/Batch50*.sca"/>
+    <inputs name="/inet_dns_extension/src/networks/dynamic_mdns_network/results/Batch50*.vec"/>
   </inputs>
   <datasets>
     <datasets name="MDNSProbeRcvd Count">
       <items xsi:type="scave:Add" filterPattern="name(*Probe*:count)"/>
-      <items xsi:type="scave:BarChart" name="MDNSProbe Count">
+      <items xsi:type="scave:BarChart" name="MDNSProbeRcvd Count">
         <filters xsi:type="scave:Select" filterPattern="mdnsProbeRcvd:count OR privateProbeRcvd:count"/>
-        <properties name="Graph.Title" value="MDNSProbe Count"/>
+        <properties name="Graph.Title" value="MDNSProbeRcvd Count"/>
         <properties name="Y.Axis.Title" value="Num # Packets"/>
         <properties name="Label.Font" value="Arial-regular-12"/>
+        <properties name="X.Label.RotateBy" value="90.0"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Border" value="true"/>
+        <properties name="Legend.Font" value="Arial-regular-12"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Bar.Placement" value="Stacked"/>
+        <groupByFields>measurement</groupByFields>
+        <groupByFields>experiment</groupByFields>
+        <averagedFields>module</averagedFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="MDNSQueryRcvd Count">
+      <items xsi:type="scave:Add" filterPattern="name(*Query*:count)"/>
+      <items xsi:type="scave:BarChart" name="MDNSQueryRcvd Count">
+        <filters xsi:type="scave:Select" filterPattern="mdnsQueryRcvd:count OR privateQueryRcvd:count"/>
+        <properties name="Graph.Title" value="MDNSQueryRcvd Count"/>
+        <properties name="Y.Axis.Title" value="Num # Packets"/>
+        <properties name="Label.Font" value="Arial-regular-12"/>
+        <properties name="X.Label.RotateBy" value="90.0"/>
         <properties name="Legend.Display" value="true"/>
         <properties name="Legend.Border" value="true"/>
         <properties name="Legend.Font" value="Arial-regular-12"/>
@@ -25,11 +45,31 @@
     </datasets>
     <datasets name="MDNSProbeRcvd Sum">
       <items xsi:type="scave:Add" filterPattern="name(*Probe*:sum*)"/>
-      <items xsi:type="scave:BarChart" name="MDNSProbe Sum">
+      <items xsi:type="scave:BarChart" name="MDNSProbeRcvd Sum">
         <filters xsi:type="scave:Select" filterPattern="&quot;mdnsProbeRcvd:sum(packetBytes)&quot; OR &quot;privateProbeRcvd:sum(packetBytes)&quot;"/>
-        <properties name="Graph.Title" value="MDNSProbe Sum"/>
+        <properties name="Graph.Title" value="MDNSProbeRcvd Sum"/>
         <properties name="Y.Axis.Title" value="Sum Packet bytes"/>
         <properties name="Label.Font" value="Arial-regular-12"/>
+        <properties name="X.Label.RotateBy" value="90.0"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Border" value="true"/>
+        <properties name="Legend.Font" value="Arial-regular-12"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Bar.Placement" value="Stacked"/>
+        <groupByFields>measurement</groupByFields>
+        <groupByFields>experiment</groupByFields>
+        <averagedFields>module</averagedFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="MDNSQueryRcvd Sum">
+      <items xsi:type="scave:Add" filterPattern="name(*Query*:sum*)"/>
+      <items xsi:type="scave:BarChart" name="MDNSQueryRcvd Sum">
+        <filters xsi:type="scave:Select" filterPattern="&quot;mdnsQueryRcvd:sum(packetBytes)&quot; OR &quot;privateQueryRcvd:sum(packetBytes)&quot;"/>
+        <properties name="Graph.Title" value="MDNSQueryRcvd Sum"/>
+        <properties name="Y.Axis.Title" value="Sum Packet bytes"/>
+        <properties name="Label.Font" value="Arial-regular-12"/>
+        <properties name="X.Label.RotateBy" value="90.0"/>
         <properties name="Legend.Display" value="true"/>
         <properties name="Legend.Border" value="true"/>
         <properties name="Legend.Font" value="Arial-regular-12"/>
@@ -43,12 +83,13 @@
     </datasets>
     <datasets name="MDNSResponseRcvd Count">
       <items xsi:type="scave:Add" filterPattern="mdnsResponseRcvd:count OR privateResponseRcvd:count"/>
-      <items xsi:type="scave:BarChart" name="MDNSResponse Count">
+      <items xsi:type="scave:BarChart" name="MDNSResponseRcvd Count">
         <filters xsi:type="scave:Select" filterPattern="mdnsResponseRcvd:count OR privateResponseRcvd:count"/>
-        <properties name="Graph.Title" value="MDNSResponse Count"/>
+        <properties name="Graph.Title" value="MDNSResponseRcvd Count"/>
         <properties name="Graph.Title.Font" value="Arial-regular-12"/>
         <properties name="Y.Axis.Title" value="Num # Packets"/>
         <properties name="Label.Font" value="Arial-regular-12"/>
+        <properties name="X.Label.RotateBy" value="90.0"/>
         <properties name="Legend.Display" value="true"/>
         <properties name="Legend.Border" value="true"/>
         <properties name="Legend.Font" value="Arial-regular-12"/>
@@ -62,12 +103,129 @@
     </datasets>
     <datasets name="MDNSResponseRcvd Sum">
       <items xsi:type="scave:Add" filterPattern="&quot;mdnsResponseRcvd:sum(packetBytes)&quot; OR &quot;privateResponseRcvd:sum(packetBytes)&quot;"/>
-      <items xsi:type="scave:BarChart" name="MDNSResponse Sum">
+      <items xsi:type="scave:BarChart" name="MDNSResponseRcvd Sum">
         <filters xsi:type="scave:Select" filterPattern="&quot;mdnsResponseRcvd:sum(packetBytes)&quot; OR &quot;privateResponseRcvd:sum(packetBytes)&quot;"/>
-        <properties name="Graph.Title" value="MDNSResponse Sum"/>
+        <properties name="Graph.Title" value="MDNSResponseRcvd Sum"/>
         <properties name="Graph.Title.Font" value="Arial-regular-12"/>
         <properties name="Y.Axis.Title" value="Sum Packet bytes"/>
         <properties name="Label.Font" value="Arial-regular-12"/>
+        <properties name="X.Label.RotateBy" value="90.0"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Border" value="true"/>
+        <properties name="Legend.Font" value="Arial-regular-12"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Bar.Placement" value="Stacked"/>
+        <groupByFields>measurement</groupByFields>
+        <groupByFields>experiment</groupByFields>
+        <averagedFields>module</averagedFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="MDNSProbeSent Count">
+      <items xsi:type="scave:Add" filterPattern="name(*ProbeSent:count)"/>
+      <items xsi:type="scave:BarChart" name="MDNSProbeSent Count">
+        <filters xsi:type="scave:Select" filterPattern="mdnsProbeSent:count OR privateProbeSent:count"/>
+        <properties name="Graph.Title" value="MDNSProbeSent Count"/>
+        <properties name="Y.Axis.Title" value="Num # Packets"/>
+        <properties name="Label.Font" value="Arial-regular-12"/>
+        <properties name="X.Label.RotateBy" value="60.0"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Border" value="true"/>
+        <properties name="Legend.Font" value="Arial-regular-12"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Bar.Placement" value="Stacked"/>
+        <groupByFields>measurement</groupByFields>
+        <groupByFields>experiment</groupByFields>
+        <averagedFields>module</averagedFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="MDNSQuerySent Count">
+      <items xsi:type="scave:Add" filterPattern="name(*QuerySent:count)"/>
+      <items xsi:type="scave:BarChart" name="MDNSQuerySent Count">
+        <filters xsi:type="scave:Select" filterPattern="mdnsQuerySent:count OR privateQuerySent:count"/>
+        <properties name="Graph.Title" value="MDNSQuerySent Count"/>
+        <properties name="Y.Axis.Title" value="Num # Packets"/>
+        <properties name="Label.Font" value="Arial-regular-12"/>
+        <properties name="X.Label.RotateBy" value="90.0"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Border" value="true"/>
+        <properties name="Legend.Font" value="Arial-regular-12"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Bar.Placement" value="Stacked"/>
+        <groupByFields>measurement</groupByFields>
+        <groupByFields>experiment</groupByFields>
+        <averagedFields>module</averagedFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="MDNSProbeSent Sum">
+      <items xsi:type="scave:Add" filterPattern="name(*ProbeSent:sum*)"/>
+      <items xsi:type="scave:BarChart" name="MDNSProbeSent Sum">
+        <filters xsi:type="scave:Select" filterPattern="&quot;mdnsProbeSent:sum(packetBytes)&quot; OR &quot;privateProbeSent:sum(packetBytes)&quot;"/>
+        <properties name="Graph.Title" value="MDNSProbeSent Sum"/>
+        <properties name="Y.Axis.Title" value="Sum Packet bytes"/>
+        <properties name="Label.Font" value="Arial-regular-12"/>
+        <properties name="X.Label.RotateBy" value="90.0"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Border" value="true"/>
+        <properties name="Legend.Font" value="Arial-regular-12"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Bar.Placement" value="Stacked"/>
+        <groupByFields>measurement</groupByFields>
+        <groupByFields>experiment</groupByFields>
+        <averagedFields>module</averagedFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="MDNSQuerySent Sum">
+      <items xsi:type="scave:Add" filterPattern="name(*QuerySent:sum*)"/>
+      <items xsi:type="scave:BarChart" name="MDNSQuerySent Sum">
+        <filters xsi:type="scave:Select" filterPattern="&quot;mdnsQuerySent:sum(packetBytes)&quot; OR &quot;privateQuerySent:sum(packetBytes)&quot;"/>
+        <properties name="Graph.Title" value="MDNSQuerySent Sum"/>
+        <properties name="Y.Axis.Title" value="Sum Packet bytes"/>
+        <properties name="Label.Font" value="Arial-regular-12"/>
+        <properties name="X.Label.RotateBy" value="90.0"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Border" value="true"/>
+        <properties name="Legend.Font" value="Arial-regular-12"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Bar.Placement" value="Stacked"/>
+        <groupByFields>measurement</groupByFields>
+        <groupByFields>experiment</groupByFields>
+        <averagedFields>module</averagedFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="MDNSResponseSent Count">
+      <items xsi:type="scave:Add" filterPattern="name(*ResponseSent:count)"/>
+      <items xsi:type="scave:BarChart" name="MDNSResponseSent Count">
+        <filters xsi:type="scave:Select" filterPattern="mdnsResponseSent:count OR privateResponseSent:count"/>
+        <properties name="Graph.Title" value="MDNSResponseSent Count"/>
+        <properties name="Graph.Title.Font" value="Arial-regular-12"/>
+        <properties name="Y.Axis.Title" value="Num # Packets"/>
+        <properties name="Label.Font" value="Arial-regular-12"/>
+        <properties name="X.Label.RotateBy" value="90.0"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Border" value="true"/>
+        <properties name="Legend.Font" value="Arial-regular-12"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Bar.Placement" value="Stacked"/>
+        <groupByFields>measurement</groupByFields>
+        <groupByFields>experiment</groupByFields>
+        <averagedFields>module</averagedFields>
+        <averagedFields>replication</averagedFields>
+      </items>
+    </datasets>
+    <datasets name="MDNSResponseSent Sum">
+      <items xsi:type="scave:Add" filterPattern="name(*ResponseSent:sum*)"/>
+      <items xsi:type="scave:BarChart" name="MDNSResponseSent Sum">
+        <filters xsi:type="scave:Select" filterPattern="&quot;mdnsResponseSent:sum(packetBytes)&quot; OR &quot;privateResponseSent:sum(packetBytes)&quot;"/>
+        <properties name="Graph.Title" value="MDNSResponseSent Sum"/>
+        <properties name="Graph.Title.Font" value="Arial-regular-12"/>
+        <properties name="Y.Axis.Title" value="Sum Packet bytes"/>
+        <properties name="Label.Font" value="Arial-regular-12"/>
+        <properties name="X.Label.RotateBy" value="90.0"/>
         <properties name="Legend.Display" value="true"/>
         <properties name="Legend.Border" value="true"/>
         <properties name="Legend.Font" value="Arial-regular-12"/>
@@ -81,9 +239,8 @@
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.1"/>
-    <chartSheets name="Probe Count / Sum" charts="//@datasets/@datasets.0/@items.1 //@datasets/@datasets.1/@items.1"/>
-    <chartSheets name="Response Count / Sum" charts="//@datasets/@datasets.2/@items.1 //@datasets/@datasets.3/@items.1"/>
-    <chartSheets name="All count/sum" charts="//@datasets/@datasets.0/@items.1 //@datasets/@datasets.1/@items.1 //@datasets/@datasets.2/@items.1 //@datasets/@datasets.3/@items.1"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.8/@items.1 //@datasets/@datasets.10/@items.1 //@datasets/@datasets.11/@items.1 //@datasets/@datasets.1/@items.1 //@datasets/@datasets.3/@items.1 //@datasets/@datasets.7/@items.1 //@datasets/@datasets.9/@items.1"/>
+    <chartSheets name="Rcvd count/sum" charts="//@datasets/@datasets.0/@items.1 //@datasets/@datasets.2/@items.1 //@datasets/@datasets.4/@items.1 //@datasets/@datasets.5/@items.1 //@datasets/@datasets.1/@items.1 //@datasets/@datasets.3/@items.1"/>
+    <chartSheets name="Sent count/sum" charts="//@datasets/@datasets.6/@items.1 //@datasets/@datasets.8/@items.1 //@datasets/@datasets.10/@items.1 //@datasets/@datasets.11/@items.1 //@datasets/@datasets.7/@items.1 //@datasets/@datasets.9/@items.1"/>
   </chartSheets>
 </scave:Analysis>

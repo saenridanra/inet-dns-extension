@@ -49,8 +49,10 @@ MDNSResolver::~MDNSResolver()
 {
     // delete objects used in here..
     // print the cache ..
-    std::unordered_map<std::string, std::list<std::shared_ptr<ODnsExtension::DNSTimeRecord>>>cache_table =
+#ifdef DEBUG_ENABLED
+    std::unordered_map<std::string, std::list<std::shared_ptr<INETDNS::DNSTimeRecord>>>cache_table =
     cache->get_cache_table();
+
     std::cout << "*********************** Printing Cache of " << hostname
     << " ***********************\n";
     for (auto kv : cache_table)
@@ -63,11 +65,12 @@ MDNSResolver::~MDNSResolver()
     for (auto kv : *friend_data_table)
     {
         if(! kv.second) continue;
-        std::shared_ptr<ODnsExtension::FriendData> fdata = kv.second;
+        std::shared_ptr<INETDNS::FriendData> fdata = kv.second;
         std::cout << fdata->pdata->friend_id << " online: " << fdata->online
         << std::endl;
 
     }
+#endif
 
     delete timeEventSet;
     delete probeScheduler;
@@ -93,32 +96,32 @@ void MDNSResolver::initialize(int stage)
         state = RUNNING;
 
         private_service_table =
-                new std::unordered_map<std::string, std::shared_ptr<ODnsExtension::PrivateMDNSService>>();
-        friend_data_table = new std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>>();
-        instance_name_table = new std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>>();
+                new std::unordered_map<std::string, std::shared_ptr<INETDNS::PrivateMDNSService>>();
+        friend_data_table = new std::unordered_map<std::string, std::shared_ptr<INETDNS::FriendData>>();
+        instance_name_table = new std::unordered_map<std::string, std::shared_ptr<INETDNS::FriendData>>();
 
     }
     else if (stage == 4)
     {
-        announcer_state = ODnsExtension::AnnouncerState::START;
+        announcer_state = INETDNS::AnnouncerState::START;
         cDisplayString& dispStr = this->getParentModule()->getDisplayString();
         dispStr.parse("i=device/laptop,#800000");
 
-        timeEventSet = new ODnsExtension::TimeEventSet();
+        timeEventSet = new INETDNS::TimeEventSet();
         selfMessage = new cMessage("timer");
         selfMessage->setKind(MDNS_KIND_TIMER);
 
         outSock.joinLocalMulticastGroups();
 
-        cache = new ODnsExtension::DNSTTLCache();
+        cache = new INETDNS::DNSTTLCache();
 
-        probeScheduler = new ODnsExtension::MDNSProbeScheduler(timeEventSet, &outSock, this);
+        probeScheduler = new INETDNS::MDNSProbeScheduler(timeEventSet, &outSock, this);
         probeScheduler->setCache(cache);
         probeScheduler->setCallback(MDNSResolver::callback);
-        queryScheduler = new ODnsExtension::MDNSQueryScheduler(timeEventSet, &outSock, this);
+        queryScheduler = new INETDNS::MDNSQueryScheduler(timeEventSet, &outSock, this);
         queryScheduler->setCache(cache);
         queryScheduler->setCallback(MDNSResolver::callback);
-        responseScheduler = new ODnsExtension::MDNSResponseScheduler(timeEventSet, &outSock, this);
+        responseScheduler = new INETDNS::MDNSResponseScheduler(timeEventSet, &outSock, this);
         responseScheduler->setAuthCache(cache);
         responseScheduler->setCallback(MDNSResolver::callback);
 
@@ -169,7 +172,7 @@ void MDNSResolver::initialize(int stage)
         for(auto service : services){
             serviceList.push_back(service->name + service->service_type);
         }
-        mdnsTrafficGenerator = new ODnsExtension::MDNSTrafficGenerator(probeScheduler, queryScheduler, responseScheduler, timeEventSet, &outSock, serviceList);
+        mdnsTrafficGenerator = new INETDNS::MDNSTrafficGenerator(probeScheduler, queryScheduler, responseScheduler, timeEventSet, &outSock, serviceList);
 
         if(hasPrivacy){
             mdnsTrafficGenerator->setPrivacyData(private_service_table, friend_data_table, instance_name_table, &privacySock);
@@ -177,7 +180,7 @@ void MDNSResolver::initialize(int stage)
 
         hostaddress = IPvXAddressResolver().addressOf(this->getParentModule());
 
-        announcer = new ODnsExtension::MDNSAnnouncer(probeScheduler, responseScheduler, timeEventSet, services,
+        announcer = new INETDNS::MDNSAnnouncer(probeScheduler, responseScheduler, timeEventSet, services,
                 hostname, &hostaddress);
 
         announcer->initialize();
@@ -224,9 +227,9 @@ void MDNSResolver::handleMessage(cMessage *msg)
 
             if (!srcAddress.get4().equals(IPv4Address().LOOPBACK_ADDRESS))
             {
-                if (ODnsExtension::isQuery(p))
+                if (INETDNS::isQuery(p))
                 {
-                    if(ODnsExtension::isProbe(p)){
+                    if(INETDNS::isProbe(p)){
                         if(p->par("private"))
                             emit(MDNSResolver::privateProbeRcvd, p);
                         else
@@ -241,7 +244,7 @@ void MDNSResolver::handleMessage(cMessage *msg)
 
                     handleQuery(p);
                 }
-                else if (ODnsExtension::isResponse(p))
+                else if (INETDNS::isResponse(p))
                 {
                     if(p->par("private"))
                         emit(MDNSResolver::privateResponseRcvd, p);
@@ -281,7 +284,7 @@ void MDNSResolver::elapsedTimeCheck()
             mdnsTrafficGenerator->stopQuerying();
         }
 
-        ODnsExtension::TimeEvent* event;
+        INETDNS::TimeEvent* event;
         while ((event = timeEventSet->getTimeEventIfDue()))
         {
             // perform the timeEvent..
@@ -292,20 +295,23 @@ void MDNSResolver::elapsedTimeCheck()
         {
             announcer_state = announcer->getState();
 
-            if (ODnsExtension::AnnouncerState::PROBE == announcer_state)
+            if (INETDNS::AnnouncerState::PROBE == announcer_state)
             { // Setting a module's position, icon and status icon:
+#ifdef DEBUG_ENABLED
                 const char* hostname_announced = "HOSTNAME ANNOUNCED, START PROBING";
                 this->getParentModule()->bubble(hostname_announced);
                 cDisplayString& dispStr = this->getParentModule()->getDisplayString();
                 dispStr.parse("i=device/laptop,orange");
+#endif
             }
-            else if (ODnsExtension::AnnouncerState::FINISHED == announcer_state)
+            else if (INETDNS::AnnouncerState::FINISHED == announcer_state)
             { // Setting a module's position, icon and status icon:
+#ifdef DEBUG_ENABLED
                 const char* finished_probing = "FINISHED PROBING";
                 this->getParentModule()->bubble(finished_probing);
                 cDisplayString& dispStr = this->getParentModule()->getDisplayString();
                 dispStr.parse("i=device/laptop,#449544,100");
-
+#endif
                 mdnsTrafficGenerator->startQuerying();
             }
         }
@@ -361,8 +367,8 @@ void MDNSResolver::handleQuery(DNSPacket* p)
     // go through the question section, find out which answers to respond with
     for (int i = 0; i < p->getQdcount(); i++)
     {
-        ODnsExtension::DNSQuestion question = p->getQuestions(i);
-        std::shared_ptr<ODnsExtension::MDNSKey> key = ODnsExtension::mdns_key_new(question.qname, question.qtype,
+        INETDNS::DNSQuestion question = p->getQuestions(i);
+        std::shared_ptr<INETDNS::MDNSKey> key = INETDNS::mdns_key_new(question.qname, question.qtype,
                 question.qclass);
         // allow suppression if there are no answers for this query
         // and the tc flag is not set
@@ -376,21 +382,21 @@ void MDNSResolver::handleQuery(DNSPacket* p)
         {
             // check if the record matches the key, if so append it to the answer list
             std::shared_ptr<DNSRecord> r = *it;
-            std::shared_ptr<ODnsExtension::MDNSKey> record_key = ODnsExtension::mdns_key_new(r->rname, r->rtype,
+            std::shared_ptr<INETDNS::MDNSKey> record_key = INETDNS::mdns_key_new(r->rname, r->rtype,
                     r->rclass);
 
             // ANY Question
             if (key->type == DNS_TYPE_VALUE_ANY)
             {
                 // only compare name and class
-                if (ODnsExtension::compareMDNSKeyANY(key, record_key))
+                if (INETDNS::compareMDNSKeyANY(key, record_key))
                 {
                     record_list.push_back(r);
                 }
             } // Normal Question
             else
             {
-                if (ODnsExtension::compareMDNSKey(key, record_key))
+                if (INETDNS::compareMDNSKey(key, record_key))
                 {
                     record_list.push_back(r);
                 }
@@ -399,36 +405,36 @@ void MDNSResolver::handleQuery(DNSPacket* p)
             // If the question did non include ANY or CNAME, we did not check for CNAMEs just yet
             if (key->type != DNS_TYPE_VALUE_CNAME && key->type != DNS_TYPE_VALUE_ANY)
             {
-                std::shared_ptr<ODnsExtension::MDNSKey> cname_key = ODnsExtension::mdns_key_new(question.qname,
+                std::shared_ptr<INETDNS::MDNSKey> cname_key = INETDNS::mdns_key_new(question.qname,
                 DNS_TYPE_VALUE_CNAME, question.qclass);
-                if (ODnsExtension::compareMDNSKey(cname_key, record_key))
+                if (INETDNS::compareMDNSKey(cname_key, record_key))
                 {
                     record_list.push_back(r);
                 }
 
                 // free the cname key
-                ODnsExtension::mdns_key_free(cname_key);
+                INETDNS::mdns_key_free(cname_key);
             }
 
-            ODnsExtension::mdns_key_free(record_key);
+            INETDNS::mdns_key_free(record_key);
         }
 
         // free the question key
-        ODnsExtension::mdns_key_free(key);
+        INETDNS::mdns_key_free(key);
     }
 
     // go through the answer section and perform KAS
     IPvXAddress* querier = &(check_and_cast<UDPDataIndication *>(p->getControlInfo()))->getSrcAddr();
     for (int i = 0; i < p->getAncount(); i++)
     {
-        std::shared_ptr<DNSRecord> answer = ODnsExtension::copyDnsRecord(&p->getAnswers(i));
+        std::shared_ptr<DNSRecord> answer = INETDNS::copyDnsRecord(&p->getAnswers(i));
         responseScheduler->suppress(answer, 0, querier, 0);
         // remove records that we may have appended to the list
         // since the records pointers are different we have to go through the list ..
         for (auto it = record_list.begin(); it != record_list.end(); ++it)
         {
             std::shared_ptr<DNSRecord> in_record = *it;
-            if (ODnsExtension::recordDataEqual(in_record, answer))
+            if (INETDNS::recordDataEqual(in_record, answer))
             {
                 // remove the record from the list ..
                 record_list.erase(it++);
@@ -439,7 +445,7 @@ void MDNSResolver::handleQuery(DNSPacket* p)
     // now check probes and check whether they collide
     for (int i = 0; i < p->getNscount(); i++)
     {
-        std::shared_ptr<DNSRecord> ns_record = ODnsExtension::copyDnsRecord(&p->getAuthorities(i));
+        std::shared_ptr<DNSRecord> ns_record = INETDNS::copyDnsRecord(&p->getAuthorities(i));
         announcer->check_conflict(ns_record); // check whether we have a problem
     }
 
@@ -453,13 +459,15 @@ void MDNSResolver::handleQuery(DNSPacket* p)
 void MDNSResolver::handleResponse(DNSPacket* p)
 {
     // go through the answer list of the packet
+#ifdef DEBUG_ENABLED
     std::string bubble_popup = "";
+#endif
     for (int i = 0; i < p->getAncount(); i++)
     {
         // check if the record conflicts, if not put it into the cache
-        std::shared_ptr<DNSRecord> r = ODnsExtension::copyDnsRecord(&p->getAnswers(i));
-        std::string type = std::string(ODnsExtension::getTypeStringForValue(r->rtype));
-        std::string _class = std::string(ODnsExtension::getClassStringForValue(r->rclass));
+        std::shared_ptr<DNSRecord> r = INETDNS::copyDnsRecord(&p->getAnswers(i));
+        std::string type = std::string(INETDNS::getTypeStringForValue(r->rtype));
+        std::string _class = std::string(INETDNS::getClassStringForValue(r->rclass));
         // create hash:
         std::string hash = r->rname + std::string(":") + type + std::string(":") + _class;
         if (r->rtype != DNS_TYPE_VALUE_ANY)
@@ -467,17 +475,19 @@ void MDNSResolver::handleResponse(DNSPacket* p)
             if (!announcer->check_conflict(r) && !cache->is_in_cache(hash))
             {
                 // put the record into the cache
+#ifdef DEBUG_ENABLED
                 bubble_popup.append("New cache entry:\n");
                 bubble_popup.append(r->rname);
                 bubble_popup.append(":");
-                bubble_popup.append(ODnsExtension::getTypeStringForValue(r->rtype));
+                bubble_popup.append(INETDNS::getTypeStringForValue(r->rtype));
                 bubble_popup.append(":");
-                bubble_popup.append(ODnsExtension::getClassStringForValue(r->rclass));
+                bubble_popup.append(INETDNS::getClassStringForValue(r->rclass));
                 bubble_popup.append("\nData: ");
                 bubble_popup.append(r->strdata.c_str());
                 bubble_popup.append("\n---------\n");
+#endif
 
-                cache->put_into_cache(ODnsExtension::copyDnsRecord(r));
+                cache->put_into_cache(INETDNS::copyDnsRecord(r));
 
                 // look if this record belongs to a friend announcing a privacy service
                 if (hasPrivacy && r->rtype == DNS_TYPE_VALUE_SRV)
@@ -486,10 +496,10 @@ void MDNSResolver::handleResponse(DNSPacket* p)
                     if (instance_name_table->find(r->rname) != instance_name_table->end())
                     {
                         // the hash table contains the user in question
-                        std::shared_ptr<ODnsExtension::FriendData> fdata = (*instance_name_table)[r->rname];
+                        std::shared_ptr<INETDNS::FriendData> fdata = (*instance_name_table)[r->rname];
                         // set to online and last_informed
                         if ((fdata->last_informed < simTime() - STR_SIMTIME("30s")
-                                || fdata->last_informed <= STR_SIMTIME("0s")) && !ODnsExtension::isGoodbye(r))
+                                || fdata->last_informed <= STR_SIMTIME("0s")) && !INETDNS::isGoodbye(r))
                         {
                             IPvXAddress querier =
                                     check_and_cast<UDPDataIndication *>(p->getControlInfo())->getSrcAddr();
@@ -507,7 +517,7 @@ void MDNSResolver::handleResponse(DNSPacket* p)
                             record->rclass = DNS_CLASS_IN;
                             record->ttl = 60 * 75;
 
-                            std::shared_ptr<ODnsExtension::SRVData> srv(new ODnsExtension::SRVData());
+                            std::shared_ptr<INETDNS::SRVData> srv(new INETDNS::SRVData());
                             srv->name = record->rname;
                             srv->service = std::string("._privacy._tcp.local");
                             srv->target = hostname + std::string(".local");
@@ -520,14 +530,18 @@ void MDNSResolver::handleResponse(DNSPacket* p)
                             record->rdata = srv;
                             record->rdlength = 6 + srv->name.length() + srv->service.length() + srv->target.length();
 
+#ifdef DEBUG_ENABLED
                             std::cout << "[" << hostname << "]: Friend " << fdata->pdata->friend_id << " came online\n";
+#endif
                             //responseScheduler->post(record, 0, NULL, 0); // post our own response into the scheduler
                             // it will be checked and sent via the privacy socket
                         }
-                        else if (ODnsExtension::isGoodbye(r))
+                        else if (INETDNS::isGoodbye(r))
                         {
                             // user went offline
+#ifdef DEBUG_ENABLED
                             std::cout << "[" << fdata->pdata->friend_id << "] went offline" << std::endl;
+#endif
                             fdata->online = 0;
                         }
                     }
@@ -538,11 +552,13 @@ void MDNSResolver::handleResponse(DNSPacket* p)
         }
     }
 
+#ifdef DEBUG_ENABLED
     if (bubble_popup != "")
     {
         EV << bubble_popup.c_str();
         this->getParentModule()->bubble(bubble_popup.c_str());
     }
+#endif
 }
 
 void MDNSResolver::initializeServices()
@@ -566,7 +582,7 @@ void MDNSResolver::initializeServiceFile(std::string file)
     std::fstream service_file(file, std::ios::in);
     int error = 0;
 
-    std::shared_ptr<ODnsExtension::MDNSService> service(new ODnsExtension::MDNSService);
+    std::shared_ptr<INETDNS::MDNSService> service(new INETDNS::MDNSService);
 
     while (getline(service_file, line, '\n'))
     {
@@ -666,13 +682,15 @@ void MDNSResolver::initializePrivateServices()
         }
 
         // create a pairing data and friend data object, insert it into the hash table
-        std::shared_ptr<ODnsExtension::PairingData> pdata = ODnsExtension::pairing_data_new(crypto_key, friend_id,
+        std::shared_ptr<INETDNS::PairingData> pdata = INETDNS::pairing_data_new(crypto_key, friend_id,
                 privacy_service_instance_name);
-        std::shared_ptr<ODnsExtension::FriendData> fdata = ODnsExtension::friend_data_new(pdata,
+        std::shared_ptr<INETDNS::FriendData> fdata = INETDNS::friend_data_new(pdata,
         DEFAULT_PRIVACY_SOCKET_PORT);
 
+#ifdef DEBUG_ENABLED
         std::cout << "[" << hostname << "]: Adding friend " << friend_id << " with instance name "
                 << privacy_service_instance_name << "\n";
+#endif
         (*friend_data_table)[friend_id] = fdata;
         (*instance_name_table)[privacy_service_instance_name] = fdata;
     }
@@ -742,7 +760,7 @@ void MDNSResolver::initializePrivateServices()
         }
 
         // now populate the private service object, store it in the hash table
-        std::shared_ptr<ODnsExtension::PrivateMDNSService> psrv = ODnsExtension::private_service_new(stype, is_private);
+        std::shared_ptr<INETDNS::PrivateMDNSService> psrv = INETDNS::private_service_new(stype, is_private);
         psrv->offered_to = offered_to;
         psrv->offered_by = offered_by;
         (*private_service_table)[stype] = psrv;
@@ -779,5 +797,16 @@ void MDNSResolver::receiveSignal(std::unordered_map<std::string, int> parMap, vo
                 emit(MDNSResolver::mdnsResponseSent, payload);
             break;
         default: throw cRuntimeError("Signal Type unkown.");
+    }
+}
+
+void MDNSResolver::notify(){
+    // Reschedule event based on latest event due
+    INETDNS::TimeEvent* event = timeEventSet->getTopElement();
+
+    if(event->getExpiry() < last_schedule){
+        cancelAndDelete(selfMessage);
+        scheduleAt(event->getExpiry(), selfMessage);
+        last_schedule = event->getExpiry();
     }
 }

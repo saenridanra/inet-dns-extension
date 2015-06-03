@@ -19,8 +19,8 @@
  THE SOFTWARE.
  */
 
-#ifndef __OPP_DNS_EXTENSION_DNSAUTHSERVER_H_
-#define __OPP_DNS_EXTENSION_DNSAUTHSERVER_H_
+#ifndef __INETDNS_DNSAUTHSERVER_H_
+#define __INETDNS_DNSAUTHSERVER_H_
 
 #include <omnetpp.h>
 #include "DNSServerBase.h"
@@ -122,7 +122,7 @@ public:
      * @return
      *       returns a @ref DNSPacket if a response has been generated based on the query.
      */
-    DNSPacket* handleQuery(std::shared_ptr<ODnsExtension::Query> query);
+    DNSPacket* handleQuery(std::shared_ptr<INETDNS::Query> query);
 };
 
 #endif

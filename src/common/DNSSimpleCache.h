@@ -27,7 +27,7 @@
 #include <algorithm>
 #include "utils/Utils.h"
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 /**
  * @brief DNSSimpleCache is a simple cache implementation

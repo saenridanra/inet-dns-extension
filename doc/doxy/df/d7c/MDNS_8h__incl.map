@@ -1,5 +1,5 @@
 <map id="MDNS.h" name="MDNS.h">
-<area shape="rect" id="node3" href="$df/d90/DNS_8h.html" title="Contains useful definitions of structs and makros needed for a dns library. " alt="" coords="5,229,68,256"/>
-<area shape="rect" id="node6" href="$d9/dd7/DNSTools_8h.html" title="Contains utility functions to handle records, questions, queries and responses. " alt="" coords="187,80,281,107"/>
-<area shape="rect" id="node7" href="$de/d08/DNSPacket__m_8h.html" title="../messages/DNSPacket_m.h" alt="" coords="234,155,431,181"/>
+<area shape="rect" id="node3" href="$df/d90/DNS_8h.html" title="Contains useful definitions of structs and makros needed for a dns library. " alt="" coords="9,229,72,256"/>
+<area shape="rect" id="node6" href="$d9/dd7/DNSTools_8h.html" title="Contains utility functions to handle records, questions, queries and responses. " alt="" coords="308,80,403,107"/>
+<area shape="rect" id="node7" href="$de/d08/DNSPacket__m_8h.html" title="../messages/DNSPacket_m.h" alt="" coords="35,155,233,181"/>
 </map>

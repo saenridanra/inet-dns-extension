@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['objectkind',['ObjectKind',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcConfigOption.html#a1aec918182175c547aabb03a9583ab25',1,'cConfigOption']]],
-  ['optype',['OpType',['/home/saen/Programme.local/omnetpp-4.6//doc/api/classcDynamicExpression.html#a9c0e48b0297bf6501285584666679235',1,'cDynamicExpression']]]
+  ['distributions',['Distributions',['../d8/db1/classMDNSNetworkConfigurator.html#a516ece39d25709f05d52a1ab59193558',1,'MDNSNetworkConfigurator']]]
 ];

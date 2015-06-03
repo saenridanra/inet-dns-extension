@@ -1,7 +1,11 @@
 <map id="MDNSProbeScheduler.h" name="MDNSProbeScheduler.h">
-<area shape="rect" id="node2" href="$db/d75/MDNSResolver_8h.html" title="MDNSResolver.h" alt="" coords="9,155,134,181"/>
-<area shape="rect" id="node4" href="$d5/dd0/MDNSAnnouncer_8h.html" title="MDNSAnnouncer.h" alt="" coords="109,80,244,107"/>
-<area shape="rect" id="node6" href="$da/d57/MDNSProbeScheduler_8cc.html" title="MDNSProbeScheduler.cc" alt="" coords="268,80,440,107"/>
-<area shape="rect" id="node3" href="$df/d13/MDNSResolver_8cc.html" title="MDNSResolver.cc" alt="" coords="5,229,137,256"/>
-<area shape="rect" id="node5" href="$da/dcb/MDNSAnnouncer_8cc.html" title="MDNSAnnouncer.cc" alt="" coords="159,155,301,181"/>
+<area shape="rect" id="node2" href="$db/d75/MDNSResolver_8h.html" title="MDNSResolver.h" alt="" coords="205,155,330,181"/>
+<area shape="rect" id="node6" href="$d3/d91/MDNSTrafficGenerator_8h.html" title="MDNSTrafficGenerator.h" alt="" coords="63,80,229,107"/>
+<area shape="rect" id="node8" href="$d5/dd0/MDNSAnnouncer_8h.html" title="MDNSAnnouncer.h" alt="" coords="305,80,440,107"/>
+<area shape="rect" id="node10" href="$da/d57/MDNSProbeScheduler_8cc.html" title="MDNSProbeScheduler.cc" alt="" coords="464,80,636,107"/>
+<area shape="rect" id="node3" href="$df/d13/MDNSResolver_8cc.html" title="MDNSResolver.cc" alt="" coords="108,229,240,256"/>
+<area shape="rect" id="node4" href="$d9/def/MDNSNetworkConfigurator_8h.html" title="MDNSNetworkConfigurator.h" alt="" coords="264,229,457,256"/>
+<area shape="rect" id="node5" href="$d9/dd7/MDNSNetworkConfigurator_8cc.html" title="MDNSNetworkConfigurator.cc" alt="" coords="261,304,461,331"/>
+<area shape="rect" id="node7" href="$df/d86/MDNSTrafficGenerator_8cc.html" title="MDNSTrafficGenerator.cc" alt="" coords="5,155,180,181"/>
+<area shape="rect" id="node9" href="$da/dcb/MDNSAnnouncer_8cc.html" title="MDNSAnnouncer.cc" alt="" coords="355,155,497,181"/>
 </map>

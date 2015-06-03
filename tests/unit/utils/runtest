@@ -12,7 +12,7 @@ if [ ! -d work ];  then mkdir work; fi
 EXTRA_INCLUDES=`find ../../../src/ -type d | sed s!^!-I../!`
 opp_test gen $OPT -v $TESTFILES || exit 1
 echo
-(cd work; opp_makemake -f --deep -L../../../../lib -L../../../../out/gcc-debug/src -linet -lopp_dns_extension -P . --no-deep-includes $EXTRA_INCLUDES; $MAKE) || exit 1
+(cd work; opp_makemake -f --deep -L../../../../lib -L../../../../out/gcc-debug/src -linet -linet_dns_extension -P . --no-deep-includes $EXTRA_INCLUDES; $MAKE) || exit 1
 echo
 opp_test run $OPT -d -v $TESTFILES || exit 1
 echo

@@ -21,7 +21,7 @@
 
 #include <DNSTools.h>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 const char* DNS_TYPE_ARRAY_ANY[13] = { "A", "NS", "CNAME", "SOA", "NULL", "PTR", "HINFO", "MINFO", "MX", "TXT", "AAAA",
         "SRV", "AXFR" };
@@ -689,7 +689,7 @@ std::shared_ptr<DNSRecord> copyDnsRecord(std::shared_ptr<DNSRecord> r)
     {
         case DNS_TYPE_VALUE_SRV: { // user the srv struct, containing service domain, name, port, weight, etc...
             std::shared_ptr<SRVData> srv_cpy(new SRVData());
-            std::shared_ptr<ODnsExtension::SRVData> srv = std::static_pointer_cast < ODnsExtension::SRVData
+            std::shared_ptr<INETDNS::SRVData> srv = std::static_pointer_cast < INETDNS::SRVData
                     > (r->rdata);
             srv_cpy->service = srv->service;
             srv_cpy->name = srv->name;
@@ -731,7 +731,7 @@ std::shared_ptr<DNSRecord> copyDnsRecord(DNSRecord* r)
         case DNS_TYPE_VALUE_SRV: { // user the srv struct, containing service domain, name, port, weight, etc...
             std::shared_ptr<SRVData> srv_cpy(new SRVData());
 
-            std::shared_ptr<ODnsExtension::SRVData> srv = std::static_pointer_cast < ODnsExtension::SRVData
+            std::shared_ptr<INETDNS::SRVData> srv = std::static_pointer_cast < INETDNS::SRVData
                     > (r->rdata);
             srv_cpy->service = srv->service;
             srv_cpy->name = srv->name;

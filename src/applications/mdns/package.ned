@@ -1,3 +1,3 @@
-package opp_dns_extension.applications.mdns;
+package inet_dns_extension.applications.mdns;
 
 @license(LGPL);

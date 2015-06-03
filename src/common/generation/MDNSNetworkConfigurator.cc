@@ -72,18 +72,19 @@ void MDNSNetworkConfigurator::initialize(int stage)
 void MDNSNetworkConfigurator::pair(MDNSResolver * m1, MDNSResolver * m2,
         std::string device_name1, std::string device_name2, std::string instance_name1, std::string instance_name2)
 {
-    std::shared_ptr<ODnsExtension::FriendData> fdata;
-    std::shared_ptr<ODnsExtension::PairingData> pdata;
+    std::shared_ptr<INETDNS::FriendData> fdata;
+    std::shared_ptr<INETDNS::PairingData> pdata;
     // migrate fdata, pdata
-    pdata = ODnsExtension::pairing_data_new("", device_name2, instance_name2);
-    fdata = ODnsExtension::friend_data_new(pdata, 9977); // use default port
+    pdata = INETDNS::pairing_data_new("", device_name2, instance_name2);
+    fdata = INETDNS::friend_data_new(pdata, 9977); // use default port
     m1->addFriend(fdata);
 
-    pdata = ODnsExtension::pairing_data_new("", device_name1, instance_name1);
-    fdata = ODnsExtension::friend_data_new(pdata, 9977); // use default port
+    pdata = INETDNS::pairing_data_new("", device_name1, instance_name1);
+    fdata = INETDNS::friend_data_new(pdata, 9977); // use default port
     m2->addFriend(fdata);
-
+#ifdef DEBUG_ENABLED
     std::cout << "Paired " << device_name1 << " with " << device_name2 << std::endl;
+#endif
 }
 
 void MDNSNetworkConfigurator::share(MDNSResolver * m1, MDNSResolver * m2,
@@ -91,7 +92,7 @@ void MDNSNetworkConfigurator::share(MDNSResolver * m1, MDNSResolver * m2,
         std::shared_ptr<MDNSNetworkConfigurator::GeneratorService> service)
 {
     // Create private service
-    std::shared_ptr<ODnsExtension::PrivateMDNSService> pservice = ODnsExtension::private_service_new(service->service,
+    std::shared_ptr<INETDNS::PrivateMDNSService> pservice = INETDNS::private_service_new(service->service,
             1);
     m1->addPrivateService(pservice);
 
@@ -116,7 +117,7 @@ bool MDNSNetworkConfigurator::computeMDNSNetwork()
 {
     // get all MDNS resolvers first
     std::vector<std::string> type_names;
-    type_names.push_back("opp_dns_extension.applications.mdns.MDNSResolver");
+    type_names.push_back("inet_dns_extension.applications.mdns.MDNSResolver");
     topology.extractByNedTypeName(type_names);
     EV_DEBUG << "Topology found " << topology.getNumNodes() << " nodes\n";
     // assert num resolvers, against the amount found in the toplogy
@@ -163,14 +164,16 @@ bool MDNSNetworkConfigurator::computeMDNSNetwork()
         std::string own_instance_name = device_name;
         MDNSResolver * resolver = device_map[device_name];
 
+#ifdef DEBUG_ENABLED
         std::cout << "Adding device " << device_name << " with private instance " << own_instance_name << std::endl;
+#endif
         resolver->setDynamicParams(device_name, own_instance_name, true, querying_enabled);
 
         private_device_map[device_name] = device_map[device_name];
 
         // not private, we can directly add it to the resolver
         // build service, add it to the resolver
-        std::shared_ptr<ODnsExtension::MDNSService> s(new ODnsExtension::MDNSService);
+        std::shared_ptr<INETDNS::MDNSService> s(new INETDNS::MDNSService);
         s->service_type = "_privacy._tcp.local";
         s->name = device_name;
         s->port = 9977;
@@ -304,15 +307,17 @@ bool MDNSNetworkConfigurator::computeMDNSNetwork()
 
                     MDNSResolver * picked_resolver = device_map[f];
 
+#ifdef DEBUG_ENABLED
                     std::cout << "device " << device_name << " shares " << service->service << " with " << f
                             << std::endl;
+#endif
                     share(resolver, picked_resolver, device_name, f, service);
                 }
             }
 
             // not private, we can directly add it to the resolver
             // build service, add it to the resolver
-            std::shared_ptr<ODnsExtension::MDNSService> s(new ODnsExtension::MDNSService);
+            std::shared_ptr<INETDNS::MDNSService> s(new INETDNS::MDNSService);
             s->service_type = service->service;
             s->name = device_name;
             s->port = service->port;

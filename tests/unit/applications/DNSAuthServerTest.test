@@ -3,7 +3,7 @@ DNSAuthServerTest DNSAuthServer
 
 %file: test.ned
 
-import opp_dns_extension.applications.DNSAuthServer;
+import inet_dns_extension.applications.DNSAuthServer;
 
 network Test
 {

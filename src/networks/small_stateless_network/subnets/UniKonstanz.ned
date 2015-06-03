@@ -13,17 +13,17 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package opp_dns_extension.networks.small_stateless_network.subnets;
+package inet_dns_extension.networks.small_stateless_network.subnets;
 
 import inet.nodes.ethernet.Eth100G;
 import inet.nodes.ethernet.Eth10G;
 import inet.nodes.ethernet.Eth1G;
 import inet.nodes.inet.Router;
 import inet.nodes.inet.StandardHost;
-import opp_dns_extension.applications.dns.DNSClientNode;
-import opp_dns_extension.applications.dns.DNSServerNode;
-import opp_dns_extension.applications.dns.DNSEchoServerNode;
-import opp_dns_extension.applications.dns.DNSLocalCacheNode;
+import inet_dns_extension.applications.dns.DNSClientNode;
+import inet_dns_extension.applications.dns.DNSServerNode;
+import inet_dns_extension.applications.dns.DNSEchoServerNode;
+import inet_dns_extension.applications.dns.DNSCachingServerNode;
 
 
 network UniKonstanz
@@ -45,7 +45,7 @@ network UniKonstanz
             m_file = "subnets/uranos.rz.uni-konstanz.de.zone";
             @display("p=508,424;i=device/server");
         }
-        local_cache: DNSLocalCacheNode {
+        local_cache: DNSCachingServerNode {
             lc.root_servers = "Small_stateless_example_network.rootservers.i_root Small_stateless_example_network.rootservers.b_root";
             @display("p=653,424;i=device/server2");
         }

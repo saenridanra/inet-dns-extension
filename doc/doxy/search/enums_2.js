@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['probestate',['ProbeState',['../d8/d72/namespaceODnsExtension.html#ac856fde5254fd7a23c3eb8d62333d559',1,'ODnsExtension']]]
+  ['mdnsresolverstate',['MDNSResolverState',['../dc/d51/classMDNSResolver.html#a5155f13e07ad7e229c646bd14b979140',1,'MDNSResolver']]]
 ];

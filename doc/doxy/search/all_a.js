@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['jobs',['jobs',['../d4/dd9/classODnsExtension_1_1MDNSProbeScheduler.html#adcd6a7ab1b83cd8d76a3b0f04f552108',1,'ODnsExtension::MDNSProbeScheduler::jobs()'],['../d1/d12/classODnsExtension_1_1MDNSQueryScheduler.html#ab0a2549f2b31765c3f22bfc9fccbaf76',1,'ODnsExtension::MDNSQueryScheduler::jobs()'],['../d7/d24/classODnsExtension_1_1MDNSResponseScheduler.html#a00d56079f73d093442a1571c8bf87ef6',1,'ODnsExtension::MDNSResponseScheduler::jobs()']]]
+  ['jobs',['jobs',['../d3/db2/classINETDNS_1_1MDNSProbeScheduler.html#a79e7c2a47c1834ecb64884ccdc8a47e8',1,'INETDNS::MDNSProbeScheduler::jobs()'],['../da/d51/classINETDNS_1_1MDNSQueryScheduler.html#a5196710c3b7c82089227ec82cac37747',1,'INETDNS::MDNSQueryScheduler::jobs()'],['../d8/d3f/classINETDNS_1_1MDNSResponseScheduler.html#aaf66e4b0788f24a9eb3df5520c5f8da1',1,'INETDNS::MDNSResponseScheduler::jobs()']]]
 ];

@@ -1,37 +1,41 @@
 <map id="DNS.h" name="DNS.h">
-<area shape="rect" id="node2" href="$dc/db7/DNSServerBase_8h.html" title="DNSServerBase.h" alt="" coords="302,304,433,331"/>
+<area shape="rect" id="node2" href="$dc/db7/DNSServerBase_8h.html" title="DNSServerBase.h" alt="" coords="326,304,457,331"/>
 <area shape="rect" id="node3" href="$da/d6f/DNSAuthServer_8h.html" title="DNSAuthServer.h" alt="" coords="9,379,136,405"/>
-<area shape="rect" id="node5" href="$da/dd7/DNSLocalCache_8h.html" title="DNSLocalCache.h" alt="" coords="322,379,453,405"/>
-<area shape="rect" id="node8" href="$d5/db6/DNSEchoServer_8h.html" title="DNSEchoServer.h" alt="" coords="1305,304,1435,331"/>
-<area shape="rect" id="node10" href="$db/d75/MDNSResolver_8h.html" title="MDNSResolver.h" alt="" coords="1451,528,1577,555"/>
-<area shape="rect" id="node12" href="$dd/d72/DNSCache_8h.html" title="DNSCache.h" alt="" coords="1057,229,1157,256"/>
-<area shape="rect" id="node20" href="$dc/d80/MDNSResponseScheduler_8h.html" title="MDNSResponseScheduler.h" alt="" coords="1229,379,1420,405"/>
-<area shape="rect" id="node21" href="$d5/dd0/MDNSAnnouncer_8h.html" title="MDNSAnnouncer.h" alt="" coords="919,453,1053,480"/>
-<area shape="rect" id="node26" href="$d9/daa/MDNSProbeScheduler_8h.html" title="MDNSProbeScheduler.h" alt="" coords="1849,379,2014,405"/>
-<area shape="rect" id="node28" href="$d4/d17/MDNSQueryScheduler_8h.html" title="MDNSQueryScheduler.h" alt="" coords="1657,379,1824,405"/>
-<area shape="rect" id="node30" href="$de/dcf/MDNS__Privacy_8h.html" title="Contains functions and structures needed for the functionalities provided by the mdns privacy extensi..." alt="" coords="1919,304,2043,331"/>
-<area shape="rect" id="node32" href="$dd/d86/MDNS_8h.html" title="Contains useful structs, makros and functions which are generally needed for a MDNS library..." alt="" coords="1651,229,1724,256"/>
-<area shape="rect" id="node34" href="$de/d08/DNSPacket__m_8h.html" title="DNSPacket_m.h" alt="" coords="1212,80,1333,107"/>
-<area shape="rect" id="node35" href="$d9/dd7/DNSTools_8h.html" title="Contains utility functions to handle records, questions, queries and responses. " alt="" coords="1189,155,1284,181"/>
+<area shape="rect" id="node5" href="$d6/d1d/DNSCachingServer_8h.html" title="DNSCachingServer.h" alt="" coords="321,379,469,405"/>
+<area shape="rect" id="node8" href="$d5/db6/DNSEchoServer_8h.html" title="DNSEchoServer.h" alt="" coords="1329,304,1459,331"/>
+<area shape="rect" id="node10" href="$db/d75/MDNSResolver_8h.html" title="MDNSResolver.h" alt="" coords="1618,528,1743,555"/>
+<area shape="rect" id="node14" href="$d3/d91/MDNSTrafficGenerator_8h.html" title="MDNSTrafficGenerator.h" alt="" coords="2265,453,2432,480"/>
+<area shape="rect" id="node16" href="$dd/d72/DNSCache_8h.html" title="DNSCache.h" alt="" coords="1092,229,1192,256"/>
+<area shape="rect" id="node24" href="$dc/d80/MDNSResponseScheduler_8h.html" title="MDNSResponseScheduler.h" alt="" coords="1416,379,1607,405"/>
+<area shape="rect" id="node25" href="$d5/dd0/MDNSAnnouncer_8h.html" title="MDNSAnnouncer.h" alt="" coords="1044,453,1179,480"/>
+<area shape="rect" id="node30" href="$d9/daa/MDNSProbeScheduler_8h.html" title="MDNSProbeScheduler.h" alt="" coords="1733,379,1898,405"/>
+<area shape="rect" id="node32" href="$d4/d17/MDNSQueryScheduler_8h.html" title="MDNSQueryScheduler.h" alt="" coords="1923,379,2089,405"/>
+<area shape="rect" id="node34" href="$de/dcf/MDNS__Privacy_8h.html" title="Contains functions and structures needed for the functionalities provided by the mdns privacy extensi..." alt="" coords="2196,304,2320,331"/>
+<area shape="rect" id="node36" href="$dd/d86/MDNS_8h.html" title="Contains useful structs, makros and functions which are generally needed for a MDNS library..." alt="" coords="1973,229,2047,256"/>
+<area shape="rect" id="node38" href="$de/d08/DNSPacket__m_8h.html" title="DNSPacket_m.h" alt="" coords="1588,80,1709,107"/>
+<area shape="rect" id="node39" href="$d9/dd7/DNSTools_8h.html" title="Contains utility functions to handle records, questions, queries and responses. " alt="" coords="1601,155,1696,181"/>
 <area shape="rect" id="node7" href="$d7/da9/DNSServerBase_8cc.html" title="DNSServerBase.cc" alt="" coords="160,379,297,405"/>
 <area shape="rect" id="node4" href="$df/def/DNSAuthServer_8cc.html" title="DNSAuthServer.cc" alt="" coords="5,453,140,480"/>
-<area shape="rect" id="node6" href="$d2/d5a/DNSLocalCache_8cc.html" title="DNSLocalCache.cc" alt="" coords="289,453,427,480"/>
-<area shape="rect" id="node9" href="$d0/d64/DNSEchoServer_8cc.html" title="DNSEchoServer.cc" alt="" coords="1444,379,1581,405"/>
-<area shape="rect" id="node11" href="$df/d13/MDNSResolver_8cc.html" title="MDNSResolver.cc" alt="" coords="1448,603,1580,629"/>
-<area shape="rect" id="node13" href="$d8/dd8/DNSClient_8h.html" title="DNSClient.h" alt="" coords="477,379,573,405"/>
-<area shape="rect" id="node17" href="$d5/d9f/DNSCache_8cc.html" title="DNSCache.cc" alt="" coords="825,304,931,331"/>
-<area shape="rect" id="node18" href="$d3/db7/DNSSimpleCache_8h.html" title="DNSSimpleCache.h" alt="" coords="559,304,699,331"/>
-<area shape="rect" id="node24" href="$da/d34/DNSTTLCache_8h.html" title="DNSTTLCache.h" alt="" coords="1057,304,1179,331"/>
-<area shape="rect" id="node14" href="$df/d43/DNSClient_8cc.html" title="DNSClient.cc" alt="" coords="623,453,725,480"/>
-<area shape="rect" id="node15" href="$db/dc5/DNSClientTraffGen_8h.html" title="DNSClientTraffGen.h" alt="" coords="451,453,598,480"/>
-<area shape="rect" id="node16" href="$d0/df9/DNSClientTraffGen_8cc.html" title="DNSClientTraffGen.cc" alt="" coords="447,528,602,555"/>
-<area shape="rect" id="node19" href="$d3/d19/DNSSimpleCache_8cc.html" title="DNSSimpleCache.cc" alt="" coords="597,379,743,405"/>
-<area shape="rect" id="node23" href="$d9/d65/MDNSResponseScheduler_8cc.html" title="MDNSResponseScheduler.cc" alt="" coords="1229,453,1426,480"/>
-<area shape="rect" id="node22" href="$da/dcb/MDNSAnnouncer_8cc.html" title="MDNSAnnouncer.cc" alt="" coords="915,528,1057,555"/>
-<area shape="rect" id="node25" href="$d6/d67/DNSTTLCache_8cc.html" title="DNSTTLCache.cc" alt="" coords="1023,379,1154,405"/>
-<area shape="rect" id="node27" href="$da/d57/MDNSProbeScheduler_8cc.html" title="MDNSProbeScheduler.cc" alt="" coords="1851,453,2023,480"/>
-<area shape="rect" id="node29" href="$d6/d05/MDNSQueryScheduler_8cc.html" title="MDNSQueryScheduler.cc" alt="" coords="1551,453,1725,480"/>
-<area shape="rect" id="node31" href="$d8/dc7/MDNS__Privacy_8cc.html" title="MDNS_Privacy.cc" alt="" coords="2093,379,2223,405"/>
-<area shape="rect" id="node33" href="$d9/d94/MDNS_8cc.html" title="MDNS.cc" alt="" coords="1713,304,1793,331"/>
-<area shape="rect" id="node36" href="$d6/d90/DNSTools_8cc.html" title="DNSTools.cc" alt="" coords="1233,229,1334,256"/>
+<area shape="rect" id="node6" href="$d8/df2/DNSCachingServer_8cc.html" title="DNSCachingServer.cc" alt="" coords="290,453,445,480"/>
+<area shape="rect" id="node9" href="$d0/d64/DNSEchoServer_8cc.html" title="DNSEchoServer.cc" alt="" coords="1255,379,1392,405"/>
+<area shape="rect" id="node11" href="$df/d13/MDNSResolver_8cc.html" title="MDNSResolver.cc" alt="" coords="1615,603,1747,629"/>
+<area shape="rect" id="node12" href="$d9/def/MDNSNetworkConfigurator_8h.html" title="MDNSNetworkConfigurator.h" alt="" coords="2373,603,2567,629"/>
+<area shape="rect" id="node13" href="$d9/dd7/MDNSNetworkConfigurator_8cc.html" title="MDNSNetworkConfigurator.cc" alt="" coords="2370,677,2570,704"/>
+<area shape="rect" id="node15" href="$df/d86/MDNSTrafficGenerator_8cc.html" title="MDNSTrafficGenerator.cc" alt="" coords="2257,528,2432,555"/>
+<area shape="rect" id="node17" href="$d8/dd8/DNSClient_8h.html" title="DNSClient.h" alt="" coords="494,379,590,405"/>
+<area shape="rect" id="node21" href="$d5/d9f/DNSCache_8cc.html" title="DNSCache.cc" alt="" coords="849,304,955,331"/>
+<area shape="rect" id="node22" href="$d3/db7/DNSSimpleCache_8h.html" title="DNSSimpleCache.h" alt="" coords="583,304,723,331"/>
+<area shape="rect" id="node28" href="$da/d34/DNSTTLCache_8h.html" title="DNSTTLCache.h" alt="" coords="1081,304,1203,331"/>
+<area shape="rect" id="node18" href="$df/d43/DNSClient_8cc.html" title="DNSClient.cc" alt="" coords="640,453,743,480"/>
+<area shape="rect" id="node19" href="$db/dc5/DNSClientTraffGen_8h.html" title="DNSClientTraffGen.h" alt="" coords="469,453,615,480"/>
+<area shape="rect" id="node20" href="$d0/df9/DNSClientTraffGen_8cc.html" title="DNSClientTraffGen.cc" alt="" coords="465,528,619,555"/>
+<area shape="rect" id="node23" href="$d3/d19/DNSSimpleCache_8cc.html" title="DNSSimpleCache.cc" alt="" coords="614,379,761,405"/>
+<area shape="rect" id="node27" href="$d9/d65/MDNSResponseScheduler_8cc.html" title="MDNSResponseScheduler.cc" alt="" coords="1395,453,1593,480"/>
+<area shape="rect" id="node26" href="$da/dcb/MDNSAnnouncer_8cc.html" title="MDNSAnnouncer.cc" alt="" coords="1040,528,1183,555"/>
+<area shape="rect" id="node29" href="$d6/d67/DNSTTLCache_8cc.html" title="DNSTTLCache.cc" alt="" coords="1049,379,1179,405"/>
+<area shape="rect" id="node31" href="$da/d57/MDNSProbeScheduler_8cc.html" title="MDNSProbeScheduler.cc" alt="" coords="1769,453,1941,480"/>
+<area shape="rect" id="node33" href="$d6/d05/MDNSQueryScheduler_8cc.html" title="MDNSQueryScheduler.cc" alt="" coords="2017,453,2190,480"/>
+<area shape="rect" id="node35" href="$d8/dc7/MDNS__Privacy_8cc.html" title="MDNS_Privacy.cc" alt="" coords="2114,379,2245,405"/>
+<area shape="rect" id="node37" href="$d9/d94/MDNS_8cc.html" title="MDNS.cc" alt="" coords="2041,304,2121,331"/>
+<area shape="rect" id="node40" href="$d6/d90/DNSTools_8cc.html" title="DNSTools.cc" alt="" coords="1510,229,1611,256"/>
 </map>

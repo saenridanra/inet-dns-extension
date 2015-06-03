@@ -24,8 +24,8 @@
  * @author Andreas Rain, Distributed Systems Group, University of Konstanz
  * @date March 26, 2015
  */
-#ifndef __OPP_DNS_EXTENSION_DNSZONECONFIG_H_
-#define __OPP_DNS_EXTENSION_DNSZONECONFIG_H_
+#ifndef __INETDNS_DNSZONECONFIG_H_
+#define __INETDNS_DNSZONECONFIG_H_
 
 #include <omnetpp.h>
 

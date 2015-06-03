@@ -35,15 +35,15 @@ void DNSEchoServer::initialize(int stage) {
 void DNSEchoServer::handleMessage(cMessage *msg) {
     int isDNS = 0;
     int isQR = 0;
-    std::shared_ptr<ODnsExtension::Query> query;
+    std::shared_ptr<INETDNS::Query> query;
     DNSPacket* response;
 
     // Check if we received a query
     if (msg->arrivedOn("udpIn")) {
-        if ((isDNS = ODnsExtension::isDNSpacket((cPacket*) msg))) {
-            if ((isQR = ODnsExtension::isQueryOrResponse((cPacket*) msg))
+        if ((isDNS = INETDNS::isDNSpacket((cPacket*) msg))) {
+            if ((isQR = INETDNS::isQueryOrResponse((cPacket*) msg))
                     == 0) {
-                query = ODnsExtension::resolveQuery((cPacket*) msg);
+                query = INETDNS::resolveQuery((cPacket*) msg);
                 receivedQueries++;
 
                 cPacket *pk = check_and_cast<cPacket *>(msg);
@@ -71,7 +71,7 @@ void DNSEchoServer::handleMessage(cMessage *msg) {
 
 }
 
-DNSPacket* DNSEchoServer::handleQuery(std::shared_ptr<ODnsExtension::Query> query) {
+DNSPacket* DNSEchoServer::handleQuery(std::shared_ptr<INETDNS::Query> query) {
     int have_match = 0;
     std::string ip, method, alias, qbase, alias_domain, echo_domain, msg_name;
 
@@ -124,9 +124,9 @@ DNSPacket* DNSEchoServer::handleQuery(std::shared_ptr<ODnsExtension::Query> quer
     msg_name = std::string("dns_response#") + std::to_string(response_count++);
 
     if (!have_match) {
-        response = ODnsExtension::createResponse(msg_name, 1, num_an_records,
+        response = INETDNS::createResponse(msg_name, 1, num_an_records,
                 num_ns_records, num_ar_records, id, opcode, 1, rd, ra, 0);
-        ODnsExtension::appendQuestion(response, ODnsExtension::copyDnsQuestion(&query->questions[0]), 0);
+        INETDNS::appendQuestion(response, INETDNS::copyDnsQuestion(&query->questions[0]), 0);
         return response;
     }
 
@@ -186,15 +186,15 @@ DNSPacket* DNSEchoServer::handleQuery(std::shared_ptr<ODnsExtension::Query> quer
 
     // create response packet, append question and answers
 
-    response = ODnsExtension::createResponse(msg_name, 1, num_an_records,
+    response = INETDNS::createResponse(msg_name, 1, num_an_records,
             num_ns_records, num_ar_records, id, opcode, 1, rd, ra, 0);
 
-    appendQuestion(response, ODnsExtension::copyDnsQuestion(&query->questions[0]), 0);
+    appendQuestion(response, INETDNS::copyDnsQuestion(&query->questions[0]), 0);
 
     int index = 0;
 
     for (auto it = an_records.begin(); it != an_records.end(); it++) {
-        ODnsExtension::appendAnswer(response,
+        INETDNS::appendAnswer(response,
                *it, index++);
     }
 
@@ -205,11 +205,11 @@ DNSPacket* DNSEchoServer::handleQuery(std::shared_ptr<ODnsExtension::Query> quer
 
 void DNSEchoServer::sendResponse(DNSPacket *response,
         IPvXAddress returnAddress) {
-    response->setByteLength(ODnsExtension::estimateDnsPacketSize(response));
+    response->setByteLength(INETDNS::estimateDnsPacketSize(response));
     out.sendTo(response, returnAddress, DNS_PORT);
 }
 
-DNSPacket* DNSEchoServer::unsupportedOperation(std::shared_ptr<ODnsExtension::Query> q) {
+DNSPacket* DNSEchoServer::unsupportedOperation(std::shared_ptr<INETDNS::Query> q) {
     // TODO: return unsupported packet.
     return NULL;
 }

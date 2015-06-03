@@ -36,7 +36,7 @@
 #include <vector>
 #include <unordered_map>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 /**
  * @brief Enum used to determine the probes state
@@ -74,12 +74,12 @@ struct Probe {
     /**
      * @brief A @ref ODnsExtension::TimeEvent which performs the callback while scheduling probes.
      */
-    ODnsExtension::TimeEvent* e;
+    INETDNS::TimeEvent* e;
 
     /**
      * @brief The record that needs to be published/probed.
      */
-    std::shared_ptr<ODnsExtension::DNSRecord> r;
+    std::shared_ptr<INETDNS::DNSRecord> r;
 
     /**
      * @brief the number of iterations already performed.
@@ -122,24 +122,24 @@ protected:
     /**
      * @brief @ref TimeEventSet used for managing events/callbacks.
      */
-    ODnsExtension::TimeEventSet* timeEventSet;
+    INETDNS::TimeEventSet* timeEventSet;
 
     /**
      * @brief A ttl cache, in which annouced services are stored.
      *
      * They are republished once the TTL expires.
      */
-    ODnsExtension::DNSTTLCache* auth_cache;
+    INETDNS::DNSTTLCache* auth_cache;
 
     /**
      * @brief @ref ODnsExtension::MDNSProbeScheduler used for sending probes.
      */
-    ODnsExtension::MDNSProbeScheduler* probe_scheduler;
+    INETDNS::MDNSProbeScheduler* probe_scheduler;
 
     /**
      * @brief @ref ODnsExtension::MDNSResponseScheduler used for sending responses.
      */
-    ODnsExtension::MDNSResponseScheduler* response_scheduler;
+    INETDNS::MDNSResponseScheduler* response_scheduler;
 
     /**
      * @brief The resolvers hostaddress.
@@ -199,9 +199,9 @@ public:
      * @param _hostname The resolvers hostname
      * @param _hostaddress The resolvers hostaddress
      */
-    MDNSAnnouncer(ODnsExtension::MDNSProbeScheduler* _probe_scheduler,
-            ODnsExtension::MDNSResponseScheduler* _response_scheduler,
-            ODnsExtension::TimeEventSet* _timeEventSet, std::vector<std::shared_ptr<MDNSService>> services,
+    MDNSAnnouncer(INETDNS::MDNSProbeScheduler* _probe_scheduler,
+            INETDNS::MDNSResponseScheduler* _response_scheduler,
+            INETDNS::TimeEventSet* _timeEventSet, std::vector<std::shared_ptr<MDNSService>> services,
             std::string _hostname, IPvXAddress* _hostaddress) {
         probe_scheduler = _probe_scheduler;
         response_scheduler = _response_scheduler;
@@ -257,7 +257,7 @@ public:
      * @param e Event that triggered the elapse
      * @param data smart pointer to void data, in this case always @ref Probe
      */
-    virtual void elapse(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data);
+    virtual void elapse(INETDNS::TimeEvent* e, std::shared_ptr<void> data);
 
     /**
      * @brief Withdraws a probe
@@ -305,7 +305,7 @@ public:
      *
      * @return the Cache object.
      */
-    virtual ODnsExtension::DNSTTLCache* getCache() {
+    virtual INETDNS::DNSTTLCache* getCache() {
         return auth_cache;
     }
 
@@ -316,7 +316,7 @@ public:
      * @param data Smart pointer to void data, in this case @ref Probe
      * @param thispointer A reference to the handle that created the event.
      */
-    static void elapseCallback(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data,
+    static void elapseCallback(INETDNS::TimeEvent* e, std::shared_ptr<void> data,
             void* thispointer) {
         MDNSAnnouncer* self = static_cast<MDNSAnnouncer*>(thispointer);
         self->elapse(e, data);

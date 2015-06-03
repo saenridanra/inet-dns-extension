@@ -21,7 +21,7 @@
 
 #include <TimeEventSet.h>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 TimeEventSet::TimeEventSet()
 {
@@ -31,7 +31,7 @@ TimeEventSet::~TimeEventSet()
 {
     // nothing to do, all values are on the stack
 
-    std::set<ODnsExtension::TimeEvent*>::iterator iterator;
+    std::set<INETDNS::TimeEvent*>::iterator iterator;
     for(auto it : timeEventSet){
         delete it;
     }
@@ -40,7 +40,7 @@ TimeEventSet::~TimeEventSet()
 
 }
 
-void TimeEventSet::addTimeEvent(ODnsExtension::TimeEvent* t)
+void TimeEventSet::addTimeEvent(INETDNS::TimeEvent* t)
 {
     // always add a small random delay to the timer,
     // so that we don't have "simultaneous" events .."
@@ -49,9 +49,10 @@ void TimeEventSet::addTimeEvent(ODnsExtension::TimeEvent* t)
     t->setExpiry(t->getExpiry() + STR_SIMTIME(stime.c_str()));
 
     timeEventSet.insert(t);
+    notify();
 }
 
-void TimeEventSet::updateTimeEvent(ODnsExtension::TimeEvent* t, simtime_t expiry)
+void TimeEventSet::updateTimeEvent(INETDNS::TimeEvent* t, simtime_t expiry)
 {
     // first erase it
     removeTimeEvent(t);
@@ -59,9 +60,10 @@ void TimeEventSet::updateTimeEvent(ODnsExtension::TimeEvent* t, simtime_t expiry
     t->setExpiry(expiry);
     // insert it again for resorting
     timeEventSet.insert(t);
+    notify();
 }
 
-void TimeEventSet::removeTimeEvent(ODnsExtension::TimeEvent* t)
+void TimeEventSet::removeTimeEvent(INETDNS::TimeEvent* t)
 {
     for(auto it = timeEventSet.begin(); it != timeEventSet.end(); ++it){
         if(*it == t){
@@ -69,19 +71,20 @@ void TimeEventSet::removeTimeEvent(ODnsExtension::TimeEvent* t)
             continue;
         }
     }
+    notify();
 }
 
-ODnsExtension::TimeEvent* TimeEventSet::getTopElement(){
+INETDNS::TimeEvent* TimeEventSet::getTopElement(){
     return *timeEventSet.begin();
 }
 
 
-ODnsExtension::TimeEvent* TimeEventSet::getTimeEventIfDue(){
+INETDNS::TimeEvent* TimeEventSet::getTimeEventIfDue(){
     if(timeEventSet.empty()) return NULL;
 
     simtime_t now = simTime();
-    std::set<ODnsExtension::TimeEvent*, ODnsExtension::TimeEventComparator>::iterator it = timeEventSet.begin();
-    ODnsExtension::TimeEvent* top = *it;
+    std::set<INETDNS::TimeEvent*, INETDNS::TimeEventComparator>::iterator it = timeEventSet.begin();
+    INETDNS::TimeEvent* top = *it;
     if(top->getExpiry() <= now){
         // if another timevent is scheduled then it will
         // be readded by the scheduler accordingly so

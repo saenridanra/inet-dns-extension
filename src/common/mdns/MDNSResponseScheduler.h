@@ -41,7 +41,7 @@
 #include <memory>
 #include <algorithm>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 /**
  * @brief Structure holding information for response jobs.
@@ -120,7 +120,7 @@ protected:
     /**
      * @brief The time event set that performs elapsed events.
      */
-    ODnsExtension::TimeEventSet* timeEventSet;
+    INETDNS::TimeEventSet* timeEventSet;
 
     /**
      * @brief A list of active jobs.
@@ -155,17 +155,17 @@ protected:
     /**
      * @brief A map from strings (service types) to @ref ODnsExtension::PrivateMDNSService .
      */
-    std::unordered_map<std::string, std::shared_ptr<ODnsExtension::PrivateMDNSService>> *private_service_table;
+    std::unordered_map<std::string, std::shared_ptr<INETDNS::PrivateMDNSService>> *private_service_table;
 
     /**
      * @brief A map from strings (friend ids) to @ref ODnsExtension::FriendData .
      */
-    std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>> *friend_data_table;
+    std::unordered_map<std::string, std::shared_ptr<INETDNS::FriendData>> *friend_data_table;
 
     /**
      * @brief A map from strings (instance names) to @ref ODnsExtension::FriendData .
      */
-    std::unordered_map<std::string, std::shared_ptr<ODnsExtension::FriendData>> *instance_name_table;
+    std::unordered_map<std::string, std::shared_ptr<INETDNS::FriendData>> *instance_name_table;
 
     /**
      * @brief Whether privacy extenstion is active.

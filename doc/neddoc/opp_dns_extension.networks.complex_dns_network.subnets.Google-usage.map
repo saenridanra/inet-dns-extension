@@ -1,7 +1,0 @@
-<area shape="rect" id="node1" href="opp_dns_extension.networks.complex_dns_network.subnets.Google.html" title="Network Google" alt="" coords="230,79,302,104">
-<area shape="rect" id="node2" href="../../../inet/doc/neddoc/inet.nodes.inet.StandardHost.html" title="Compound Module StandardHost" alt="" coords="5,152,108,177">
-<area shape="rect" id="node3" href="../../../inet/doc/neddoc/inet.nodes.ethernet.Eth100G.html" title="Channel Eth100G" alt="" coords="132,152,205,177">
-<area shape="rect" id="node4" href="../../../inet/doc/neddoc/inet.nodes.inet.Router.html" title="Compound Module Router" alt="" coords="230,152,302,177">
-<area shape="rect" id="node5" href="../../../inet/doc/neddoc/inet.nodes.ethernet.Eth10G.html" title="Channel Eth10G" alt="" coords="326,152,398,177">
-<area shape="rect" id="node6" href="opp_dns_extension.applications.dns.DNSServerNode.html" title="Compound Module DNSServerNode" alt="" coords="422,152,542,177">
-<area shape="rect" id="node7" href="opp_dns_extension.networks.complex_dns_network.ComplexDNSNetwork.html" title="Network ComplexDNSNetwork" alt="" coords="190,5,342,31">

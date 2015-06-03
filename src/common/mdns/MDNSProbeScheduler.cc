@@ -21,10 +21,10 @@
 
 #include <mdns/MDNSProbeScheduler.h>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 MDNSProbeScheduler::MDNSProbeScheduler(
-        ODnsExtension::TimeEventSet* _timeEventSet, UDPSocket* _outSock,
+        INETDNS::TimeEventSet* _timeEventSet, UDPSocket* _outSock,
         void* resolver) {
     timeEventSet = _timeEventSet;
     outSock = _outSock;
@@ -35,14 +35,14 @@ MDNSProbeScheduler::MDNSProbeScheduler(
 MDNSProbeScheduler::~MDNSProbeScheduler() {
 }
 
-std::shared_ptr<ODnsExtension::MDNSProbeJob> MDNSProbeScheduler::find_job(
-        std::shared_ptr<ODnsExtension::DNSRecord> r) {
-    std::shared_ptr<ODnsExtension::MDNSProbeJob> pj;
+std::shared_ptr<INETDNS::MDNSProbeJob> MDNSProbeScheduler::find_job(
+        std::shared_ptr<INETDNS::DNSRecord> r) {
+    std::shared_ptr<INETDNS::MDNSProbeJob> pj;
     for (auto it = jobs.begin(); it != jobs.end(); ++it) {
         pj = *it;
 
         // check if they are the same
-        if (ODnsExtension::recordEqualNoData(pj->r, r)) {
+        if (INETDNS::recordEqualNoData(pj->r, r)) {
             return pj;
         }
     }
@@ -50,15 +50,15 @@ std::shared_ptr<ODnsExtension::MDNSProbeJob> MDNSProbeScheduler::find_job(
     return NULL;
 }
 
-std::shared_ptr<ODnsExtension::MDNSProbeJob> MDNSProbeScheduler::find_history(
-        std::shared_ptr<ODnsExtension::DNSRecord> r) {
-    std::shared_ptr<ODnsExtension::MDNSProbeJob> pj;
+std::shared_ptr<INETDNS::MDNSProbeJob> MDNSProbeScheduler::find_history(
+        std::shared_ptr<INETDNS::DNSRecord> r) {
+    std::shared_ptr<INETDNS::MDNSProbeJob> pj;
 
     for (auto it = history.begin(); it != history.end(); ++it) {
         pj = *it;
 
         // check if they are the same
-        if (ODnsExtension::recordEqualNoData(pj->r, r)) {
+        if (INETDNS::recordEqualNoData(pj->r, r)) {
             return pj;
         }
     }
@@ -66,7 +66,7 @@ std::shared_ptr<ODnsExtension::MDNSProbeJob> MDNSProbeScheduler::find_history(
     return NULL;
 }
 
-void MDNSProbeScheduler::done(std::shared_ptr<ODnsExtension::MDNSProbeJob> pj) {
+void MDNSProbeScheduler::done(std::shared_ptr<INETDNS::MDNSProbeJob> pj) {
     pj->done = 1;
     auto it = std::find(jobs.begin(), jobs.end(), pj);
     if (it != jobs.end())
@@ -91,12 +91,12 @@ void MDNSProbeScheduler::done(std::shared_ptr<ODnsExtension::MDNSProbeJob> pj) {
     timeEventSet->updateTimeEvent(pj->e, now + tv);
 }
 
-std::shared_ptr<ODnsExtension::MDNSProbeJob> MDNSProbeScheduler::new_job(
-        std::shared_ptr<ODnsExtension::DNSRecord> r) {
+std::shared_ptr<INETDNS::MDNSProbeJob> MDNSProbeScheduler::new_job(
+        std::shared_ptr<INETDNS::DNSRecord> r) {
     std::shared_ptr<MDNSProbeJob> pj(new MDNSProbeJob());
     pj->id = id_count++;
     pj->done = 0;
-    pj->r = ODnsExtension::copyDnsRecord(r);
+    pj->r = INETDNS::copyDnsRecord(r);
     pj->delivery = 0;
     // append the job to the list
     jobs.push_back(pj);
@@ -104,7 +104,7 @@ std::shared_ptr<ODnsExtension::MDNSProbeJob> MDNSProbeScheduler::new_job(
     return pj;
 }
 
-void MDNSProbeScheduler::remove_job(std::shared_ptr<ODnsExtension::MDNSProbeJob> pj) {
+void MDNSProbeScheduler::remove_job(std::shared_ptr<INETDNS::MDNSProbeJob> pj) {
     timeEventSet->removeTimeEvent(pj->e);
     auto it = std::find(jobs.begin(), jobs.end(), pj);
     if (it != jobs.end()) {
@@ -137,12 +137,12 @@ int MDNSProbeScheduler::preparePacketAndSend(std::list<std::shared_ptr<DNSQuesti
 
     msgname += std::to_string(id_count);
 
-    DNSPacket* p = ODnsExtension::createNQuery(msgname, qdcount, 0, nscount, 0,
+    DNSPacket* p = INETDNS::createNQuery(msgname, qdcount, 0, nscount, 0,
             id_count++, 0);
 
     // append questions
     for (auto it : qlist) {
-        ODnsExtension::appendQuestion(p, it, i);
+        INETDNS::appendQuestion(p, it, i);
         i++;
     }
 
@@ -150,7 +150,7 @@ int MDNSProbeScheduler::preparePacketAndSend(std::list<std::shared_ptr<DNSQuesti
     if (nscount > 0) {
         i = 0;
         for (auto it : nslist) {
-            ODnsExtension::appendAuthority(p, it, i);
+            INETDNS::appendAuthority(p, it, i);
             i++;
         }
     }
@@ -160,9 +160,11 @@ int MDNSProbeScheduler::preparePacketAndSend(std::list<std::shared_ptr<DNSQuesti
 
     // packet fully initialized, send it via multicast
 
-    p->setByteLength(ODnsExtension::estimateDnsPacketSize(p));
+    p->setByteLength(INETDNS::estimateDnsPacketSize(p));
+#ifdef DEBUG_ENABLED
     p->addPar("prettyContent");
-    p->par("prettyContent") = ODnsExtension::dnsPacketToString(p).c_str();
+    p->par("prettyContent") = INETDNS::dnsPacketToString(p).c_str();
+#endif
 
     if (!is_private) {
         const char* dstr = "i=msg/bcast,red";
@@ -176,9 +178,9 @@ int MDNSProbeScheduler::preparePacketAndSend(std::list<std::shared_ptr<DNSQuesti
     } else {
         const char* dstr = "i=msg/packet,green";
         p->setDisplayString(dstr);
-        std::string service_type = ODnsExtension::extract_stype(
+        std::string service_type = INETDNS::extract_stype(
                 p->getQuestions(0).qname);
-        std::shared_ptr<ODnsExtension::PrivateMDNSService> psrv =
+        std::shared_ptr<INETDNS::PrivateMDNSService> psrv =
                 (*private_service_table)[service_type];
         // go through the offered_to list
         p->addPar("private");
@@ -188,7 +190,7 @@ int MDNSProbeScheduler::preparePacketAndSend(std::list<std::shared_ptr<DNSQuesti
 
         for (auto it : psrv->offered_to) {
             std::string key = it;
-            std::shared_ptr<ODnsExtension::FriendData> fdata = (*friend_data_table)[key];
+            std::shared_ptr<INETDNS::FriendData> fdata = (*friend_data_table)[key];
             if (fdata && fdata->online) {
                 // send per TCP to the privacy socket on the given port
                 privacySock->sendTo(p->dup(), fdata->address, fdata->port);
@@ -202,10 +204,10 @@ int MDNSProbeScheduler::preparePacketAndSend(std::list<std::shared_ptr<DNSQuesti
     return 1;
 }
 
-int MDNSProbeScheduler::append_question(std::shared_ptr<ODnsExtension::MDNSProbeJob> pj,
+int MDNSProbeScheduler::append_question(std::shared_ptr<INETDNS::MDNSProbeJob> pj,
         std::list<std::shared_ptr<DNSQuestion>>* qlist, std::list<std::shared_ptr<DNSRecord>>* nslist,
         int *packetSize, int* qdcount, int* nscount, int is_private) {
-    std::shared_ptr<ODnsExtension::DNSQuestion> q;
+    std::shared_ptr<INETDNS::DNSQuestion> q;
 
     int pack_has_space = 1;
 
@@ -230,7 +232,7 @@ int MDNSProbeScheduler::append_question(std::shared_ptr<ODnsExtension::MDNSProbe
     (*qdcount)++;
     (*qlist).push_back(q);
     (*nscount)++;
-    (*nslist).push_back(ODnsExtension::copyDnsRecord(pj->r));
+    (*nslist).push_back(INETDNS::copyDnsRecord(pj->r));
 
     done(pj);
 
@@ -239,7 +241,7 @@ int MDNSProbeScheduler::append_question(std::shared_ptr<ODnsExtension::MDNSProbe
     std::list<std::shared_ptr<MDNSProbeJob>> done_records;
     for (auto job : jobs) {
         // check if key matches ..
-        if (!ODnsExtension::recordEqualNoData(job->r, pj->r)) {
+        if (!INETDNS::recordEqualNoData(job->r, pj->r)) {
             // record does not match...
             continue;
         }
@@ -256,7 +258,7 @@ int MDNSProbeScheduler::append_question(std::shared_ptr<ODnsExtension::MDNSProbe
 
         // append record
         (*nscount)++;
-        (*nslist).push_back(ODnsExtension::copyDnsRecord(job->r));
+        (*nslist).push_back(INETDNS::copyDnsRecord(job->r));
 
         done_records.push_back(job);
     }
@@ -268,13 +270,13 @@ int MDNSProbeScheduler::append_question(std::shared_ptr<ODnsExtension::MDNSProbe
     return pack_has_space;
 }
 
-void MDNSProbeScheduler::elapseCallback(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data,
+void MDNSProbeScheduler::elapseCallback(INETDNS::TimeEvent* e, std::shared_ptr<void> data,
         void* thispointer) {
     MDNSProbeScheduler * self = static_cast<MDNSProbeScheduler*>(thispointer);
     self->elapse(e, data);
 }
 
-void MDNSProbeScheduler::post(std::shared_ptr<ODnsExtension::DNSRecord> r, int immediately) {
+void MDNSProbeScheduler::post(std::shared_ptr<INETDNS::DNSRecord> r, int immediately) {
     std::shared_ptr<MDNSProbeJob> pj;
     simtime_t tv;
 
@@ -303,11 +305,11 @@ void MDNSProbeScheduler::post(std::shared_ptr<ODnsExtension::DNSRecord> r, int i
         pj = new_job(r);
         pj->delivery = tv;
 
-        ODnsExtension::TimeEvent* e = new ODnsExtension::TimeEvent(this);
+        INETDNS::TimeEvent* e = new INETDNS::TimeEvent(this);
         e->setData(pj);
         e->setExpiry(tv);
         e->setLastRun(0);
-        e->setCallback(ODnsExtension::MDNSProbeScheduler::elapseCallback);
+        e->setCallback(INETDNS::MDNSProbeScheduler::elapseCallback);
 
         pj->e = e;
         timeEventSet->addTimeEvent(e);
@@ -318,11 +320,11 @@ void MDNSProbeScheduler::post(std::shared_ptr<ODnsExtension::DNSRecord> r, int i
     callback(tv_ptr, resolver);
 }
 
-void MDNSProbeScheduler::elapse(ODnsExtension::TimeEvent* e, std::shared_ptr<void> data) {
+void MDNSProbeScheduler::elapse(INETDNS::TimeEvent* e, std::shared_ptr<void> data) {
     // elapse callback, cast probejob
     std::shared_ptr<MDNSProbeJob> pj = std::static_pointer_cast<MDNSProbeJob>(data);
     int is_private = 0;
-    std::shared_ptr<ODnsExtension::PrivateMDNSService> psrv;
+    std::shared_ptr<INETDNS::PrivateMDNSService> psrv;
 
     if (pj->done) {
         remove_job(pj);
@@ -331,7 +333,7 @@ void MDNSProbeScheduler::elapse(ODnsExtension::TimeEvent* e, std::shared_ptr<voi
 
     if (hasPrivacy) {
         // check whether the record is of private nature
-        std::string service_type = ODnsExtension::extract_stype(pj->r->rname);
+        std::string service_type = INETDNS::extract_stype(pj->r->rname);
         if (private_service_table->find(service_type) != private_service_table->end()) {
             psrv = (*private_service_table)[service_type];
             is_private = psrv->is_private;
@@ -359,7 +361,7 @@ void MDNSProbeScheduler::elapse(ODnsExtension::TimeEvent* e, std::shared_ptr<voi
             if(!success) break;
 
             int _private_job = 0;
-            std::string service_type = ODnsExtension::extract_stype(job->r->rname);
+            std::string service_type = INETDNS::extract_stype(job->r->rname);
 
             // check whether this service is private, do not append it if it is
             if (hasPrivacy && private_service_table->find(service_type) != private_service_table->end()) {

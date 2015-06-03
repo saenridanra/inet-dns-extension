@@ -21,7 +21,7 @@
 
 #include <DNSSimpleCache.h>
 
-namespace ODnsExtension {
+namespace INETDNS {
 
 DNSSimpleCache::DNSSimpleCache() {
     // we don't need to destroy  the record in the hashfunc, since the evction
@@ -81,7 +81,7 @@ int DNSSimpleCache::put_into_cache(std::shared_ptr<DNSRecord> record){
         for(auto it = from_cache.begin(); it != from_cache.end(); ++it){
             std::shared_ptr<DNSRecord> record_from_cache = *it;
 
-            if(ODnsExtension::recordDataEqual(record_from_cache, record)){
+            if(INETDNS::recordDataEqual(record_from_cache, record)){
                 is_already_in_cache = 1;
                 break;
             }
@@ -145,7 +145,7 @@ std::shared_ptr<DNSRecord> DNSSimpleCache::remove_from_cache(std::string hash, s
 std::list<std::string> DNSSimpleCache::get_matching_hashes(std::string hash){
     std::list<std::string> hashes;
     for(auto kv : cache){
-        if(ODnsExtension::stdstr_has_suffix(hash, kv.first)){
+        if(INETDNS::stdstr_has_suffix(hash, kv.first)){
             // we have a match, append it to the return list
             std::string hash_cpy = std::string(kv.first);
             hashes.push_back(hash_cpy);

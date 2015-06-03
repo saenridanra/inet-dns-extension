@@ -13,14 +13,14 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package opp_dns_extension.networks.dynamic_mdns_network;
+package inet_dns_extension.networks.dynamic_mdns_network;
 
 import inet.nodes.inet.Router;
 import inet.nodes.inet.StandardHost;
-import opp_dns_extension.applications.mdns.MDNSNode;
+import inet_dns_extension.applications.mdns.MDNSNode;
 import inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator;
 import inet.nodes.ethernet.Eth1G;
-import opp_dns_extension.common.generation.MDNSNetworkConfigurator;
+import inet_dns_extension.common.generation.MDNSNetworkConfigurator;
 
 network Dynamic_mdns_network
 {

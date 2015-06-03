@@ -170,7 +170,7 @@ void DNSZoneConfig::initialize(std::string config_file)
                     {
                         e->domain = std::string(origin);
                     }
-                    else if (ODnsExtension::stdstr_has_suffix(tokens[0], std::string(".")))
+                    else if (INETDNS::stdstr_has_suffix(tokens[0], std::string(".")))
                     {
                         e->domain = std::string(tokens[0]);
                     }
@@ -186,8 +186,8 @@ void DNSZoneConfig::initialize(std::string config_file)
 
                 }
 
-                if (!ODnsExtension::stdstr_has_suffix(e->domain, std::string("."))
-                        && !ODnsExtension::stdstr_has_suffix(e->domain, origin))
+                if (!INETDNS::stdstr_has_suffix(e->domain, std::string("."))
+                        && !INETDNS::stdstr_has_suffix(e->domain, origin))
                 {
                     namehash = e->domain + "." + origin + ":" + e->type + ":" + e->__class;
                 }

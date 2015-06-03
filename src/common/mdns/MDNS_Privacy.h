@@ -29,8 +29,8 @@
  * @date March 26, 2015
  */
 
-#ifndef __OPP_DNS_EXTENSION_MDNS_PRIVACY_H_
-#define __OPP_DNS_EXTENSION_MDNS_PRIVACY_H_
+#ifndef __INETDNS_MDNS_PRIVACY_H_
+#define __INETDNS_MDNS_PRIVACY_H_
 
 #include <omnetpp.h>
 
@@ -43,7 +43,7 @@
 #include <list>
 #include <memory>
 
-namespace ODnsExtension{
+namespace INETDNS{
 
 /**
  * @brief Structure holding data for a private MDNS service
@@ -192,4 +192,4 @@ std::shared_ptr<FriendData> friend_data_new(std::shared_ptr<PairingData> pdata, 
 
 }
 
-#endif /* __OPP_DNS_EXTENSION_MDNS_PRIVACY_H_ */
+#endif /* __inet_dns_extension_MDNS_PRIVACY_H_ */

@@ -19,8 +19,8 @@
  THE SOFTWARE.
  */
 
-#ifndef __OPP_DNS_EXTENSION_DNSECHOSERVER_H_
-#define __OPP_DNS_EXTENSION_DNSECHOSERVER_H_
+#ifndef __INETDNS_DNSECHOSERVER_H_
+#define __INETDNS_DNSECHOSERVER_H_
 
 #include <omnetpp.h>
 
@@ -79,7 +79,7 @@ class DNSEchoServer : public cSimpleModule
      * @return
      *      newly created unsupported operation packet
      */
-    virtual DNSPacket* unsupportedOperation(std::shared_ptr<ODnsExtension::Query> q);
+    virtual DNSPacket* unsupportedOperation(std::shared_ptr<INETDNS::Query> q);
 
     /**
      * @brief This method sends a previously generated @ref DNSPacket to a receiver.
@@ -93,7 +93,7 @@ class DNSEchoServer : public cSimpleModule
      * @param query The query that has to be handled.
      * @return A @ref DNSPacket that is sent by this server to the querier.
      */
-    virtual DNSPacket* handleQuery(std::shared_ptr<ODnsExtension::Query> query);
+    virtual DNSPacket* handleQuery(std::shared_ptr<INETDNS::Query> query);
 };
 
 #endif

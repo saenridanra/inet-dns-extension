@@ -27,7 +27,18 @@
 #include <set>
 #include <memory>
 
-namespace ODnsExtension {
+namespace INETDNS {
+
+/**
+ * @brief Observer interface for timeevents.
+ *
+ * A class utilizing the time event set can get notified
+ * if any changes are made not performed by itself.
+ */
+class TimeEventSetObserver {
+public:
+    virtual void notify() = 0;
+};
 
 /**
  * @brief Holds all information necessary for time event scheduling.
@@ -35,104 +46,105 @@ namespace ODnsExtension {
  * @author Andreas Rain, Distributed Systems Group, University of Konstanz
  * @date March 26, 2015
  */
-class TimeEvent{
-    protected:
-        /**
-         * @brief The time the event expires.
-         */
-        simtime_t expiry;
+class TimeEvent {
+protected:
+    /**
+     * @brief The time the event expires.
+     */
+    simtime_t expiry;
 
-        /**
-         * @brief The time the callback was last performed.
-         */
-        simtime_t last_run;
+    /**
+     * @brief The time the callback was last performed.
+     */
+    simtime_t last_run;
 
-        /**
-         * @brief Data, usually a job that has to be performed
-         */
-        std::shared_ptr<void> data;
+    /**
+     * @brief Data, usually a job that has to be performed
+     */
+    std::shared_ptr<void> data;
 
-        /**
-         * @brief Pointer to the object that scheduled this event.
-         */
-        void* scheduler;
+    /**
+     * @brief Pointer to the object that scheduled this event.
+     */
+    void* scheduler;
 
-        /**
-         * @brief callback function, to call the correct scheduler to perform the job.
-         */
-        void (*callback) (ODnsExtension::TimeEvent*, std::shared_ptr<void>, void*);
+    /**
+     * @brief callback function, to call the correct scheduler to perform the job.
+     */
+    void (*callback)(INETDNS::TimeEvent*, std::shared_ptr<void>, void*);
 
+public:
+    /**
+     * @brief Constructor for time events.
+     *
+     * @param _scheduler The pointer to the object that scheduled
+     * the event and wants to perform some operation using the callback.
+     */
+    TimeEvent(void* _scheduler) {
+        scheduler = _scheduler;
+    }
 
-    public:
-        /**
-         * @brief Constructor for time events.
-         *
-         * @param _scheduler The pointer to the object that scheduled
-         * the event and wants to perform some operation using the callback.
-         */
-        TimeEvent(void* _scheduler){
-            scheduler = _scheduler;
-        }
+    virtual ~TimeEvent() {
 
-        virtual ~TimeEvent(){
+    }
 
-        }
+    /**
+     * @return Smart pointer to the data coming with this event.
+     */
+    std::shared_ptr<void> getData() {
+        return data;
+    }
 
-        /**
-         * @return Smart pointer to the data coming with this event.
-         */
-        std::shared_ptr<void> getData(){
-            return data;
-        }
+    /**
+     * @param _data Smart pointer to the data coming with this event.
+     */
+    void setData(std::shared_ptr<void> _data) {
+        data = _data;
+    }
 
-        /**
-         * @param _data Smart pointer to the data coming with this event.
-         */
-        void setData(std::shared_ptr<void> _data){
-            data = _data;
-        }
+    /**
+     * @brief performs the callback on the object that scheduled this event.
+     */
+    void performCallback() {
+        callback(this, data, scheduler);
+    }
 
-        /**
-         * @brief performs the callback on the object that scheduled this event.
-         */
-        void performCallback(){
-            callback(this, data, scheduler);
-        }
+    /**
+     * @brief Static callback reference
+     */
+    void setCallback(
+            void (_callback)(INETDNS::TimeEvent*, std::shared_ptr<void>,
+                    void*)) {
+        callback = _callback;
+    }
 
-        /**
-         * @brief Static callback reference
-         */
-        void setCallback(void (_callback) (ODnsExtension::TimeEvent*, std::shared_ptr<void>, void*)){
-            callback = _callback;
-        }
+    /**
+     * @return the time this event was last run.
+     */
+    simtime_t getLastRun() {
+        return last_run;
+    }
 
-        /**
-         * @return the time this event was last run.
-         */
-        simtime_t getLastRun(){
-            return last_run;
-        }
+    /**
+     * @param _last_run the time this event was last run.
+     */
+    void setLastRun(simtime_t _last_run) {
+        last_run = _last_run;
+    }
 
-        /**
-         * @param _last_run the time this event was last run.
-         */
-        void setLastRun(simtime_t _last_run){
-            last_run = _last_run;
-        }
+    /**
+     * @return the time this event expires.
+     */
+    simtime_t getExpiry() {
+        return expiry;
+    }
 
-        /**
-         * @return the time this event expires.
-         */
-        simtime_t getExpiry(){
-            return expiry;
-        }
-
-        /**
-         * @param _expiry the time this event expires.
-         */
-        void setExpiry(simtime_t _expiry){
-            expiry = _expiry;
-        }
+    /**
+     * @param _expiry the time this event expires.
+     */
+    void setExpiry(simtime_t _expiry) {
+        expiry = _expiry;
+    }
 
 };
 
@@ -150,27 +162,28 @@ class TimeEvent{
  * @author Andreas Rain, Distributed Systems Group, University of Konstanz
  * @date March 26, 2015
  */
-class TimeEventComparator{
-    public:
-        TimeEventComparator(){
+class TimeEventComparator {
+public:
+    TimeEventComparator() {
 
-        }
-        virtual ~TimeEventComparator(){
+    }
+    virtual ~TimeEventComparator() {
 
-        }
+    }
 
-        bool operator() (ODnsExtension::TimeEvent* t1, ODnsExtension::TimeEvent* t2){
-            // t1 < t2,
-            // meaning t1s time is up before t2s
-            if(t1->getExpiry() != t2->getExpiry())
-                return t1->getExpiry() < t2->getExpiry();
-            if(t1->getLastRun() != t2->getLastRun())
-                return t1->getLastRun() < t2->getLastRun();
-            if(t1->getData() != t2->getData())
-                return 1;
+    bool operator()(INETDNS::TimeEvent* t1,
+            INETDNS::TimeEvent* t2) {
+        // t1 < t2,
+        // meaning t1s time is up before t2s
+        if (t1->getExpiry() != t2->getExpiry())
+            return t1->getExpiry() < t2->getExpiry();
+        if (t1->getLastRun() != t2->getLastRun())
+            return t1->getLastRun() < t2->getLastRun();
+        if (t1->getData() != t2->getData())
+            return 1;
 
-            return 0;
-        }
+        return 0;
+    }
 };
 
 /**
@@ -183,49 +196,63 @@ class TimeEventComparator{
  * @date March 26, 2015
  *
  */
-class TimeEventSet
-{
-    protected:
-        /**
-         * @brief Set used for ordering time events.
-         */
-        std::set<ODnsExtension::TimeEvent*, ODnsExtension::TimeEventComparator> timeEventSet;
+class TimeEventSet {
+protected:
+    /**
+     * @brief Set used for ordering time events.
+     */
+    std::set<INETDNS::TimeEvent*, INETDNS::TimeEventComparator> timeEventSet;
 
-    public:
-        TimeEventSet();
-        virtual ~TimeEventSet();
+    /**
+     * @brief List of observers being notified on changes.
+     */
+    std::vector<INETDNS::TimeEventSetObserver*> observers;
 
-        /**
-         * @brief Adds a time event to the set
-         *
-         * @param t The time event to be added.
-         */
-        void addTimeEvent(ODnsExtension::TimeEvent* t);
+public:
+    TimeEventSet();
+    virtual ~TimeEventSet();
 
-        /**
-         * @brief Updates a time event in the set
-         *
-         * @param t The time event to be updatet.
-         * @param expiry The new expiry of the time event.
-         */
-        void updateTimeEvent(ODnsExtension::TimeEvent* t, simtime_t expiry);
+    /**
+     * @brief Adds a time event to the set
+     *
+     * @param t The time event to be added.
+     */
+    void addTimeEvent(INETDNS::TimeEvent* t);
 
-        /**
-         * @brief Removes a time event from the set
-         *
-         * @param t The time event to be removed.
-         */
-        void removeTimeEvent(ODnsExtension::TimeEvent* t);
+    /**
+     * @brief Updates a time event in the set
+     *
+     * @param t The time event to be updatet.
+     * @param expiry The new expiry of the time event.
+     */
+    void updateTimeEvent(INETDNS::TimeEvent* t, simtime_t expiry);
 
-        /**
-         * @return The next due time event, if expiry has passed.
-         */
-        ODnsExtension::TimeEvent* getTimeEventIfDue();
+    /**
+     * @brief Removes a time event from the set
+     *
+     * @param t The time event to be removed.
+     */
+    void removeTimeEvent(INETDNS::TimeEvent* t);
 
-        /**
-         * @return The time event, with oldest age of expiry.
-         */
-        ODnsExtension::TimeEvent* getTopElement();
+    /**
+     * @return The next due time event, if expiry has passed.
+     */
+    INETDNS::TimeEvent* getTimeEventIfDue();
+
+    /**
+     * @return The time event, with oldest age of expiry.
+     */
+    INETDNS::TimeEvent* getTopElement();
+
+    void attach(INETDNS::TimeEventSetObserver* observer) {
+        observers.push_back(observer);
+    }
+
+    void notify() {
+        for (auto observer : observers) {
+            observer->notify();
+        }
+    }
 };
 
 } /* namespace ODnsExtension */
