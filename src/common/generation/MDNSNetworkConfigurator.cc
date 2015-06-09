@@ -108,7 +108,7 @@ std::shared_ptr<MDNSNetworkConfigurator::GeneratorService> MDNSNetworkConfigurat
     gsrv->port = intuniform(22, 32768);
 
     gsrv->probability = intuniform(10, 100);
-    gsrv->is_private = intuniform(0, 1) != 0;
+    gsrv->is_private = intuniform(0, 100) <= private_service_ratio;
     num_generated_services++;
     return gsrv;
 }
@@ -287,8 +287,7 @@ bool MDNSNetworkConfigurator::computeMDNSNetwork()
             }
             else
             {
-                if (service->is_private) // remove the service if it was added before
-                    resolver->removePrivateService(service->service);
+                resolver->removePrivateService(service->service);
             }
 
             if (use_private)
@@ -314,7 +313,6 @@ bool MDNSNetworkConfigurator::computeMDNSNetwork()
                     share(resolver, picked_resolver, device_name, f, service);
                 }
             }
-
             // not private, we can directly add it to the resolver
             // build service, add it to the resolver
             std::shared_ptr<INETDNS::MDNSService> s(new INETDNS::MDNSService);

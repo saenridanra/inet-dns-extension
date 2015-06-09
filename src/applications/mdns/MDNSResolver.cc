@@ -172,10 +172,13 @@ void MDNSResolver::initialize(int stage)
         for(auto service : services){
             serviceList.push_back(service->name + service->service_type);
         }
-        mdnsTrafficGenerator = new INETDNS::MDNSTrafficGenerator(probeScheduler, queryScheduler, responseScheduler, timeEventSet, &outSock, serviceList);
 
-        if(hasPrivacy){
-            mdnsTrafficGenerator->setPrivacyData(private_service_table, friend_data_table, instance_name_table, &privacySock);
+        if(isQuerying){
+            mdnsTrafficGenerator = new INETDNS::MDNSTrafficGenerator(probeScheduler, queryScheduler, responseScheduler, timeEventSet, &outSock, serviceList);
+
+            if(hasPrivacy){
+                mdnsTrafficGenerator->setPrivacyData(private_service_table, friend_data_table, instance_name_table, &privacySock);
+            }
         }
 
         hostaddress = IPvXAddressResolver().addressOf(this->getParentModule());
@@ -281,7 +284,8 @@ void MDNSResolver::elapsedTimeCheck()
             // flush existing schedule
             // goodbye all announced services
             announcer->shutdown();
-            mdnsTrafficGenerator->stopQuerying();
+            if(isQuerying)
+                mdnsTrafficGenerator->stopQuerying();
         }
 
         INETDNS::TimeEvent* event;
@@ -312,7 +316,8 @@ void MDNSResolver::elapsedTimeCheck()
                 cDisplayString& dispStr = this->getParentModule()->getDisplayString();
                 dispStr.parse("i=device/laptop,#449544,100");
 #endif
-                mdnsTrafficGenerator->startQuerying();
+                if(isQuerying)
+                    mdnsTrafficGenerator->startQuerying();
             }
         }
 

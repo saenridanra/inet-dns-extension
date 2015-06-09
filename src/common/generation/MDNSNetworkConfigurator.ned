@@ -27,7 +27,7 @@ simple MDNSNetworkConfigurator{
         int min_friends = default(0);
         int max_services = default(4);
         int min_services = default(1);
-        bool querying_enabled = default(true);
+        bool querying_enabled = default(false);
         
         string service_usage_probability = default("GAUSSIAN");
         

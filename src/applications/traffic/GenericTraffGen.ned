@@ -20,4 +20,27 @@ package inet_dns_extension.applications.traffic;
 //
 simple GenericTraffGen
 {
+    parameters:
+        double minApps = default(1.0);
+        double maxApps = default(5.0);
+        double minBps = default(4096); // minimum of 500 bytes per second
+        double maxBps = default(8000000); // maximum of 1MBs
+
+        bool hasUDP = default(true);
+        bool hasTCP = default(false);
+        bool hasCBR = default(true);
+        bool hasBURST = default(false);
+
+        bool dynamicApps = default(false);
+
+        string sink;
+        
+        int udpStandardPort = default(8888);
+        int tcpStandardPort = default(9999);
+        
+    gates:
+        input udpAppIn @labels(UDPControlInfo/down);
+        output udpAppOut @labels(UDPControlInfo/down);
+        input tcpAppIn @labels(UDPControlInfo/down);
+        output tcpAppOut @labels(UDPControlInfo/down);
 }
