@@ -14,6 +14,8 @@
 // 
 
 package inet_dns_extension.applications.traffic;
+import inet.nodes.inet.StandardHost;
+import inet.transport.IUDP;
 
 //
 // TODO auto-generated module
@@ -25,9 +27,7 @@ simple GenericTraffGen
         double maxApps = default(5.0);
         double minBps = default(4096); // minimum of 500 bytes per second
         double maxBps = default(8000000); // maximum of 1MBs
-
-        bool hasUDP = default(true);
-        bool hasTCP = default(false);
+        
         bool hasCBR = default(true);
         bool hasBURST = default(false);
 
@@ -43,4 +43,18 @@ simple GenericTraffGen
         output udpAppOut @labels(UDPControlInfo/down);
         input tcpAppIn @labels(UDPControlInfo/down);
         output tcpAppOut @labels(UDPControlInfo/down);
+}
+
+module GenericTraffGenNode extends StandardHost{
+    parameters:
+        hasUdp = true;
+    	@display("p=432,344;i=device/laptop");
+    	
+    submodules:
+        gt: GenericTraffGen {
+        }
+        
+    connections:
+		gt.udpAppOut --> udp.appIn++;
+		gt.udpAppIn <-- udp.appOut++;
 }

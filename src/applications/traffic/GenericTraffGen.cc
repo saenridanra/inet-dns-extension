@@ -33,47 +33,24 @@ void GenericTraffGen::initialize(int stage)
         minBps = (int) par("minBps").doubleValue();
         maxBps = (int) par("maxBps").doubleValue();
 
-        hasUDP = par("hasUDP").boolValue();
-        hasTCP = par("hasTCP").boolValue();
         hasCBR = par("hasCBR").boolValue();
         hasBURST = par("hasBURST").boolValue();
         dynamicApps = par("dynamicApps").boolValue();
 
         udpStandardPort = (int) par("udpStandardPort").doubleValue();
-        tcpStandardPort = (int) par("tcpStandardPort").doubleValue();
-
-        std::string sinkModule = par("sink").stdstringValue();
-        sink = IPvXAddressResolver().resolve(sinkModule.c_str());
-
         udpOut.setOutputGate(gate("udpAppOut"));
+        udpOut.bind(udpStandardPort);
         udpOut.setTimeToLive(15);
 
-        tcpOut.setOutputGate(gate("tcpAppOut"));
-        tcpOut.setDataTransferMode(TCP_TRANSFER_BYTECOUNT);
+        const char* sinkModule = par("sink");
+        IPvXAddressResolver().tryResolve(sinkModule, sink);
 
         int initialApps = intuniform(minApps, maxApps);
         // create apps, push them into the vector
         for (int i = 0; i < initialApps; i++)
         {
             int bps = intuniform(minBps, maxBps);
-
-            PROTO p;
             TRAFFIC_TYPE t;
-
-            if (hasUDP && hasTCP)
-            {
-                int choice = intuniform(0, 1);
-                if (choice)
-                    p = UDP;
-                else
-                    p = TCP;
-            }
-            else if (hasUDP)
-                p = UDP;
-            else if (hasTCP)
-                p = TCP;
-            else
-                throw new cRuntimeError("No protocol defined for the traffic generator.");
 
             if (hasCBR && hasBURST)
             {
@@ -90,7 +67,7 @@ void GenericTraffGen::initialize(int stage)
             else
                 throw new cRuntimeError("No traffic type specified for traffic generator.");
 
-            std::shared_ptr<TrafficApp> app = std::shared_ptr < TrafficApp > (new TrafficApp(p, t, bps));
+            std::shared_ptr<TrafficApp> app = std::shared_ptr < TrafficApp > (new TrafficApp(t, bps));
             apps.push_back(app);
 
             // schedule startup some time in the future...
@@ -122,13 +99,9 @@ void GenericTraffGen::handleMessage(cMessage *msg)
         scheduleAt(chunk.nextTimer, msg);
 
         // use chunk to send out traffic..
-
-        cPacket* packet = new cPacket("tgen_pack");
+        std::string msgname = std::string("tgen_pack::") + std::to_string(vectorPos);
+        cPacket* packet = new cPacket(msgname.c_str());
         packet->setByteLength(chunk.payloadSize);
-
-        if(chunk.P == UDP){
-        }
-        else if(chunk.P == TCP){
-        }
+        udpOut.sendTo(packet, sink, udpStandardPort);
     }
 }

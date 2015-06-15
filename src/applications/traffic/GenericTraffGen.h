@@ -36,14 +36,6 @@
 
 #define TRAFF_APP_TIMER 0
 
-/**
- * @brief Enumeration for the different Protocols.
- */
-enum PROTO
-{
-    TCP, UDP
-};
-
 enum TRAFFIC_TYPE
 {
     CBR, BURST
@@ -61,11 +53,6 @@ class TrafficChunk
          * Payload size in bytes.
          */
         int payloadSize;
-
-        /**
-         * The protocol to be used.
-         */
-        PROTO P;
 };
 
 /**
@@ -74,7 +61,6 @@ class TrafficChunk
 class TrafficApp
 {
     protected:
-        PROTO P;
         TRAFFIC_TYPE T;
         int BPS;
 
@@ -82,13 +68,11 @@ class TrafficApp
         /**
          * @brief Constructs a @brief TrafficApp.
          *
-         * @param p @ref PROTO determining the protocol this app uses.
          * @param t @ref TRAFFIC_TYPE determining the type of traffic that is generated.
          * @param bps Bandwidth this app consumes (bits per second).
          */
-        TrafficApp(PROTO p, TRAFFIC_TYPE t, int bps)
+        TrafficApp(TRAFFIC_TYPE t, int bps)
         {
-            P = p;
             T = t;
             BPS = bps;
         }
@@ -117,7 +101,6 @@ class TrafficApp
         TrafficChunk getCBR()
         {
             TrafficChunk chunk;
-            chunk.P = this->P;
             chunk.nextTimer = simTime() + STR_SIMTIME("1s"); // schedule equal chunks every second..
             chunk.payloadSize = BPS / 8;
             return chunk;
@@ -129,7 +112,6 @@ class TrafficApp
             int delay = intuniform(1, 120);
             std::string delayToStr = std::to_string(delay) + std::string("s");
             TrafficChunk chunk;
-            chunk.P = this->P;
             chunk.nextTimer = simTime() + STR_SIMTIME(delayToStr.c_str());
             chunk.payloadSize = (BPS * delay) / 8; // we achieve bps by considering the delay
             return chunk;
@@ -162,16 +144,13 @@ class GenericTraffGen : public cSimpleModule
          * @brief Sockets this generator uses.
          */
         UDPSocket udpOut;
-        TCPSocket tcpOut;
-
         int udpStandardPort;
-        int tcpStandardPort;
 
         /**
          * @brief Parameters for the traffic generator.
          */
         int minApps, maxApps, minBps, maxBps;
-        bool hasUDP, hasTCP, hasCBR, hasBURST, dynamicApps;
+        bool hasCBR, hasBURST, dynamicApps;
 
     protected:
         virtual void initialize(int stage);
