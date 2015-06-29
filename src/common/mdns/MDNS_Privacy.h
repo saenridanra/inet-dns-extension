@@ -34,7 +34,7 @@
 
 #include <omnetpp.h>
 
-#include "IPvXAddressResolver.h"
+#include "L3AddressResolver.h"
 #include <DNSTools.h>
 #include <DNS.h>
 #include <MDNS.h>
@@ -121,7 +121,7 @@ typedef struct FriendData{
     /**
      * @brief The address of the friend
      */
-    IPvXAddress address;
+    inet::L3Address address;
 
     /**
      * @brief The port on which the friend privacy socket listens to

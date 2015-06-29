@@ -16,15 +16,15 @@
 package inet_dns_extension.networks.complex_dns_network;
 
 import inet.examples.inet.ipv4largenet.IPv4LargeLAN;
-import inet.nodes.bgp.BGPRouter;
-import inet.nodes.ethernet.Eth100G;
+import inet.node.bgp.BGPRouter;
+import inet.node.ethernet.Eth100G;
 import inet_dns_extension.networks.complex_dns_network.subnets.COM;
 import inet_dns_extension.networks.complex_dns_network.subnets.DE;
 import inet_dns_extension.networks.complex_dns_network.subnets.Google;
 import inet_dns_extension.networks.complex_dns_network.subnets.RootServers;
 import inet_dns_extension.networks.complex_dns_network.subnets.UniKonstanz;
-import inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator;
-import inet.nodes.inet.Router;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.node.inet.Router;
 
 
 network ComplexDNSNetwork

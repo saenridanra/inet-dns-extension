@@ -14,8 +14,8 @@
 // 
 
 package inet_dns_extension.applications.traffic;
-import inet.nodes.inet.StandardHost;
-import inet.transport.IUDP;
+import inet.node.inet.StandardHost;
+import inet.transportlayer.contract.IUDP;
 
 //
 // TODO auto-generated module

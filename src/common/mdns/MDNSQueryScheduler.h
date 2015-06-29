@@ -25,8 +25,7 @@
 #include <omnetpp.h>
 #include <TimeEventSet.h>
 #include <UDPSocket.h>
-#include <IPvXAddress.h>
-#include <IPvXAddressResolver.h>
+#include <L3AddressResolver.h>
 #include <DNS.h>
 #include <DNSCache.h>
 #include <DNSTTLCache.h>
@@ -116,17 +115,17 @@ protected:
     /**
      * @brief Socket over which DNS queries are sent/received.
      */
-    UDPSocket* outSock;
+    inet::UDPSocket* outSock;
 
     /**
      * @brief Socket over which private DNS queries are sent/received.
      */
-    UDPSocket* privacySock;
+    inet::UDPSocket* privacySock;
 
     /**
      * @brief Local multicast address in use.
      */
-    IPvXAddress multicast_address = IPvXAddressResolver().resolve("225.0.0.1");
+    inet::L3Address multicast_address = inet::L3AddressResolver().resolve("225.0.0.1");
 
 
     /**
@@ -265,7 +264,7 @@ public:
      * @param resolver Pointer to the resolver itself.
      */
     MDNSQueryScheduler(INETDNS::TimeEventSet* _timeEventSet,
-            UDPSocket* _outSock, void* resolver);
+            inet::UDPSocket* _outSock, void* resolver);
     virtual ~MDNSQueryScheduler();
 
     /**
@@ -319,7 +318,7 @@ public:
      *
      * @param sock Set the output socket
      */
-    virtual void setSocket(UDPSocket* sock) {
+    virtual void setSocket(inet::UDPSocket* sock) {
         outSock = sock;
     }
 
@@ -344,7 +343,7 @@ public:
             std::unordered_map<std::string, std::shared_ptr<PrivateMDNSService>>* private_service_table,
             std::unordered_map<std::string, std::shared_ptr<FriendData>>* friend_data_table,
             std::unordered_map<std::string, std::shared_ptr<FriendData>>* instance_name_table,
-            UDPSocket* privacySocket) {
+            inet::UDPSocket* privacySocket) {
         this->private_service_table = private_service_table;
         this->friend_data_table = friend_data_table;
         this->instance_name_table = instance_name_table;

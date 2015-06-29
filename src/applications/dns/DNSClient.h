@@ -24,8 +24,9 @@
 
 #include <omnetpp.h>
 
+#include "INETDefs.h"
 #include "UDPSocket.h"
-#include "IPvXAddressResolver.h"
+#include "L3AddressResolver.h"
 #include <vector>
 
 #include <iostream>
@@ -50,9 +51,9 @@
 class DNSClient: public cSimpleModule {
 protected:
     /**
-     * @brief @ref IPvXAddress vector for known DNS servers
+     * @brief @ref inet::L3Address vector for known DNS servers
      */
-    std::vector<IPvXAddress> dns_servers;
+    std::vector<inet::L3Address> dns_servers;
 
     /**
      * @brief This map manages queries currently waiting to be resolved
@@ -82,23 +83,21 @@ protected:
     /**
      * @brief Socket over which DNS queries are sent/received
      */
-    UDPSocket out;
+    inet::UDPSocket out;
 
     virtual void initialize(int stage);
-    virtual int numInitStages() const {
-        return 4;
-    }
+    virtual int numInitStages() const override { return inet::NUM_INIT_STAGES; }
     virtual void handleMessage(cMessage *msg);
 
     /**
-     * @brief Get the @ref IPvXAddress related to the dns label from the cache.
+     * @brief Get the @ref inet::L3Address related to the dns label from the cache.
      *
      * @param dns_name the record label as string
      *
      * @return
      *      returns address that is mapped to the dns_name
      */
-    virtual IPvXAddress* getAddressFromCache(std::string dns_name);
+    virtual inet::L3Address* getAddressFromCache(std::string dns_name);
 
     /**
      * @brief This function is used to resolve a query using the

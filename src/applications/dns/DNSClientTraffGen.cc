@@ -36,7 +36,7 @@ void DNSClientTraffGen::initialize(int stage) {
 #ifdef DEBUG_ENABLED
     std::cout << "\nDNSClientTraffGen: Stage --> " << stage << std::endl;
 #endif
-    if(stage == 0){
+    if(stage == inet::INITSTAGE_LAST){
         time_to_send = par("time_to_send").doubleValue();
         qcount = 0;
         timeoutMsg = new cMessage("timer");
@@ -77,7 +77,7 @@ void DNSClientTraffGen::handleTimer(cMessage *msg){
 
     if(id == -1){
         // already in the cache
-        IPvXAddress* address = DNSClient::getAddressFromCache(host_name);
+        inet::L3Address* address = DNSClient::getAddressFromCache(host_name);
     }
 
     qcount++;

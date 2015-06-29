@@ -25,7 +25,7 @@ Define_Module(DNSServerBase);
 
 void DNSServerBase::initialize(int stage)
 {
-    if (stage == 0)
+    if (stage == inet::INITSTAGE_LOCAL)
     {
         cSimpleModule::initialize(stage);
         // Initialize gates
@@ -34,9 +34,9 @@ void DNSServerBase::initialize(int stage)
 
         receivedQueries = 0;
     }
-    else if (stage == 3)
+    else if (stage == inet::INITSTAGE_LAST)
     {
-        rootServers = IPvXAddressResolver().resolve(cStringTokenizer(par("root_servers")).asVector());
+        rootServers = inet::L3AddressResolver().resolve(cStringTokenizer(par("root_servers")).asVector());
     }
 }
 
@@ -59,8 +59,8 @@ void DNSServerBase::handleMessage(cMessage *msg)
                 receivedQueries++;
 
                 cPacket *pk = check_and_cast<cPacket *>(msg);
-                UDPDataIndication *ctrl = check_and_cast<UDPDataIndication *>(pk->getControlInfo());
-                IPvXAddress srcAddress = ctrl->getSrcAddr();
+                inet::UDPDataIndication *ctrl = check_and_cast<inet::UDPDataIndication *>(pk->getControlInfo());
+                inet::L3Address srcAddress = ctrl->getSrcAddr();
                 query->src_address = srcAddress.str();
                 response = handleQuery(query);
 
@@ -86,7 +86,7 @@ void DNSServerBase::handleMessage(cMessage *msg)
                     int id = ((DNSPacket*) msg)->getId();
                     std::shared_ptr<INETDNS::CachedQuery> cq = get_query_from_cache(id);
 
-                    IPvXAddress addr = IPvXAddressResolver().resolve(cq->query->src_address.c_str());
+                    inet::L3Address addr = inet::L3AddressResolver().resolve(cq->query->src_address.c_str());
 
                     // free cached query data
                     remove_query_from_cache(id, cq);
@@ -259,7 +259,7 @@ DNSPacket* DNSServerBase::handleRecursion(DNSPacket* packet)
                 packet->getQuestions(0).qtype, cq->internal_id, 1);
 
         // Resolve the ip address for the record
-        IPvXAddress address = IPvXAddressResolver().resolve(r->strdata.c_str());
+        inet::L3Address address = inet::L3AddressResolver().resolve(r->strdata.c_str());
 
         if (!address.isUnspecified())
             sendResponse(query, address);
@@ -313,7 +313,7 @@ DNSPacket* DNSServerBase::handleQuery(std::shared_ptr<INETDNS::Query> query)
     return NULL;
 }
 
-void DNSServerBase::sendResponse(DNSPacket *response, IPvXAddress returnAddress)
+void DNSServerBase::sendResponse(DNSPacket *response, inet::L3Address returnAddress)
 {
     if (!returnAddress.isUnspecified())
     {

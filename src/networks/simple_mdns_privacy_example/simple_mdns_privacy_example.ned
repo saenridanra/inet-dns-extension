@@ -15,11 +15,11 @@
 
 package inet_dns_extension.networks.simple_mdns_privacy_example;
 
-import inet.nodes.inet.Router;
-import inet.nodes.inet.StandardHost;
+import inet.node.inet.Router;
+import inet.node.inet.StandardHost;
 import inet_dns_extension.applications.mdns.MDNSNode;
-import inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator;
-import inet.nodes.ethernet.Eth1G;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.node.ethernet.Eth1G;
 import inet_dns_extension.common.generation.MDNSNetworkConfigurator;
 
 network Simple_mdns_privacy_example
@@ -76,7 +76,7 @@ network Simple_mdns_privacy_example
         }
 
         multicast_router: Router {
-            forwardMulticast = true;
+            multicastForwarding = true;
             @display("p=399,316");
 
             gates:

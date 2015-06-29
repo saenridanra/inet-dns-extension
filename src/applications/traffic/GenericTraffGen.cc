@@ -25,7 +25,7 @@ Define_Module(GenericTraffGen);
 
 void GenericTraffGen::initialize(int stage)
 {
-    if (stage == 3) // initialize after network configuration has been done..
+    if (stage == inet::INITSTAGE_APPLICATION_LAYER) // initialize after network configuration has been done..
     {
         // First initialize ned parameters
         minApps = (int) par("minApps").doubleValue();
@@ -43,7 +43,7 @@ void GenericTraffGen::initialize(int stage)
         udpOut.setTimeToLive(15);
 
         const char* sinkModule = par("sink");
-        IPvXAddressResolver().tryResolve(sinkModule, sink);
+        inet::L3AddressResolver().tryResolve(sinkModule, sink);
 
         int initialApps = intuniform(minApps, maxApps);
         // create apps, push them into the vector

@@ -24,7 +24,7 @@
 namespace INETDNS {
 
 MDNSProbeScheduler::MDNSProbeScheduler(
-        INETDNS::TimeEventSet* _timeEventSet, UDPSocket* _outSock,
+        INETDNS::TimeEventSet* _timeEventSet, inet::UDPSocket* _outSock,
         void* resolver) {
     timeEventSet = _timeEventSet;
     outSock = _outSock;

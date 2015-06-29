@@ -15,12 +15,12 @@
 
 package inet_dns_extension.networks.wireless_mdns_example;
 
-import inet.nodes.inet.Router;
-import inet.nodes.wireless.AccessPoint;
+import inet.node.inet.Router;
+import inet.node.wireless.AccessPoint;
 import inet_dns_extension.applications.mdns.WirelessMDNSNode;
-import inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator;
-import inet.world.radio.ChannelControl;
-import inet.nodes.ethernet.Eth1G;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
+import inet.node.ethernet.Eth1G;
 
 network Wireless_mdns_example
 {
@@ -37,14 +37,15 @@ network Wireless_mdns_example
             @display("p=432,344;i=device/laptop");
         }
         multicast_router: Router {
-            forwardMulticast = true;
+            multicastForwarding = true;
             @display("p=357,194");
         }
         ap: AccessPoint {
             @display("p=349,271");
         }
-        channelControl: ChannelControl {
-            @display("p=60,50");
+        radioMedium: Ieee80211ScalarRadioMedium {
+            parameters:
+                @display("p=100,50");
         }
         configurator: IPv4NetworkConfigurator {
             config = xmldoc("config.xml");

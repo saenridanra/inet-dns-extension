@@ -23,12 +23,11 @@
 #define __INETDNS_GENERICTRAFFGEN_H_
 
 #include <omnetpp.h>
-
+#include "INETDefs.h"
 #include <TCPSocket.h>
 #include <UDPSocket.h>
 
-#include <IPvXAddress.h>
-#include <IPvXAddressResolver.h>
+#include <L3AddressResolver.h>
 
 #include <memory>
 #include <vector>
@@ -133,7 +132,7 @@ class GenericTraffGen : public cSimpleModule
          * This is the identifier for the sink, this traffic generator
          * sends data to.
          */
-        IPvXAddress sink;
+        inet::L3Address sink;
 
         /**
          * @brief Apps that generate traffic.
@@ -143,7 +142,7 @@ class GenericTraffGen : public cSimpleModule
         /**
          * @brief Sockets this generator uses.
          */
-        UDPSocket udpOut;
+        inet::UDPSocket udpOut;
         int udpStandardPort;
 
         /**
@@ -154,10 +153,7 @@ class GenericTraffGen : public cSimpleModule
 
     protected:
         virtual void initialize(int stage);
-        virtual int numInitStages() const
-        {
-            return 4;
-        }
+        virtual int numInitStages() const override { return inet::NUM_INIT_STAGES; }
         virtual void handleMessage(cMessage *msg);
 };
 

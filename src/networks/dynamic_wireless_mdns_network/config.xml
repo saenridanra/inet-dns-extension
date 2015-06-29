@@ -1,10 +1,10 @@
 <config>
 
   <interface hosts="mdns_host[*]" names="wlan0" towards="multicast_router" address="172.0.x.x" netmask="255.255.255.0" mtu="1500"/>
-  <interface hosts="multicast_router" names="wlan*" towards="mdns_host[*]" address="172.0.x.x" netmask="255.255.255.0" mtu="1500"/>
+  <interface hosts="multicast_router" names="wlan0" address="172.0.x.x" netmask="255.255.255.0" mtu="1500"/>
 
   <multicast-group hosts="mdns_host[*]" towards="multicast_router" address="225.0.0.1"/>
   
-  <multicast-route hosts="multicast_router" groups="225.0.0.1" children="wlan*"/>
+  <multicast-route hosts="multicast_router" groups="225.0.0.1" children="ap"/>
   
 </config>

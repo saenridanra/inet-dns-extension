@@ -225,30 +225,29 @@ std::shared_ptr<Response> resolveResponse(cPacket* response)
         ;
     }
 
+    std::shared_ptr<Response> r = std::shared_ptr<Response>(
+            new Response(v->getId(), v->getOptions(), v->getQdcount(), v->getAncount(), v->getNscount(),
+                    v->getArcount()));
+
     // Migrate Answers
-    DNSRecord answers[v->getNumAnswers()];
     for (short i = 0; i < v->getAncount(); i++)
     {
-        answers[i] = v->getAnswers(i);
+        r->answers.push_back(v->getAnswers(i));
     }
 
     // Migrate Authoritative Records
     DNSRecord authoritative[v->getNumAuthorities()];
     for (short i = 0; i < v->getNscount(); i++)
     {
-        authoritative[i] = v->getAuthorities(i);
+        r->authoritative.push_back(v->getAuthorities(i));
     }
 
     // Migrate Additional Records
     DNSRecord additional[v->getNumAdditional()];
     for (short i = 0; i < v->getArcount(); i++)
     {
-        additional[i] = v->getAdditional(i);
+        r->additional.push_back(v->getAdditional(i));
     }
-
-    std::shared_ptr<Response> r(
-            new Response(v->getId(), v->getOptions(), v->getQdcount(), v->getAncount(), v->getNscount(),
-                    v->getArcount(), answers, authoritative, additional));
 
     return r;
 }
@@ -750,7 +749,7 @@ std::shared_ptr<DNSRecord> copyDnsRecord(DNSRecord* r)
             break;
     }
 
-    std::shared_ptr<DNSRecord> r_cpy(
+    std::shared_ptr<DNSRecord> r_cpy = std::shared_ptr<DNSRecord>(
             new DNSRecord(r->rname, r->rtype, r->rclass, r->ttl, r->rdlength, cpy_data, strdata));
     return r_cpy;
 }

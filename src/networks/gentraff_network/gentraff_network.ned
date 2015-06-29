@@ -15,11 +15,11 @@
 
 package inet_dns_extension.networks.gentraff_network;
 
-import inet.nodes.inet.Router;
-import inet.nodes.inet.StandardHost;
+import inet.node.inet.Router;
+import inet.node.inet.StandardHost;
 import inet_dns_extension.applications.traffic.GenericTraffGenNode;
-import inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator;
-import inet.nodes.ethernet.Eth1G;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.node.ethernet.Eth1G;
 
 network Gentraff_network
 {

@@ -15,11 +15,11 @@
 
 package inet_dns_extension.networks.complex_dns_network.subnets;
 
-import inet.nodes.ethernet.Eth100G;
-import inet.nodes.ethernet.Eth10G;
-import inet.nodes.ethernet.Eth1G;
-import inet.nodes.inet.Router;
-import inet.nodes.inet.StandardHost;
+import inet.node.ethernet.Eth100G;
+import inet.node.ethernet.Eth10G;
+import inet.node.ethernet.Eth1G;
+import inet.node.inet.Router;
+import inet.node.inet.StandardHost;
 import inet_dns_extension.applications.dns.DNSClientNode;
 import inet_dns_extension.applications.dns.DNSServerNode;
 

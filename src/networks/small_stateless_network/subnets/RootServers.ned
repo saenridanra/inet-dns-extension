@@ -16,9 +16,9 @@
 package inet_dns_extension.networks.small_stateless_network.subnets;
 
 import inet.examples.inet.ipv4largenet.cable;
-import inet.nodes.ethernet.Eth100G;
-import inet.nodes.ethernet.EtherLink;
-import inet.nodes.inet.Router;
+import inet.node.ethernet.Eth100G;
+import inet.node.ethernet.EtherLink;
+import inet.node.inet.Router;
 import inet_dns_extension.applications.dns.DNSServerNode;
 
 network RootServers

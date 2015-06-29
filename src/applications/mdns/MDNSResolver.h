@@ -23,10 +23,11 @@
 #define __INETDNS_MDNSRESOLVER_H_
 
 #include <omnetpp.h>
+#include "INETDefs.h"
 #include <TimeEventSet.h>
 #include "UDPControlInfo_m.h" // to get the src address
 #include "UDPSocket.h"
-#include "IPvXAddressResolver.h"
+#include "L3AddressResolver.h"
 
 #include <DNSCache.h>
 #include <DNSTTLCache.h>
@@ -116,12 +117,12 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver, public INETDNS
         /**
          * @brief Socket over which DNS queries are sent/received.
          */
-        UDPSocket outSock;
+        inet::UDPSocket outSock;
 
         /**
          * @brief Socket over which private DNS queries are sent/received.
          */
-        UDPSocket privacySock;
+        inet::UDPSocket privacySock;
 
         /**
          * @brief Vector of @ref MDNSService , that need to be published.
@@ -134,9 +135,14 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver, public INETDNS
         std::string hostname;
 
         /**
-         * @brief The resolvers hostaddress as @ref IPvXAddress
+         * @brief The resolvers hostaddress as @ref inet::L3Address of type IPv4
          */
-        IPvXAddress hostaddress;
+        inet::L3Address hostaddress4;
+
+        /**
+         * @brief The resolvers hostaddress as @ref inet::L3Address of type IPv6
+         */
+        inet::L3Address hostaddress6;
 
         /**
          * @brief a selfmessage to schedule when the next event is due.
@@ -235,10 +241,7 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver, public INETDNS
         MDNSResolver();
         ~MDNSResolver();
         virtual void initialize(int stage);
-        virtual int numInitStages() const
-        {
-            return 5;
-        }
+        virtual int numInitStages() const override { return inet::NUM_INIT_STAGES; }
         virtual void handleMessage(cMessage *msg);
 
         /**

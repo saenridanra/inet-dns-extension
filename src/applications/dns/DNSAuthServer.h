@@ -23,6 +23,7 @@
 #define __INETDNS_DNSAUTHSERVER_H_
 
 #include <omnetpp.h>
+#include "INETDefs.h"
 #include "DNSServerBase.h"
 #include "DNSZoneConfig.h"
 #include "DNS.h"

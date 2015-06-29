@@ -34,7 +34,7 @@ static void printElapsedTime(const char *name, long startTime)
 void MDNSNetworkConfigurator::initialize(int stage)
 {
     cSimpleModule::initialize(stage);
-    if (stage == 0)
+    if (stage == inet::INITSTAGE_LOCAL)
     {
         // intialize params
         traffic_model = par("traffic_model").stdstringValue();
@@ -60,7 +60,7 @@ void MDNSNetworkConfigurator::initialize(int stage)
         num_generated_services = 0;
 
     }
-    else if (stage == 3)
+    else if (stage == inet::INITSTAGE_APPLICATION_LAYER)
     { // init in stage 3, after address have been assigned, but before
       // resolvers have been initialized
 
@@ -127,7 +127,7 @@ bool MDNSNetworkConfigurator::computeMDNSNetwork()
     // initiliaze the device map
     for (int i = 0; i < topology.getNumNodes(); i++)
     {
-        Topology::Node *node = (Topology::Node *) topology.getNode(i);
+        inet::Topology::Node *node = (inet::Topology::Node *) topology.getNode(i);
         cModule *module = node->getModule();
         // test that it's really a MDNSResolver..
         MDNSResolver *resolver = (MDNSResolver *) (module);

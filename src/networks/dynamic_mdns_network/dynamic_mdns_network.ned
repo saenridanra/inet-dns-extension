@@ -15,11 +15,11 @@
 
 package inet_dns_extension.networks.dynamic_mdns_network;
 
-import inet.nodes.inet.Router;
-import inet.nodes.inet.StandardHost;
+import inet.node.inet.Router;
+import inet.node.inet.StandardHost;
 import inet_dns_extension.applications.mdns.MDNSNode;
-import inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator;
-import inet.nodes.ethernet.Eth1G;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.node.ethernet.Eth1G;
 import inet_dns_extension.common.generation.MDNSNetworkConfigurator;
 
 network Dynamic_mdns_network
@@ -45,12 +45,13 @@ network Dynamic_mdns_network
         }
 
         multicast_router: Router {
-            forwardMulticast = true;
+            multicastForwarding = true;
             @display("p=399,316");
 
             gates:
                 pppg[p_num_resolvers];
         }
+        
         configurator: IPv4NetworkConfigurator {
             config = xmldoc("config.xml");
             @display("p=121,37");

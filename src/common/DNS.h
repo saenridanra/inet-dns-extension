@@ -33,6 +33,7 @@
 #define DNS_H_
 
 #include <string>
+#include <vector>
 #include <memory>
 
 namespace INETDNS {
@@ -278,31 +279,27 @@ struct Response {
     /**
      * @brief Array holding the answers for this response.
      */
-    struct DNSRecord* answers;
+    std::vector<struct DNSRecord> answers;
 
     /**
      * @brief Array holding the authoritative records for this response.
      */
-    struct DNSRecord* authoritative;
+    std::vector<struct DNSRecord> authoritative;
 
     /**
      * @brief Array holding the additional records for this response.
      */
-    struct DNSRecord* additional;
+    std::vector<struct DNSRecord> additional;
 
     Response() :
-            id(0), options(0), qdcount(0), ancount(0), nscount(0), arcount(0), answers(
-            NULL), authoritative(NULL), additional(NULL) {
+            id(0), options(0), qdcount(0), ancount(0), nscount(0), arcount(0) {
     }
 
     Response(unsigned short _id, unsigned short _options,
             unsigned short _qdcount, unsigned short _ancount,
-            unsigned short _nscount, unsigned short _arcount,
-            DNSRecord* _answers, DNSRecord* _authoritative,
-            DNSRecord* _additional) :
+            unsigned short _nscount, unsigned short _arcount) :
             id(_id), options(_options), qdcount(_qdcount), ancount(_ancount), nscount(
-                    _nscount), arcount(_arcount), answers(_answers), authoritative(
-                    _authoritative), additional(_additional) {
+                    _nscount), arcount(_arcount) {
     }
 };
 

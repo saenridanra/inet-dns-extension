@@ -15,10 +15,9 @@
 
 package inet_dns_extension.applications.mdns;
 
-import inet.nodes.inet.WirelessHost;
-import inet.mobility.single.CircleMobility;
+import inet.node.inet.WirelessHost;
 import inet_dns_extension.applications.mdns.MDNSResolver;
-import inet.transport.IUDP;
+import inet.transportlayer.contract.IUDP;
 
 module WirelessMDNSNode extends WirelessHost
 {
@@ -46,10 +45,6 @@ module WirelessMDNSNode extends WirelessHost
                 isQuerying = querying;
                 
                 @display("p=437,93");
-        }
-        mobility: CircleMobility {
-            parameters:
-                @display("p=50,141");
         }
     connections:
         resolver.mdnsOut --> udp.appIn++;

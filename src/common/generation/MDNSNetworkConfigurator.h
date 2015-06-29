@@ -23,6 +23,7 @@
 #define MDNSNETWORKCONFIGURATOR_H_
 
 #include <omnetpp.h>
+#include "INETDefs.h"
 
 #include <Topology.h>
 #include <MDNSResolver.h>
@@ -124,7 +125,7 @@ class MDNSNetworkConfigurator : public cSimpleModule {
         /**
          * @brief Keep the topology of @ref MDNSResolvers to configure the resolvers.
          */
-        Topology topology;
+        inet::Topology topology;
 
         /**
          * @brief Whether the resolvers can query or not
@@ -199,7 +200,7 @@ class MDNSNetworkConfigurator : public cSimpleModule {
 
     public:
         ~MDNSNetworkConfigurator();
-        virtual int numInitStages() const  { return 4; }
+        virtual int numInitStages() const  { return inet::NUM_INIT_STAGES; }
         virtual void handleMessage(cMessage *msg) { throw cRuntimeError("this module doesn't handle messages, it runs only in initialize()"); }
         virtual void initialize(int stage);
 

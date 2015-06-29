@@ -27,7 +27,7 @@
 #include "INETDefs.h"
 #include "UDPSocket.h"
 #include "UDPControlInfo_m.h"
-#include "IPvXAddressResolver.h"
+#include "L3AddressResolver.h"
 #include "DNSCache.h"
 #include "DNSTools.h"
 #include "DNS.h"
@@ -99,20 +99,20 @@ class DNSServerBase : public cSimpleModule
     INETDNS::DNSCache* responseCache;
 
     /**
-     * The @ref IPvXAddresses of the rootServers within the network.
+     * The @ref inet::L3Address of the rootServers within the network.
      *
      * If no root servers are available, recursive resolving does not work.
      */
-    std::vector<IPvXAddress> rootServers;
+    std::vector<inet::L3Address> rootServers;
 
     /**
      * @brief Socket over which DNS queries are sent/received
      */
-    UDPSocket out;
+    inet::UDPSocket out;
 
   public:
     virtual void initialize(int stage);
-    virtual int numInitStages() const { return 4; }
+    virtual int numInitStages() const override { return inet::NUM_INIT_STAGES; }
     virtual void handleMessage(cMessage *msg);
 
     /**
@@ -125,9 +125,9 @@ class DNSServerBase : public cSimpleModule
 
     /**
      * @brief This method sends a previously generated @ref DNSPacket to a receiver.
-     * @param response the @ref DNSPacket that needs to be sent to the @ref IPvXAddress @p returnAddress.
+     * @param response the @ref DNSPacket that needs to be sent to the @ref inet::L3Address @p returnAddress.
      */
-    virtual void sendResponse(DNSPacket *response, IPvXAddress returnAddress);
+    virtual void sendResponse(DNSPacket *response, inet::L3Address returnAddress);
 
     /**
      * @brief This method should be overwritten by the implementor.

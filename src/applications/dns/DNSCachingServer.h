@@ -23,6 +23,7 @@
 #define __INETDNS_DNSCachingServer_H_
 
 #include <omnetpp.h>
+#include "INETDefs.h"
 #include "DNSServerBase.h"
 #include "DNS.h"
 #include "DNSTTLCache.h"

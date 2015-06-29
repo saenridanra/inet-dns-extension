@@ -44,7 +44,7 @@ DNSSimpleCache::~DNSSimpleCache() {
 int DNSSimpleCache::put_into_cache(std::shared_ptr<DNSRecord> record){
     // calculate the hash, check if it's already in the cache.
 
-    if(!record->rdata){
+    if(!record->rdata && record->strdata == ""){
         throw cRuntimeError("Retrieved invalid record to put into cache");
     }
 

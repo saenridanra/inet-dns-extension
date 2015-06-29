@@ -80,7 +80,7 @@ MDNSResolver::~MDNSResolver()
 
 void MDNSResolver::initialize(int stage)
 {
-    if (stage == 0)
+    if (stage == inet::INITSTAGE_LOCAL)
     {
         outSock.setOutputGate(gate("mdnsOut"));
         outSock.bind(MDNS_PORT);
@@ -101,7 +101,7 @@ void MDNSResolver::initialize(int stage)
         instance_name_table = new std::unordered_map<std::string, std::shared_ptr<INETDNS::FriendData>>();
 
     }
-    else if (stage == 4)
+    else if (stage == inet::INITSTAGE_LAST)
     {
         announcer_state = INETDNS::AnnouncerState::START;
         cDisplayString& dispStr = this->getParentModule()->getDisplayString();
@@ -110,8 +110,6 @@ void MDNSResolver::initialize(int stage)
         timeEventSet = new INETDNS::TimeEventSet();
         selfMessage = new cMessage("timer");
         selfMessage->setKind(MDNS_KIND_TIMER);
-
-        outSock.joinLocalMulticastGroups();
 
         cache = new INETDNS::DNSTTLCache();
 
@@ -181,10 +179,23 @@ void MDNSResolver::initialize(int stage)
             }
         }
 
-        hostaddress = IPvXAddressResolver().addressOf(this->getParentModule());
+        try{
+            hostaddress4 = inet::L3AddressResolver().addressOf(this->getParentModule(), inet::L3AddressResolver::ADDR_IPv4);
+        }
+        catch(int e){
+
+        }
+
+//        FIXME: Can't set IPv6 since update to INET 3.0
+//        try{
+//            hostaddress6 = inet::L3Address(hostaddress4.toIPv6());
+//        }
+//        catch(int e){
+//
+//        }
 
         announcer = new INETDNS::MDNSAnnouncer(probeScheduler, responseScheduler, timeEventSet, services,
-                hostname, &hostaddress);
+                hostname, &hostaddress4, 0);
 
         announcer->initialize();
     }
@@ -222,13 +233,13 @@ void MDNSResolver::handleMessage(cMessage *msg)
             delete msg;
             return;
         }
-        else if (msg->getKind() == UDP_I_DATA)
+        else if (msg->getKind() == inet::UDP_I_DATA)
         {
             DNSPacket* p = check_and_cast<DNSPacket*>(msg);
-            UDPDataIndication *ctrl = check_and_cast<UDPDataIndication *>(p->getControlInfo());
-            IPvXAddress srcAddress = ctrl->getSrcAddr();
+            inet::UDPDataIndication *ctrl = check_and_cast<inet::UDPDataIndication *>(p->getControlInfo());
+            inet::L3Address srcAddress = ctrl->getSrcAddr();
 
-            if (!srcAddress.get4().equals(IPv4Address().LOOPBACK_ADDRESS))
+            if (srcAddress != inet::IPv4Address().LOOPBACK_ADDRESS)
             {
                 if (INETDNS::isQuery(p))
                 {
@@ -429,7 +440,7 @@ void MDNSResolver::handleQuery(DNSPacket* p)
     }
 
     // go through the answer section and perform KAS
-    IPvXAddress* querier = &(check_and_cast<UDPDataIndication *>(p->getControlInfo()))->getSrcAddr();
+    inet::L3Address* querier = &(check_and_cast<inet::UDPDataIndication *>(p->getControlInfo()))->getSrcAddr();
     for (int i = 0; i < p->getAncount(); i++)
     {
         std::shared_ptr<DNSRecord> answer = INETDNS::copyDnsRecord(&p->getAnswers(i));
@@ -506,10 +517,10 @@ void MDNSResolver::handleResponse(DNSPacket* p)
                         if ((fdata->last_informed < simTime() - STR_SIMTIME("30s")
                                 || fdata->last_informed <= STR_SIMTIME("0s")) && !INETDNS::isGoodbye(r))
                         {
-                            IPvXAddress querier =
-                                    check_and_cast<UDPDataIndication *>(p->getControlInfo())->getSrcAddr();
+                            inet::L3Address querier =
+                                    check_and_cast<inet::UDPDataIndication *>(p->getControlInfo())->getSrcAddr();
 
-                            fdata->address = IPvXAddress(querier.get4());
+                            fdata->address = inet::L3Address(querier);
 
                             // copy address, set it in fdata
                             fdata->address = querier;

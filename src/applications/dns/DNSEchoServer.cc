@@ -18,7 +18,7 @@
 Define_Module(DNSEchoServer);
 
 void DNSEchoServer::initialize(int stage) {
-    if (stage == 0) {
+    if (stage == inet::INITSTAGE_LOCAL) {
         cSimpleModule::initialize(stage);
         // Initialize gates
         //in.setOutputGate(gate("udpIn"));
@@ -47,9 +47,9 @@ void DNSEchoServer::handleMessage(cMessage *msg) {
                 receivedQueries++;
 
                 cPacket *pk = check_and_cast<cPacket *>(msg);
-                UDPDataIndication *ctrl = check_and_cast<UDPDataIndication *>(
+                inet::UDPDataIndication *ctrl = check_and_cast<inet::UDPDataIndication *>(
                         pk->getControlInfo());
-                IPvXAddress srcAddress = ctrl->getSrcAddr();
+                inet::L3Address srcAddress = ctrl->getSrcAddr();
                 response = handleQuery(query);
 
                 if (response == NULL) {
@@ -204,7 +204,7 @@ DNSPacket* DNSEchoServer::handleQuery(std::shared_ptr<INETDNS::Query> query) {
 }
 
 void DNSEchoServer::sendResponse(DNSPacket *response,
-        IPvXAddress returnAddress) {
+        inet::L3Address returnAddress) {
     response->setByteLength(INETDNS::estimateDnsPacketSize(response));
     out.sendTo(response, returnAddress, DNS_PORT);
 }

@@ -21,13 +21,13 @@
 package inet_dns_extension.networks;
 
 import inet_dns_extension.applications.dns.DNSAuthServer;
-import inet.nodes.ethernet.Eth1G;
-import inet.nodes.inet.Router;
-import inet.nodes.inet.StandardHost;
+import inet.node.ethernet.Eth1G;
+import inet.node.inet.Router;
+import inet.node.inet.StandardHost;
 import inet_dns_extension.applications.dns.DNSServerNode;
 import inet_dns_extension.applications.dns.DNSClientNode;
-import inet.transport.IUDP;
-import inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator;
+import inet.transportlayer.contract.IUDP;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
 import inet_dns_extension.applications.dns.DNSClientTraffGen;
 
 network SimpleDNSNetwork

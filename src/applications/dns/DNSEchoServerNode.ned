@@ -15,9 +15,9 @@
 
 package inet_dns_extension.applications.dns;
 
-import inet.nodes.inet.StandardHost;
+import inet.node.inet.StandardHost;
 import inet_dns_extension.applications.dns.DNSEchoServer;
-import inet.transport.IUDP;
+import inet.transportlayer.contract.IUDP;
 
 module DNSEchoServerNode extends StandardHost
 {

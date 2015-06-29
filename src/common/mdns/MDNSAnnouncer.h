@@ -23,7 +23,7 @@
 #define MDNSANNOUNCER_H_
 
 #include <omnetpp.h>
-#include <IPvXAddress.h>
+#include <L3Address.h>
 #include <TimeEventSet.h>
 #include <DNS.h>
 #include <DNSCache.h>
@@ -142,9 +142,14 @@ protected:
     INETDNS::MDNSResponseScheduler* response_scheduler;
 
     /**
-     * @brief The resolvers hostaddress.
+     * @brief The resolvers hostaddress as @ref inet::L3Address of type IPv4
      */
-    IPvXAddress* hostaddress;
+    inet::L3Address* hostaddress4;
+
+    /**
+     * @brief The resolvers hostaddress as @ref inet::L3Address of type IPv6
+     */
+    inet::L3Address* hostaddress6;
 
     /**
      * @brief The resolvers hostname.
@@ -202,13 +207,14 @@ public:
     MDNSAnnouncer(INETDNS::MDNSProbeScheduler* _probe_scheduler,
             INETDNS::MDNSResponseScheduler* _response_scheduler,
             INETDNS::TimeEventSet* _timeEventSet, std::vector<std::shared_ptr<MDNSService>> services,
-            std::string _hostname, IPvXAddress* _hostaddress) {
+            std::string _hostname, inet::L3Address* _hostaddress4, inet::L3Address* _hostaddress6) {
         probe_scheduler = _probe_scheduler;
         response_scheduler = _response_scheduler;
         timeEventSet = _timeEventSet;
         to_announce = services;
         hostname = _hostname;
-        hostaddress = _hostaddress;
+        hostaddress4 = _hostaddress4;
+        hostaddress6 = _hostaddress6;
         s = AnnouncerState::START;
     }
     virtual ~MDNSAnnouncer() {

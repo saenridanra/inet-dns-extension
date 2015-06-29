@@ -23,7 +23,7 @@
 namespace INETDNS {
 
 MDNSResponseScheduler::MDNSResponseScheduler(TimeEventSet* _timeEventSet,
-        UDPSocket* _outSock, void* resolver) {
+        inet::UDPSocket* _outSock, void* resolver) {
     timeEventSet = _timeEventSet;
     outSock = _outSock;
     this->resolver = resolver;
@@ -93,7 +93,7 @@ std::shared_ptr<MDNSResponseJob> MDNSResponseScheduler::find_history(
 }
 
 std::shared_ptr<MDNSResponseJob> MDNSResponseScheduler::find_suppressed(
-        std::shared_ptr<DNSRecord> r, IPvXAddress* querier) {
+        std::shared_ptr<DNSRecord> r, inet::L3Address* querier) {
     std::shared_ptr<MDNSResponseJob> rj;
     for (auto it = suppressed.begin(); it != suppressed.end(); ++it) {
         rj = *it;
@@ -171,7 +171,7 @@ void MDNSResponseScheduler::remove_job(std::shared_ptr<MDNSResponseJob> rj) {
 }
 
 void MDNSResponseScheduler::suppress(std::shared_ptr<DNSRecord> r,
-        int flush_cache, IPvXAddress* querier, int immediately) {
+        int flush_cache, inet::L3Address* querier, int immediately) {
     std::shared_ptr<MDNSResponseJob> rj;
     simtime_t now;
     simtime_t tv;
@@ -407,7 +407,7 @@ int MDNSResponseScheduler::preparePacketAndSend(
 }
 
 void MDNSResponseScheduler::post(std::shared_ptr<DNSRecord> r, int flush_cache,
-        IPvXAddress* querier, int immediately) {
+        inet::L3Address* querier, int immediately) {
     std::shared_ptr<MDNSResponseJob> rj;
     simtime_t tv;
     std::string stime = std::to_string(MDNS_RESPONSE_WAIT + intrand(50)) + std::string("ms"); // add random delay.

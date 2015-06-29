@@ -25,8 +25,7 @@
 #include <omnetpp.h>
 #include <TimeEventSet.h>
 #include <UDPSocket.h>
-#include <IPvXAddress.h>
-#include <IPvXAddressResolver.h>
+#include <L3AddressResolver.h>
 #include <DNS.h>
 #include <DNSCache.h>
 #include <DNSSimpleCache.h>
@@ -69,7 +68,7 @@ typedef struct MDNSResponseJob {
     /**
      * @brief The address of the querier
      */
-    IPvXAddress* querier;
+    inet::L3Address* querier;
 
     /**
      * @brief Whether the probe job is done or not.
@@ -140,17 +139,17 @@ protected:
     /**
      * @brief Socket over which DNS queries are sent/received.
      */
-    UDPSocket* outSock;
+    inet::UDPSocket* outSock;
 
     /**
      * @brief Socket over which private DNS queries are sent/received.
      */
-    UDPSocket* privacySock;
+    inet::UDPSocket* privacySock;
 
     /**
      * @brief Local multicast address in use.
      */
-    IPvXAddress multicast_address = IPvXAddressResolver().resolve("225.0.0.1");
+    inet::L3Address multicast_address = inet::L3AddressResolver().resolve("225.0.0.1");
 
     /**
      * @brief A map from strings (service types) to @ref ODnsExtension::PrivateMDNSService .
@@ -219,7 +218,7 @@ protected:
      * @return Smart pointer to the job.
      */
     virtual std::shared_ptr<MDNSResponseJob> find_suppressed(
-            std::shared_ptr<DNSRecord> r, IPvXAddress* querier);
+            std::shared_ptr<DNSRecord> r, inet::L3Address* querier);
 
     /**
      * @brief Marks a job as done and moves it to the history list.
@@ -299,7 +298,7 @@ public:
      * @param _outSock Pointer to the socket the resolver uses.
      * @param resolver Pointer to the resolver itself.
      */
-    MDNSResponseScheduler(TimeEventSet* _timeEventSet, UDPSocket* _outSock,
+    MDNSResponseScheduler(TimeEventSet* _timeEventSet, inet::UDPSocket* _outSock,
             void* resolver);
     virtual ~MDNSResponseScheduler();
 
@@ -321,7 +320,7 @@ public:
      * @param immediately Whether the response needs to be sent immediately.
      */
     virtual void post(std::shared_ptr<DNSRecord> r, int flush_cache,
-            IPvXAddress* querier, int immediately);
+            inet::L3Address* querier, int immediately);
 
     /**
      * @brief Elapse method, when the next scheduled event is due.
@@ -354,7 +353,7 @@ public:
      * @param immediately whether this has to be done immediately.
      */
     virtual void suppress(std::shared_ptr<DNSRecord> r, int flush_cache,
-            IPvXAddress* querier, int immediately);
+            inet::L3Address* querier, int immediately);
 
     /**
      * @brief Set the callback method for this scheduler
@@ -370,7 +369,7 @@ public:
      *
      * @param sock Set the output socket
      */
-    virtual void setSocket(UDPSocket* sock) {
+    virtual void setSocket(inet::UDPSocket* sock) {
         outSock = sock;
     }
 
@@ -395,7 +394,7 @@ public:
             std::unordered_map<std::string, std::shared_ptr<PrivateMDNSService>>* private_service_table,
             std::unordered_map<std::string, std::shared_ptr<FriendData>>* friend_data_table,
             std::unordered_map<std::string, std::shared_ptr<FriendData>>* instance_name_table,
-            UDPSocket* privacySocket) {
+            inet::UDPSocket* privacySocket) {
         this->private_service_table = private_service_table;
         this->friend_data_table = friend_data_table;
         this->instance_name_table = instance_name_table;

@@ -26,7 +26,7 @@ Define_Module(DNSClient);
 void DNSClient::initialize(int stage) {
     cSimpleModule::initialize(stage);
     // Initialize gates
-    if(stage == 0){
+    if(stage == inet::INITSTAGE_LOCAL){
         out.setOutputGate(gate("udpOut"));
         out.bind(DNS_PORT);
         query_count = 0;
@@ -35,14 +35,14 @@ void DNSClient::initialize(int stage) {
         cache = new INETDNS::DNSSimpleCache();
 
     }
-    else if(stage == 3){
+    else if(stage == inet::INITSTAGE_LAST){
         const char *dns_servers_ = par("dns_servers");
         cStringTokenizer tokenizer(dns_servers_);
         const char *token;
 
         while (tokenizer.hasMoreTokens()) {
             token = tokenizer.nextToken();
-            dns_servers.push_back(IPvXAddressResolver().resolve(token));
+            dns_servers.push_back(inet::L3AddressResolver().resolve(token));
         }
     }
 }
@@ -52,7 +52,7 @@ void DNSClient::handleMessage(cMessage *msg) {
     int isQR = 0;
     void (*callback) (int, void*);
     void *callback_handle;
-    IPvXAddress tmp;
+    inet::L3Address tmp;
     std::shared_ptr<INETDNS::Response> response;
 
     if ((isDNS = INETDNS::isDNSpacket((cPacket*) msg)) && (isQR =
@@ -175,7 +175,7 @@ void DNSClient::handleMessage(cMessage *msg) {
 
 }
 
-IPvXAddress * DNSClient::getAddressFromCache(std::string dns_name){
+inet::L3Address * DNSClient::getAddressFromCache(std::string dns_name){
 
     // TODO: Rethink cache, IPvXAddress cache is not very useful..
 //    gboolean inTable = g_hash_table_contains(response_cache, dns_name);

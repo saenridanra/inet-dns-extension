@@ -15,13 +15,13 @@
 
 package inet_dns_extension.networks.dynamic_wireless_mdns_network;
 
-import inet.nodes.inet.Router;
-import inet.nodes.inet.StandardHost;
-import inet.nodes.wireless.AccessPoint;
-import inet.world.radio.ChannelControl;
+import inet.node.inet.Router;
+import inet.node.inet.StandardHost;
+import inet.node.wireless.AccessPoint;
+import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
 import inet_dns_extension.applications.mdns.WirelessMDNSNode;
-import inet.networklayer.autorouting.ipv4.IPv4NetworkConfigurator;
-import inet.nodes.ethernet.Eth1G;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.node.ethernet.Eth1G;
 import inet_dns_extension.common.generation.MDNSNetworkConfigurator;
 
 network Dynamic_wireless_mdns_network
@@ -40,20 +40,19 @@ network Dynamic_wireless_mdns_network
 
     submodules:
         mdns_host[p_num_resolvers]: WirelessMDNSNode;
-
         multicast_router: Router {
-            forwardMulticast = true;
-            numRadios = p_num_resolvers;
-            @display("p=399,316");
+            multicastForwarding = true;
+            numRadios = 1;
+            @display("p=394,314");
         }
 
         ap: AccessPoint {
             @display("p=517,303");
         }
 
-        channelControl: ChannelControl {
-            numChannels = p_num_resolvers;
-            @display("p=53,32");
+        radioMedium: Ieee80211ScalarRadioMedium {
+            parameters:
+                @display("p=100,50");
         }
 
         configurator: IPv4NetworkConfigurator {
@@ -72,6 +71,8 @@ network Dynamic_wireless_mdns_network
             private_service_ratio = p_private_service_ratio;
 
         }
+     //connections:
+     //    ap.ethg++ <--> Eth1G <--> multicast_router.ethg++;
 
 
 }

@@ -15,9 +15,9 @@
 
 package inet_dns_extension.applications.mdns;
 
-import inet.nodes.inet.StandardHost;
+import inet.node.inet.StandardHost;
 import inet_dns_extension.applications.mdns.MDNSResolver;
-import inet.transport.IUDP;
+import inet.transportlayer.contract.IUDP;
 
 module MDNSNode extends StandardHost
 {

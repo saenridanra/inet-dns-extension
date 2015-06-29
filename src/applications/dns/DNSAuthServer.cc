@@ -25,16 +25,17 @@ Define_Module(DNSAuthServer);
 
 void DNSAuthServer::initialize(int stage) {
     DNSServerBase::initialize(stage);
+    if(stage == inet::INITSTAGE_APPLICATION_LAYER){
+        master_file = par("master_file").stdstringValue();
 
-    master_file = par("master_file").stdstringValue();
+        // Use DNSZoneConfig
+        config = new DNSZoneConfig();
+        config->initialize(master_file);
 
-    // Use DNSZoneConfig
-    config = new DNSZoneConfig();
-    config->initialize(master_file);
+        recursion_available = (int) par("recursion_available").doubleValue();
 
-    recursion_available = (int) par("recursion_available").doubleValue();
-
-    response_count = 0;
+        response_count = 0;
+    }
 
 }
 
