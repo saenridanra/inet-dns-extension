@@ -49,6 +49,7 @@ simple MDNSResolver
         string privacy_service_files;
         string pairing_data;
         string own_instance_name;
+        string interfaceTableModule;
         
         bool hasPrivacy = default(false);
         bool isQuerying = default(false);

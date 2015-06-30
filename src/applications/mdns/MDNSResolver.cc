@@ -103,6 +103,10 @@ void MDNSResolver::initialize(int stage)
     }
     else if (stage == inet::INITSTAGE_LAST)
     {
+        // join multicast groups
+        inet::MulticastGroupList mgl = inet::getModuleFromPar<inet::IInterfaceTable>(par("interfaceTableModule"), this)->collectMulticastGroups();
+        outSock.joinLocalMulticastGroups(mgl);
+
         announcer_state = INETDNS::AnnouncerState::START;
         cDisplayString& dispStr = this->getParentModule()->getDisplayString();
         dispStr.parse("i=device/laptop,#800000");

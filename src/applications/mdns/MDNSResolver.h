@@ -24,6 +24,7 @@
 
 #include <omnetpp.h>
 #include "INETDefs.h"
+#include "ModuleAccess.h"
 #include <TimeEventSet.h>
 #include "UDPControlInfo_m.h" // to get the src address
 #include "UDPSocket.h"

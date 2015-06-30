@@ -119,8 +119,8 @@ Github: @saenridanra
 
 ## Requirements
 
-- working OMNeT++ installation. (Download from http://omnetpp.org)
-- working INET-Framework installation. (Download from http://inet.omnetpp.org)
+- working OMNeT++ installation - version 4.6 or higher. (Download from http://omnetpp.org)
+- working INET-Framework installation - version 3 or higher. (Download from http://inet.omnetpp.org)
 - a compiler that supports C++11
 
 Check whether the installations work using the examples provided in the INET
