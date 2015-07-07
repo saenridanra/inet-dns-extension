@@ -115,4 +115,9 @@ void DNSClientTraffGen::callback(int id, void * this_pointer){
 void DNSClientTraffGen::finish(){
     // TODO: write some statistics
     out.close();
+
+    // clean queries
+//    for(auto query : queries){
+//        delete query.second;
+//    }
 }

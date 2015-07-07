@@ -158,7 +158,9 @@ void DNSClient::handleMessage(cMessage *msg) {
         std::cout << "**********************\n";
 #endif
 
-        queries.erase(response->id);
+//        DNSPacket* query = queries[response->id];
+//        queries.erase(response->id);
+//        delete query;
 
         // call the callback and tell it that the query finished
         // the response is now in the cache and can be used..
@@ -208,8 +210,8 @@ int DNSClient::resolve(std::string dns_name, int qtype, int primary, void (*call
     // put it into the hash table for the given query_count number, so we can identify the query
     // Put a copy into the cache, if we need to check it later again
     // this way the server can without a problem delete the msg.
-    DNSPacket* query_dup = query->dup();
-    queries[query_count] = query_dup;
+    //DNSPacket* query_dup = query->dup();
+    //queries[query_count] = query_dup;
     callbacks[query_count] = callback;
     callback_handles[query_count] = handle;
 

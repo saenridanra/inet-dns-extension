@@ -1,0 +1,55 @@
+%description:
+Test DNS network setup and traffic.
+---------------------------------------------
+%inifile: omnetpp.ini
+[General]
+ned-path = ../../../../src;.;
+cmdenv-express-mode = false
+sim-time-limit = 1000s
+record-eventlog = true
+network = DNSTest
+**.cli.dns_servers = moduleListByNedType("inet_dns_extension.applications.dns.DNSServerNode") # DNS server..
+**.cli.hostname_file = "../../resources/host_names.txt" # DNS server..
+
+%file: test.ned
+
+import inet_dns_extension.applications.dns.DNSAuthServer;
+import inet.node.ethernet.Eth1G;
+import inet.node.inet.Router;
+import inet.node.inet.StandardHost;
+import inet_dns_extension.applications.dns.DNSServerNode;
+import inet_dns_extension.applications.dns.DNSClientNode;
+import inet.transportlayer.contract.IUDP;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet_dns_extension.applications.dns.DNSClientTraffGen;
+
+network DNSTest{
+	@display("bgb=1071,606");
+    submodules:
+        dns1: DNSServerNode {
+            parameters:
+                m_file = "../../resources/pan.rz.uni-konstanz.de.zone";
+                @display("p=532,303");
+        }
+        cli1: DNSClientNode {
+            @display("p=403,303");
+        }
+        configurator: IPv4NetworkConfigurator {
+            @display("p=121,37");
+        }
+
+        router: Router {
+            @display("p=477,206");
+        }
+    connections:
+        cli1.ethg++ <--> Eth1G <--> router.ethg++;
+        dns1.ethg++ <--> Eth1G <--> router.ethg++;
+}
+
+%#--------------------------------------------------------------------------------------------------------------
+%not-contains: stdout
+undisposed object:
+%#--------------------------------------------------------------------------------------------------------------
+%not-contains: stdout
+-- check module destructor
+%#--------------------------------------------------------------------------------------------------------------

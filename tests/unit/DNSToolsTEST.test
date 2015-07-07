@@ -14,7 +14,7 @@ std::string msg_name = "test-message";
 std::string name = "test-message";
 
 void testQueryCreate() {
-    DNSPacket* p = ODnsExtension::createQuery(msg_name, name, DNS_CLASS_IN,
+    DNSPacket* p = INETDNS::createQuery(msg_name, name, DNS_CLASS_IN,
             DNS_TYPE_VALUE_A, 0, 1);
 
     ev << "[testQueryCreate] Packet Question Size: " << p->getNumQuestions()
@@ -28,16 +28,16 @@ void testQueryCreate() {
 }
 
 void testNQueryCreate() {
-    DNSPacket* p = ODnsExtension::createNQuery(msg_name, 5, 0, 0, 0, 0, 1);
+    DNSPacket* p = INETDNS::createNQuery(msg_name, 5, 0, 0, 0, 0, 1);
 
     for (int i = 0; i < 5; i++) {
 
-        std::shared_ptr < ODnsExtension::DNSQuestion > q = std::shared_ptr
-                < ODnsExtension::DNSQuestion
-                > (new ODnsExtension::DNSQuestion(
+        std::shared_ptr < INETDNS::DNSQuestion > q = std::shared_ptr
+                < INETDNS::DNSQuestion
+                > (new INETDNS::DNSQuestion(
                         std::string("packet-") + std::to_string(i),
                         DNS_TYPE_VALUE_A, DNS_CLASS_IN));
-        ODnsExtension::appendQuestion(p, q, i);
+        INETDNS::appendQuestion(p, q, i);
     }
 
     ev << "[testNQueryCreate] Packet Question Size: " << p->getNumQuestions()
@@ -55,10 +55,10 @@ void testNQueryCreate() {
 }
 
 void testResolveQuery() {
-    DNSPacket* p = ODnsExtension::createQuery(msg_name, name, DNS_CLASS_IN,
+    DNSPacket* p = INETDNS::createQuery(msg_name, name, DNS_CLASS_IN,
             DNS_TYPE_VALUE_A, 0, 1);
 
-    std::shared_ptr < ODnsExtension::Query > q = ODnsExtension::resolveQuery(p);
+    std::shared_ptr < INETDNS::Query > q = INETDNS::resolveQuery(p);
     ev << "[testResolveQuery] " << P_KV(qdcount, q->qdcount)
             << P_KV(ancount, q->ancount) << P_KV(nscount, q->nscount)
             << P_KV(arcount, q->arcount) << P_KV(qr, DNS_HEADER_QR(q->options))
@@ -67,13 +67,13 @@ void testResolveQuery() {
 }
 
 void testCreateResolveResponse() {
-    DNSPacket* p = ODnsExtension::createResponse(msg_name, 0, 1, 0, 1, 0, 0, 1,
+    DNSPacket* p = INETDNS::createResponse(msg_name, 0, 1, 0, 1, 0, 0, 1,
             1, 1, 0);
 
-    std::shared_ptr < ODnsExtension::DNSRecord > an = std::shared_ptr
-            < ODnsExtension::DNSRecord > (new ODnsExtension::DNSRecord());
-    std::shared_ptr < ODnsExtension::DNSRecord > ar = std::shared_ptr
-            < ODnsExtension::DNSRecord > (new ODnsExtension::DNSRecord());
+    std::shared_ptr < INETDNS::DNSRecord > an = std::shared_ptr
+            < INETDNS::DNSRecord > (new INETDNS::DNSRecord());
+    std::shared_ptr < INETDNS::DNSRecord > ar = std::shared_ptr
+            < INETDNS::DNSRecord > (new INETDNS::DNSRecord());
 
     an->rname = "www.test.com";
     an->rtype = DNS_TYPE_VALUE_CNAME;
@@ -87,11 +87,11 @@ void testCreateResolveResponse() {
     ar->ttl = 3600;
     ar->strdata = "127.0.0.1";
 
-    ODnsExtension::appendAnswer(p, an, 0);
-    ODnsExtension::appendAdditional(p, ar, 0);
+    INETDNS::appendAnswer(p, an, 0);
+    INETDNS::appendAdditional(p, ar, 0);
 
-    std::shared_ptr < ODnsExtension::Response > r =
-            ODnsExtension::resolveResponse(p);
+    std::shared_ptr < INETDNS::Response > r =
+            INETDNS::resolveResponse(p);
 
     ev << "[testCreateResolveResponse] " << P_KV(qdcount, r->qdcount)
             << P_KV(ancount, r->ancount) << P_KV(nscount, r->nscount)
@@ -107,13 +107,13 @@ void testCreateResolveResponse() {
 void testEstimateDnsPacketSize() {
 
     // First test packet with strdata
-    DNSPacket* p = ODnsExtension::createResponse(msg_name, 0, 1, 0, 1, 0, 0, 1,
+    DNSPacket* p = INETDNS::createResponse(msg_name, 0, 1, 0, 1, 0, 0, 1,
             1, 1, 0);
 
-    std::shared_ptr < ODnsExtension::DNSRecord > an = std::shared_ptr
-            < ODnsExtension::DNSRecord > (new ODnsExtension::DNSRecord());
-    std::shared_ptr < ODnsExtension::DNSRecord > ar = std::shared_ptr
-            < ODnsExtension::DNSRecord > (new ODnsExtension::DNSRecord());
+    std::shared_ptr < INETDNS::DNSRecord > an = std::shared_ptr
+            < INETDNS::DNSRecord > (new INETDNS::DNSRecord());
+    std::shared_ptr < INETDNS::DNSRecord > ar = std::shared_ptr
+            < INETDNS::DNSRecord > (new INETDNS::DNSRecord());
 
     an->rname = "www.test.com";
     an->rtype = DNS_TYPE_VALUE_CNAME;
@@ -129,27 +129,27 @@ void testEstimateDnsPacketSize() {
     ar->strdata = "127.0.0.1";
     ar->rdlength = ar->strdata.length();
 
-    ODnsExtension::appendAnswer(p, an, 0);
-    ODnsExtension::appendAdditional(p, ar, 0);
+    INETDNS::appendAnswer(p, an, 0);
+    INETDNS::appendAdditional(p, ar, 0);
 
     ev << "[testEstimateDnsPacketSize] [strdata] size: "
-            << ODnsExtension::estimateDnsPacketSize(p) << "\n";
+            << INETDNS::estimateDnsPacketSize(p) << "\n";
 
     // Second test packet with SRVData...
-    p = ODnsExtension::createResponse(msg_name, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0);
+    p = INETDNS::createResponse(msg_name, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0);
 
     an = std::shared_ptr
-            < ODnsExtension::DNSRecord > (new ODnsExtension::DNSRecord());
+            < INETDNS::DNSRecord > (new INETDNS::DNSRecord());
     ar = std::shared_ptr
-            < ODnsExtension::DNSRecord > (new ODnsExtension::DNSRecord());
+            < INETDNS::DNSRecord > (new INETDNS::DNSRecord());
 
     an->rname = "test._testservice._tcp.test.com";
     an->rtype = DNS_TYPE_VALUE_SRV;
     an->rclass = DNS_CLASS_IN;
     an->ttl = 3600;
 
-    std::shared_ptr < ODnsExtension::SRVData > srv = std::shared_ptr
-            < ODnsExtension::SRVData > (new ODnsExtension::SRVData());
+    std::shared_ptr < INETDNS::SRVData > srv = std::shared_ptr
+            < INETDNS::SRVData > (new INETDNS::SRVData());
     srv->service = "testservice";
     srv->proto = "tcp";
     srv->name = "test.com";
@@ -168,17 +168,17 @@ void testEstimateDnsPacketSize() {
     ar->strdata = "127.0.0.1";
     ar->rdlength = ar->strdata.length();
 
-    ODnsExtension::appendAnswer(p, an, 0);
-    ODnsExtension::appendAdditional(p, ar, 0);
+    INETDNS::appendAnswer(p, an, 0);
+    INETDNS::appendAdditional(p, ar, 0);
 
     ev << "[testEstimateDnsPacketSize] [srvdata] size: "
-            << ODnsExtension::estimateDnsPacketSize(p) << "\n";
+            << INETDNS::estimateDnsPacketSize(p) << "\n";
 
 }
 
 void testRecordDataEqual(){
     std::shared_ptr<DNSRecord> r1 = std::shared_ptr
-            < ODnsExtension::DNSRecord > (new ODnsExtension::DNSRecord());
+            < INETDNS::DNSRecord > (new INETDNS::DNSRecord());
     r1->rname = "test.com";
     r1->rtype = DNS_TYPE_VALUE_A;
     r1->rclass = DNS_CLASS_IN;
@@ -186,21 +186,21 @@ void testRecordDataEqual(){
     r1->strdata = "127.0.0.1";
     r1->rdlength = r1->strdata.length();
     
-    std::shared_ptr<DNSRecord> r2 = ODnsExtension::copyDnsRecord(r1);
+    std::shared_ptr<DNSRecord> r2 = INETDNS::copyDnsRecord(r1);
     
-    ev << "[testRecordDataEqual] [r1 == r2]: " << ODnsExtension::recordDataEqual(r1, r2) << "\n";
+    ev << "[testRecordDataEqual] [r1 == r2]: " << INETDNS::recordDataEqual(r1, r2) << "\n";
     
     // change data, see that it is !=
     
     r2->strdata = "127.0.0.2";
 
-    ev << "[testRecordDataEqual] [r1 != r2]: " << ODnsExtension::recordDataEqual(r1, r2) << "\n";
+    ev << "[testRecordDataEqual] [r1 != r2]: " << INETDNS::recordDataEqual(r1, r2) << "\n";
     
 }
 
 void testRecordEqualNoData(){
     std::shared_ptr<DNSRecord> r1 = std::shared_ptr
-            < ODnsExtension::DNSRecord > (new ODnsExtension::DNSRecord());
+            < INETDNS::DNSRecord > (new INETDNS::DNSRecord());
     r1->rname = "test.com";
     r1->rtype = DNS_TYPE_VALUE_A;
     r1->rclass = DNS_CLASS_IN;
@@ -208,28 +208,28 @@ void testRecordEqualNoData(){
     r1->strdata = "127.0.0.1";
     r1->rdlength = r1->strdata.length();
     
-    std::shared_ptr<DNSRecord> r2 = ODnsExtension::copyDnsRecord(r1);
+    std::shared_ptr<DNSRecord> r2 = INETDNS::copyDnsRecord(r1);
     
-    ev << "[testRecordEqualNoData] [r1 == r2]: " << ODnsExtension::recordEqualNoData(r1, r2) << "\n";
+    ev << "[testRecordEqualNoData] [r1 == r2]: " << INETDNS::recordEqualNoData(r1, r2) << "\n";
     
     // change data, see that it is still ==
     
     r2->strdata = "127.0.0.2";
 
-    ev << "[testRecordEqualNoData] [r1.data != r2.data]: " << ODnsExtension::recordEqualNoData(r1, r2) << "\n";
+    ev << "[testRecordEqualNoData] [r1.data != r2.data]: " << INETDNS::recordEqualNoData(r1, r2) << "\n";
     
     // change type, show that is !=
     
     r2->rtype = DNS_TYPE_VALUE_AAAA;
     
-    ev << "[testRecordEqualNoData] [r1.rtype != r2.rtype]: " << ODnsExtension::recordEqualNoData(r1, r2) << "\n";
+    ev << "[testRecordEqualNoData] [r1.rtype != r2.rtype]: " << INETDNS::recordEqualNoData(r1, r2) << "\n";
 
     // change name, show that is !=
     
     r2->rtype = DNS_TYPE_VALUE_A;
     r2->rname = "test2.com";
     
-    ev << "[testRecordEqualNoData] [r1.name != r2.name]: " << ODnsExtension::recordEqualNoData(r1, r2) << "\n";
+    ev << "[testRecordEqualNoData] [r1.name != r2.name]: " << INETDNS::recordEqualNoData(r1, r2) << "\n";
     
 }
 
