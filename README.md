@@ -58,16 +58,28 @@ on how to do this can be found in the wiki.
 ### Using the IDE
 
 1. Get the source code for this extension.
-2. Import the project into the OMNeT++ IDE.
-3. Import the INET framework into the IDE and build it.
-4. Goto Project Properties > OMNeT++ > Makemake
- - Select the src folder > Makemake > Options
- - Check shared library and
- - `Export this shared/static library for other projects`
- - If you want debug output include in the tabs
-    - Custom > Makefrag `CFLAGS+= -DDEBUG_ENABLED CXXFLAGS+= -DDEBUG_ENABLED`
-5. Include the compiled INET library object in the lib dir.
-6. Enjoy
+2. Import the project as a C++ Makefile Project into the OMNeT++ IDE.
+3. Import the INET (version >3.0) framework into the IDE and build it.
+4. Right-click inet-dns-extension > Add OMNeT++ Support
+5. Goto Project Properties > OMNeT++ > Makemake
+ - Select the root folder
+    - Under `Build` select `Makemake`
+    - Under `Source` select `Excluded`
+    - Goto `Options` under `Build`
+       - Under `Target` select `No executable or library`
+       - Under `Scope`, `Deep compile` and `Recursive make` must be selected
+
+ - Select the src folder
+    - Under `Build` select `Makemake`
+    - Under `Source` select `Source Location`
+    - Goto `Options` under `Build`
+       - Under `Target` select `Shared library` and `Export this shared/static library for other projects`
+       - Under `Scope`, `Deep compile` and `Recursive make` must be selected
+       - Under `Compile`, make sure bot boxes for include paths are selected
+6. Make sure the inet project is set as a reference under `Project Properties` > `Project References`
+7. The project should now be able to build.
+ - If you get an error about a message, run `make msgheaders` once and build again.
+8. Enjoy
 
 ### Using the command line
 
