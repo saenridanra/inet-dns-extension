@@ -4,6 +4,7 @@
 
 CURR_DIR=`pwd`
 INET_ROOT=$1
+failed=0
 
 echo "Running following test directories: ${DIRS}"
 
@@ -19,7 +20,7 @@ find * -prune -type d | while read dir; do
     if (($rc > 0)); then
        echo
 		   echo "Test suite failed at '${dir}'"
-		   exit $rc
+		   failed=1
     else
       cd ../
       CURR_DIR=`pwd`
@@ -27,3 +28,5 @@ find * -prune -type d | while read dir; do
       echo
 	  fi
 done
+
+exit $failed
