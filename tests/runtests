@@ -9,7 +9,7 @@ failed=0
 echo "Running following test directories: ${DIRS}"
 
 find * -prune -type d | while read dir; do
-    cd $dir
+    cd $CURR_DIR/$dir
     ./clean
     echo "********************"
     echo "Executing >> ./runtest ${INET_ROOT} in '${dir}'"
@@ -19,14 +19,16 @@ find * -prune -type d | while read dir; do
     echo "Executed with exit code: ${rc}"
     if (($rc > 0)); then
        echo
-		   echo "Test suite failed at '${dir}'"
-		   failed=1
+       echo "Test suite failed at '${dir}'"
+       failed=$failed+1
     else
       cd ../
       CURR_DIR=`pwd`
       echo "Switched back to ${CURR_DIR}"
       echo
-	  fi
+    fi
 done
 
-exit $failed
+if [ $failed > 0 ]; then
+  exit 1
+fi
