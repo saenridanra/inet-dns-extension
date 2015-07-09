@@ -1,0 +1,97 @@
+%description:
+Test MDNS network setup and traffic.
+---------------------------------------------
+%inifile: omnetpp.ini
+[General]
+ned-path = ../../../../src;.;
+cmdenv-express-mode = false
+sim-time-limit = 6000s
+record-eventlog = true
+network = MDNSTest
+
+**.configurator.dumpAddresses = true
+**.configurator.dumpRoutes = true
+
+**.resolver.static_configuration = false
+**.mdns_host[*].querying = false
+
+MDNSTest.p_num_resolvers = 10
+MDNSTest.p_num_private = 5
+MDNSTest.p_max_friends = 4
+MDNSTest.p_private_service_ratio = 40
+MDNSTest.p_min_friends = 0
+
+%file: config.xml
+
+<config>
+
+  <interface hosts="mdns_host[*]" towards="multicast_router" address="172.0.x.x" netmask="255.255.255.0" mtu="1500"/>
+  <interface hosts="multicast_router" towards="mdns_host[*]" address="172.0.x.x" netmask="255.255.255.0" mtu="1500"/>
+
+  <multicast-group hosts="mdns_host[*]" towards="multicast_router" address="225.0.0.1"/>
+
+  <multicast-route hosts="multicast_router" groups="225.0.0.1" children="ppp*"/>
+
+</config>
+
+%file: test.ned
+
+import inet.node.inet.Router;
+import inet.node.inet.StandardHost;
+import inet_dns_extension.applications.mdns.MDNSNode;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.node.ethernet.Eth1G;
+import inet_dns_extension.common.generation.MDNSNetworkConfigurator;
+
+network MDNSTest
+{
+    parameters:
+        int p_num_resolvers;
+        int p_num_private;
+        int p_max_friends;
+        int p_min_friends;
+        int p_max_services = default(10);
+        int p_min_services = default(10);
+
+        double p_private_service_ratio = default(100.0);
+
+    @display("bgb=1046,645");
+    types:
+        simple Unnamed
+        {
+        }
+
+    submodules:
+        mdns_host[p_num_resolvers]: MDNSNode {
+        }
+
+        multicast_router: Router {
+            multicastForwarding = true;
+            @display("p=399,316");
+
+            gates:
+                pppg[p_num_resolvers];
+        }
+
+        configurator: IPv4NetworkConfigurator {
+            config = xmldoc("config.xml");
+            @display("p=121,37");
+        }
+
+        mdns_configurator : MDNSNetworkConfigurator{
+            num_resolvers = p_num_resolvers;
+            num_private = p_num_private;
+            max_friends = p_max_friends;
+            min_friends = p_min_friends;
+            max_services = p_max_services;
+            min_services = p_min_services;
+
+            private_service_ratio = p_private_service_ratio;
+
+        }
+
+    connections:
+        for i=0..p_num_resolvers-1 {
+            mdns_host[i].pppg++ <--> Eth1G <--> multicast_router.pppg[i];
+        }
+}

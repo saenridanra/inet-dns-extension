@@ -23,6 +23,8 @@
 
 DNSZoneConfig::DNSZoneConfig()
 {
+    config_file = "";
+    origin = "";
     TTL = 0;
     zone_soa = std::shared_ptr<soa>(new soa());
     state = states::VARS;
@@ -30,6 +32,7 @@ DNSZoneConfig::DNSZoneConfig()
 
 DNSZoneConfig::~DNSZoneConfig()
 {
+
 }
 
 void DNSZoneConfig::initialize(std::string config_file)

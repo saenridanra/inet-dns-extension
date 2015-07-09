@@ -25,6 +25,8 @@ void testQueryCreate() {
             << "\n";
     ev << "[testQueryCreate] Packet Additional Size: " << p->getNumAdditional()
             << "\n";
+            
+    delete p;
 }
 
 void testNQueryCreate() {
@@ -52,6 +54,8 @@ void testNQueryCreate() {
     for (int i = 0; i < 5; i++) {
         ev << "[testNQueryCreate][" << p->getQuestions(i).qname << "]\n";
     }
+    
+    delete p;
 }
 
 void testResolveQuery() {
@@ -64,6 +68,7 @@ void testResolveQuery() {
             << P_KV(arcount, q->arcount) << P_KV(qr, DNS_HEADER_QR(q->options))
             << "\n";
 
+    delete p;
 }
 
 void testCreateResolveResponse() {
@@ -102,6 +107,7 @@ void testCreateResolveResponse() {
             << P_KV(ra, DNS_HEADER_RA(r->options))
             << P_KV(rcode, DNS_HEADER_RCODE(r->options)) << "\n";
 
+    delete p;
 }
 
 void testEstimateDnsPacketSize() {
@@ -134,6 +140,8 @@ void testEstimateDnsPacketSize() {
 
     ev << "[testEstimateDnsPacketSize] [strdata] size: "
             << INETDNS::estimateDnsPacketSize(p) << "\n";
+            
+    delete p;
 
     // Second test packet with SRVData...
     p = INETDNS::createResponse(msg_name, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0);
@@ -173,6 +181,8 @@ void testEstimateDnsPacketSize() {
 
     ev << "[testEstimateDnsPacketSize] [srvdata] size: "
             << INETDNS::estimateDnsPacketSize(p) << "\n";
+            
+    delete p;
 
 }
 

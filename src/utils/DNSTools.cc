@@ -111,12 +111,11 @@ std::shared_ptr<Query> resolveQuery(cPacket* query)
         ;
     }
 
-    std::shared_ptr<Query> q(
-            new Query(v->getId(), v->getOptions(), v->getQdcount(), 0, 0, 0, new DNSQuestion[v->getQdcount()], ""));
+    std::shared_ptr<Query> q = std::shared_ptr<Query>(new Query(v->getId(), v->getOptions(), v->getQdcount(), 0, 0, 0, ""));
 
     for (short i = 0; i < v->getQdcount(); i++)
     {
-        q->questions[i] = v->getQuestions(i);
+        q->questions.push_back(v->getQuestions(i));
     }
 
     return q;

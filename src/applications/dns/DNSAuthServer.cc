@@ -29,7 +29,7 @@ void DNSAuthServer::initialize(int stage) {
         master_file = par("master_file").stdstringValue();
 
         // Use DNSZoneConfig
-        config = new DNSZoneConfig();
+        config = std::shared_ptr<DNSZoneConfig>(new DNSZoneConfig());
         config->initialize(master_file);
 
         recursion_available = (int) par("recursion_available").doubleValue();

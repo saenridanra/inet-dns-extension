@@ -155,7 +155,7 @@ struct Query {
     /**
      * @brief Array holding the questions for this query.
      */
-    struct DNSQuestion* questions;
+    std::vector<struct DNSQuestion> questions;
 
     /**
      * @brief Source Address of the querier as a string.
@@ -163,16 +163,14 @@ struct Query {
     std::string src_address;
 
     Query() :
-            id(0), options(0), qdcount(0), ancount(0), nscount(0), arcount(0), questions(
-            NULL), src_address("") {
+            id(0), options(0), qdcount(0), ancount(0), nscount(0), arcount(0), src_address("") {
     }
 
     Query(unsigned short _id, unsigned short _options, unsigned short _qdcount,
             unsigned short _ancount, unsigned short _nscount,
-            unsigned short _arcount, DNSQuestion* _questions,
-            std::string _src_address) :
+            unsigned short _arcount, std::string _src_address) :
             id(_id), options(_options), qdcount(_qdcount), ancount(_ancount), nscount(
-                    _nscount), arcount(_arcount), questions(_questions), src_address(
+                    _nscount), arcount(_arcount), src_address(
                     _src_address) {
     }
 

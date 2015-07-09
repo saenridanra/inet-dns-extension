@@ -73,7 +73,7 @@ protected:
     /**
      * @brief A @ref DNSCache that is used to store resolved queries.
      */
-    INETDNS::DNSCache* cache;
+    std::shared_ptr<INETDNS::DNSCache> cache;
 
     /**
      * @brief The overall query_count used for statistics.

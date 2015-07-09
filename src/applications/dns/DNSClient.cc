@@ -32,7 +32,7 @@ void DNSClient::initialize(int stage) {
         query_count = 0;
 
         // the cache for the records
-        cache = new INETDNS::DNSSimpleCache();
+        cache = std::shared_ptr<INETDNS::DNSSimpleCache> (new INETDNS::DNSSimpleCache());
 
     }
     else if(stage == inet::INITSTAGE_LAST){

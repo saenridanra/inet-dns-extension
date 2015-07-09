@@ -48,7 +48,7 @@ public:
     /**
      * @brief @ref DNSZoneConfig including the authoritative records and references.
      */
-    DNSZoneConfig* config;
+    std::shared_ptr<DNSZoneConfig> config;
 
     /**
      * @brief boolean to determine whether recursion is available or not.
