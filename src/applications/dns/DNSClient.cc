@@ -87,12 +87,9 @@ void DNSClient::handleMessage(cMessage *msg) {
 #ifdef DEBUG_ENABLED
         std::string bubble_popup = "Resolved query: ";
         std::cout << "**********************\nResolved query:\n\n;;Question Section:\n";
-        DNSPacket* q = queries[response->id];
-        std::shared_ptr<DNSQuestion> question = INETDNS::copyDnsQuestion(&q->getQuestions(0));
-        INETDNS::printDNSQuestion(question);
-        bubble_popup.append(q->getQuestions(0).qname);
+        std::string q = queries[response->id];
+        bubble_popup.append(q);
         bubble_popup.append("\n");
-        delete q;
 
         bubble_popup.append(";;Answer Section:\n");
         std::cout << "\n;;Answer Section:\n";
@@ -158,10 +155,6 @@ void DNSClient::handleMessage(cMessage *msg) {
         std::cout << "**********************\n";
 #endif
 
-//        DNSPacket* query = queries[response->id];
-//        queries.erase(response->id);
-//        delete query;
-
         // call the callback and tell it that the query finished
         // the response is now in the cache and can be used..
         callback = callbacks[response->id];
@@ -177,17 +170,25 @@ void DNSClient::handleMessage(cMessage *msg) {
 
 }
 
-inet::L3Address * DNSClient::getAddressFromCache(std::string dns_name){
+std::list<std::shared_ptr<DNSRecord>> DNSClient::getFromCacheByID(int id){
+    std::string dns_name = queries[id];
+    if(cache->is_in_cache(dns_name)){
+        std::list<std::shared_ptr<DNSRecord>> records = cache->get_from_cache(dns_name);
+        return records;
+    }
 
-    // TODO: Rethink cache, IPvXAddress cache is not very useful..
-//    gboolean inTable = g_hash_table_contains(response_cache, dns_name);
-//    if(inTable){
-//        gpointer p = g_hash_table_lookup(response_cache, dns_name);
-//        IPvXAddress* address = (IPvXAddress*) p;
-//        return address;
-//    }
+    std::list<std::shared_ptr<DNSRecord>> empty_list;
+    return empty_list;
+}
 
-    return NULL;
+std::list<std::shared_ptr<DNSRecord>> DNSClient::getFromCache(std::string dns_name){
+    if(cache->is_in_cache(dns_name)){
+        std::list<std::shared_ptr<DNSRecord>> records = cache->get_from_cache(dns_name);
+        return records;
+    }
+
+    std::list<std::shared_ptr<DNSRecord>> empty_list;
+    return empty_list;
 
 }
 
@@ -211,7 +212,11 @@ int DNSClient::resolve(std::string dns_name, int qtype, int primary, void (*call
     // Put a copy into the cache, if we need to check it later again
     // this way the server can without a problem delete the msg.
     //DNSPacket* query_dup = query->dup();
-    //queries[query_count] = query_dup;
+
+    if(INETDNS::stdstr_has_suffix(dns_name, "."))
+        queries[query_count] = dns_name + std::string(":") + INETDNS::getTypeStringForValue(qtype) + std::string(":IN");
+    else
+        queries[query_count] = dns_name + std::string(".:") + INETDNS::getTypeStringForValue(qtype) + std::string(":IN");
     callbacks[query_count] = callback;
     callback_handles[query_count] = handle;
 

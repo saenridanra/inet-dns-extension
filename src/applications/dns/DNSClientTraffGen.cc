@@ -77,7 +77,12 @@ void DNSClientTraffGen::handleTimer(cMessage *msg){
 
     if(id == -1){
         // already in the cache
-        inet::L3Address* address = DNSClient::getAddressFromCache(host_name);
+        // emit some statistics, the response should be in the cache already..
+        std::list<std::shared_ptr<DNSRecord>> response_records = DNSClient::getFromCache(host_name);
+        EV << "Already resolved query with name " << host_name;
+        for(auto record : response_records){
+            INETDNS::printDNSRecord(record);
+        }
     }
 
     qcount++;
@@ -103,7 +108,14 @@ void DNSClientTraffGen::init_hostnames()
 
 void DNSClientTraffGen::handleResponse(int id){
     // emit some statistics, the response should be in the cache already..
+    std::list<std::shared_ptr<DNSRecord>> response_records = DNSClient::getFromCacheByID(id);
 
+    EV << "****************************************\n";
+    EV << "[DNSClient] Resolved query with id " << id << "\n";
+    for(auto record : response_records){
+        EV << "[DNSClient] Address is: " << record->strdata << "\n";
+    }
+    EV << "****************************************";
 
 }
 

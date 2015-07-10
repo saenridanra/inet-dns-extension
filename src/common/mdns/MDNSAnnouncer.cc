@@ -49,11 +49,6 @@ void MDNSAnnouncer::initialize() {
             a_ptr_record->rdlength = a_ptr_record->strdata.length();
             a_ptr_record->ttl = MDNS_HOST_TTL;
 
-#ifdef DEBUG_ENABLED
-            std::cout << "Creating announcing records for " << hostname << ":" << hostaddress->get4().str() << ":"
-            << std::endl;
-#endif
-
             INETDNS::printDNSRecord(a_record);
             INETDNS::printDNSRecord(a_ptr_record);
 

@@ -58,7 +58,7 @@ protected:
     /**
      * @brief This map manages queries currently waiting to be resolved
      */
-    std::unordered_map<int, DNSPacket*> queries;
+    std::unordered_map<int, std::string> queries;
     /**
      * @brief This map maps callback functions to queries, so that
      * operations can be performed, once resolved.
@@ -90,14 +90,24 @@ protected:
     virtual void handleMessage(cMessage *msg);
 
     /**
-     * @brief Get the @ref inet::L3Address related to the dns label from the cache.
+     * @brief Get the records corresponding to the query name
      *
      * @param dns_name the record label as string
      *
      * @return
-     *      returns address that is mapped to the dns_name
+     *      returns list of records corresponding to the query.
      */
-    virtual inet::L3Address* getAddressFromCache(std::string dns_name);
+    virtual std::list<std::shared_ptr<DNSRecord>> getFromCache(std::string dns_name);
+
+    /**
+     * @brief Get the records corresponding to the query name
+     *
+     * @param id the query id
+     *
+     * @return
+     *      returns list of records corresponding to the query.
+     */
+    virtual std::list<std::shared_ptr<DNSRecord>> getFromCacheByID(int id);
 
     /**
      * @brief This function is used to resolve a query using the

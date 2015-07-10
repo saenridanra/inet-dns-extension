@@ -74,20 +74,20 @@ DNSPacket* DNSAuthServer::handleQuery(
     q = query->questions[0];
 
     int is_authoritative = 0;
-    int pos = INETDNS::stdstr_has_suffix(q.qname, config->getOrigin());
 
     // check here if there are direct NS references to this record
     // then this server is not an authority and should instead
     // respond with the NS records..
 
     std::string trailing_qname = q.qname + std::string(".");
+    int origin_is_suffix = INETDNS::stdstr_has_suffix(q.qname, config->getOrigin()) || INETDNS::stdstr_has_suffix(trailing_qname, config->getOrigin());
     int has_ns_reference = 0;
     std::string ns_reference_hash;
 
     // only check this if the query is not the origin
 
-    if (config->getOrigin() != q.qname
-            && config->getOrigin() != trailing_qname) {
+    if (!INETDNS::stdstr_has_suffix(q.qname, config->getOrigin())
+            && !INETDNS::stdstr_has_suffix(trailing_qname, config->getOrigin())) {
         ns_reference_hash = q.qname;
         if (INETDNS::stdstr_has_suffix(q.qname, std::string(".")))
             ns_reference_hash = ns_reference_hash + std::string(":");
@@ -129,7 +129,7 @@ DNSPacket* DNSAuthServer::handleQuery(
     std::string msg_name = std::string("dns_response#")
             + std::to_string(response_count++);
 
-    if (pos > 0 && config->getOrigin() != "." && !has_ns_reference) {
+    if (origin_is_suffix > 0 && config->getOrigin() != "." && !has_ns_reference) {
         is_authoritative = 1;
     }
 
@@ -261,9 +261,8 @@ DNSPacket* DNSAuthServer::handleQuery(
 
                     // now we don't add the QTYPE record to additional, but to the answer section
                     // iterate through the CNAME records, add the QTYPE records accordingly....
-                    for (auto it = answer_list.begin(); it != answer_list.end();
-                            ++it) {
-                        std::shared_ptr<DNSRecord> t_r = *it;
+                    std::list<std::shared_ptr<DNSRecord>> tmp_list;
+                    for (auto t_r : answer_list) {
                         // use the data string to create a hash and find the qtype record
                         std::string namecpy = std::string(t_r->strdata);
                         cnhash = namecpy + std::string(".")
@@ -272,9 +271,10 @@ DNSPacket* DNSAuthServer::handleQuery(
                                 + std::string(__class);
 
                         // get entries for type using this hash
-                        answer_list = appendEntries(cnhash, answer_list,
+                        tmp_list = appendEntries(cnhash, tmp_list,
                                 q.qtype, &an_records);
                     }
+                    answer_list.merge(tmp_list);
                 }
             } else {
                 // add CNAME if there are links for this label
@@ -293,9 +293,8 @@ DNSPacket* DNSAuthServer::handleQuery(
                     answer_list = appendEntries(cnhash, answer_list,
                     DNS_TYPE_VALUE_CNAME, &an_records);
 
-                    for (auto it = answer_list.begin(); it != answer_list.end();
-                            ++it) {
-                        std::shared_ptr<DNSRecord> t_r = *it;
+                    std::list<std::shared_ptr<DNSRecord>> tmp_list;
+                    for (auto t_r : answer_list) {
                         // use the data string to create a hash and find the qtype record
                         std::string namecpy = std::string(t_r->strdata);
                         cnhash = namecpy + std::string(".")
@@ -304,9 +303,10 @@ DNSPacket* DNSAuthServer::handleQuery(
                                 + std::string(__class);
 
                         // get entries for type using this hash
-                        answer_list = appendEntries(cnhash, answer_list,
+                        tmp_list = appendEntries(cnhash, tmp_list,
                                 q.qtype, &an_records);
                     }
+                    answer_list.merge(tmp_list);
                 }
             }
 
