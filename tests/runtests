@@ -29,6 +29,6 @@ find * -prune -type d | while read dir; do
     fi
 done
 
-if [ $failed > 0 ]; then
+if [ $failed -gt 0 ]; then
   exit 1
 fi
