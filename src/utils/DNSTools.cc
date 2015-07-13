@@ -532,13 +532,14 @@ int estimateDnsPacketSize(DNSPacket* packet)
     for (int i = 0; i < packet->getQdcount(); i++)
     {
         size += tokenizeAndGetSize(packet->getQuestions(i).qname, &ncm);
-        size += 4; // + 4 bytes for type and class
+        size += 5; // + 1 for length byte, + 4 bytes for type and class
     }
     for (int i = 0; i < packet->getAncount(); i++)
     {
         if (packet->getAnswers(i).rtype != DNS_TYPE_VALUE_SRV)
         {
-            size += tokenizeAndGetSize(packet->getAnswers(i).rname, &ncm);
+            // add additional byte for length of rname
+            size += 1 + tokenizeAndGetSize(packet->getAnswers(i).rname, &ncm);
             size += 10 + packet->getAnswers(i).strdata.length(); // no name compression for data
         }
         else
@@ -569,7 +570,7 @@ int estimateDnsPacketSize(DNSPacket* packet)
     {
         if (packet->getAuthorities(i).rtype != DNS_TYPE_VALUE_SRV)
         {
-            size += tokenizeAndGetSize(packet->getAuthorities(i).rname, &ncm);
+            size += 1 + tokenizeAndGetSize(packet->getAuthorities(i).rname, &ncm);
             size += 10 + packet->getAuthorities(i).strdata.length();
         }
         else
@@ -600,7 +601,8 @@ int estimateDnsPacketSize(DNSPacket* packet)
     {
         if (packet->getAdditional(i).rtype != DNS_TYPE_VALUE_SRV)
         {
-            size += tokenizeAndGetSize(packet->getAdditional(i).rname, &ncm);
+            // add additional byte for length of rname
+            size += 1 + tokenizeAndGetSize(packet->getAdditional(i).rname, &ncm);
             size += 10 + packet->getAdditional(i).strdata.length();
         }
         else
