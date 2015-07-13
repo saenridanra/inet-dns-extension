@@ -44,12 +44,7 @@ Makefile.in
 /missing
 /stamp-h1
 
-# OPP & Eclipse
-
-.project
-.cproject
-.oppbuildspec
-
+# Settings..
 .settings
 
 work
