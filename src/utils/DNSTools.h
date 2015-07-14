@@ -36,6 +36,8 @@
 #include "../messages/DNSPacket_m.h"
 
 #include "../common/DNS.h"
+#include <utils/Utils.h>
+#include <cstringtokenizer.h>
 
 #include <memory>
 #include <unordered_map>

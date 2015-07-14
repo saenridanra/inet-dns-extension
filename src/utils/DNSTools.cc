@@ -496,22 +496,97 @@ std::string dnsPacketToString(DNSPacket* packet)
  * Helper method to tokenize a label string by "." and
  * check the size.
  */
-int tokenizeAndGetSize(std::string s, std::unordered_map<std::string, bool> * ncm){
+int checkMapAndGetSize(std::string str, std::unordered_map<std::string, bool> * ncm, bool is_label){
     int size = 0;
-    std::vector<std::string> tokens = cStringTokenizer(s.c_str(), ".").asVector();
-    // check if a token is in the hash map, otherwise put it there. only count characters
-    // that are not in the map, the others only need the 2 offset bytes
-    for (auto t : tokens)
-    {
-        if ((*ncm).find(t) != (*ncm).end())
-            size += 2; // 2 bytes for the offset
-        else
-        {
-            (*ncm)[t] = true; // add the bytes for the string
-            size += t.length();
-            if (tokens[tokens.size() - 1] != t)
-                size++; // not the last token, add +1 for the dot
+    //
+    // Serializing a name requires (example-name=www.uni-konstanz.de):
+    //  Consuming the string until every dot, i.e.:
+    //   www.uni-konstanz.de
+    //   uni-konstanz.de
+    //   de
+    //  and remembering the offsets.
+    //
+    //  An answer could be uni-konstanz.de.
+    //  in which case the 2byte pointer to the second
+    //  string is used followed by a "." since that is not
+    //  included in the string we pointed to
+    //
+
+    // first if there is a trailing . , also do the check without it
+    bool hasTrailingDot = false;
+    bool labelUsed = false;
+    if (INETDNS::stdstr_has_suffix(str, "."))
+        hasTrailingDot = true;
+
+    // first start with original string and consume
+    cStringTokenizer tokenizer(str.c_str(), ".");
+    std::vector<std::string> tokens = tokenizer.asVector();
+
+    for (unsigned int i = 0; i < tokens.size(); i++) {
+        // always combine tokens i to tokens.size() for lookup.
+        std::string i_to_size;
+        for (unsigned int j = i; j < tokens.size(); j++) {
+            i_to_size += tokens[j];
+            if (j != tokens.size() - 1)
+                i_to_size += std::string(".");
         }
+
+        // check if the label is already in the map (including the offset).
+
+        if (ncm->find(i_to_size) != ncm->end()) {
+            // if it is in the set, we can be sure that all
+            // following labels have been included as well,
+            // hence we can point to it and stop.
+            size += 2;
+            labelUsed = true;
+            break;
+        } else {
+            size++; // length byte before a name
+            (*ncm)[i_to_size] = true;
+            // write the string, if it's not the last add a dot
+            // if it's the last add "0x00"
+            for (unsigned char k = 0; k < i_to_size.length(); k++) {
+                char curr_character = i_to_size.c_str()[k];
+                if (curr_character == '.')
+                    break; // stop, only write current label, next is to be consumed.
+                size++;
+            }
+
+        }
+
+    }
+    if(!labelUsed)
+        size++; // additional byte for end
+
+
+    return size;
+}
+
+int getSizeForRecord(DNSRecord *record, std::unordered_map<std::string, bool> * ncm){
+    int size = 0;
+    size += checkMapAndGetSize(record->rname, ncm, true);
+    size += 10; // rtype, rclass, ttl and rdlength
+
+    if(record->rtype == DNS_TYPE_VALUE_SRV){
+        std::shared_ptr<INETDNS::SRVData> s = std::static_pointer_cast < INETDNS::SRVData > (record->rdata);
+        // do nothing for now..
+    }
+    else if (record->rtype == DNS_TYPE_VALUE_A){
+        size += 4;
+    }
+    else if (record->rtype == DNS_TYPE_VALUE_AAAA){
+        size += 16;
+    }
+    else if (record->rtype == DNS_TYPE_VALUE_PTR || record->rtype == DNS_TYPE_VALUE_NS || record->rtype == DNS_TYPE_VALUE_CNAME){
+        // For now just write it out, but we need compression here as well
+        size += checkMapAndGetSize(record->strdata, ncm, false);
+    }
+    else if(record->rtype == DNS_TYPE_VALUE_TXT){
+        // no pointer check, just write the label
+        size += record->strdata.length() + 1;
+    }
+    else{
+        // Other types are currently not supported
     }
 
     return size;
@@ -531,103 +606,20 @@ int estimateDnsPacketSize(DNSPacket* packet)
     std::unordered_map<std::string, bool> ncm;
     for (int i = 0; i < packet->getQdcount(); i++)
     {
-        size += tokenizeAndGetSize(packet->getQuestions(i).qname, &ncm);
-        size += 5; // + 1 for length byte, + 4 bytes for type and class
+        size += checkMapAndGetSize(packet->getQuestions(i).qname, &ncm, true);
+        size += 4; // + 4 bytes for type and class
     }
     for (int i = 0; i < packet->getAncount(); i++)
     {
-        if (packet->getAnswers(i).rtype != DNS_TYPE_VALUE_SRV)
-        {
-            // add additional byte for length of rname
-            size += 1 + tokenizeAndGetSize(packet->getAnswers(i).rname, &ncm);
-            size += 10 + packet->getAnswers(i).strdata.length(); // no name compression for data
-        }
-        else
-        {
-            std::shared_ptr<SRVData> s = std::static_pointer_cast < SRVData > (packet->getAnswers(i).rdata);
-
-            if (ncm.find(s->service) != ncm.end())
-                size += 2;
-            else
-            {
-                ncm[s->service] = true;
-                size += s->service.length();
-            }
-
-            if (ncm.find(s->proto) != ncm.end())
-                size += 2;
-            else
-            {
-                ncm[s->proto] = true;
-                size += s->proto.length();
-            }
-
-            size += tokenizeAndGetSize(s->name, &ncm);
-            size += 16 + s->target.length();
-        }
+        size += getSizeForRecord(&packet->getAnswers(i), &ncm);
     }
     for (int i = 0; i < packet->getNscount(); i++)
     {
-        if (packet->getAuthorities(i).rtype != DNS_TYPE_VALUE_SRV)
-        {
-            size += 1 + tokenizeAndGetSize(packet->getAuthorities(i).rname, &ncm);
-            size += 10 + packet->getAuthorities(i).strdata.length();
-        }
-        else
-        {
-            std::shared_ptr<SRVData> s = std::static_pointer_cast < SRVData > (packet->getAuthorities(i).rdata);
-
-            if (ncm.find(s->service) != ncm.end())
-                size += 2;
-            else
-            {
-                ncm[s->service] = true;
-                size += s->service.length();
-            }
-
-            if (ncm.find(s->proto) != ncm.end())
-                size += 2;
-            else
-            {
-                ncm[s->proto] = true;
-                size += s->proto.length();
-            }
-
-            size += tokenizeAndGetSize(s->name, &ncm);
-            size += 16 + s->target.length();
-        }
+        size += getSizeForRecord(&packet->getAuthorities(i), &ncm);
     }
     for (int i = 0; i < packet->getArcount(); i++)
     {
-        if (packet->getAdditional(i).rtype != DNS_TYPE_VALUE_SRV)
-        {
-            // add additional byte for length of rname
-            size += 1 + tokenizeAndGetSize(packet->getAdditional(i).rname, &ncm);
-            size += 10 + packet->getAdditional(i).strdata.length();
-        }
-        else
-        {
-            std::shared_ptr<SRVData> s = std::static_pointer_cast < SRVData > (packet->getAdditional(i).rdata);
-
-            if (ncm.find(s->service) != ncm.end())
-                size += 2;
-            else
-            {
-                ncm[s->service] = true;
-                size += s->service.length();
-            }
-
-            if (ncm.find(s->proto) != ncm.end())
-                size += 2;
-            else
-            {
-                ncm[s->proto] = true;
-                size += s->proto.length();
-            }
-
-            size += tokenizeAndGetSize(s->name, &ncm);
-            size += 16 + s->target.length();
-        }
+        size += getSizeForRecord(&packet->getAdditional(i), &ncm);
     }
 
     ncm.clear();

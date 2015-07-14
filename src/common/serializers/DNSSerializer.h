@@ -46,7 +46,7 @@ protected:
 
   virtual void serialize_question(INETDNS::DNSQuestion *question, Buffer &b);
   virtual void serialize_answer(INETDNS::DNSRecord *record, Buffer &b);
-  virtual void serialize_name(std::string str, Buffer &b);
+  virtual void serialize_name(std::string str, Buffer &b, bool is_name);
   virtual void serialize_data_string(std::string str, Buffer &b);
 public:
     DNSSerializer(const char *name = nullptr) : inet::serializer::SerializerBase(name){}
