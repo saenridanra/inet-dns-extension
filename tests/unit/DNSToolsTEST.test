@@ -270,7 +270,7 @@ testRecordEqualNoData();
 [testResolveQuery] qdcount=1;ancount=0;nscount=0;arcount=0;qr=0;
 [testCreateResolveResponse] qdcount=0;ancount=1;nscount=0;arcount=1;qr=1;op=0;aa=1;rd=1;ra=1;rcode=0;
 [testEstimateDnsPacketSize] [strdata] size: 54
-[testEstimateDnsPacketSize] [srvdata] size: 71
+[testEstimateDnsPacketSize] [srvdata] size: 83
 [testRecordDataEqual] [r1 == r2]: 1
 [testRecordDataEqual] [r1 != r2]: 0
 [testRecordEqualNoData] [r1 == r2]: 1

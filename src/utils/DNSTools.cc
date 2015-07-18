@@ -569,7 +569,10 @@ int getSizeForRecord(DNSRecord *record, std::unordered_map<std::string, bool> * 
 
     if(record->rtype == DNS_TYPE_VALUE_SRV){
         std::shared_ptr<INETDNS::SRVData> s = std::static_pointer_cast < INETDNS::SRVData > (record->rdata);
-        // do nothing for now..
+        // dots are the length octects in this case
+        size += 6; // priority, weight and proto
+        size += checkMapAndGetSize(s->target, ncm, false);
+
     }
     else if (record->rtype == DNS_TYPE_VALUE_A){
         size += 4;
@@ -583,7 +586,8 @@ int getSizeForRecord(DNSRecord *record, std::unordered_map<std::string, bool> * 
     }
     else if(record->rtype == DNS_TYPE_VALUE_TXT){
         // no pointer check, just write the label
-        size += record->strdata.length() + 1;
+        if(record->strdata.length() > 0)
+            size += record->strdata.length() + 1;
     }
     else{
         // Other types are currently not supported

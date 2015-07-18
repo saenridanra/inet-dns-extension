@@ -97,11 +97,23 @@ void DNSSerializer::serialize_answer(INETDNS::DNSRecord *record, Buffer &b) {
 
     // Write RDATA
     if (record->rtype == DNS_TYPE_VALUE_SRV) {
-        b.writeUint16((uint16_t) record->rdlength);
-
         std::shared_ptr<INETDNS::SRVData> s = std::static_pointer_cast
                 < INETDNS::SRVData > (record->rdata);
-        // do nothing for now..
+
+        // ttl, class, priority, weight, port and target.
+        int curr_pos = b.getPos();
+        b.seek(curr_pos + 2);
+        b.writeUint16((uint16_t) s->priority);
+        b.writeUint16((uint16_t) s->weight);
+        b.writeUint16((uint16_t) s->port);
+        serialize_name(s->target, b, false);
+        // write rdlength (we only know it for sure, after
+        // calculating the real length.
+        int pos_after_data = b.getPos();
+        b.seek(curr_pos);
+        b.writeUint16((uint16_t) pos_after_data - curr_pos - 2);
+        b.seek(pos_after_data);
+
     } else if (record->rtype == DNS_TYPE_VALUE_A) {
         // need to interpret the IPv4 address
         b.writeUint16((uint16_t) 4);
@@ -208,7 +220,8 @@ void DNSSerializer::serialize_data_string(std::string str, Buffer &b) {
     for (unsigned short i = 0; i < length; i++) {
         b.writeByte(str.c_str()[i]);
     }
-    b.writeByte(0x00); // terminator string
+    if(str.length() > 0)
+        b.writeByte(0x00); // terminator string
 }
 
 }
