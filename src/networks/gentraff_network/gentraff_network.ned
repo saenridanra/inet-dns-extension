@@ -17,6 +17,7 @@ package inet_dns_extension.networks.gentraff_network;
 
 import inet.node.inet.Router;
 import inet.node.inet.StandardHost;
+import inet.applications.udpapp.UDPSink;
 import inet_dns_extension.applications.traffic.GenericTraffGenNode;
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
 import inet.node.ethernet.Eth1G;
@@ -25,10 +26,10 @@ network Gentraff_network
 {
     parameters:
     	@display("bgb=894,645");
+    	
     submodules:
-        sink: StandardHost {
+        sink: Sink {
             parameters:
-                hasUdp = true;
                 @display("p=280,344;i=device/laptop");
         }
         
@@ -39,5 +40,18 @@ network Gentraff_network
             @display("p=121,37");
         }
     connections:
-        sink.ethg++ <--> Eth1G <--> client.ethg++;
+        client.ethg++ <--> Eth1G <--> sink.ethg++;
+        
+}
+
+module Sink extends StandardHost{
+    parameters:
+       hasUdp = true;
+	submodules:
+	   udpSink: UDPSink{
+	   	localPort = 8888;
+	   }
+	connections:
+	   udp.appOut++ --> udpSink.udpIn;
+	   udp.appIn++ <-- udpSink.udpOut;
 }

@@ -32,9 +32,15 @@ void GenericTraffGen::initialize(int stage)
         maxApps = (int) par("maxApps").doubleValue();
         minBps = (int) par("minBps").doubleValue();
         maxBps = (int) par("maxBps").doubleValue();
+        appInterArrivalMean = (int) par("appInterArrivalMean").doubleValue();
 
         hasCBR = par("hasCBR").boolValue();
         hasBURST = par("hasBURST").boolValue();
+        hasLRD = par("hasLRD").boolValue();
+
+        lrdParetoAlpha = par("lrdParetoAlpha").doubleValue();
+        lrdParetoBeta = par("lrdParetoBeta").doubleValue();
+
         dynamicApps = par("dynamicApps").boolValue();
 
         udpStandardPort = (int) par("udpStandardPort").doubleValue();
@@ -47,39 +53,49 @@ void GenericTraffGen::initialize(int stage)
 
         int initialApps = intuniform(minApps, maxApps);
         // create apps, push them into the vector
+        int startup = 0;
+
+        // Generate Traffic type choices.
+        int ttypes = 0;
+        std::vector<TRAFFIC_TYPE> choices;
+        if(hasCBR) {
+            choices.push_back(TRAFFIC_TYPE::CBR);
+            ttypes++;
+        }
+        if(hasBURST) {
+            choices.push_back(TRAFFIC_TYPE::BURST);
+            ttypes++;
+        }
+        if(hasLRD) {
+            choices.push_back(TRAFFIC_TYPE::LRD);
+            ttypes++;
+        }
+
         for (int i = 0; i < initialApps; i++)
         {
-            int bps = intuniform(minBps, maxBps);
-            TRAFFIC_TYPE t;
+            // using triangular distribution for bandwidth with mean
+            // in the middle of minBps and maxBps
+            int bps = (int) triang(minBps, (minBps + maxBps) / 2, maxBps);
 
-            if (hasCBR && hasBURST)
-            {
-                int choice = intuniform(0, 1);
-                if (choice)
-                    t = CBR;
-                else
-                    t = BURST;
-            }
-            else if (hasCBR)
-                t = CBR;
-            else if (hasBURST)
-                t = BURST;
-            else
-                throw new cRuntimeError("No traffic type specified for traffic generator.");
+            // choose a traffic type for the app
+            int choice = intuniform(0, ttypes - 1);
 
-            std::shared_ptr<TrafficApp> app = std::shared_ptr < TrafficApp > (new TrafficApp(t, bps));
+            std::shared_ptr<TrafficApp> app = TrafficAppFactory().create(choices[choice], bps);
+            if(choices[choice] == TRAFFIC_TYPE::LRD)
+                std::static_pointer_cast<TrafficAppLRD>(app)->setLRDParam(lrdParetoAlpha, lrdParetoBeta);
             apps.push_back(app);
 
             // schedule startup some time in the future...
-
             cMessage* selfMessage = new cMessage("timer");
             selfMessage->addPar("vectorPos");
             selfMessage->par("vectorPos") = i;
             selfMessage->setKind(TRAFF_APP_TIMER);
 
-            // pick time to star app
-            int startup = intuniform(10, 600); // after 10 to 600s..
-            std::string startupStr = std::to_string(startup) + std::string("s");
+            // pick time to start app using Poisson distribution
+            startup += (int) exponential((double) appInterArrivalMean);
+            EV << "Starting app at: " << startup << " with BPS: " << bps << "\n";
+
+            std::string startupStr = std::to_string(startup * 60) + std::string("s");
             simtime_t time = simTime() + STR_SIMTIME(startupStr.c_str());
 
             scheduleAt(time, selfMessage);
@@ -99,9 +115,11 @@ void GenericTraffGen::handleMessage(cMessage *msg)
         scheduleAt(chunk.nextTimer, msg);
 
         // use chunk to send out traffic..
-        std::string msgname = std::string("tgen_pack::") + std::to_string(vectorPos);
-        cPacket* packet = new cPacket(msgname.c_str());
-        packet->setByteLength(chunk.payloadSize);
-        udpOut.sendTo(packet, sink, udpStandardPort);
+        if(chunk.payloadSize != -1){
+            std::string msgname = std::string("tgen_pack::") + std::to_string(vectorPos);
+            cPacket* packet = new cPacket(msgname.c_str());
+            packet->setByteLength(chunk.payloadSize);
+            udpOut.sendTo(packet, sink, udpStandardPort);
+        }
     }
 }

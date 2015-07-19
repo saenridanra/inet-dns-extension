@@ -37,7 +37,7 @@
 
 enum TRAFFIC_TYPE
 {
-    CBR, BURST
+    CBR, BURST, LRD
 };
 
 class TrafficChunk
@@ -60,8 +60,9 @@ class TrafficChunk
 class TrafficApp
 {
     protected:
-        TRAFFIC_TYPE T;
         int BPS;
+        long lastPayloadSize;
+        simtime_t last_timer;
 
     public:
         /**
@@ -70,52 +71,162 @@ class TrafficApp
          * @param t @ref TRAFFIC_TYPE determining the type of traffic that is generated.
          * @param bps Bandwidth this app consumes (bits per second).
          */
-        TrafficApp(TRAFFIC_TYPE t, int bps)
+        TrafficApp(int bps)
         {
-            T = t;
+            lastPayloadSize = -1;
             BPS = bps;
-        }
-        ;
-        ~TrafficApp(){};
+        };
 
         /**
          * @brief Generates a chunk of traffic based on parameters.
          *
          * @return A @ref TrafficChunk object.
          */
-        TrafficChunk getNextTrafficChunk()
-        {
-            switch (T)
-            {
-                case CBR:
-                    return getCBR();
-                case BURST:
-                    return getBURST();
-                default:
-                    throw new cRuntimeError("Traffic type not specified in traffic app.");
+        virtual TrafficChunk getNextTrafficChunk() = 0;
+};
+
+class TrafficAppCBR : public TrafficApp{
+public:
+    TrafficAppCBR(int bps) : TrafficApp(bps){
+    }
+    TrafficChunk getNextTrafficChunk(){
+        TrafficChunk chunk;
+        chunk.nextTimer = simTime() + STR_SIMTIME("1s"); // schedule equal chunks every second..
+        chunk.payloadSize = BPS / 8;
+        lastPayloadSize = chunk.payloadSize;
+        last_timer = chunk.nextTimer;
+        return chunk;
+    }
+};
+
+class TrafficAppBurst : public TrafficApp{
+public:
+    TrafficAppBurst(int bps) : TrafficApp(bps){
+    }
+    TrafficChunk getNextTrafficChunk(){
+        // pick time delay
+        int delay = intuniform(1, 120);
+        std::string delayToStr = std::to_string(delay) + std::string("s");
+        TrafficChunk chunk;
+        chunk.nextTimer = simTime() + STR_SIMTIME(delayToStr.c_str());
+        last_timer = chunk.nextTimer;
+        chunk.payloadSize = (BPS * delay) / 8; // we achieve bps by considering the delay
+        lastPayloadSize = chunk.payloadSize;
+        return chunk;
+    }
+};
+
+class TrafficAppLRD : public TrafficApp{
+
+protected:
+    simtime_t onPeriodStart;
+    simtime_t onPeriodEnd;
+    simtime_t offPeriodEnd;
+    int currPayloadSize;
+    double alpha, beta;
+
+    void generatePayloadsForONPeriod(){
+        // draw ON start and ON end from pareto distribution
+        double startDbl = pareto_shifted(alpha, beta, 0);
+        double endDbl = startDbl + pareto_shifted(alpha, beta, 0);
+        double offEndDbl = endDbl + pareto_shifted(alpha, beta, 0);
+
+        // scale to minutes..
+        std::string start = std::to_string(startDbl * 60) + std::string("s");
+        std::string end = std::to_string(endDbl * 60) + std::string("s");
+        std::string offEnd = std::to_string(offEndDbl * 60) + std::string("s");
+
+        // generate period times
+        onPeriodStart = simTime() + STR_SIMTIME(start.c_str());
+        onPeriodEnd = simTime() + STR_SIMTIME(end.c_str());
+        offPeriodEnd = simTime() + STR_SIMTIME(offEnd.c_str());
+
+        double onDuration = endDbl * 60 - startDbl * 60;
+        double ovrlDuration = offEndDbl * 60 - startDbl * 60;
+
+        // Need to consider the OFF period as well and calculate payload size during ON
+        // s.t. BPS is achieved over ON + OFF
+        // Assume we send BPS per second, we can then scale this by dividing by: ON / (ON + OFF)
+        currPayloadSize = BPS / (onDuration / ovrlDuration);
+
+        EV << "[TrafficAppLRD] **************************************************** \n";
+        EV << "[TrafficAppLRD] ON Period Start: " << onPeriodStart << "\n";
+        EV << "[TrafficAppLRD] ON Period End: " << onPeriodEnd << "\n";
+        EV << "[TrafficAppLRD] Off Period End: " << offPeriodEnd << "\n";
+        EV << "[TrafficAppLRD] Generated Pareto Sequence ON Duration: " << onDuration << "\n";
+        EV << "[TrafficAppLRD] Generated Pareto Sequence ON/OFF Duration: " << ovrlDuration << "\n";
+        EV << "[TrafficAppLRD] Using Payload Size: " << currPayloadSize << "\n";
+        EV << "[TrafficAppLRD] **************************************************** \n";
+    }
+
+public:
+    TrafficAppLRD(int bps) : TrafficApp(bps){
+    }
+
+    void setLRDParam(double alpha, double beta){
+        this->alpha = alpha;
+        this->beta  = beta;
+    }
+
+    TrafficChunk getNextTrafficChunk(){
+        /*
+         * Modeling of self-similar traffic here:
+         * We draw ON/Off periods from Pareto distributions and
+         * send fixed rate traffic bursts during ON periods.
+         */
+        TrafficChunk chunk;
+        if(lastPayloadSize == -1){
+            // initialize ON period
+            generatePayloadsForONPeriod();
+        }
+
+        if(simTime() + STR_SIMTIME(std::string("1s").c_str()) > onPeriodEnd){
+            // start off period now
+            chunk.nextTimer = offPeriodEnd;
+            last_timer = chunk.nextTimer;
+            chunk.payloadSize = currPayloadSize / 8; // we achieve bps by considering the delay
+            lastPayloadSize = -1;
+        }
+        else{
+            // generate next traffic chunk of currPayloadSize
+            // check first if we already sent a payload.
+            if(lastPayloadSize == -1){
+                // if the simtime is smaller than the start of the ON period, we need to wait
+                if(simTime() < onPeriodStart){
+                    chunk.nextTimer = onPeriodStart;
+                    last_timer = chunk.nextTimer;
+                    chunk.payloadSize = -1; // signal that no packets needs to be sent
+                    lastPayloadSize = 0; // don't generate the periods again
+                }
+                else{
+                    // send the first packet
+                    chunk.nextTimer = simTime() + STR_SIMTIME(std::string("1s").c_str());
+                    last_timer = chunk.nextTimer;
+                    chunk.payloadSize = currPayloadSize / 8; // we achieve bps by considering the delay
+                    lastPayloadSize = chunk.payloadSize;
+                }
+            }
+            else{
+                chunk.nextTimer = simTime() + STR_SIMTIME(std::string("1s").c_str());
+                last_timer = chunk.nextTimer;
+                chunk.payloadSize = currPayloadSize / 8; // we achieve bps by considering the delay
+                lastPayloadSize = chunk.payloadSize;
             }
         }
-        ;
-    protected:
-        TrafficChunk getCBR()
-        {
-            TrafficChunk chunk;
-            chunk.nextTimer = simTime() + STR_SIMTIME("1s"); // schedule equal chunks every second..
-            chunk.payloadSize = BPS / 8;
-            return chunk;
+        return chunk;
+    }
+};
+
+class TrafficAppFactory{
+    public:
+    std::shared_ptr<TrafficApp> create(TRAFFIC_TYPE t, int bps){
+        if(t == TRAFFIC_TYPE::CBR) return std::shared_ptr<TrafficApp>(new TrafficAppCBR(bps));
+        else if(t == TRAFFIC_TYPE::BURST) return std::shared_ptr<TrafficApp>(new TrafficAppBurst(bps));
+        else if(t == TRAFFIC_TYPE::LRD) return std::shared_ptr<TrafficApp>(new TrafficAppLRD(bps));
+        else{
+            throw cRuntimeError("Error in creating an instance of traffic app of type: %s", t);
         }
-        ;
-        TrafficChunk getBURST()
-        {
-            // pick time delay
-            int delay = intuniform(1, 120);
-            std::string delayToStr = std::to_string(delay) + std::string("s");
-            TrafficChunk chunk;
-            chunk.nextTimer = simTime() + STR_SIMTIME(delayToStr.c_str());
-            chunk.payloadSize = (BPS * delay) / 8; // we achieve bps by considering the delay
-            return chunk;
-        }
-        ;
+    };
 };
 
 /**
@@ -148,8 +259,9 @@ class GenericTraffGen : public cSimpleModule
         /**
          * @brief Parameters for the traffic generator.
          */
-        int minApps, maxApps, minBps, maxBps;
-        bool hasCBR, hasBURST, dynamicApps;
+        int minApps, maxApps, minBps, maxBps, appInterArrivalMean;
+        double lrdParetoAlpha, lrdParetoBeta;
+        bool hasCBR, hasBURST, hasLRD, dynamicApps;
 
     protected:
         virtual void initialize(int stage);
