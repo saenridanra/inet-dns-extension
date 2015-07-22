@@ -25,7 +25,7 @@ simple GenericTraffGen
     parameters:
         double minApps = default(1.0);
         double maxApps = default(25.0);
-        double minBps = default(4096); // minimum of 500 bytes per second
+        double minBps = default(512); // minimum of 500 bytes per second
         double maxBps = default(8000000); // maximum of 1MBs
         
         bool hasCBR = default(true);
@@ -43,6 +43,7 @@ simple GenericTraffGen
         int tcpStandardPort = default(9999);
         
         int appInterArrivalMean = default(1);
+        int appServiceTimeMean = default(1);
         
     gates:
         input udpAppIn @labels(UDPControlInfo/down);

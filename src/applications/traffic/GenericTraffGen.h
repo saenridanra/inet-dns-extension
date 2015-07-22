@@ -34,6 +34,7 @@
 #include <string.h>
 
 #define TRAFF_APP_TIMER 0
+#define TRAFF_APP_CHUNK_SPLIT 1
 
 enum TRAFFIC_TYPE
 {
@@ -59,7 +60,11 @@ class TrafficChunk
  */
 class TrafficApp
 {
+    public:
+        simtime_t firstTimer = 0;
+        simtime_t serviceTime = 0;
     protected:
+        long runningId;
         int BPS;
         long lastPayloadSize;
         simtime_t last_timer;
@@ -73,6 +78,7 @@ class TrafficApp
          */
         TrafficApp(int bps)
         {
+            runningId = 0;
             lastPayloadSize = -1;
             BPS = bps;
         };
@@ -83,6 +89,10 @@ class TrafficApp
          * @return A @ref TrafficChunk object.
          */
         virtual TrafficChunk getNextTrafficChunk() = 0;
+
+        long getRunningId(){
+            return runningId;
+        };
 };
 
 class TrafficAppCBR : public TrafficApp{
@@ -90,6 +100,7 @@ public:
     TrafficAppCBR(int bps) : TrafficApp(bps){
     }
     TrafficChunk getNextTrafficChunk(){
+        runningId++;
         TrafficChunk chunk;
         chunk.nextTimer = simTime() + STR_SIMTIME("1s"); // schedule equal chunks every second..
         chunk.payloadSize = BPS / 8;
@@ -104,6 +115,7 @@ public:
     TrafficAppBurst(int bps) : TrafficApp(bps){
     }
     TrafficChunk getNextTrafficChunk(){
+        runningId++;
         // pick time delay
         int delay = intuniform(1, 120);
         std::string delayToStr = std::to_string(delay) + std::string("s");
@@ -117,7 +129,6 @@ public:
 };
 
 class TrafficAppLRD : public TrafficApp{
-
 protected:
     simtime_t onPeriodStart;
     simtime_t onPeriodEnd;
@@ -127,28 +138,29 @@ protected:
 
     void generatePayloadsForONPeriod(){
         // draw ON start and ON end from pareto distribution
-        double startDbl = pareto_shifted(alpha, beta, 0);
-        double endDbl = startDbl + pareto_shifted(alpha, beta, 0);
-        double offEndDbl = endDbl + pareto_shifted(alpha, beta, 0);
+
+        double startDbl = 60 * pareto_shifted(alpha, beta, 0);
+        double endDbl = startDbl + 60 * pareto_shifted(alpha, beta, 0);
+        double offEndDbl = endDbl + 60 * pareto_shifted(alpha, beta, 0);
 
         // scale to minutes..
-        std::string start = std::to_string(startDbl * 60) + std::string("s");
-        std::string end = std::to_string(endDbl * 60) + std::string("s");
-        std::string offEnd = std::to_string(offEndDbl * 60) + std::string("s");
+        std::string start = std::to_string(startDbl) + std::string("s");
+        std::string end = std::to_string(endDbl) + std::string("s");
+        std::string offEnd = std::to_string(offEndDbl) + std::string("s");
 
         // generate period times
         onPeriodStart = simTime() + STR_SIMTIME(start.c_str());
         onPeriodEnd = simTime() + STR_SIMTIME(end.c_str());
         offPeriodEnd = simTime() + STR_SIMTIME(offEnd.c_str());
 
-        double onDuration = endDbl * 60 - startDbl * 60;
-        double ovrlDuration = offEndDbl * 60 - startDbl * 60;
+        double onDuration = endDbl - startDbl;
+        double ovrlDuration = offEndDbl - startDbl;
 
         // Need to consider the OFF period as well and calculate payload size during ON
         // s.t. BPS is achieved over ON + OFF
         // Assume we send BPS per second, we can then scale this by dividing by: ON / (ON + OFF)
         currPayloadSize = BPS / (onDuration / ovrlDuration);
-
+#ifdef DEBUG_ENABLED
         EV << "[TrafficAppLRD] **************************************************** \n";
         EV << "[TrafficAppLRD] ON Period Start: " << onPeriodStart << "\n";
         EV << "[TrafficAppLRD] ON Period End: " << onPeriodEnd << "\n";
@@ -157,10 +169,13 @@ protected:
         EV << "[TrafficAppLRD] Generated Pareto Sequence ON/OFF Duration: " << ovrlDuration << "\n";
         EV << "[TrafficAppLRD] Using Payload Size: " << currPayloadSize << "\n";
         EV << "[TrafficAppLRD] **************************************************** \n";
+#endif
     }
 
 public:
     TrafficAppLRD(int bps) : TrafficApp(bps){
+        // Add rngs, we use three for the different pareto distributions
+        // to achieve independence
     }
 
     void setLRDParam(double alpha, double beta){
@@ -169,6 +184,7 @@ public:
     }
 
     TrafficChunk getNextTrafficChunk(){
+        runningId++;
         /*
          * Modeling of self-similar traffic here:
          * We draw ON/Off periods from Pareto distributions and
@@ -259,7 +275,7 @@ class GenericTraffGen : public cSimpleModule
         /**
          * @brief Parameters for the traffic generator.
          */
-        int minApps, maxApps, minBps, maxBps, appInterArrivalMean;
+        int minApps, maxApps, minBps, maxBps, appInterArrivalMean, appServiceTimeMean;
         double lrdParetoAlpha, lrdParetoBeta;
         bool hasCBR, hasBURST, hasLRD, dynamicApps;
 

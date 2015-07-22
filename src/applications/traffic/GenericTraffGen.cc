@@ -33,6 +33,7 @@ void GenericTraffGen::initialize(int stage)
         minBps = (int) par("minBps").doubleValue();
         maxBps = (int) par("maxBps").doubleValue();
         appInterArrivalMean = (int) par("appInterArrivalMean").doubleValue();
+        appServiceTimeMean = (int) par("appServiceTimeMean").doubleValue();
 
         hasCBR = par("hasCBR").boolValue();
         hasBURST = par("hasBURST").boolValue();
@@ -93,10 +94,16 @@ void GenericTraffGen::initialize(int stage)
 
             // pick time to start app using Poisson distribution
             startup += (int) exponential((double) appInterArrivalMean);
-            EV << "Starting app at: " << startup << " with BPS: " << bps << "\n";
+            int serviceTime = (int) exponential((double) appServiceTimeMean);
 
-            std::string startupStr = std::to_string(startup * 60) + std::string("s");
+            std::string startupStr = std::to_string(startup) + std::string("s");
             simtime_t time = simTime() + STR_SIMTIME(startupStr.c_str());
+            app->firstTimer = time;
+
+            std::string serviceTimeStr = std::to_string(serviceTime) + std::string("s");
+            app->serviceTime = time + STR_SIMTIME(serviceTimeStr.c_str());
+
+            EV << "Starting app at: " << startupStr << "/" << serviceTimeStr << " with BPS: " << bps << "\n";
 
             scheduleAt(time, selfMessage);
         }
@@ -112,13 +119,67 @@ void GenericTraffGen::handleMessage(cMessage *msg)
 
         TrafficChunk chunk = app->getNextTrafficChunk();
         // schedule next msg..
-        scheduleAt(chunk.nextTimer, msg);
+        if(simTime() < app->serviceTime){
+            scheduleAt(chunk.nextTimer, msg);
+        }
 
         // use chunk to send out traffic..
         if(chunk.payloadSize != -1){
-            std::string msgname = std::string("tgen_pack::") + std::to_string(vectorPos);
+            if(chunk.payloadSize < 65507){ // within range, otherwise send multiple packets, that amount to the same size.
+                std::string msgname = std::string("tgen_pack::") + std::to_string(vectorPos) + std::string("::") + std::to_string(app->getRunningId());
+                cPacket* packet = new cPacket(msgname.c_str());
+                packet->setByteLength(chunk.payloadSize);
+                udpOut.sendTo(packet, sink, udpStandardPort);
+            }
+            else{
+                int numPkts = chunk.payloadSize / 65507;
+                int lastPkt = chunk.payloadSize - (65507 * numPkts);
+                simtime_t intrvl = STR_SIMTIME("1s") / numPkts;
+
+                // setup self message
+                cMessage* nextChunk = new cMessage("nextChunk");
+                nextChunk->setKind(TRAFF_APP_CHUNK_SPLIT);
+                nextChunk->addPar("numPkts");
+                nextChunk->addPar("lastPkt");
+                nextChunk->addPar("intrvl");
+                nextChunk->addPar("vectorPos");
+
+                nextChunk->par("numPkts") = --numPkts;
+                nextChunk->par("lastPkt") = lastPkt;
+                nextChunk->par("vectorPos") = vectorPos;
+                nextChunk->par("intrvl") = intrvl.dbl();
+
+                scheduleAt(simTime() + intrvl, nextChunk);
+
+                std::string msgname = std::string("tgen_pack::") + std::to_string(vectorPos) + std::string("::") + std::to_string(app->getRunningId()) + std::string("#") + std::to_string(numPkts);
+                cPacket* packet = new cPacket(msgname.c_str());
+                packet->setByteLength(65507);
+                udpOut.sendTo(packet, sink, udpStandardPort);
+            }
+        }
+    }
+    else if(msg->getKind() == TRAFF_APP_CHUNK_SPLIT){
+        int numPkts = (int) msg->par("numPkts").doubleValue();
+        int lastPkt = (int) msg->par("lastPkt").doubleValue();
+        int vectorPos = (int) msg->par("vectorPos").doubleValue();
+        simtime_t intrvl = msg->par("intrvl").doubleValue();
+
+        std::shared_ptr<TrafficApp> app = apps[vectorPos];
+
+        numPkts--;
+        if(numPkts == 0){
+            std::string msgname = std::string("tgen_pack::") + std::to_string(vectorPos) + std::string("::") + std::to_string(app->getRunningId()) + std::string("#") + std::to_string(numPkts);
             cPacket* packet = new cPacket(msgname.c_str());
-            packet->setByteLength(chunk.payloadSize);
+            packet->setByteLength(lastPkt);
+            udpOut.sendTo(packet, sink, udpStandardPort);
+            delete msg;
+        }
+        else{ // still packets to go..
+            msg->par("numPkts") = numPkts;
+            scheduleAt(simTime() + intrvl, msg);
+            std::string msgname = std::string("tgen_pack::") + std::to_string(vectorPos) + std::string("::") + std::to_string(app->getRunningId()) + std::string("#") + std::to_string(numPkts);
+            cPacket* packet = new cPacket(msgname.c_str());
+            packet->setByteLength(65507);
             udpOut.sendTo(packet, sink, udpStandardPort);
         }
     }
