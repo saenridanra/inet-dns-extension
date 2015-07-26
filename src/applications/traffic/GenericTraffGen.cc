@@ -43,6 +43,34 @@ void GenericTraffGen::initialize(int stage)
         lrdParetoBeta = par("lrdParetoBeta").doubleValue();
 
         dynamicApps = par("dynamicApps").boolValue();
+        recordThruput = par("recordThruput").boolValue();
+
+        if(recordThruput){
+            const char* scale = par("recordThruputScale").getUnit();
+            std::string time = std::to_string(par("recordThruputScale").doubleValue()) + std::string(scale);
+            recordThruputScale = STR_SIMTIME(time.c_str());
+            std::string recordThruputFile;
+            recordThruputFile.append(std::string(this->getParentModule()->getFullName()) + std::string("-"));
+            // append parameters
+            recordThruputFile.append(std::to_string(maxBps) + std::string("-"));
+            recordThruputFile.append(std::to_string(minApps) + std::string("-"));
+            recordThruputFile.append(std::to_string(maxApps) + std::string("-"));
+            recordThruputFile.append(std::to_string(appInterArrivalMean) + std::string("s-"));
+            recordThruputFile.append(std::to_string(appServiceTimeMean) + std::string("s-"));
+            recordThruputFile.append(time);
+            recordThruputFile.append(std::string(".csv"));
+
+            recordThruputFileColDelimiter = par("recordThruputFileColDelimiter").stdstringValue();
+            recordThruputOutputStream = new std::ofstream(recordThruputFile); // open the stream
+
+            if(!recordThruputOutputStream->is_open()){
+                throw cRuntimeError("Cannot open file [%s]", recordThruputFile.c_str());
+            }
+
+            cMessage* selfMessage = new cMessage("thruputTimer");
+            selfMessage->setKind(RECORD_THRUPUT);
+            scheduleAt(simTime() + recordThruputScale, selfMessage);
+        }
 
         udpStandardPort = (int) par("udpStandardPort").doubleValue();
         udpOut.setOutputGate(gate("udpAppOut"));
@@ -129,6 +157,7 @@ void GenericTraffGen::handleMessage(cMessage *msg)
                 std::string msgname = std::string("tgen_pack::") + std::to_string(vectorPos) + std::string("::") + std::to_string(app->getRunningId());
                 cPacket* packet = new cPacket(msgname.c_str());
                 packet->setByteLength(chunk.payloadSize);
+                bytesSent += chunk.payloadSize;
                 udpOut.sendTo(packet, sink, udpStandardPort);
             }
             else{
@@ -154,6 +183,7 @@ void GenericTraffGen::handleMessage(cMessage *msg)
                 std::string msgname = std::string("tgen_pack::") + std::to_string(vectorPos) + std::string("::") + std::to_string(app->getRunningId()) + std::string("#") + std::to_string(numPkts);
                 cPacket* packet = new cPacket(msgname.c_str());
                 packet->setByteLength(65507);
+                bytesSent += 65507;
                 udpOut.sendTo(packet, sink, udpStandardPort);
             }
         }
@@ -171,6 +201,7 @@ void GenericTraffGen::handleMessage(cMessage *msg)
             std::string msgname = std::string("tgen_pack::") + std::to_string(vectorPos) + std::string("::") + std::to_string(app->getRunningId()) + std::string("#") + std::to_string(numPkts);
             cPacket* packet = new cPacket(msgname.c_str());
             packet->setByteLength(lastPkt);
+            bytesSent += lastPkt;
             udpOut.sendTo(packet, sink, udpStandardPort);
             delete msg;
         }
@@ -180,7 +211,29 @@ void GenericTraffGen::handleMessage(cMessage *msg)
             std::string msgname = std::string("tgen_pack::") + std::to_string(vectorPos) + std::string("::") + std::to_string(app->getRunningId()) + std::string("#") + std::to_string(numPkts);
             cPacket* packet = new cPacket(msgname.c_str());
             packet->setByteLength(65507);
+            bytesSent += 65507;
             udpOut.sendTo(packet, sink, udpStandardPort);
         }
+    }
+    else if(msg->getKind() == RECORD_THRUPUT){
+        record();
+        scheduleAt(simTime() + recordThruputScale, msg);
+    }
+}
+
+void GenericTraffGen::record(){
+    simtime_t currentTime = simTime();
+    long bytesForScale = bytesSent;
+    bytesSent = 0;
+
+    // Write out data to file
+    *recordThruputOutputStream << currentTime.str() << recordThruputFileColDelimiter << bytesForScale << std::endl;
+}
+
+void GenericTraffGen::finish(){
+    // Close the output file and flush
+    if(recordThruput){
+        recordThruputOutputStream->flush();
+        recordThruputOutputStream->close();
     }
 }

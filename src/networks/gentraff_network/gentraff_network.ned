@@ -26,6 +26,7 @@ network Gentraff_network
 {
     parameters:
     	@display("bgb=894,645");
+    	int num_clients = default(10);
     	
     submodules:
         sink: Sink {
@@ -33,14 +34,16 @@ network Gentraff_network
                 @display("p=280,344;i=device/laptop");
         }
         
-        client: GenericTraffGenNode{
+        clients[num_clients]: GenericTraffGenNode{
         }
         
         configurator: IPv4NetworkConfigurator {
             @display("p=121,37");
         }
     connections:
-        client.ethg++ <--> Eth1G <--> sink.ethg++;
+        for i=0..num_clients-1{
+        	clients[i].ethg++ <--> Eth1G <--> sink.ethg++;
+        }
         
 }
 

@@ -32,9 +32,12 @@
 #include <memory>
 #include <vector>
 #include <string.h>
+#include <iostream>
+#include <fstream>
 
 #define TRAFF_APP_TIMER 0
 #define TRAFF_APP_CHUNK_SPLIT 1
+#define RECORD_THRUPUT 2
 
 enum TRAFFIC_TYPE
 {
@@ -277,12 +280,19 @@ class GenericTraffGen : public cSimpleModule
          */
         int minApps, maxApps, minBps, maxBps, appInterArrivalMean, appServiceTimeMean;
         double lrdParetoAlpha, lrdParetoBeta;
-        bool hasCBR, hasBURST, hasLRD, dynamicApps;
+        bool hasCBR, hasBURST, hasLRD, dynamicApps, recordThruput;
+        simtime_t recordThruputScale;
+        std::string recordThruputFileColDelimiter;
+        std::ofstream* recordThruputOutputStream;
+        long bytesSent = 0;
 
     protected:
         virtual void initialize(int stage);
         virtual int numInitStages() const override { return inet::NUM_INIT_STAGES; }
         virtual void handleMessage(cMessage *msg);
+        virtual void finish() override;
+
+        virtual void record();
 };
 
 #endif

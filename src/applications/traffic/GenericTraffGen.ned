@@ -45,6 +45,10 @@ simple GenericTraffGen
         int appInterArrivalMean = default(1);
         int appServiceTimeMean = default(1);
         
+        bool   recordThruput                = default(false);
+        double recordThruputScale @unit(ms) = default(1ms); // Scale on which to record thruput
+        string recordThruputFileColDelimiter   = default("\t");
+        
     gates:
         input udpAppIn @labels(UDPControlInfo/down);
         output udpAppOut @labels(UDPControlInfo/down);
