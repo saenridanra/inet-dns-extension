@@ -49,8 +49,10 @@ void MDNSAnnouncer::initialize() {
             a_ptr_record->rdlength = a_ptr_record->strdata.length();
             a_ptr_record->ttl = MDNS_HOST_TTL;
 
+#ifdef DEBUG_ENABLED
             INETDNS::printDNSRecord(a_record);
             INETDNS::printDNSRecord(a_ptr_record);
+#endif
 
             // now add records to the list, create a time out, that is soon scheduled
             std::shared_ptr<Probe> a(new Probe());
@@ -63,6 +65,12 @@ void MDNSAnnouncer::initialize() {
 
             probing.push_back(a);
             probing.push_back(a_ptr);
+
+            if(usesDSNExtension){
+                // if DSN is used, the probe starts directly by announcing
+                a->s = ProbeState::ANNOUNCING;
+                a_ptr->s = ProbeState::ANNOUNCING;
+            }
 
             simtime_t tv = simTime() + STR_SIMTIME("20ms");
 
@@ -109,6 +117,12 @@ void MDNSAnnouncer::initialize() {
             aaaa->probe_id = id_internal++;
             aaaa_ptr->r = aaaa_record;
             aaaa_ptr->probe_id = id_internal++;
+
+            if(usesDSNExtension){
+                // if DSN is used, the probe starts directly by announcing
+                aaaa->s = ProbeState::ANNOUNCING;
+                aaaa_ptr->s = ProbeState::ANNOUNCING;
+            }
             probing.push_back(aaaa);
             probing.push_back(aaaa_ptr);
 
@@ -169,6 +183,12 @@ void MDNSAnnouncer::add_service(std::shared_ptr<MDNSService> service) {
             + service->service_type.length();
 
     std::shared_ptr<Probe> p(new Probe());
+
+    if(usesDSNExtension){
+        // if DSN is used, the probe starts directly by announcing
+        p->s = ProbeState::ANNOUNCING;
+    }
+
     p->r = service_record;
     p->probe_id = id_internal++;
     p->ref_service = service;

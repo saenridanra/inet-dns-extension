@@ -44,6 +44,7 @@
 
 #include <MDNS_Privacy.h>
 
+#include <regex>
 #include <vector>
 #include <list>
 #include <utility>
@@ -171,6 +172,11 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver, public INETDNS
         std::string own_instance_name;
 
         /**
+         * @brief Whether the Domain Space Name Extension is active or not
+         */
+        bool usesDSNExtension;
+
+        /**
          * @brief Whether privacy functionality is activated or not.
          */
         bool hasPrivacy;
@@ -259,9 +265,11 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver, public INETDNS
          *
          * @param hostname String containing the hostname used to announce
          * @param own_instance_name The instance name this resolver shall use for announcments.
+         * @param usesDSNExtension Whether Domain Space Name extension is activated.
          * @param hasPrivacy Whether privacy capabilities are enabled.
+         * @param isQuerying Whether the resolver queries.
          */
-        void setDynamicParams(std::string hostname, std::string own_instance_name, bool hasPrivacy, bool isQuerying)
+        void setDynamicParams(std::string hostname, std::string own_instance_name, bool usesDSNExtension, bool hasPrivacy, bool isQuerying)
         {
             this->hostname = hostname;
             this->own_instance_name = own_instance_name;
@@ -347,6 +355,15 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver, public INETDNS
         }
 
         /**
+         * @brief Determine whether Domain Space Name Extension is used
+         *
+         * @return true if it is used.
+         */
+        bool hasDSNExtension(){
+            return usesDSNExtension;
+        }
+
+        /**
          * @brief Determine whether this module has privacy activated.
          *
          * @return true if privacy is set.
@@ -425,6 +442,10 @@ class MDNSResolver : public cSimpleModule, public SignalReceiver, public INETDNS
          */
         virtual void initializePrivateServices();
 };
+
+static const char alphanum[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+static std::regex dsn_type_expr ("(.*)::[0-9A-Za-z]{16}(.*)");
 
 #define MDNS_KIND_TIMER 0
 #define MDNS_KIND_EXTERNAL 1

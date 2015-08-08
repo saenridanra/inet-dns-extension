@@ -50,6 +50,7 @@ void MDNSNetworkConfigurator::initialize(int stage)
         average_uptime = par("average_uptime").doubleValue();
         max_online_duration = par("max_online_duration").doubleValue();
         querying_enabled = par("querying_enabled").boolValue();
+        usesDSNExtension = par("usesDSNExtension").boolValue();
 
         std::string service_usage = par("service_usage_probability").stdstringValue();
         if (service_usage == "GAUSSIAN")
@@ -167,7 +168,7 @@ bool MDNSNetworkConfigurator::computeMDNSNetwork()
 #ifdef DEBUG_ENABLED
         std::cout << "Adding device " << device_name << " with private instance " << own_instance_name << std::endl;
 #endif
-        resolver->setDynamicParams(device_name, own_instance_name, true, querying_enabled);
+        resolver->setDynamicParams(device_name, own_instance_name, usesDSNExtension, true, querying_enabled);
 
         private_device_map[device_name] = device_map[device_name];
 
@@ -187,7 +188,7 @@ bool MDNSNetworkConfigurator::computeMDNSNetwork()
             continue;
         std::string device_name = "device" + std::to_string(i);
         MDNSResolver * resolver = device_map[device_name];
-        resolver->setDynamicParams(device_name, "", false, querying_enabled);
+        resolver->setDynamicParams(device_name, "", usesDSNExtension, false, querying_enabled);
     }
 
     // now params have been set, add pairings

@@ -51,9 +51,16 @@ simple MDNSResolver
         string own_instance_name;
         string interfaceTableModule;
         
-        bool hasPrivacy = default(false);
-        bool isQuerying = default(false);
+        // Domain Space Name Extension
+        bool usesDSNExtension = default(false);
         
+        // Privacy Extension
+        bool hasPrivacy       = default(false);
+        
+        // Whether the Resolver queries with mdns queries
+        bool isQuerying       = default(false);
+        
+        // Whether it is statically generated or dynamically
         bool static_configuration = default(true);
         
     gates:

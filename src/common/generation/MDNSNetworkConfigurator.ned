@@ -27,7 +27,12 @@ simple MDNSNetworkConfigurator{
         int min_friends = default(0);
         int max_services = default(4);
         int min_services = default(1);
+        
+        // Whether resolver query
         bool querying_enabled = default(false);
+        
+        // Domain Space Name Extension
+        bool usesDSNExtension = default(false);
         
         string service_usage_probability = default("GAUSSIAN");
         

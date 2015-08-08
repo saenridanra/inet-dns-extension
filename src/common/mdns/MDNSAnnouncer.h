@@ -174,6 +174,11 @@ protected:
     int num_announced_jobs = 0;
 
     /**
+     * @brief Whether the Domain Space Name Extension is active or not
+     */
+    bool usesDSNExtension;
+
+    /**
      * @brief The current state of the announcer.
      */
     AnnouncerState s;
@@ -207,7 +212,7 @@ public:
     MDNSAnnouncer(INETDNS::MDNSProbeScheduler* _probe_scheduler,
             INETDNS::MDNSResponseScheduler* _response_scheduler,
             INETDNS::TimeEventSet* _timeEventSet, std::vector<std::shared_ptr<MDNSService>> services,
-            std::string _hostname, inet::L3Address* _hostaddress4, inet::L3Address* _hostaddress6) {
+            std::string _hostname, inet::L3Address* _hostaddress4, inet::L3Address* _hostaddress6, bool usesDSNExtension) {
         probe_scheduler = _probe_scheduler;
         response_scheduler = _response_scheduler;
         timeEventSet = _timeEventSet;
@@ -216,6 +221,7 @@ public:
         hostaddress4 = _hostaddress4;
         hostaddress6 = _hostaddress6;
         s = AnnouncerState::START;
+        this->usesDSNExtension = usesDSNExtension;
     }
     virtual ~MDNSAnnouncer() {
 

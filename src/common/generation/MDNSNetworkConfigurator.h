@@ -128,6 +128,11 @@ class MDNSNetworkConfigurator : public cSimpleModule {
         inet::Topology topology;
 
         /**
+         * @brief Whether Domain Space Name Extension is activated.
+         */
+        bool usesDSNExtension;
+
+        /**
          * @brief Whether the resolvers can query or not
          */
         bool querying_enabled;
