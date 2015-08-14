@@ -35,9 +35,9 @@
 #include <iostream>
 #include <fstream>
 
-#define TRAFF_APP_TIMER 0
-#define TRAFF_APP_CHUNK_SPLIT 1
-#define RECORD_THRUPUT 2
+#define TRAFF_APP_TIMER 16010
+#define TRAFF_APP_CHUNK_SPLIT 16011
+#define RECORD_THRUPUT 16012
 
 enum TRAFFIC_TYPE
 {

@@ -17,6 +17,7 @@ package inet_dns_extension.applications.mdns;
 
 import inet.node.inet.WirelessHost;
 import inet_dns_extension.applications.mdns.MDNSResolver;
+import inet_dns_extension.applications.traffic.GenericTraffGen;
 import inet.transportlayer.contract.IUDP;
 
 module WirelessMDNSNode extends WirelessHost
@@ -51,4 +52,42 @@ module WirelessMDNSNode extends WirelessHost
         resolver.mdnsIn <-- udp.appOut++;
         resolver.privacyOut --> udp.appIn++;
         resolver.privacyIn <--  udp.appOut++;
+}
+
+module WirelessMDNSNodeWithTraffGen extends WirelessHost
+{
+    parameters:
+        hasUdp = true;
+        
+		string hname = default("Dummy");
+		string sfile = default("");
+		string privacy_sfile = default("");
+		string pdata = default("");
+        string own_instance = default("");
+		
+		bool private = default(false);
+		bool querying = default(false);
+		
+    submodules:
+        resolver: MDNSResolver {
+            parameters:
+                own_instance_name = own_instance;
+                hasPrivacy = private;
+                hostname = hname;
+                service_files = sfile;
+                privacy_service_files = privacy_sfile;
+                pairing_data = pdata;
+                isQuerying = querying;
+                
+                @display("p=437,93");
+        }
+        
+        gt: GenericTraffGen {}
+    connections:
+        resolver.mdnsOut --> udp.appIn++;
+        resolver.mdnsIn <-- udp.appOut++;
+        resolver.privacyOut --> udp.appIn++;
+        resolver.privacyIn <--  udp.appOut++;
+		gt.udpAppOut --> udp.appIn++;
+		gt.udpAppIn <-- udp.appOut++;
 }

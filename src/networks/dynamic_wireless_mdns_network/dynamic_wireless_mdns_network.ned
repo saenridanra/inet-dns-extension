@@ -18,10 +18,12 @@ package inet_dns_extension.networks.dynamic_wireless_mdns_network;
 import inet.node.inet.Router;
 import inet.node.inet.StandardHost;
 import inet.node.wireless.AccessPoint;
-import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
-import inet_dns_extension.applications.mdns.WirelessMDNSNode;
-import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.node.inet.WirelessHost;
 import inet.node.ethernet.Eth1G;
+import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadioMedium;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.applications.udpapp.UDPSink;
+import inet_dns_extension.applications.mdns.WirelessMDNSNodeWithTraffGen;
 import inet_dns_extension.common.generation.MDNSNetworkConfigurator;
 
 network Dynamic_wireless_mdns_network
@@ -39,11 +41,16 @@ network Dynamic_wireless_mdns_network
         @display("bgb=1046,645");
 
     submodules:
-        mdns_host[p_num_resolvers]: WirelessMDNSNode;
+        mdns_host[p_num_resolvers]: WirelessMDNSNodeWithTraffGen;
         multicast_router: Router {
             multicastForwarding = true;
             numRadios = 1;
             @display("p=394,314");
+        }
+        
+        sink: Sink {
+            parameters:
+                @display("p=280,344;i=device/laptop");
         }
 
         ap: AccessPoint {
@@ -75,4 +82,16 @@ network Dynamic_wireless_mdns_network
      //    ap.ethg++ <--> Eth1G <--> multicast_router.ethg++;
 
 
+}
+
+module Sink extends WirelessHost{
+    parameters:
+       hasUdp = true;
+	submodules:
+	   udpSink: UDPSink{
+	   	localPort = 8888;
+	   }
+	connections:
+	   udp.appOut++ --> udpSink.udpIn;
+	   udp.appIn++ <-- udpSink.udpOut;
 }
