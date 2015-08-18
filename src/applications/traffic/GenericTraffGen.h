@@ -37,7 +37,8 @@
 
 #define TRAFF_APP_TIMER 16010
 #define TRAFF_APP_CHUNK_SPLIT 16011
-#define RECORD_THRUPUT 16012
+#define TRAFF_APP_NEW 16012
+#define RECORD_THRUPUT 16013
 
 enum TRAFFIC_TYPE
 {
@@ -92,6 +93,10 @@ class TrafficApp
          * @return A @ref TrafficChunk object.
          */
         virtual TrafficChunk getNextTrafficChunk() = 0;
+
+        virtual int getBPS(){
+            return BPS;
+        }
 
         long getRunningId(){
             return runningId;
@@ -268,6 +273,7 @@ class GenericTraffGen : public cSimpleModule
          * @brief Apps that generate traffic.
          */
         std::vector<std::shared_ptr<TrafficApp>> apps;
+        std::vector<TRAFFIC_TYPE> choices;
 
         /**
          * @brief Sockets this generator uses.
@@ -278,13 +284,15 @@ class GenericTraffGen : public cSimpleModule
         /**
          * @brief Parameters for the traffic generator.
          */
-        int minApps, maxApps, minBps, maxBps, appInterArrivalMean, appServiceTimeMean;
+        int minBps, maxBps, appInterArrivalMean, appServiceTimeMean, bpsInUse;
         double lrdParetoAlpha, lrdParetoBeta;
-        bool hasCBR, hasBURST, hasLRD, dynamicApps, recordThruput;
+        bool hasCBR, hasBURST, hasLRD, recordThruput;
         simtime_t recordThruputScale;
         std::string recordThruputFileColDelimiter;
         std::ofstream* recordThruputOutputStream;
         long bytesSent = 0;
+
+        std::vector<cMessage*> timerMessages;
 
     protected:
         virtual void initialize(int stage);
@@ -292,6 +300,7 @@ class GenericTraffGen : public cSimpleModule
         virtual void handleMessage(cMessage *msg);
         virtual void finish() override;
 
+        virtual void addApp();
         virtual void record();
 };
 

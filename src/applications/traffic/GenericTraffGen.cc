@@ -28,8 +28,6 @@ void GenericTraffGen::initialize(int stage)
     if (stage == inet::INITSTAGE_APPLICATION_LAYER) // initialize after network configuration has been done..
     {
         // First initialize ned parameters
-        minApps = (int) par("minApps").doubleValue();
-        maxApps = (int) par("maxApps").doubleValue();
         minBps = (int) par("minBps").doubleValue();
         maxBps = (int) par("maxBps").doubleValue();
         appInterArrivalMean = (int) par("appInterArrivalMean").doubleValue();
@@ -42,7 +40,6 @@ void GenericTraffGen::initialize(int stage)
         lrdParetoAlpha = par("lrdParetoAlpha").doubleValue();
         lrdParetoBeta = par("lrdParetoBeta").doubleValue();
 
-        dynamicApps = par("dynamicApps").boolValue();
         recordThruput = par("recordThruput").boolValue();
 
         if(recordThruput){
@@ -53,8 +50,6 @@ void GenericTraffGen::initialize(int stage)
             recordThruputFile.append(std::string(this->getParentModule()->getFullName()) + std::string("-"));
             // append parameters
             recordThruputFile.append(std::to_string(maxBps) + std::string("-"));
-            recordThruputFile.append(std::to_string(minApps) + std::string("-"));
-            recordThruputFile.append(std::to_string(maxApps) + std::string("-"));
             recordThruputFile.append(std::to_string(appInterArrivalMean) + std::string("s-"));
             recordThruputFile.append(std::to_string(appServiceTimeMean) + std::string("s-"));
             recordThruputFile.append(time);
@@ -80,61 +75,18 @@ void GenericTraffGen::initialize(int stage)
         const char* sinkModule = par("sink");
         inet::L3AddressResolver().tryResolve(sinkModule, sink);
 
-        int initialApps = intuniform(minApps, maxApps);
-        // create apps, push them into the vector
-        int startup = 0;
-
         // Generate Traffic type choices.
-        int ttypes = 0;
-        std::vector<TRAFFIC_TYPE> choices;
         if(hasCBR) {
             choices.push_back(TRAFFIC_TYPE::CBR);
-            ttypes++;
         }
         if(hasBURST) {
             choices.push_back(TRAFFIC_TYPE::BURST);
-            ttypes++;
         }
         if(hasLRD) {
             choices.push_back(TRAFFIC_TYPE::LRD);
-            ttypes++;
         }
 
-        for (int i = 0; i < initialApps; i++)
-        {
-            // using triangular distribution for bandwidth with mean
-            // in the middle of minBps and maxBps
-            int bps = (int) triang(minBps, (minBps + maxBps) / 2, maxBps);
-
-            // choose a traffic type for the app
-            int choice = intuniform(0, ttypes - 1);
-
-            std::shared_ptr<TrafficApp> app = TrafficAppFactory().create(choices[choice], bps);
-            if(choices[choice] == TRAFFIC_TYPE::LRD)
-                std::static_pointer_cast<TrafficAppLRD>(app)->setLRDParam(lrdParetoAlpha, lrdParetoBeta);
-            apps.push_back(app);
-
-            // schedule startup some time in the future...
-            cMessage* selfMessage = new cMessage("timer");
-            selfMessage->addPar("vectorPos");
-            selfMessage->par("vectorPos") = i;
-            selfMessage->setKind(TRAFF_APP_TIMER);
-
-            // pick time to start app using Poisson distribution
-            startup += (int) exponential((double) appInterArrivalMean);
-            int serviceTime = (int) exponential((double) appServiceTimeMean);
-
-            std::string startupStr = std::to_string(startup) + std::string("s");
-            simtime_t time = simTime() + STR_SIMTIME(startupStr.c_str());
-            app->firstTimer = time;
-
-            std::string serviceTimeStr = std::to_string(serviceTime) + std::string("s");
-            app->serviceTime = time + STR_SIMTIME(serviceTimeStr.c_str());
-
-            EV << "Starting app at: " << startupStr << "/" << serviceTimeStr << " with BPS: " << bps << "\n";
-
-            scheduleAt(time, selfMessage);
-        }
+        this->addApp();
     }
 
 }
@@ -149,6 +101,10 @@ void GenericTraffGen::handleMessage(cMessage *msg)
         // schedule next msg..
         if(simTime() < app->serviceTime){
             scheduleAt(chunk.nextTimer, msg);
+        }
+        else{
+            bpsInUse -= app->getBPS();
+            delete msg;
         }
 
         // use chunk to send out traffic..
@@ -215,10 +171,90 @@ void GenericTraffGen::handleMessage(cMessage *msg)
             udpOut.sendTo(packet, sink, udpStandardPort);
         }
     }
+    else if(msg->getKind() == TRAFF_APP_NEW){
+        addApp();
+        delete msg;
+    }
     else if(msg->getKind() == RECORD_THRUPUT){
         record();
         scheduleAt(simTime() + recordThruputScale, msg);
     }
+    else{
+        delete msg;
+    }
+}
+
+void GenericTraffGen::addApp(){
+
+    // create apps, push them into the vector
+    int startup = 0;
+
+    // using triangular distribution for bandwidth with mean
+    // in the middle of minBps and maxBps
+    int mean = (minBps + maxBps - bpsInUse) / 2;
+    int upperLimit = maxBps - bpsInUse;
+
+    int bps = 0;
+
+    if(bpsInUse == maxBps){
+        // there is no capacity left, schedule the next new app message based on the
+        // service time and leave, since we can expect, that after a service time period
+        // new capacities are available.
+        // pick time to start app using Poisson distribution
+        std::string startupStr = std::to_string(appServiceTimeMean) + std::string("s");
+        simtime_t time = simTime() + STR_SIMTIME(startupStr.c_str());
+        cMessage* newAppMessage = new cMessage("traff_app_new");
+        newAppMessage->setKind(TRAFF_APP_NEW);
+        scheduleAt(time, newAppMessage);
+
+        return;
+    }
+
+    if(mean > upperLimit || minBps > mean || minBps > upperLimit){
+        // use the rest available
+        bps = upperLimit;
+    }
+    else{
+        bps = (int) triang(minBps, mean, upperLimit);
+    }
+
+    bpsInUse += bps;
+
+    // choose a traffic type for the app
+    int choice = intuniform(0, choices.size() - 1);
+
+    std::shared_ptr<TrafficApp> app = TrafficAppFactory().create(choices[choice], bps);
+    if(choices[choice] == TRAFFIC_TYPE::LRD)
+        std::static_pointer_cast<TrafficAppLRD>(app)->setLRDParam(lrdParetoAlpha, lrdParetoBeta);
+    apps.push_back(app);
+
+    // schedule startup some time in the future...
+    cMessage* selfMessage = new cMessage("timer");
+    selfMessage->addPar("vectorPos");
+    selfMessage->par("vectorPos") = apps.size() - 1;
+    selfMessage->setKind(TRAFF_APP_TIMER);
+
+    // pick time to start app using Poisson distribution
+    startup += (int) exponential((double) appInterArrivalMean);
+    int serviceTime = (int) exponential((double) appServiceTimeMean);
+
+    std::string startupStr = std::to_string(startup) + std::string("s");
+    simtime_t time = simTime() + STR_SIMTIME(startupStr.c_str());
+    app->firstTimer = time;
+
+    std::string serviceTimeStr = std::to_string(serviceTime) + std::string("s");
+    app->serviceTime = time + STR_SIMTIME(serviceTimeStr.c_str());
+
+    // schedule next arriving app, when this app goes online
+    cMessage* newAppMessage = new cMessage("traff_app_new");
+    newAppMessage->setKind(TRAFF_APP_NEW);
+
+#ifdef DEBUG_ENABLED
+    EV << "Starting app at: " << startupStr << "/" << serviceTimeStr << " with BPS: " << bps << "\n";
+#endif
+
+    scheduleAt(time, selfMessage);
+    scheduleAt(time + STR_SIMTIME("1ms"), newAppMessage);
 }
 
 void GenericTraffGen::record(){

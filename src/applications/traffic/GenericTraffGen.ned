@@ -25,8 +25,6 @@ import inet.transportlayer.contract.IUDP;
 simple GenericTraffGen
 {
     parameters:
-        double minApps = default(1.0);
-        double maxApps = default(25.0);
         double minBps = default(512); // minimum of 500 bytes per second
         double maxBps = default(8000000); // maximum of 1MBs
         
@@ -37,15 +35,13 @@ simple GenericTraffGen
         double lrdParetoAlpha = default(1.5);
         double lrdParetoBeta = default(0.1);
 
-        bool dynamicApps = default(false);
-
         string sink;
         
         int udpStandardPort = default(8888);
         int tcpStandardPort = default(9999);
         
-        int appInterArrivalMean = default(1);
-        int appServiceTimeMean = default(1);
+        int appInterArrivalMean = default(3);
+        int appServiceTimeMean = default(15);
         
         bool   recordThruput                = default(false);
         double recordThruputScale @unit(ms) = default(1ms); // Scale on which to record thruput
