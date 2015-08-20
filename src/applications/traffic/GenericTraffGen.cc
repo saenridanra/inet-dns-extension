@@ -210,7 +210,7 @@ void GenericTraffGen::addApp(){
         return;
     }
 
-    if(mean > upperLimit || minBps > mean || minBps > upperLimit){
+    if(mean >= upperLimit || minBps >= mean || minBps >= upperLimit){
         // use the rest available
         bps = upperLimit;
     }
