@@ -139,7 +139,7 @@ bool MDNSNetworkConfigurator::computeMDNSNetwork()
         device_map[device_name] = resolver;
 
         std::vector<std::shared_ptr<std::pair<SimTime, SimTime>>>timingSchedule;
-        std::string start_str = std::to_string(intuniform(10, 20)) + std::string("s");
+        std::string start_str = std::to_string(intuniform(10, 60)) + std::string("s");
         std::string end_str = std::to_string(intuniform(3600, 7200)) + std::string("s");
         simtime_t start = STR_SIMTIME(start_str.c_str());
         simtime_t end = STR_SIMTIME(end_str.c_str());

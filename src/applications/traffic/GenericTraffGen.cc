@@ -119,7 +119,7 @@ void GenericTraffGen::handleMessage(cMessage *msg)
             else{
                 int numPkts = chunk.payloadSize / 65507;
                 int lastPkt = chunk.payloadSize - (65507 * numPkts);
-                simtime_t intrvl = STR_SIMTIME("1s") / numPkts;
+                simtime_t intrvl = STR_SIMTIME("0.9s") / numPkts;
 
                 // setup self message
                 cMessage* nextChunk = new cMessage("nextChunk");
@@ -129,7 +129,7 @@ void GenericTraffGen::handleMessage(cMessage *msg)
                 nextChunk->addPar("intrvl");
                 nextChunk->addPar("vectorPos");
 
-                nextChunk->par("numPkts") = --numPkts;
+                nextChunk->par("numPkts") = numPkts;
                 nextChunk->par("lastPkt") = lastPkt;
                 nextChunk->par("vectorPos") = vectorPos;
                 nextChunk->par("intrvl") = intrvl.dbl();
