@@ -25,7 +25,7 @@ namespace INETDNS {
 void MDNSTrafficGenerator::elapse(INETDNS::TimeEvent* e, std::shared_ptr<void> data)
 {
     // post query
-    int servicePick = intrand(serviceList.size() - 1);
+    int servicePick = (serviceList.size() > 1) ? intrand(serviceList.size() - 1) : 0;
     // create query
     std::shared_ptr<INETDNS::MDNSKey> key = INETDNS::mdns_key_new(serviceList[servicePick],
             DNS_TYPE_VALUE_ANY, DNS_CLASS_IN);
