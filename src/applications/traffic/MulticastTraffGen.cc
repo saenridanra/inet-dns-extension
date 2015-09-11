@@ -198,7 +198,7 @@ bool MulticastTraffGen::sendSplit(cMessage *msg){
 
     numPkts--;
     //std::cout << "Sending packet: " << numPkts << std::endl;
-    //std::string msgname = std::string("mgen_pack::") + std::to_string(packetID) + std::string("#") + std::to_string(numPkts);
+    std::string msgname = std::string("mgen_pack::") + std::to_string(packetID) + std::string("#") + std::to_string(numPkts);
     cPacket* packet = new cPacket(msgname.c_str());
     if(numPkts == 0){
         packet->setByteLength(lastPkt);
