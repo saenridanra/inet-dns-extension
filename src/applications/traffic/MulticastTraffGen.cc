@@ -115,7 +115,7 @@ void MulticastTraffGen::sendData(int time){
             // need to split..
             int numPkts = dataToSend / 65507;
             int lastPkt = dataToSend - (65507 * numPkts);
-            simtime_t intrvl = STR_SIMTIME("1s") / numPkts;
+            simtime_t intrvl = STR_SIMTIME("0.9s") / numPkts;
 
             // setup self message
             cMessage* nextChunk = new cMessage("nextChunk");
@@ -159,7 +159,7 @@ void MulticastTraffGen::sendData(int time){
             // need to split..
             int numPkts = byterate / 65507;
             int lastPkt = byterate - (65507 * numPkts);
-            simtime_t intrvl = STR_SIMTIME("1s") / numPkts;
+            simtime_t intrvl = STR_SIMTIME("0.9s") / numPkts;
 
             // setup self message
             cMessage* nextChunk = new cMessage("nextChunk");
@@ -250,8 +250,6 @@ void MulticastTraffGen::handleMessage(cMessage *msg)
         case TIMER_KIND_SLEEP:
             // determine new phase:
             generateNewServiceTimes();
-
-            timer = new cMessage("timer");
             timer->setKind(TIMER_KIND_START);
 
             scheduleAt(startTime, timer);
@@ -264,8 +262,11 @@ void MulticastTraffGen::handleMessage(cMessage *msg)
         default: break;
         }
     }
+    else{
+        delete msg;
+    }
 }
 
 void MulticastTraffGen::finish(){
-
+    cancelAndDelete(timer);
 }
