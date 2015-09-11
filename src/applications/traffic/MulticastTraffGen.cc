@@ -125,7 +125,7 @@ void MulticastTraffGen::sendData(int time){
             nextChunk->addPar("intrvl");
             nextChunk->addPar("packetID");
 
-            nextChunk->par("numPkts") = --numPkts;
+            nextChunk->par("numPkts") = numPkts;
             nextChunk->par("lastPkt") = lastPkt;
             nextChunk->par("intrvl") = intrvl.dbl();
             nextChunk->par("packetID") = packetCount;
@@ -169,7 +169,7 @@ void MulticastTraffGen::sendData(int time){
             nextChunk->addPar("intrvl");
             nextChunk->addPar("packetID");
 
-            nextChunk->par("numPkts") = --numPkts;
+            nextChunk->par("numPkts") = numPkts;
             nextChunk->par("lastPkt") = lastPkt;
             nextChunk->par("intrvl") = intrvl.dbl();
             nextChunk->par("packetID") = packetCount;
@@ -197,8 +197,8 @@ bool MulticastTraffGen::sendSplit(cMessage *msg){
     simtime_t intrvl = msg->par("intrvl").doubleValue();
 
     numPkts--;
-    std::cout << "Sending packet: " << numPkts << std::endl;
-    std::string msgname = std::string("mgen_pack::") + std::to_string(packetID) + std::string("#") + std::to_string(numPkts);
+    //std::cout << "Sending packet: " << numPkts << std::endl;
+    //std::string msgname = std::string("mgen_pack::") + std::to_string(packetID) + std::string("#") + std::to_string(numPkts);
     cPacket* packet = new cPacket(msgname.c_str());
     if(numPkts == 0){
         packet->setByteLength(lastPkt);
